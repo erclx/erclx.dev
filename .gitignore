@@ -1,24 +1,37 @@
-# build output
+# Build
 dist/
-# generated types
 .astro/
 
-# dependencies
+# Dependencies
 node_modules/
 
-# logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-
-# environment variables
+# Environment
 .env
-.env.production
+.env.*
+*.local
+!.env.example
 
-# macOS-specific files
+# OS
 .DS_Store
 
-# jetbrains setting folder
-.idea/
+# Editors
+.cursor/.tmp/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Claude
+.claude/.tmp/
+.claude/memory/
+.claude/plans/
+.claude/review/
+.claude/worktrees/
+.claude/SYNC-QUEUE.md
+
+# Tests
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+screenshots/
