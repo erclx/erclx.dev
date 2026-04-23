@@ -1,9 +1,12 @@
 aitk
 bradlc
 bunx
+changelogithub
 commitlint
 dbaeumer
 dotfolders
+elif
+esac
 esbenp
 frontmatter
 labelledby
@@ -12,9 +15,11 @@ mkhl
 noopener
 noreferrer
 parallelizable
+pipefail
 scannability
 shellcheck
 shfmt
+subfolders
 tabindex
 timonwong
 wireframes
