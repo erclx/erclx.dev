@@ -9,90 +9,72 @@ import vitest from 'eslint-plugin-vitest'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
-const ignores = globalIgnores([
-  'dist',
-  '.astro',
-  'coverage',
-  '.claude',
-  '.gemini',
-  '.vscode',
-  '.husky',
-  'test-results',
-  'playwright-report',
-  'blob-report',
-  'playwright/.cache',
-])
-
-const baseJs = {
-  ...js.configs.recommended,
-  languageOptions: {
-    globals: { ...globals.browser, ...globals.node },
-  },
-}
-
-const typescript = tseslint.configs.recommended
-
-const featureConventions = {
-  files: ['**/*.{js,jsx,ts,tsx,astro}'],
-  plugins: {
-    'simple-import-sort': simpleImportSort,
-    'check-file': checkFile,
-  },
-  rules: {
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    'simple-import-sort/imports': 'error',
-    'simple-import-sort/exports': 'error',
-  },
-}
-
-const fileNaming = {
-  files: ['**/*.{ts,tsx,astro}'],
-  ignores: ['src/pages/**'],
-  plugins: { 'check-file': checkFile },
-  rules: {
-    'check-file/filename-naming-convention': [
-      'error',
-      { '**/*.{ts,tsx,astro}': 'KEBAB_CASE' },
-      { ignoreMiddleExtensions: true },
-    ],
-  },
-}
-
-const folderNaming = {
-  files: ['src/**/!(__tests__|pages)/**'],
-  plugins: { 'check-file': checkFile },
-  rules: {
-    'check-file/folder-naming-convention': [
-      'error',
-      { 'src/**/!(__tests__|pages)': 'KEBAB_CASE' },
-    ],
-  },
-}
-
-const reactHooksConfig = {
-  files: ['**/*.{jsx,tsx}'],
-  plugins: { 'react-hooks': reactHooks },
-  rules: reactHooks.configs.recommended.rules,
-}
-
-const testing = {
-  files: ['**/*.test.{ts,tsx}'],
-  plugins: { vitest },
-  languageOptions: {
-    globals: { ...vitest.environments.env.globals },
-  },
-  rules: vitest.configs.recommended.rules,
-}
-
 export default defineConfig([
-  ignores,
-  baseJs,
-  ...typescript,
+  globalIgnores([
+    'dist',
+    '.astro',
+    'coverage',
+    '.claude',
+    '.gemini',
+    '.vscode',
+    '.husky',
+    'test-results',
+    'playwright-report',
+    'blob-report',
+    'playwright/.cache',
+  ]),
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   ...astro.configs.recommended,
-  featureConventions,
-  fileNaming,
-  folderNaming,
-  reactHooksConfig,
-  testing,
+  {
+    files: ['**/*.{ts,tsx,js,jsx}'],
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+      'check-file': checkFile,
+    },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+    },
+    rules: {
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
+      ],
+      'check-file/filename-naming-convention': [
+        'error',
+        { '**/*.{ts,tsx,astro}': 'KEBAB_CASE' },
+        { ignoreMiddleExtensions: true },
+      ],
+      'check-file/folder-naming-convention': [
+        'error',
+        { 'src/**/!(__tests__|pages)': 'KEBAB_CASE' },
+      ],
+    },
+  },
+  {
+    files: ['**/*.{jsx,tsx}'],
+    plugins: {
+      'react-hooks': reactHooks,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+    },
+  },
+  {
+    files: ['*.config.{js,mjs,cjs,ts}', 'astro.config.mjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  {
+    files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
+    ...vitest.configs.recommended,
+  },
   prettier,
 ])

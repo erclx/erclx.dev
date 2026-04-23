@@ -39,7 +39,15 @@ main() {
 
   if [ "$NESTED" = false ]; then echo -e "${GREY}┌${NC}"; fi
 
-  echo -e "${GREY}├${NC} ${WHITE}Formatting${NC}"
+  echo -e "${GREY}├${NC} ${WHITE}Typecheck${NC}"
+  run_check "bun run typecheck" "Typecheck failed"
+  log_info "Typecheck passed"
+
+  log_step "Lint"
+  run_check "bun run lint" "Lint failed"
+  log_info "Lint passed"
+
+  log_step "Formatting"
   run_check "bun run format" "Format failed"
   log_info "Format applied"
 
@@ -54,6 +62,14 @@ main() {
   log_step "Shell"
   run_check "bun run check:shell" "Shell check failed"
   log_info "Shell check passed"
+
+  log_step "Unit tests"
+  run_check "bun run test:run" "Unit tests failed"
+  log_info "Unit tests passed"
+
+  log_step "Build"
+  run_check "bun run build" "Build failed"
+  log_info "Build passed"
 
   if [ "$NESTED" = false ]; then
     echo -e "${GREY}└${NC}\n"

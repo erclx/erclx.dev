@@ -1,44 +1,41 @@
-import { mkdir } from 'node:fs/promises'
-
 import type { Page } from '@playwright/test'
-import { chromium } from '@playwright/test'
 
-const BASE_URL = 'http://localhost:4321'
-const OUTPUT_DIR = 'screenshots'
-
-const ROUTES = [
-  { name: 'home-desktop', path: '/', viewport: { width: 1440, height: 900 } },
-  { name: 'home-mobile', path: '/', viewport: { width: 390, height: 844 } },
-] as const
+const ROUTES = [{ name: 'home', path: '/', width: 1280, height: 800 }]
 
 type State = { name: string; setup?: (page: Page) => Promise<void> }
-
 const STATES: State[] = [
-  { name: 'light' },
-  {
-    name: 'dark',
-    setup: async (page) => {
-      await page.emulateMedia({ colorScheme: 'dark' })
-    },
-  },
+  { name: 'default' },
+  { name: 'dark', setup: async (p) => p.emulateMedia({ colorScheme: 'dark' }) },
 ]
 
-await mkdir(OUTPUT_DIR, { recursive: true })
+import { chromium } from '@playwright/test'
+import { mkdir } from 'fs/promises'
+import path from 'path'
+
+const BASE_URL = process.env.SCREENSHOT_BASE_URL ?? 'http://localhost:4173'
+const OUT_DIR = 'screenshots'
 
 const browser = await chromium.launch()
-try {
-  for (const route of ROUTES) {
-    for (const state of STATES) {
-      const context = await browser.newContext({ viewport: route.viewport })
-      const page = await context.newPage()
-      if (state.setup) await state.setup(page)
-      await page.goto(`${BASE_URL}${route.path}`, { waitUntil: 'networkidle' })
-      const file = `${OUTPUT_DIR}/${route.name}-${state.name}.png`
-      await page.screenshot({ path: file, fullPage: true })
-      console.log(`✓ ${file}`)
-      await context.close()
-    }
+await mkdir(OUT_DIR, { recursive: true })
+
+for (const route of ROUTES) {
+  for (const state of STATES) {
+    const ctx = await browser.newContext({
+      viewport: { width: route.width, height: route.height },
+    })
+    const page = await ctx.newPage()
+
+    if (state.setup) await state.setup(page)
+
+    await page.goto(`${BASE_URL}${route.path}`)
+    await page.waitForLoadState('networkidle')
+
+    const file = path.join(OUT_DIR, `${route.name}-${state.name}.png`)
+    await page.screenshot({ path: file, fullPage: true })
+    console.log(`captured ${file}`)
+
+    await ctx.close()
   }
-} finally {
-  await browser.close()
 }
+
+await browser.close()

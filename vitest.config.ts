@@ -1,15 +1,17 @@
+/// <reference types="vitest/config" />
 import { getViteConfig } from 'astro/config'
 
 export default getViteConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./src/test/setup.ts'],
+    setupFiles: ['src/test/setup.ts'],
+    passWithNoTests: true,
     exclude: [
       'node_modules',
       'dist',
       '.astro',
-      'e2e',
+      'e2e/**/*',
       '.{idea,git,cache,output,temp}',
     ],
     coverage: {
