@@ -48,7 +48,7 @@ Plan: .claude/plans/feature-landing-v1.md
 - [ ] Visitors see project cards for Stackr, Caret, and Toolkit with concise descriptions
 - [ ] Visitors find identity links and a downloadable resume in the footer
 - [ ] Page title and meta description reflect the site, not the Astro scaffold default
-- [ ] README explains what the repo is and how to run it locally
+- [x] README explains what the repo is and how to run it locally
 
 > Test strategy: e2e visits the apex and asserts each section is visible by role or test ID, plus a screenshot pair for desktop and mobile widths
 

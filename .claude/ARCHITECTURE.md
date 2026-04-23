@@ -9,13 +9,23 @@ Static Astro site that renders one page at the erclx.dev apex. The build emits H
 ```plaintext
 src/
 ├── pages/
-│   └── index.astro      ← single page composed from layout + section components
+│   └── index.astro      ← single page, imports global.css
 ├── components/
 │   └── ui/              ← shadcn primitives, owned by this repo
 ├── lib/
 │   └── utils.ts         ← cn() and shared helpers
-└── styles/
-    └── global.css       ← tailwind entry, theme tokens, base layer
+├── styles/
+│   └── global.css       ← tailwind entry, theme tokens, base layer
+└── test/
+    └── setup.ts         ← jsdom + RTL cleanup for vitest
+
+e2e/
+├── landing.spec.ts      ← playwright smoke for the apex
+└── screenshot.ts        ← node script, light + dark per route
+
+vitest.config.ts         ← jsdom + globals + coverage v8
+playwright.config.ts     ← chromium + firefox + webkit, webServer auto-starts preview
+tsconfig.e2e.json        ← e2e-only tsconfig with @playwright/test + node types
 ```
 
 ## Key technical decisions
@@ -35,6 +45,10 @@ Radix primitives provide accessible interactive components without locking in a 
 ### Content sourced via SYNC-QUEUE.md
 
 Page copy is canonical in the parent career repo, never authored here. Updates land in `.claude/SYNC-QUEUE.md` as full text. This prevents drift between Linkedin, the resume, the github profile, and the live page.
+
+### Dark mode uses the class-based shadcn pattern
+
+shadcn ships `@custom-variant dark (&:is(.dark *))`, which keys dark theme tokens off a `.dark` class on a parent element. `prefers-color-scheme` alone does not switch the theme. The layout needs a small inline script that reads the system preference (and any saved override) on first paint and adds `.dark` to `documentElement` before the body renders, to avoid a flash of the wrong scheme.
 
 ## Risks / open questions
 
