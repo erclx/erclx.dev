@@ -52,6 +52,15 @@ Plan: .claude/plans/feature-landing-v1.md
 
 > Test strategy: e2e visits the apex and asserts each section is visible by role or test ID, plus a screenshot pair for desktop and mobile widths
 
+### Extend the CI workflow with astro stack jobs
+
+- [ ] CI runs `astro check` and `bun run lint` alongside the format, spell, and shell checks
+- [ ] CI runs unit tests with coverage on every PR
+- [ ] CI runs a production build to catch type or asset errors that escape `astro check`
+- [ ] CI runs Playwright e2e against all three browsers with browser cache and report artifact upload
+
+> Test strategy: green CI on a throwaway PR that asserts each new job runs and reports independently
+
 ### Wire dark mode so prefers-color-scheme actually applies
 
 - [ ] Visitors arriving with system dark mode see the dark theme on first paint
