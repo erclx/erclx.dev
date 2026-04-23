@@ -1,0 +1,7 @@
+{
+  "extends": "astro/tsconfigs/base",
+  "include": ["e2e/**/*.ts", "playwright.config.ts"],
+  "compilerOptions": {
+    "types": ["@playwright/test", "node"]
+  }
+}
