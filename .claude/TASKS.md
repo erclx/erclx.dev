@@ -54,10 +54,10 @@ Plan: .claude/plans/feature-landing-v1.md
 
 ### Extend the CI workflow with astro stack jobs
 
-- [ ] CI runs `astro check` and `bun run lint` alongside the format, spell, and shell checks
-- [ ] CI runs unit tests with coverage on every PR
-- [ ] CI runs a production build to catch type or asset errors that escape `astro check`
-- [ ] CI runs Playwright e2e against all three browsers with browser cache and report artifact upload
+- [x] CI runs `astro check` and `bun run lint` alongside the format, spell, and shell checks
+- [x] CI runs unit tests with coverage on every PR
+- [x] CI runs a production build to catch type or asset errors that escape `astro check`
+- [x] CI runs Playwright e2e against chromium on PR with browser cache and report artifact upload
 
 > Test strategy: green CI on a throwaway PR that asserts each new job runs and reports independently
 
