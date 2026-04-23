@@ -27,7 +27,7 @@ bunx playwright install chromium
 | `bun run preview`    | Preview the production build locally         |
 | `bun run typecheck`  | Run `astro check`                            |
 | `bun run lint`       | Run ESLint with zero warnings allowed        |
-| `bun run check`      | Run format, spelling, and shell checks       |
+| `bun run check`      | Full verification, auto-formats then asserts |
 | `bun run test:run`   | One-shot unit tests with vitest              |
 | `bun run test:e2e`   | Run Playwright e2e tests                     |
 | `bun run screenshot` | Capture light and dark screenshots per route |
