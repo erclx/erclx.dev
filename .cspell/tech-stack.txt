@@ -1,0 +1,13 @@
+aitk
+bradlc
+bunx
+commitlint
+dbaeumer
+dotfolders
+esbenp
+lintstagedrc
+mkhl
+scannability
+shellcheck
+shfmt
+timonwong
