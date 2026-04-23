@@ -1,32 +1,43 @@
 # Architecture
 
-Describe the system shape and the decisions behind it. Not a tutorial, setup guide, or implementation walkthrough. Update this doc when a new decision is made or a risk is resolved, not after the fact.
-
-Pair this doc with `CLAUDE.md`. Principles live there, patterns and decisions live here.
-
-What belongs:
-
-- A high-level overview of how the system is structured and why
-- A file tree with brief inline annotations, enough to orient a new developer
-- Key technical decisions as named H3 entries: what was chosen and why this over the alternatives, including stack and library choices
-- Risks and open questions still unresolved
-
-What does not belong:
-
-- Setup commands and install instructions live in README.
-- How individual functions work line by line. Put those in code comments.
-- Full type definitions. They live in code. Reference the shape conceptually if needed.
-
-Name each decision clearly. Give the reasoning, especially for non-obvious choices. Skip entries where the rationale is self-evident.
-
 ## Overview
+
+Static Astro site that renders one page at the erclx.dev apex. The build emits HTML, CSS, and a small JS bundle for any interactive islands. Content is authored once in the parent career repo and flows here through a sync queue.
 
 ## Structure
 
+```plaintext
+src/
+├── pages/
+│   └── index.astro      ← single page composed from layout + section components
+├── components/
+│   └── ui/              ← shadcn primitives, owned by this repo
+├── lib/
+│   └── utils.ts         ← cn() and shared helpers
+└── styles/
+    └── global.css       ← tailwind entry, theme tokens, base layer
+```
+
 ## Key technical decisions
 
-### Decision name
+### Astro over Next or a static React app
 
-Reasoning and tradeoffs.
+Astro renders zero JS by default. The page is mostly prose and links, so shipping React on every visit would waste bytes. React only loads where an island opts in via `client:*`. Next would force a runtime model the site does not need.
+
+### Tailwind v4 via the Vite plugin
+
+The v3 Astro integration is deprecated. v4 ships as a Vite plugin and reads its config from a CSS-first `@theme` block, which matches the shadcn token model. This avoids a JS-side `tailwind.config` file entirely.
+
+### shadcn with the radix base and Nova preset
+
+Radix primitives provide accessible interactive components without locking in a design system. Nova ships a usable starting set of tokens and Lucide icons. Components live in `src/components/ui/` under repo ownership, so the team can edit them directly without forking a package.
+
+### Content sourced via SYNC-QUEUE.md
+
+Page copy is canonical in the parent career repo, never authored here. Updates land in `.claude/SYNC-QUEUE.md` as full text. This prevents drift between Linkedin, the resume, the github profile, and the live page.
 
 ## Risks / open questions
+
+- The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
+- Resume PDF hosting: serve from `public/` or link to the canonical Github copy
+- Project card data shape: card content is currently free prose in `github-profile.md`, not structured data, so the component contract has to handle prose blocks rather than fields
