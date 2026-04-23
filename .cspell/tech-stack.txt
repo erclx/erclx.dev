@@ -9,6 +9,7 @@ dotfolders
 elif
 esac
 esbenp
+fontsource
 frontmatter
 labelledby
 lintstagedrc
