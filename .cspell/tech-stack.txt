@@ -6,11 +6,16 @@ dbaeumer
 dotfolders
 esbenp
 frontmatter
+labelledby
 lintstagedrc
 mkhl
+noopener
+noreferrer
+parallelizable
 scannability
 shellcheck
 shfmt
+tabindex
 timonwong
 wireframes
 worktree
