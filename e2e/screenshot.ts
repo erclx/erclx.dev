@@ -3,10 +3,6 @@ import { mkdir } from 'node:fs/promises'
 import type { Page } from '@playwright/test'
 import { chromium } from '@playwright/test'
 
-// =====================================================================
-// CONFIG — edit per project
-// =====================================================================
-
 const BASE_URL = 'http://localhost:4321'
 const OUTPUT_DIR = 'screenshots'
 
@@ -26,10 +22,6 @@ const STATES: State[] = [
     },
   },
 ]
-
-// =====================================================================
-// ENGINE — do not edit per project
-// =====================================================================
 
 await mkdir(OUTPUT_DIR, { recursive: true })
 
