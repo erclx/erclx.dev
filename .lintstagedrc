@@ -1,5 +1,15 @@
 {
-  "**/*.{json,md,mdc}": [
+  "**/*.astro": [
+    "eslint --fix --max-warnings 0",
+    "prettier --write --ignore-path .gitignore --ignore-path .prettierignore",
+    "cspell --no-must-find-files"
+  ],
+  "**/*.{js,jsx,ts,tsx}": [
+    "eslint --fix --max-warnings 0",
+    "prettier --write --ignore-path .gitignore --ignore-path .prettierignore",
+    "cspell --no-must-find-files"
+  ],
+  "**/*.{json,css,md,mdc}": [
     "prettier --write --ignore-path .gitignore --ignore-path .prettierignore",
     "cspell --no-must-find-files"
   ],
