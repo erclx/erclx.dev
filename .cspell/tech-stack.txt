@@ -15,6 +15,7 @@ frontmatter
 labelledby
 lintstagedrc
 mkhl
+networkidle
 noopener
 noreferrer
 parallelizable
