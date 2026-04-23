@@ -39,6 +39,23 @@ Plan: .claude/plans/feature-<slug>.md
 
 ## Up next
 
-### Nothing queued
+### Visitors see the v1 landing page at the apex
 
-- No tasks currently
+Plan: .claude/plans/feature-landing-v1.md
+
+- [ ] Visitors land on erclx.dev and see identity, role, headline, and contact links above the fold
+- [ ] Visitors scroll to a narrative section describing what Eric does and why
+- [ ] Visitors see project cards for Stackr, Caret, and Toolkit with concise descriptions
+- [ ] Visitors find identity links and a downloadable resume in the footer
+- [ ] Page title and meta description reflect the site, not the Astro scaffold default
+- [ ] README explains what the repo is and how to run it locally
+
+> Test strategy: e2e visits the apex and asserts each section is visible by role or test ID, plus a screenshot pair for desktop and mobile widths
+
+### Wire dark mode so prefers-color-scheme actually applies
+
+- [ ] Visitors arriving with system dark mode see the dark theme on first paint
+- [ ] Theme tokens swap without a flash of the wrong scheme
+- [ ] Screenshot pair for light and dark renders byte-different output
+
+> Test strategy: visual, screenshot diff between forced light and forced dark using emulateMedia plus the `.dark` class on `documentElement`
