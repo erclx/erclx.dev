@@ -1,0 +1,36 @@
+# Build
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.*
+*.local
+!.env.example
+
+# OS
+.DS_Store
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Claude
+.claude/.tmp/
+.claude/memory/
+.claude/plans/
+.claude/review/
+.claude/worktrees/
+.claude/SYNC-QUEUE.md
+
+# Tests
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+screenshots/
