@@ -1,0 +1,44 @@
+---
+const links = [
+  { label: 'GitHub', href: 'https://github.com/erclx' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/erclx' },
+  { label: 'me@erclx.dev', href: 'mailto:me@erclx.dev' },
+]
+---
+
+<header class="px-6 pt-24 pb-16 md:pt-32 md:pb-20">
+  <div class="mx-auto max-w-2xl">
+    <p
+      class="text-muted-foreground text-label flex items-center gap-2 tracking-wide uppercase"
+    >
+      <span
+        class="bg-chart-2 inline-block size-2 rounded-full"
+        aria-hidden="true"></span>
+      Open to work · Eric Le · Gothenburg, Sweden
+    </p>
+    <h1 class="font-display text-display text-foreground mt-4 leading-tight">
+      I build LLM agents and developer tools
+    </h1>
+    <p class="text-muted-foreground text-body mt-6 max-w-xl">
+      Applied AI engineer working in LLM applications and prompt engineering.
+      Spent 1.5 years building natural language data agents at Volvo across
+      three engagements, with a second team picking up the work for the final
+      contract. Published two developer tools: a VS Code extension and a
+      Chrome extension.
+    </p>
+    <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+      {
+        links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="text-foreground text-label hover:text-primary underline-offset-4 hover:underline"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</header>

@@ -12,6 +12,8 @@ esac
 esbenp
 evenodd
 fontsource
+FOUT
+Fraunces
 frontmatter
 iconify
 jsdom

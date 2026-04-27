@@ -1,0 +1,61 @@
+---
+import ProjectCard from '@/components/site/project-card.astro'
+
+const projects = [
+  {
+    name: 'Stackr',
+    description:
+      'VS Code extension for multi-file LLM context preparation. 1,000+ downloads on Open VSX. Drag-and-drop file staging, live token counting, pinned files that survive session restarts.',
+    links: [
+      {
+        label: 'VS Code Marketplace',
+        href: 'https://marketplace.visualstudio.com/items?itemName=erclx.ai-context-stacker',
+      },
+      {
+        label: 'Open VSX',
+        href: 'https://open-vsx.org/extension/erclx/ai-context-stacker',
+      },
+      { label: 'GitHub', href: 'https://github.com/erclx/stackr' },
+    ],
+  },
+  {
+    name: 'Caret',
+    description:
+      'Chrome extension for saving and invoking prompts in Claude, Gemini, and ChatGPT. Trigger-symbol search and keyboard-driven injection from a command-palette dropdown anchored on the chat input.',
+    links: [
+      {
+        label: 'Chrome Web Store',
+        href: 'https://chromewebstore.google.com/detail/caret/bpmdbibldelkpncegllkeegdpblgehgk',
+      },
+      { label: 'GitHub', href: 'https://github.com/erclx/caret' },
+    ],
+  },
+]
+---
+
+<section class="px-6 pb-16 md:pb-24">
+  <div class="mx-auto max-w-2xl">
+    <h2 class="text-muted-foreground text-label tracking-wide uppercase">
+      Projects
+    </h2>
+    <div class="mt-6 grid gap-5">
+      {
+        projects.map((project) => (
+          <ProjectCard
+            name={project.name}
+            description={project.description}
+            links={project.links}
+          />
+        ))
+      }
+    </div>
+    <p class="text-muted-foreground text-body mt-6">
+      Plus <a
+        href="https://github.com/erclx/toolkit"
+        class="text-foreground hover:text-primary underline underline-offset-4"
+        >Toolkit</a
+      >, an agent-first CLI that installs and syncs governance, skills, and
+      standards across projects.
+    </p>
+  </div>
+</section>

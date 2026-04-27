@@ -43,19 +43,28 @@ Plan: .claude/plans/feature-<slug>.md
 
 Plan: .claude/plans/feature-landing-v1.md
 
-- [ ] Visitors land on erclx.dev and see identity, role, headline, and contact links above the fold
-- [ ] Visitors scroll to a narrative section describing what Eric does and why
-- [ ] Visitors see project cards for Stackr, Caret, and Toolkit with concise descriptions
+- [x] Visitors land on erclx.dev and see identity, role, headline, and contact links above the fold
+- [x] Visitors scroll to a narrative section describing what Eric does and why
+- [x] Visitors see project cards for Stackr, Caret, and Toolkit with concise descriptions
 - [ ] Visitors find identity links and a downloadable resume in the footer
-- [ ] Page title and meta description reflect the site, not the Astro scaffold default
+- [x] Page title and meta description reflect the site, not the Astro scaffold default
 - [x] README explains what the repo is and how to run it locally
 
 > Test strategy: e2e visits the apex and asserts each section is visible by role or test ID, plus a screenshot pair for desktop and mobile widths
 
+### Visitors reach the page at the apex over HTTPS
+
+- [ ] erclx.dev resolves to the deployed site
+- [ ] Apex serves the page over HTTPS with a valid certificate
+- [ ] www.erclx.dev redirects to the apex with a permanent redirect
+- [ ] HTTP requests to either host upgrade to HTTPS
+
+> Test strategy: manual, curl the four host and scheme combinations and assert each terminates at the HTTPS apex. Also requires picking a deploy target before this can land.
+
 ### Wire dark mode so prefers-color-scheme actually applies
 
-- [ ] Visitors arriving with system dark mode see the dark theme on first paint
-- [ ] Theme tokens swap without a flash of the wrong scheme
-- [ ] Screenshot pair for light and dark renders byte-different output
+- [x] Visitors arriving with system dark mode see the dark theme on first paint
+- [x] Theme tokens swap without a flash of the wrong scheme
+- [x] Screenshot pair for light and dark renders byte-different output
 
 > Test strategy: visual, screenshot diff between forced light and forced dark using emulateMedia plus the `.dark` class on `documentElement`
