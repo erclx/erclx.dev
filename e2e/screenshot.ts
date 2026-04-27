@@ -3,6 +3,7 @@ import type { Page } from '@playwright/test'
 const ROUTES = [
   { name: 'home-desktop', path: '/', width: 1280, height: 800 },
   { name: 'home-mobile', path: '/', width: 390, height: 844 },
+  { name: 'home-narrow', path: '/', width: 320, height: 800 },
 ]
 
 type State = { name: string; setup?: (page: Page) => Promise<void> }

@@ -29,13 +29,15 @@ Quiet senior-IC confidence. The page reads like a thoughtful long-form essay —
 
 ## Spacing
 
-| Step | Multiplier | Value |
-| ---- | ---------- | ----- |
-| xs   | 0.5        | 4px   |
-| sm   | 1          | 8px   |
-| md   | 2          | 16px  |
-| lg   | 3          | 24px  |
-| xl   | 5          | 40px  |
+| Step | Multiplier | Value | Tailwind step |
+| ---- | ---------- | ----- | ------------- |
+| xs   | 0.5        | 4px   | `1`           |
+| sm   | 1          | 8px   | `2`           |
+| md   | 2          | 16px  | `4`           |
+| lg   | 3          | 24px  | `6`           |
+| xl   | 5          | 40px  | `10`          |
+
+Use only the `1 / 2 / 4 / 6 / 10` Tailwind steps for micro-spacing inside a section: paddings, gaps, and margins between adjacent elements. The steps `3`, `5`, `7`, `8`, and `9` produce off-scale values that read as arbitrary, so avoid them. Section-level vertical rhythm uses `16` and `20` (md:) for normal sections, plus `24` and `32` for the hero. Those larger values compose with the scale without inventing intermediate steps.
 
 ## Borders
 

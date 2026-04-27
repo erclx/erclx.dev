@@ -1,4 +1,6 @@
 ---
+import ThemeToggle from '@/components/site/theme-toggle.astro'
+
 const links = [
   { label: 'GitHub', href: 'https://github.com/erclx' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/erclx' },
@@ -6,17 +8,27 @@ const links = [
 ]
 ---
 
-<header class="px-6 pt-24 pb-16 md:pt-32 md:pb-20">
+<header
+  class="bg-secondary border-border border-b px-6 pt-20 pb-16 md:pt-32 md:pb-20"
+>
   <div class="mx-auto max-w-2xl">
-    <p
-      class="text-muted-foreground text-label flex items-center gap-2 tracking-wide uppercase"
-    >
+    <div class="flex items-start justify-between gap-4">
       <span
-        class="bg-chart-2 inline-block size-2 rounded-full"
-        aria-hidden="true"></span>
-      Open to work · Eric Le · Gothenburg, Sweden
+        class="text-muted-foreground text-label inline-flex items-center gap-2 tracking-wide uppercase"
+      >
+        <span
+          class="bg-chart-2 inline-block size-2 rounded-full"
+          aria-hidden="true"></span>
+        Open to work
+      </span>
+      <ThemeToggle />
+    </div>
+    <p
+      class="text-muted-foreground text-label mt-2 tracking-wide uppercase"
+    >
+      Eric Le · Gothenburg, Sweden
     </p>
-    <h1 class="font-display text-display text-foreground mt-4 leading-tight">
+    <h1 class="font-display text-display text-foreground mt-6">
       I build LLM agents and developer tools
     </h1>
     <p class="text-muted-foreground text-body mt-6 max-w-xl">
@@ -26,7 +38,7 @@ const links = [
       contract. Published two developer tools: a VS Code extension and a
       Chrome extension.
     </p>
-    <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+    <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-2">
       {
         links.map((link) => (
           <li>
