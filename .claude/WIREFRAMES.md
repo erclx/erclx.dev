@@ -1,33 +1,166 @@
 # Wireframes
 
-ASCII wireframes for planning purposes. Structure and layout only, not final design. Update this doc when a new surface is designed or a layout decision changes.
+ASCII wireframes for the v1 landing page. Structure and layout only, not final design. Update this doc when a new surface is designed or a layout decision changes.
 
-What belongs:
+## Page
 
-- ASCII diagrams showing layout, hierarchy, and component placement
-- A context sentence per section describing when and where it appears
-- All meaningful states: empty, loading, error, and any variant where the layout changes significantly
-- Exact UI copy strings: labels, empty states, confirmation text, hints
-- Interaction rules: what triggers what, navigation flow, confirmation behavior
-- Intentional omissions with a brief reason, so they are not re-added later
-
-What does not belong:
-
-- Implementation details (event listeners, API call counts, storage keys). Those live in ARCHITECTURE.md.
-- Visual decisions (colors, spacing, typography). Those live in DESIGN.md.
-- Pixel values or final measurements. Verify those in the browser.
-
-Use `←` for inline annotations inside diagrams. Use sentence case for all text labels. Document state variants as separate subsections when the layout changes. Keep behavior bullets to UX only: what the user sees and does, not how the code handles it.
-
-## Feature name
-
-Brief sentence describing when and where it appears.
+The single page at `/`. Three sections stack vertically inside the body. The header carries its own background band that runs edge-to-edge. Projects and footer sit on the page canvas.
 
 ```plaintext
-[ascii diagram]
+┌──────────────────────────────────────────────────────────┐
+│ [header band, bg-secondary, border-b]                    │
+│   [pill]                                  [theme toggle] │
+│   Eric Le · Gothenburg, Sweden                           │
+│   I build LLM agents and developer tools                 │
+│   [body paragraph, max-w-xl]                             │
+│   [GitHub] [LinkedIn] [me@erclx.dev]                     │
+├──────────────────────────────────────────────────────────┤
+│                                                          │
+│   PROJECTS                                               │
+│   ┌──────────────────────────────────────────────────┐   │
+│   │ [project card: Stackr]                           │   │
+│   └──────────────────────────────────────────────────┘   │
+│   ┌──────────────────────────────────────────────────┐   │
+│   │ [project card: Caret]                            │   │
+│   └──────────────────────────────────────────────────┘   │
+│   Plus Toolkit, an agent-first CLI ...                   │
+│                                                          │
+├──────────────────────────────────────────────────────────┤
+│   ──────── (border-t hairline) ────────                  │
+│   © 2026 Eric Le · Gothenburg, Sweden                    │
+└──────────────────────────────────────────────────────────┘
+```
+
+## Header
+
+Appears at the top of the page on every viewport. Carries identity, status, headline, narrative, and primary contact links. Sits inside a tinted band that visually separates it from the rest of the page.
+
+### Desktop (≥768px)
+
+```plaintext
+┌─[bg-secondary]──────────────────────────────────────────────┐
+│                                                             │
+│   ● OPEN TO WORK                                    [☾]     │  ← row 1: status pill ↔ theme toggle
+│   ERIC LE · GOTHENBURG, SWEDEN                              │  ← row 2: identity meta
+│                                                             │
+│   I build LLM agents and developer tools                    │  ← display heading
+│                                                             │
+│   Applied AI engineer working in LLM applications and       │
+│   prompt engineering. Spent 1.5 years building natural      │  ← body paragraph, max-w-xl
+│   language data agents at Volvo ...                         │
+│                                                             │
+│   GitHub    LinkedIn    me@erclx.dev                        │  ← contact links row
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Narrow (≤320px)
+
+```plaintext
+┌─[bg-secondary]───────────────────┐
+│                                  │
+│   ● OPEN TO WORK          [☾]    │
+│   ERIC LE · GOTHENBURG,          │  ← identity wraps to two lines
+│   SWEDEN                         │
+│                                  │
+│   I build LLM agents and         │
+│   developer tools                │
+│                                  │
+│   [body paragraph wraps]         │
+│                                  │
+│   GitHub    LinkedIn             │
+│   me@erclx.dev                   │
+│                                  │
+└──────────────────────────────────┘
 ```
 
 ### Behavior
 
-- bullet
-- bullet
+- Status pill and theme toggle anchor opposite ends of the same row. Toggle stays inside the header column rather than fixed to the viewport.
+- Identity meta line sits directly under the status pill, tightly spaced, so the two read as one block of meta information.
+- Body paragraph caps at `max-w-xl` so line length stays readable on wide viewports while the band itself runs full width.
+- Contact links wrap to a new row when the viewport cannot hold all three on one line. Links are same-tab.
+
+## Projects
+
+Appears below the header. Lists shipped tools as cards stacked in a single column. The page intentionally keeps to one reading axis, so the layout never branches into a grid.
+
+```plaintext
+┌──────────────────────────────────────────────────────────┐
+│   PROJECTS                                               │  ← section label, uppercase
+│                                                          │
+│   ┌──────────────────────────────────────────────────┐   │
+│   │ Stackr                                           │   │  ← display heading
+│   │                                                  │   │
+│   │ VS Code extension for multi-file LLM context     │   │  ← description body
+│   │ preparation. 1,000+ downloads on Open VSX ...    │   │
+│   │                                                  │   │
+│   │ VS Code Marketplace   Open VSX   GitHub          │   │  ← link row, wraps when needed
+│   └──────────────────────────────────────────────────┘   │
+│                                                          │
+│   ┌──────────────────────────────────────────────────┐   │
+│   │ Caret                                            │   │
+│   │ ...                                              │   │
+│   │ Chrome Web Store   GitHub                        │   │
+│   └──────────────────────────────────────────────────┘   │
+│                                                          │
+│   Plus Toolkit, an agent-first CLI that installs and     │  ← inline link to Toolkit
+│   syncs governance, skills, and standards across         │
+│   projects.                                              │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+### Behavior
+
+- Cards stack in document order. No filtering, no sorting, no interactivity beyond the link clicks.
+- Card link rows wrap when the viewport cannot hold every link on one line. Wrap is expected at 320px on cards with three or more links.
+- The trailing "Plus Toolkit" paragraph is a deliberate downgrade for the third project: the strategy is one inline mention rather than a third card.
+
+## Footer
+
+Appears at the bottom of the page. Carries a downloadable résumé link plus a copyright line. Contact links live in the header so the footer does not duplicate them. Separated from the projects section by a hairline `border-t`.
+
+### Desktop (≥768px)
+
+```plaintext
+┌──────────────────────────────────────────────────────────┐
+│   ─────────────────────────────────────────────────────  │  ← border-t
+│                                                          │
+│   Résumé (PDF)                © 2026 Eric Le · ...       │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+### Narrow (≤320px)
+
+```plaintext
+┌──────────────────────────────────┐
+│   ──────────────────────────     │
+│                                  │
+│   Résumé (PDF)                   │
+│   © 2026 Eric Le · Gothenburg,   │
+│   Sweden                         │
+│                                  │
+└──────────────────────────────────┘
+```
+
+### Behavior
+
+- Layout switches from row to column under `md`. On narrow viewports the link sits above the copyright with comfortable spacing between.
+- Résumé link opens in a new tab so the landing page stays in the originating tab while the PDF reads in another.
+- Year derives from the current build time. Copyright text matches the header identity meta verbatim.
+
+## Theme toggle
+
+Appears in the top-right of the header content column, anchored to the same row as the status pill. Single button that toggles `dark` on `documentElement` and persists the preference to `localStorage`.
+
+```plaintext
+[☾] light mode      [☼] dark mode
+```
+
+### Behavior
+
+- Initial render reflects the resolved theme from the inline script in the layout, with no flash of the wrong scheme.
+- Click swaps the theme synchronously and writes the new value to storage.
+- Toggle scrolls with the page rather than staying fixed. Acceptable on a one-screen landing.

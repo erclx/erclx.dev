@@ -7,6 +7,39 @@ description: Local dev workflow, scripts, and husky hooks
 
 Local dev workflow for this project.
 
+## Project layout
+
+```plaintext
+src/
+├── pages/
+│   └── index.astro      ← single page, composes layout and sections
+├── layouts/
+│   └── base.astro       ← html shell, font preload, first-paint theme script
+├── components/
+│   ├── site/            ← landing-page sections and primitives
+│   └── ui/              ← shadcn primitives, owned by this repo
+├── lib/
+│   └── utils.ts         ← cn() and shared helpers
+├── styles/
+│   └── global.css       ← tailwind entry, theme tokens, base layer
+└── test/
+    └── setup.ts         ← jsdom + RTL cleanup for vitest
+
+e2e/
+├── home.spec.ts         ← playwright smoke for the apex
+└── screenshot.ts        ← node script, desktop + mobile + 320 narrow per route
+
+public/
+└── resume.pdf           ← downloadable résumé, served at /resume.pdf
+
+vitest.config.ts         ← jsdom + globals + coverage v8
+playwright.config.ts     ← chromium + firefox + webkit, webServer auto-starts preview
+tsconfig.e2e.json        ← e2e-only tsconfig with @playwright/test + node types
+.mcp.json                ← Playwright MCP server registration
+```
+
+For the rationale behind these choices (Astro over Next, shadcn install path, font preload, theme toggle as static Astro), see `.claude/ARCHITECTURE.md` § Key technical decisions.
+
 ## Setup
 
 - Install [Bun](https://bun.sh): `curl -fsSL https://bun.sh/install | bash`

@@ -9,7 +9,7 @@ if curl -sSf "http://localhost:$PREVIEW_PORT/" >/dev/null 2>&1; then
 fi
 
 bun run build
-bun run preview >/dev/null 2>&1 &
+bun run preview -- --port "$PREVIEW_PORT" >/dev/null 2>&1 &
 PREVIEW_PID=$!
 trap 'kill "$PREVIEW_PID" 2>/dev/null; wait "$PREVIEW_PID" 2>/dev/null || true' EXIT
 

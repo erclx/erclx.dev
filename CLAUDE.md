@@ -28,6 +28,22 @@
 
 - Run `bun run check` before committing. Full script reference in `docs/development.md`.
 
+## Local development
+
+- Keep `bun run dev` running in the background on port 4321 during landing-page sessions so visual changes are immediately visible at http://localhost:4321.
+- Screenshots run through `bun run screenshot` and bind a separate preview server on port 4173 (`PREVIEW_PORT=4173 bash scripts/screenshot.sh`) so they do not collide with the dev server.
+- Outputs land in `screenshots/` (gitignored). Read them with the Read tool to verify changes. Both states render: light by default and dark via `emulateMedia`.
+
+## UI conventions
+
+- Outbound links default to same-tab. Use `target="_blank" rel="noopener"` only when the link opens a long-form resource the visitor likely wants to keep open while the page stays in another tab (resume PDFs, long-form articles).
+- After editing any file under `src/components/`, `src/layouts/`, `src/pages/`, or `src/styles/global.css`, re-run `bun run screenshot` and verify the diff before reporting work as done.
+
+## Playwright MCP
+
+- The Playwright MCP server is configured in `.mcp.json` and runs via `bunx @playwright/mcp@latest`. Use it when verification needs interaction (hover states, responsive viewports, link clicks, computed-style inspection) rather than a static screenshot diff.
+- Reach for screenshots when checking pure layout or content-vs-canonical-source. Reach for Playwright MCP when checking behavior, accessibility, or anything that requires the page to react to input.
+
 ## Key paths
 
 - `src/`: [description]
@@ -71,5 +87,5 @@
 
 ## Worktrees
 
-- Shared session scratch (`.claude/plans/`, `.claude/review/`, `.claude/memory/`) lives at the main worktree root, not inside a linked worktree. From a linked worktree, resolve these paths against the main root via `git worktree list --porcelain | awk '/^worktree /{print $2; exit}'`. Fall back to `pwd` if not a git repo.
+- Shared session scratch (`.claude/plans/`, `.claude/review/`, `.claude/memory/`) lives at the main worktree root, not inside a linked worktree. From a linked worktree, resolve these paths against the main root via `git worktree list --porcelain | awk '/^worktree /{print $2}' | head -1`. Fall back to `pwd` if not a git repo.
 - From a linked worktree, every `Edit` or `Write` to a tracked file (source, docs, `TASKS.md`) must use a path starting with `pwd`. Only untracked scratch (`.claude/plans/`, `.claude/review/`, `.claude/memory/`) resolves to the main worktree root.

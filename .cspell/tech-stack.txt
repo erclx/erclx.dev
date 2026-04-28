@@ -12,6 +12,8 @@ esac
 esbenp
 evenodd
 fontsource
+FOUT
+Fraunces
 frontmatter
 iconify
 jsdom
@@ -20,12 +22,14 @@ labelledby
 linecap
 linejoin
 lintstagedrc
+Mcpjson
 mkhl
 networkidle
 njsproj
 noopener
 noreferrer
 ntvs
+oklch
 parallelizable
 pipefail
 scannability
@@ -38,7 +42,9 @@ sonner
 subfolders
 tabindex
 timonwong
+viewports
 vitest
+wght
 wireframe
 wireframes
 worktree

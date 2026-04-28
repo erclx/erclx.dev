@@ -1,79 +1,56 @@
-# Design
-
-Capture visual intent and the decisions behind it: the why behind how things look. Not a style guide, component spec, or framework reference. Update this doc when a visual decision is made or a rule changes.
-
-What belongs:
-
-- Tokens described as intent ("mid gray, muted text"), not computed values. Exact values live in code.
-- Layout constraints and sizing rules not obvious from wireframes
-- Visual rules a developer could get wrong without guidance
-- Non-obvious omissions ("no motion", "no custom icons") that prevent scope creep
-
-What does not belong:
-
-- CSS classes, computed values, component filenames, and prop names. Those live in code.
-- UX copy and interaction flows, which live in WIREFRAMES.md
-- Anything that requires updating every time the code is refactored
-
-Use tables for token systems, one row per token. Use short bullets for component rules, one decision per line. Plain English over technical notation. If a section could be removed and the developer would still build it correctly from wireframes and code alone, remove it.
-
-The `aitk design render` command reads the tables below and writes an HTML plus CSS preview to `.claude/review/design/`. Keep table headers and role names intact so the parser can find them.
+# Design — Editorial minimal
 
 ## Personality
 
-One paragraph. Voice, tone, and the feeling a user should have. The same content a design intake form asks for.
+Quiet senior-IC confidence. The page reads like a thoughtful long-form essay — restraint over flourish, generous whitespace, one accent color used sparingly. A visitor should feel they have arrived at the home of someone who has been doing this for a while and does not need to shout about it. Serif display headings give it weight without nostalgia.
 
 ## Color
 
-One row per role. Intent is a short phrase a human can picture. Value is a hex or a named system token.
-
-| Role       | Intent                        | Value |
-| ---------- | ----------------------------- | ----- |
-| background | page canvas                   |       |
-| surface    | cards, panels, raised blocks  |       |
-| text       | primary body text             |       |
-| muted      | secondary text, captions      |       |
-| accent     | links, primary action         |       |
-| success    | confirmations, positive state |       |
-| warning    | cautions, pending state       |       |
-| error      | failures, destructive action  |       |
+| Role       | Intent                       | Value   |
+| ---------- | ---------------------------- | ------- |
+| background | warm off-white page canvas   | #FAFAF7 |
+| surface    | clean white cards and panels | #FFFFFF |
+| text       | near-black primary body      | #18181B |
+| muted      | secondary text and captions  | #71717A |
+| accent     | deep blue link and action    | #1E40AF |
+| success    | restrained forest green      | #15803D |
+| warning    | muted amber caution          | #B45309 |
+| error      | dark red failure state       | #B91C1C |
 
 ## Typography
 
-One row per role. Size and line height in pixels or rem. Family names use their product casing.
-
-| Role    | Family | Weight | Size | Line height |
-| ------- | ------ | ------ | ---- | ----------- |
-| display |        |        |      |             |
-| heading |        |        |      |             |
-| body    |        |        |      |             |
-| label   |        |        |      |             |
-| code    |        |        |      |             |
+| Role    | Family         | Weight | Size | Line height |
+| ------- | -------------- | ------ | ---- | ----------- |
+| display | Fraunces       | 600    | 56px | 64px        |
+| heading | Fraunces       | 600    | 28px | 36px        |
+| body    | Inter          | 400    | 17px | 28px        |
+| label   | Inter          | 500    | 14px | 20px        |
+| code    | JetBrains Mono | 400    | 14px | 22px        |
 
 ## Spacing
 
-Base unit and scale. The renderer draws a swatch per step.
+| Step | Multiplier | Value | Tailwind step |
+| ---- | ---------- | ----- | ------------- |
+| xs   | 0.5        | 4px   | `1`           |
+| sm   | 1          | 8px   | `2`           |
+| md   | 2          | 16px  | `4`           |
+| lg   | 3          | 24px  | `6`           |
+| xl   | 5          | 40px  | `10`          |
 
-| Step | Multiplier | Value |
-| ---- | ---------- | ----- |
-| xs   | 0.5        |       |
-| sm   | 1          |       |
-| md   | 2          |       |
-| lg   | 3          |       |
-| xl   | 5          |       |
+Use only the `1 / 2 / 4 / 6 / 10` Tailwind steps for micro-spacing inside a section: paddings, gaps, and margins between adjacent elements. The steps `3`, `5`, `7`, `8`, and `9` produce off-scale values that read as arbitrary, so avoid them. Section-level vertical rhythm uses `16` and `20` (md:) for normal sections, plus `24` and `32` for the hero. Those larger values compose with the scale without inventing intermediate steps.
 
 ## Borders
 
 | Role    | Radius | Width | When used             |
 | ------- | ------ | ----- | --------------------- |
-| default |        |       | cards, inputs         |
-| pill    |        |       | tags, status chips    |
+| default | 8px    | 1px   | cards, inputs         |
+| pill    | 999px  | 0     | tags, status chips    |
 | none    | 0      | 0     | edge-to-edge surfaces |
 
 ## Motion
 
-One line. State whether motion is used at all, and if so, the default duration and easing.
+Minimal. 150ms ease-out for hover and focus state changes only. No layout animation, no scroll effects.
 
 ## Iconography
 
-One line. Style (outline, filled, duotone), source library, and whether custom icons are allowed.
+Lucide outline icons at 1.5px stroke. No custom icons. Accent color reserved for the rare interactive icon.
