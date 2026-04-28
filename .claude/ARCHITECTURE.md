@@ -4,33 +4,7 @@
 
 Static Astro site that renders one page at the erclx.dev apex. The build emits HTML, CSS, and a small JS bundle for any interactive islands. Content is authored once in the parent career repo and flows here through a sync queue.
 
-## Structure
-
-```plaintext
-src/
-├── pages/
-│   └── index.astro      ← single page, composes layout and sections
-├── layouts/
-│   └── base.astro       ← html shell, font preload, first-paint theme script
-├── components/
-│   ├── site/            ← landing-page sections and primitives
-│   └── ui/              ← shadcn primitives, owned by this repo
-├── lib/
-│   └── utils.ts         ← cn() and shared helpers
-├── styles/
-│   └── global.css       ← tailwind entry, theme tokens, base layer
-└── test/
-    └── setup.ts         ← jsdom + RTL cleanup for vitest
-
-e2e/
-├── landing.spec.ts      ← playwright smoke for the apex
-└── screenshot.ts        ← node script, desktop + mobile, light + dark per route
-
-vitest.config.ts         ← jsdom + globals + coverage v8
-playwright.config.ts     ← chromium + firefox + webkit, webServer auto-starts preview
-tsconfig.e2e.json        ← e2e-only tsconfig with @playwright/test + node types
-.mcp.json                ← Playwright MCP server registration
-```
+For the source layout, test layout, and config-file inventory, see `docs/development.md` § Project layout.
 
 ## Key technical decisions
 
