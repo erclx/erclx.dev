@@ -55,6 +55,7 @@
 
 - Content on the landing page is downstream of the career repo. Pending updates arrive as entries in `.claude/SYNC-QUEUE.md`.
 - On sync or landing-page work, read `.claude/SYNC-QUEUE.md` for the protocol and the queue
+- At the start of any landing-page work session, check `.claude/SYNC-QUEUE.md` for pending entries and offer to drain them before starting new work
 - Never read career files for content once v1 has shipped. Use queue entries only.
 
 ## Spelling
