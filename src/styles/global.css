@@ -150,3 +150,19 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-js='true'] [data-fade] {
+      opacity: 0;
+      transform: translateY(1rem);
+      transition:
+        opacity 700ms ease-out,
+        transform 700ms ease-out;
+    }
+    [data-js='true'] [data-fade][data-visible='true'] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

@@ -26,6 +26,7 @@ for (const route of ROUTES) {
   for (const state of STATES) {
     const ctx = await browser.newContext({
       viewport: { width: route.width, height: route.height },
+      reducedMotion: 'reduce',
     })
     const page = await ctx.newPage()
 

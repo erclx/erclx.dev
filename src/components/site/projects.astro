@@ -1,11 +1,18 @@
 ---
 import ProjectCard from '@/components/site/project-card.astro'
+import stackrLight from '@/assets/projects/stackr-light.png'
+import stackrDark from '@/assets/projects/stackr-dark.png'
+import caretLight from '@/assets/projects/caret-light.png'
+import caretDark from '@/assets/projects/caret-dark.png'
 
 const projects = [
   {
     name: 'Stackr',
     description:
       'VS Code extension for multi-file LLM context preparation. 1,000+ downloads on Open VSX. Drag-and-drop file staging, live token counting, pinned files that survive session restarts.',
+    imageLight: stackrLight,
+    imageDark: stackrDark,
+    imageAlt: 'Stackr — context management for AI chat',
     links: [
       {
         label: 'VS Code Marketplace',
@@ -22,6 +29,9 @@ const projects = [
     name: 'Caret',
     description:
       'Chrome extension for saving and invoking prompts in Claude, Gemini, and ChatGPT. Trigger-symbol search and keyboard-driven injection from a command-palette dropdown anchored on the chat input.',
+    imageLight: caretLight,
+    imageDark: caretDark,
+    imageAlt: 'Caret — prompt library for AI chat',
     links: [
       {
         label: 'Chrome Web Store',
@@ -34,22 +44,25 @@ const projects = [
 ---
 
 <section class="px-6 py-16 md:py-20">
-  <div class="mx-auto max-w-2xl">
+  <div class="mx-auto max-w-2xl lg:max-w-5xl">
     <h2 class="text-muted-foreground text-label tracking-wide uppercase">
       Projects
     </h2>
-    <div class="mt-6 grid gap-6">
+    <div class="mt-6 grid gap-6 lg:grid-cols-2">
       {
         projects.map((project) => (
           <ProjectCard
             name={project.name}
             description={project.description}
+            imageLight={project.imageLight}
+            imageDark={project.imageDark}
+            imageAlt={project.imageAlt}
             links={project.links}
           />
         ))
       }
     </div>
-    <p class="text-muted-foreground text-body mt-6">
+    <p class="text-muted-foreground text-body mt-6 max-w-2xl">
       Plus <a
         href="https://github.com/erclx/toolkit"
         class="text-foreground hover:text-primary underline underline-offset-4"
@@ -59,3 +72,23 @@ const projects = [
     </p>
   </div>
 </section>
+
+<script>
+  const targets = document.querySelectorAll<HTMLElement>('[data-fade]')
+  if (targets.length > 0 && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.setAttribute('data-visible', 'true')
+            observer.unobserve(entry.target)
+          }
+        }
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
+    )
+    for (const target of targets) {
+      observer.observe(target)
+    }
+  }
+</script>
