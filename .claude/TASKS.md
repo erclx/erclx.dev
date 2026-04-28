@@ -46,7 +46,7 @@ Plan: .claude/plans/feature-landing-v1.md
 - [x] Visitors land on erclx.dev and see identity, role, headline, and contact links above the fold
 - [x] Visitors scroll to a narrative section describing what Eric does and why
 - [x] Visitors see project cards for Stackr, Caret, and Toolkit with concise descriptions
-- [ ] Visitors find identity links and a downloadable resume in the footer
+- [x] Visitors find identity links and a downloadable resume in the footer
 - [x] Page title and meta description reflect the site, not the Astro scaffold default
 - [x] README explains what the repo is and how to run it locally
 

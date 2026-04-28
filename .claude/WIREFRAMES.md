@@ -119,20 +119,36 @@ Appears below the header. Lists shipped tools as cards stacked in a single colum
 
 ## Footer
 
-Appears at the bottom of the page. Carries the copyright line only. Contact links live in the header so the footer does not duplicate them. A resume PDF link is queued for this slot once the PDF ships. Separated from the projects section by a hairline `border-t`.
+Appears at the bottom of the page. Carries a downloadable résumé link plus a copyright line. Contact links live in the header so the footer does not duplicate them. Separated from the projects section by a hairline `border-t`.
+
+### Desktop (≥768px)
 
 ```plaintext
 ┌──────────────────────────────────────────────────────────┐
 │   ─────────────────────────────────────────────────────  │  ← border-t
 │                                                          │
-│   © 2026 Eric Le · Gothenburg, Sweden                    │
+│   Résumé (PDF)                © 2026 Eric Le · ...       │
 │                                                          │
 └──────────────────────────────────────────────────────────┘
 ```
 
+### Narrow (≤320px)
+
+```plaintext
+┌──────────────────────────────────┐
+│   ──────────────────────────     │
+│                                  │
+│   Résumé (PDF)                   │
+│   © 2026 Eric Le · Gothenburg,   │
+│   Sweden                         │
+│                                  │
+└──────────────────────────────────┘
+```
+
 ### Behavior
 
-- Single text row, left-aligned to match the body rhythm at every viewport.
+- Layout switches from row to column under `md`. On narrow viewports the link sits above the copyright with comfortable spacing between.
+- Résumé link opens in a new tab so the landing page stays in the originating tab while the PDF reads in another.
 - Year derives from the current build time. Copyright text matches the header identity meta verbatim.
 
 ## Theme toggle

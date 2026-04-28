@@ -74,8 +74,11 @@ Geist is removed. Replaced by Fraunces variable for display and headings, Inter 
 
 `.mcp.json` registers `@playwright/mcp@latest`. Reach for it when verification needs hover, click, viewport changes, or computed-style inspection. Use the static `bun run screenshot` capture for layout review and content-vs-canonical-source diffing.
 
+### Resume PDF served from `public/`
+
+The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source remains `assets/resumes/eric-le-resume.pdf` in the parent career repo. Updates land here as a binary copy via the sync queue rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
-- Resume PDF hosting: serve from `public/` or link to the canonical Github copy. Footer link blocked on this decision.
 - Apex HTTPS and `www` redirect depend on a deploy target choice, tracked in `TASKS.md`.
