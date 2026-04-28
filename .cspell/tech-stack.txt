@@ -29,6 +29,7 @@ njsproj
 noopener
 noreferrer
 ntvs
+oklch
 parallelizable
 pipefail
 scannability
