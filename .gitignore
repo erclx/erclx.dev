@@ -26,6 +26,7 @@ node_modules/
 .claude/review/
 .claude/worktrees/
 .claude/SYNC-QUEUE.md
+.claude/TASKS.md
 
 # Tests
 coverage/
