@@ -1,11 +1,4 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(bun run check:spell)",
-      "Bash(bun run check:format)",
-      "Bash(bun run check:shell)"
-    ]
-  },
   "hooks": {
     "PostToolUse": [
       {
