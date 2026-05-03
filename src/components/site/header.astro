@@ -9,10 +9,10 @@ const links = [
 ---
 
 <header
-  class="bg-secondary border-border border-b px-6 pt-20 pb-16 md:pt-32 md:pb-20"
+  class="bg-secondary flex rounded-b-3xl px-6 pt-20 pb-16 md:min-h-[80vh] md:items-center md:pt-32 md:pb-20"
 >
-  <div class="mx-auto max-w-2xl">
-    <div class="flex items-start justify-between gap-4">
+  <div class="mx-auto w-full max-w-2xl">
+    <div data-fade class="flex items-start justify-between gap-4">
       <span
         class="text-muted-foreground text-label inline-flex items-center gap-2 tracking-wide uppercase"
       >
@@ -23,22 +23,25 @@ const links = [
       </span>
       <ThemeToggle />
     </div>
-    <p
-      class="text-muted-foreground text-label mt-2 tracking-wide uppercase"
-    >
-      Eric Le · Gothenburg, Sweden
-    </p>
-    <h1 class="font-display text-display text-foreground mt-6">
-      I build LLM agents and developer tools
-    </h1>
-    <p class="text-muted-foreground text-body mt-6 max-w-xl">
-      Applied AI engineer working in LLM applications and prompt engineering.
-      Spent 1.5 years building natural language data agents at Volvo across
-      three engagements, with a second team picking up the work for the final
-      contract. Published two developer tools: a VS Code extension and a
-      Chrome extension.
-    </p>
-    <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-2">
+    <div data-fade style="--fade-delay: 150ms">
+      <p
+        class="text-muted-foreground text-label mt-2 tracking-wide uppercase"
+      >
+        Eric Le · Gothenburg, Sweden
+      </p>
+      <h1 class="font-display text-display text-foreground mt-6">
+        I build LLM applications and developer tools.
+      </h1>
+    </div>
+    <div data-fade style="--fade-delay: 300ms">
+      <p class="text-muted-foreground text-body mt-6 max-w-xl">
+        Applied AI engineer working in LLM applications and prompt engineering.
+        Spent 1.5 years building natural language data agents at Volvo across
+        three engagements, with a second team picking up the work for the
+        final contract. Published two developer tools: a VS Code extension and
+        a Chrome extension.
+      </p>
+      <ul class="mt-10 flex flex-wrap gap-x-6 gap-y-2">
       {
         links.map((link) => (
           <li>
@@ -51,6 +54,7 @@ const links = [
           </li>
         ))
       }
-    </ul>
+      </ul>
+    </div>
   </div>
 </header>

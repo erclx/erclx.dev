@@ -1,8 +1,8 @@
-# Design — Editorial minimal
+# Design: editorial minimal
 
 ## Personality
 
-Quiet senior-IC confidence. The page reads like a thoughtful long-form essay — restraint over flourish, generous whitespace, one accent color used sparingly. A visitor should feel they have arrived at the home of someone who has been doing this for a while and does not need to shout about it. Serif display headings give it weight without nostalgia.
+Quiet senior-IC confidence. The page reads like a thoughtful long-form essay. Restraint over flourish, generous whitespace, one accent color used sparingly. A visitor should feel they have arrived at the home of someone who has been doing this for a while and does not need to shout about it. Serif display headings give it weight without nostalgia.
 
 ## Color
 
@@ -49,7 +49,7 @@ Use only the `1 / 2 / 4 / 6 / 10` Tailwind steps for micro-spacing inside a sect
 
 ## Motion
 
-Minimal. 150ms ease-out for hover and focus state changes only. No layout animation, no scroll effects.
+Minimal. 150ms ease-out for hover and focus state changes. A single 700ms fade-and-rise pattern is permitted on entry into the viewport, gated on `[data-js='true']` and `prefers-reduced-motion: no-preference` so the no-JS and reduced-motion experience stays static. No other layout or scroll-driven animation.
 
 ## Iconography
 
