@@ -5,7 +5,7 @@ import path from 'path'
 
 export default defineConfig({
   integrations: [react()],
-  site: process.env.ASTRO_SITE,
+  site: 'https://erclx.dev',
   vite: {
     plugins: [tailwindcss()],
     resolve: {
