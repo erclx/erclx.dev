@@ -14,14 +14,25 @@ interface Props {
   imageDark?: ImageMetadata
   imageAlt?: string
   links: ProjectLink[]
+  index?: number
 }
 
-const { name, description, imageLight, imageDark, imageAlt, links } =
-  Astro.props
+const {
+  name,
+  description,
+  imageLight,
+  imageDark,
+  imageAlt,
+  links,
+  index = 0,
+} = Astro.props
+
+const fadeDelay = `${index * 200}ms`
 ---
 
 <article
   data-fade
+  style={`--fade-delay: ${fadeDelay}`}
   class="border-border hover:border-foreground/30 bg-card overflow-hidden rounded-lg border transition-colors duration-200"
 >
   {

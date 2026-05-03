@@ -159,6 +159,7 @@
       transition:
         opacity 700ms ease-out,
         transform 700ms ease-out;
+      transition-delay: var(--fade-delay, 0ms);
     }
     [data-js='true'] [data-fade][data-visible='true'] {
       opacity: 1;
