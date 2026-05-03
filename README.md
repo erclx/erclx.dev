@@ -39,3 +39,7 @@ See `.claude/ARCHITECTURE.md` for the file tree and key technical decisions, and
 ## Content
 
 Page copy is canonical in the parent career repo. After v1 ships, content updates land via `.claude/SYNC-QUEUE.md`. Do not author copy in this repo.
+
+## Deployment
+
+Hosted on Cloudflare Pages at https://erclx.dev. Every push to `main` runs the verify pipeline and, on green, publishes to Cloudflare via `cloudflare/wrangler-action`. The apex and `www` both resolve to the `erclx-dev` Pages project. A Cloudflare Redirect Rule sends `www.erclx.dev` traffic to the apex.

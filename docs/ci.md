@@ -9,12 +9,13 @@ GitHub Actions workflow for this project.
 
 ## Triggers
 
-- Pull requests targeting `main`
+- Pull requests targeting `main` (verify only)
+- Push to `main` (verify, then deploy on green)
 - `workflow_dispatch` (manual run from the Actions tab)
 
 ## Checks
 
-Defined in `.github/workflows/verify.yml`. All jobs must pass before merge.
+Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merge. The `deploy` job runs only on `push: main` and gates on the four verify jobs.
 
 | Check     | Command                 | What it asserts                             |
 | --------- | ----------------------- | ------------------------------------------- |
@@ -26,6 +27,9 @@ Defined in `.github/workflows/verify.yml`. All jobs must pass before merge.
 | Tests     | `bun run test:coverage` | Vitest passes with coverage thresholds      |
 | Build     | `bun run build`         | `astro build` succeeds                      |
 | E2E       | `bun run test:e2e`      | Playwright passes against the built preview |
+| Deploy    | `wrangler pages deploy` | Uploads `./dist/` to Cloudflare Pages       |
+
+For the deploy mechanism, custom domain wiring, and secrets, see `docs/deployment.md`.
 
 ## Runtime
 
