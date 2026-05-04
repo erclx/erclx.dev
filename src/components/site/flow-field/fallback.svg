@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.08">
+    <path d="M40 120 Q160 90 280 130 T520 160 T780 130 T1040 170 T1180 140" />
+    <path d="M20 220 Q200 200 360 240 T620 270 T860 230 T1100 260 T1180 240" />
+    <path d="M60 320 Q220 290 400 340 T680 360 T940 330 T1180 350" />
+    <path d="M0 420 Q180 400 340 430 T600 460 T880 420 T1120 450 T1200 430" />
+    <path d="M40 520 Q220 510 420 540 T700 560 T960 520 T1200 540" />
+    <path d="M20 620 Q200 600 380 630 T660 650 T920 620 T1180 640" />
+    <path d="M60 720 Q240 700 440 730 T720 740 T1000 700 T1200 730" />
+    <path d="M120 60 Q140 200 130 340 T160 600 T140 760" />
+    <path d="M340 40 Q360 180 350 320 T380 580 T360 760" />
+    <path d="M580 40 Q600 200 590 360 T620 620 T600 770" />
+    <path d="M820 40 Q840 200 830 360 T860 620 T840 770" />
+    <path d="M1060 40 Q1080 200 1070 360 T1100 620 T1080 770" />
+  </g>
+</svg>
