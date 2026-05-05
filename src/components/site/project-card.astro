@@ -13,6 +13,7 @@ interface Props {
   poster?: ImageMetadata
   videoSrc?: string
   mediaAlt?: string
+  mediaPosition?: string
   links: ProjectLink[]
   index?: number
 }
@@ -23,6 +24,7 @@ const {
   poster,
   videoSrc,
   mediaAlt,
+  mediaPosition = 'top',
   links,
   index = 0,
 } = Astro.props
@@ -46,7 +48,8 @@ const fadeDelay = `${index * 200}ms`
           <Image
             src={poster}
             alt={mediaAlt}
-            class="absolute inset-0 size-full object-cover object-top"
+            style={`object-position: ${mediaPosition}`}
+            class="absolute inset-0 size-full object-cover"
             data-media-poster
           />
           <video
@@ -57,7 +60,8 @@ const fadeDelay = `${index * 200}ms`
             playsinline
             preload="none"
             aria-hidden="true"
-            class="absolute inset-0 size-full object-cover object-top opacity-0 transition-opacity duration-200 group-hover/card:opacity-100"
+            style={`object-position: ${mediaPosition}`}
+            class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-200 group-hover/card:opacity-100"
             data-media-video
           />
         </div>
