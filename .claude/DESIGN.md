@@ -76,6 +76,10 @@ A vanilla TypeScript particle flow-field renders behind the hero header band as 
 
 A single phrase in the H1 carries a `rough-notation` underline drawn ~950ms after the H1 fade settles. Drawn once per page-load, never replayed. `rough-notation` (~9kb gz) is dynamically imported from a client `<script>` so it executes browser-only. Skipped entirely under `prefers-reduced-motion: reduce`. The annotation stroke uses `--color-foreground`. Only one phrase per page may carry an annotation. The rule is editorial restraint.
 
+### Section reveal
+
+The projects section unfurls from the bottom edge as it enters the viewport. The reveal is a `clip-path` animating from `inset(100% 0 0 0)` to `inset(0)`, scroll-tied to a named view-timeline (`view-timeline-name: --projects`) on the section element so progress tracks the scroll position rather than time. The animation range is `entry 0% cover 40%` so the section finishes revealing well before its midpoint reaches the viewport center. Bound natively via `animation-timeline: view()` with no library and no JS. Browsers without scroll-driven animation support (notably Safari) hit the `@supports not (animation-timeline: view())` branch and render the section statically with `clip-path: inset(0)`. The same static reveal applies under `prefers-reduced-motion: reduce`. Only one section on the page carries this treatment so the reveal stays a deliberate gesture, not a pattern.
+
 ## Iconography
 
 Lucide outline icons at 1.5px stroke. No custom icons. Accent color reserved for the rare interactive icon.
