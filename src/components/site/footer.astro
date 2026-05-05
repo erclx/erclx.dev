@@ -22,9 +22,7 @@ const year = new Date().getFullYear()
       >
       </div>
     </div>
-    <div
-      class="mt-8 flex flex-col gap-4 md:mt-10 md:flex-row md:items-center md:justify-between"
-    >
+    <div class="mt-8 md:mt-10">
       <a
         href="/resume.pdf"
         target="_blank"
@@ -33,10 +31,12 @@ const year = new Date().getFullYear()
       >
         Résumé
       </a>
-      <p class="text-muted-foreground text-label font-normal italic">
-        Set in Fraunces and Inter · Gothenburg, {year}
-      </p>
     </div>
+    <p
+      class="font-display text-muted-foreground text-label mt-6 font-normal md:mt-10"
+    >
+      Set in Fraunces and Inter · Gothenburg, {year}
+    </p>
   </div>
 </footer>
 
