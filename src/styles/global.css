@@ -165,6 +165,18 @@
       opacity: 1;
       transform: none;
     }
+
+    @keyframes signature-wipe {
+      from {
+        clip-path: inset(0 100% 0 0);
+      }
+      to {
+        clip-path: inset(0);
+      }
+    }
+    [data-js='true'] [data-signature][data-revealed='true'] {
+      animation: signature-wipe 1200ms ease-out both;
+    }
   }
 
   [data-scroll-reveal] {

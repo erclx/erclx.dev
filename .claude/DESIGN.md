@@ -27,13 +27,17 @@ Quiet senior-IC confidence. The page reads like a thoughtful long-form essay. Re
 | label   | Inter          | 500    | 14px | 20px        |
 | code    | JetBrains Mono | 400    | 14px | 22px        |
 
-### Promoted section heading
+### Page hierarchy
 
-Section H2s use the `display` role rather than the `label` uppercase eyebrow when the section is meant to read as a magazine chapter break. Same family, weight, and size as the page H1. One promoted section heading per page so the hero remains the dominant rendering. The `Projects` H2 is the only promoted heading today.
+Three Fraunces serif elements anchor the page from top to bottom: the hero H1, the `Projects` H2, and the footer masthead. They render at distinct sizes so the eye reads them as a hierarchy, not three competing focal points. Hero H1 stays at `text-display`. Projects H2 sits one step smaller at `text-[2.25rem] md:text-[2.75rem]`. Footer masthead at `clamp(2rem, 4vw + 1rem, 3rem)`, slightly under the hero so the page closes without competing with the opener.
 
 ### Editorial numerals
 
-Each project card carries a Fraunces 600 numeral (`01`, `02`) absolutely positioned per card, set in `--color-foreground` and dimmed via alpha so it reads as ambient typography rather than a label. At `lg`+ the numeral hangs in the side margin of the card (left of the first column, right of the second) at 0.15 alpha and ~8rem. Below `lg` the grid collapses to one column and the numeral sits behind the card content at 0.05 alpha and ~5rem. The element is `aria-hidden`, `pointer-events-none`, and `select-none` so it never disrupts reading order or interaction.
+Each project card carries a Fraunces 600 numeral (`01`, `02`) absolutely positioned per card, set in `--color-foreground` and dimmed via alpha so it reads as ambient typography rather than a label. At `lg`+ the numeral hangs in the side margin of the card (left of the first column, right of the second) at 0.40 alpha, ~8rem, and a 3rem outdent so the visible margin portion has weight without becoming a label. Below `lg` the grid collapses to one column and the numeral sits behind the card content at 0.15 alpha and ~5rem. The element is `aria-hidden`, `pointer-events-none`, and `select-none` so it never disrupts reading order or interaction.
+
+### Footer masthead
+
+The footer opens with a Fraunces 600 `Eric Le` mark sized via `clamp(2rem, 4vw + 1rem, 3rem)` so it scales smoothly down to 320px without overflowing. The Résumé link and copyright drop below the mark as small meta in the existing `text-label` rendering. Sized one step under the hero H1 so the footer reads as a closing statement, not a second title.
 
 ## Spacing
 
@@ -87,6 +91,10 @@ A single phrase in the H1 carries a `rough-notation` underline drawn ~950ms afte
 ### Section reveal
 
 The projects section unfurls from the bottom edge as it enters the viewport. The reveal is a `clip-path` animating from `inset(100% 0 0 0)` to `inset(0)`, scroll-tied to a named view-timeline (`view-timeline-name: --projects`) on the section element so progress tracks the scroll position rather than time. The animation range is `entry 0% cover 40%` so the section finishes revealing well before its midpoint reaches the viewport center. Bound natively via `animation-timeline: view()` with no library and no JS. Browsers without scroll-driven animation support (notably Safari) hit the `@supports not (animation-timeline: view())` branch and render the section statically with `clip-path: inset(0)`. The same static reveal applies under `prefers-reduced-motion: reduce`. Only one section on the page carries this treatment so the reveal stays a deliberate gesture, not a pattern.
+
+### Signature wipe
+
+The footer signature is an inlined SVG of filled paths sized to ~6rem wide via an explicit aspect-ratio wrapper, rendered in `--color-foreground`. The signature is fully visible by default so a JS or observer failure does not hide it. On viewport entry an `IntersectionObserver` at threshold 0.1 with a -10% bottom rootMargin toggles `data-revealed='true'` once, which activates a CSS keyframe animation wiping `clip-path: inset(0 100% 0 0)` to `inset(0)` over 1200ms ease-out. The animation rule is gated on `[data-js='true']` and `prefers-reduced-motion: no-preference` so the no-JS and reduced-motion paths render statically. Filled paths from auto-vectorization preclude `stroke-dashoffset`, so the wipe substitutes for the stroke-draw effect at footer scale.
 
 ## Iconography
 

@@ -7,9 +7,6 @@ export async function initAnnotations(): Promise<void> {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
   const { annotate } = await import('rough-notation')
-  const foreground = getComputedStyle(document.documentElement)
-    .getPropertyValue('--foreground')
-    .trim()
 
   const observer = new IntersectionObserver(
     (entries) => {
@@ -20,7 +17,7 @@ export async function initAnnotations(): Promise<void> {
         if (type !== 'underline') continue
         const annotation = annotate(element, {
           type: 'underline',
-          color: foreground || 'currentColor',
+          color: 'currentColor',
           strokeWidth: 1.5,
           padding: 2,
           animationDuration: 600,
