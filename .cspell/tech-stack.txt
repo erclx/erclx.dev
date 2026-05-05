@@ -45,6 +45,7 @@ subfolders
 tabindex
 timonwong
 viewports
+visibilitychange
 vitest
 wght
 wireframe
