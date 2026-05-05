@@ -53,6 +53,8 @@ Use only the `1 / 2 / 4 / 6 / 10` Tailwind steps for micro-spacing inside a sect
 
 ## Motion and media
 
+Ambient and editorial motion is permitted only as named below. Each entry states scope, dependency budget, and the reduced-motion fallback. Anything not named here defaults back to the static `## Motion` rule.
+
 ### Project card media
 
 - One muted MP4 per project, dark theme only, ≤500kb, 720p, h.264 baseline. Poster is a single dark PNG extracted from the same clip.
@@ -65,6 +67,14 @@ Use only the `1 / 2 / 4 / 6 / 10` Tailwind steps for micro-spacing inside a sect
 - Cards under `[data-tilt]` rotate up to 6° toward the cursor on `pointermove`. The inner media slot translates up to 8px against the rotation for parallax depth.
 - A single `requestAnimationFrame` loop reads pointer state across all cards. Per-card values smooth via lerp at factor 0.18 so motion feels physical without CSS transitions fighting the JS update.
 - Skipped entirely under `prefers-reduced-motion: reduce`.
+
+### Hero flow field
+
+A vanilla TypeScript particle flow-field renders behind the hero header band as the page's signature. Particles drift along a 2D simplex noise field at ~200 active particles, with cursor proximity adding a falloff-weighted attractive force. Color tracks `--color-foreground` at 0.2 alpha so the field reads quietly on either theme. The canvas is `pointer-events: none`, clipped to the rounded header band, paused on `visibilitychange`, and degrades to half particle count and 30fps when the rolling 2-second average drops below 50fps. Mounted via `IntersectionObserver` so the rAF loop never runs off-screen. Theme changes are tracked by a `MutationObserver` on the document `class` attribute. Under `prefers-reduced-motion: reduce`, the canvas is hidden and a single hand-authored SVG snapshot at 0.08 alpha takes its place. No shader libraries or third-party physics deps.
+
+### One annotation per page
+
+A single phrase in the H1 carries a `rough-notation` underline drawn ~950ms after the H1 fade settles. Drawn once per page-load, never replayed. `rough-notation` (~9kb gz) is dynamically imported from a client `<script>` so it executes browser-only. Skipped entirely under `prefers-reduced-motion: reduce`. The annotation stroke uses `--color-foreground`. Only one phrase per page may carry an annotation. The rule is editorial restraint.
 
 ## Iconography
 

@@ -40,6 +40,10 @@ Cards render statically from a config array of `name`, `description`, `poster`, 
 
 Variable woff2 files for Fraunces and Inter weight-axis are imported as `?url` in `base.astro` and referenced through `<link rel="preload">`. This eliminates the FOUT swap from Fontsource's default `font-display: swap`. Vite resolves the path through `node_modules`, so no manual copy to `public/` is needed.
 
+### Hero flow field is hand-rolled, not a shader library
+
+The hero signature behind the header is a vanilla TypeScript particle field (simplex noise, cursor force with falloff, struct-of-arrays Float32 pool, single rAF loop). Shader libraries like `@paper-design/shaders` were rejected because animated mesh gradients have become a templated AI-era look by 2026. The hand-built canvas is the page's craft signal. Net new dependency is `rough-notation` only (~9kb gz) for the H1 underline. Render scope, perf budget, theme tracking, and reduced-motion fallback are codified in `DESIGN.md` § Motion and media.
+
 ### Editorial type pairing replaces Geist
 
 Geist is removed. Replaced by Fraunces variable for display and headings, Inter variable for body and labels, JetBrains Mono variable for code. `.claude/DESIGN.md` is the source of truth for token values. The tokens flow into Tailwind v4 via the `@theme` block in `global.css`.
