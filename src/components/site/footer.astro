@@ -1,21 +1,45 @@
 ---
+import signatureSvg from '@/assets/footer/signature.svg?raw'
+
 const year = new Date().getFullYear()
 ---
 
 <footer class="px-6 pb-10 md:pb-16">
   <div
-    class="border-border mx-auto flex max-w-2xl flex-col gap-4 border-t pt-10 md:flex-row md:items-center md:justify-between md:pt-16 lg:max-w-5xl"
+    class="border-border mx-auto max-w-2xl border-t pt-10 md:pt-16 lg:max-w-5xl"
   >
-    <a
-      href="/resume.pdf"
-      target="_blank"
-      rel="noopener"
-      class="text-foreground text-label hover:text-primary underline-offset-4 hover:underline"
+    <p
+      class="font-display text-foreground text-[clamp(2rem,_4vw_+_1rem,_3rem)] leading-none font-semibold"
     >
-      Résumé (PDF)
-    </a>
-    <p class="text-muted-foreground text-label">
-      © {year} Eric Le · Gothenburg, Sweden
+      Eric Le
     </p>
+    <div
+      data-signature
+      aria-hidden="true"
+      class="text-foreground mt-6 w-24 max-w-full [&>svg]:block [&>svg]:size-full"
+      set:html={signatureSvg}
+    >
+    </div>
+    <div
+      class="mt-10 flex flex-col gap-4 md:mt-14 md:flex-row md:items-center md:justify-between"
+    >
+      <a
+        href="/resume.pdf"
+        target="_blank"
+        rel="noopener"
+        class="text-foreground text-label hover:text-primary underline-offset-4 hover:underline"
+      >
+        Résumé (PDF)
+      </a>
+      <p class="text-muted-foreground text-label">
+        © {year} Eric Le · Gothenburg, Sweden
+      </p>
+    </div>
   </div>
 </footer>
+
+<script>
+  import { initFooterSignature } from './footer-signature'
+
+  initFooterSignature()
+</script>

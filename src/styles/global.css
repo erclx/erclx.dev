@@ -165,6 +165,14 @@
       opacity: 1;
       transform: none;
     }
+
+    [data-js='true'] [data-signature] {
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1200ms ease-out;
+    }
+    [data-js='true'] [data-signature][data-revealed='true'] {
+      clip-path: inset(0);
+    }
   }
 
   [data-scroll-reveal] {
