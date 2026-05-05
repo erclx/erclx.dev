@@ -27,6 +27,14 @@ Quiet senior-IC confidence. The page reads like a thoughtful long-form essay. Re
 | label   | Inter          | 500    | 14px | 20px        |
 | code    | JetBrains Mono | 400    | 14px | 22px        |
 
+### Promoted section heading
+
+Section H2s use the `display` role rather than the `label` uppercase eyebrow when the section is meant to read as a magazine chapter break. Same family, weight, and size as the page H1. One promoted section heading per page so the hero remains the dominant rendering. The `Projects` H2 is the only promoted heading today.
+
+### Editorial numerals
+
+Each project card carries a Fraunces 600 numeral (`01`, `02`) absolutely positioned per card, set in `--color-foreground` and dimmed via alpha so it reads as ambient typography rather than a label. At `lg`+ the numeral hangs in the side margin of the card (left of the first column, right of the second) at 0.15 alpha and ~8rem. Below `lg` the grid collapses to one column and the numeral sits behind the card content at 0.05 alpha and ~5rem. The element is `aria-hidden`, `pointer-events-none`, and `select-none` so it never disrupts reading order or interaction.
+
 ## Spacing
 
 | Step | Multiplier | Value | Tailwind step |

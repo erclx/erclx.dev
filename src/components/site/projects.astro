@@ -45,22 +45,42 @@ const projects = [
 
 <section class="px-6 py-16 md:py-20" data-scroll-reveal>
   <div class="mx-auto max-w-2xl lg:max-w-5xl">
-    <h2 class="text-muted-foreground text-label tracking-wide uppercase">
-      Projects
-    </h2>
-    <div class="mt-6 grid gap-6 lg:grid-cols-2">
+    <h2 class="font-display text-display text-foreground">Projects</h2>
+    <div class="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2">
       {
-        projects.map((project, index) => (
-          <ProjectCard
-            name={project.name}
-            description={project.description}
-            poster={project.poster}
-            videoSrc={project.videoSrc}
-            mediaAlt={project.mediaAlt}
-            links={project.links}
-            index={index}
-          />
-        ))
+        projects.map((project, index) => {
+          const numeral = String(index + 1).padStart(2, '0')
+          const isLeftCol = index % 2 === 0
+          const fadeDelay = `${index * 200}ms`
+          return (
+            <div class="relative">
+              <span
+                aria-hidden="true"
+                data-fade
+                style={`--fade-delay: ${fadeDelay}`}
+                class:list={[
+                  'font-display pointer-events-none absolute z-10 leading-none font-semibold select-none',
+                  'top-3 right-5 text-[5rem] text-foreground/5',
+                  'lg:top-0 lg:text-[8rem] lg:text-foreground/15',
+                  isLeftCol
+                    ? 'lg:right-auto lg:-left-6'
+                    : 'lg:left-auto lg:-right-6',
+                ]}
+              >
+                {numeral}
+              </span>
+              <ProjectCard
+                name={project.name}
+                description={project.description}
+                poster={project.poster}
+                videoSrc={project.videoSrc}
+                mediaAlt={project.mediaAlt}
+                links={project.links}
+                index={index}
+              />
+            </div>
+          )
+        })
       }
     </div>
     <p class="text-muted-foreground text-body mt-6 max-w-2xl">
