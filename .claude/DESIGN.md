@@ -33,7 +33,7 @@ Three Fraunces serif elements anchor the page from top to bottom: the hero H1, t
 
 ### Editorial numerals
 
-Each project card carries a Fraunces 600 numeral (`01`, `02`) absolutely positioned per card, set in `--color-foreground` and dimmed via alpha so it reads as ambient typography rather than a label. At `lg`+ the numeral hangs in the side margin of the card (left of the first column, right of the second) at 0.25 alpha, ~8rem, and a 3rem outdent so it clears the card's dark image area. Below `lg` the grid collapses to one column and the numeral sits behind the card content at 0.10 alpha and ~5rem. The element is `aria-hidden`, `pointer-events-none`, and `select-none` so it never disrupts reading order or interaction.
+Each project card carries a Fraunces 600 numeral (`01`, `02`) absolutely positioned per card, set in `--color-foreground` and dimmed via alpha so it reads as ambient typography rather than a label. At `lg`+ the numeral hangs in the side margin of the card (left of the first column, right of the second) at 0.40 alpha, ~8rem, and a 3rem outdent so the visible margin portion has weight without becoming a label. Below `lg` the grid collapses to one column and the numeral sits behind the card content at 0.15 alpha and ~5rem. The element is `aria-hidden`, `pointer-events-none`, and `select-none` so it never disrupts reading order or interaction.
 
 ### Footer masthead
 
