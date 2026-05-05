@@ -46,6 +46,7 @@ const projects = [
 <section class="px-6 py-16 md:py-20" data-scroll-reveal>
   <div class="mx-auto max-w-2xl lg:max-w-5xl">
     <h2
+      data-fade
       class="font-display text-foreground text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
     >
       Projects
@@ -64,7 +65,7 @@ const projects = [
                 style={`--fade-delay: ${fadeDelay}`}
                 class:list={[
                   'font-display pointer-events-none absolute z-10 leading-none font-semibold select-none',
-                  'top-3 right-5 text-[5rem] text-stone-500/50 dark:text-foreground/5',
+                  'top-3 right-5 text-[5rem] text-stone-500/50 dark:text-foreground/12',
                   'lg:top-0 lg:text-[8rem] lg:text-stone-500/65 lg:dark:text-foreground/15',
                   isLeftCol
                     ? 'lg:right-auto lg:-left-12'
@@ -87,10 +88,14 @@ const projects = [
         })
       }
     </div>
-    <p class="text-muted-foreground text-body mt-6 max-w-2xl">
+    <p
+      data-fade
+      style="--fade-delay: 400ms"
+      class="text-muted-foreground text-body mt-6"
+    >
       Plus <a
         href="https://github.com/erclx/toolkit"
-        class="text-foreground hover:text-primary underline underline-offset-4"
+        class="text-foreground underline underline-offset-4"
         >Toolkit</a
       >, an agent-first CLI that installs and syncs governance, skills, and
       standards across projects.

@@ -12,7 +12,7 @@ Quiet senior-IC confidence. The page reads like a thoughtful long-form essay. Re
 | surface    | clean white cards and panels | #FFFFFF |
 | text       | near-black primary body      | #18181B |
 | muted      | secondary text and captions  | #71717A |
-| accent     | deep blue link and action    | #1E40AF |
+| accent     | reserved for rare emphasis   | #1E40AF |
 | success    | restrained forest green      | #15803D |
 | warning    | muted amber caution          | #B45309 |
 | error      | dark red failure state       | #B91C1C |
