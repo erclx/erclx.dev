@@ -32,9 +32,9 @@ shadcn ships `@custom-variant dark (&:is(.dark *))`, which keys dark theme token
 
 A React island for the toggle produced visible hydration flicker under both `client:load` and `client:only="react"`. The empty placeholder before JS replaced itself with the icon after JS, leaving a layout flash. Vanilla Astro with two inline SVGs that swap via `dark:hidden` plus a one-line `addEventListener` ships in HTML and renders in the correct state from first paint. For presentation-only toggles, the framework cost is not worth the layout shift.
 
-### Project cards as Astro components, not React islands
+### Project cards as Astro components with vanilla TS modules, not React islands
 
-Cards carry prose, name, and links. No interactivity, no state. Static Astro components consume `name`, `description`, and `links` as props and iterate over a config array. The earlier plan called for a React island. The contract did not require it.
+Cards render statically from a config array of `name`, `description`, `poster`, `videoSrc`, `mediaAlt`, and `links`. Interactivity (hover-play on the embedded video, parallax tilt on the card surface) ships as separate vanilla TypeScript modules (`project-media.ts`, `tilt.ts`) loaded via Astro `<script>` tags rather than as React islands. A single `requestAnimationFrame` loop handles tilt across all cards. Both modules check `prefers-reduced-motion` and bail early when the user opts out. Skipping the React tax is worth the discipline of keeping interactive logic small enough that vanilla TS reads cleaner than a hydrated component.
 
 ### Critical fonts preloaded via Vite ?url imports
 

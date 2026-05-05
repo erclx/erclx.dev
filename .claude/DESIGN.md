@@ -49,7 +49,22 @@ Use only the `1 / 2 / 4 / 6 / 10` Tailwind steps for micro-spacing inside a sect
 
 ## Motion
 
-Minimal. 150ms ease-out for hover and focus state changes. A single 700ms fade-and-rise pattern is permitted on entry into the viewport, gated on `[data-js='true']` and `prefers-reduced-motion: no-preference` so the no-JS and reduced-motion experience stays static. No other layout or scroll-driven animation.
+150ms ease-out for hover and focus state changes. A 700ms fade-and-rise pattern is permitted on entry into the viewport, gated on `[data-js='true']` and `prefers-reduced-motion: no-preference` so the no-JS and reduced-motion experience stays static. Additional motion is permitted only as defined in `## Motion and media`.
+
+## Motion and media
+
+### Project card media
+
+- One muted MP4 per project, dark theme only, ≤500kb, 720p, h.264 baseline. Poster is a single dark PNG extracted from the same clip.
+- `preload="none"`. Video loads on first pointer-enter and plays muted, looping. Pointer-leave pauses the video and resets it to frame 0.
+- Poster sits underneath the video. Video fades in over 200ms once playback starts. Touch devices and `prefers-reduced-motion: reduce` see the poster only.
+- Media slot frames the dark clip as embedded media so it sits cleanly on either page theme: rounded inner corners, hairline ring, soft shadow, light surface inset around the clip.
+
+### Card tilt
+
+- Cards under `[data-tilt]` rotate up to 6° toward the cursor on `pointermove`. The inner media slot translates up to 8px against the rotation for parallax depth.
+- A single `requestAnimationFrame` loop reads pointer state across all cards. Per-card values smooth via lerp at factor 0.18 so motion feels physical without CSS transitions fighting the JS update.
+- Skipped entirely under `prefers-reduced-motion: reduce`.
 
 ## Iconography
 

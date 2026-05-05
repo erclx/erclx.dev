@@ -19,6 +19,7 @@ iconify
 jsdom
 jsxSingleQuote
 labelledby
+lerp
 linecap
 linejoin
 lintstagedrc
@@ -32,6 +33,7 @@ ntvs
 oklch
 parallelizable
 pipefail
+pointermove
 scannability
 serviceworker
 shadcn

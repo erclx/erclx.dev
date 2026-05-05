@@ -10,9 +10,9 @@ interface ProjectLink {
 interface Props {
   name: string
   description: string
-  imageLight?: ImageMetadata
-  imageDark?: ImageMetadata
-  imageAlt?: string
+  poster?: ImageMetadata
+  videoSrc?: string
+  mediaAlt?: string
   links: ProjectLink[]
   index?: number
 }
@@ -20,9 +20,9 @@ interface Props {
 const {
   name,
   description,
-  imageLight,
-  imageDark,
-  imageAlt,
+  poster,
+  videoSrc,
+  mediaAlt,
   links,
   index = 0,
 } = Astro.props
@@ -32,23 +32,35 @@ const fadeDelay = `${index * 200}ms`
 
 <article
   data-fade
+  data-tilt
   style={`--fade-delay: ${fadeDelay}`}
-  class="border-border hover:border-foreground/30 bg-card overflow-hidden rounded-lg border transition duration-200 hover:-translate-y-0.5"
+  class="border-border hover:border-foreground/30 bg-card group/card relative overflow-hidden rounded-lg border transition-colors duration-200 [transform:perspective(900px)_rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))] [transform-style:preserve-3d] [will-change:transform]"
 >
   {
-    imageLight && imageDark && imageAlt && (
-      <div class="border-border bg-muted aspect-[11/7] border-b">
-        <Image
-          src={imageLight}
-          alt={imageAlt}
-          class="size-full object-cover dark:hidden"
-        />
-        <Image
-          src={imageDark}
-          alt=""
-          aria-hidden="true"
-          class="hidden size-full object-cover dark:block"
-        />
+    poster && videoSrc && mediaAlt && (
+      <div
+        data-media-slot
+        class="bg-muted/40 relative aspect-[11/7] overflow-hidden border-b border-border/60 p-2 sm:p-3"
+      >
+        <div class="ring-border/40 relative size-full overflow-hidden rounded-md shadow-sm ring-1 [transform:translate3d(var(--parallax-x,0),var(--parallax-y,0),0)] [will-change:transform]">
+          <Image
+            src={poster}
+            alt={mediaAlt}
+            class="absolute inset-0 size-full object-cover object-top"
+            data-media-poster
+          />
+          <video
+            src={videoSrc}
+            poster={poster.src}
+            muted
+            loop
+            playsinline
+            preload="none"
+            aria-hidden="true"
+            class="absolute inset-0 size-full object-cover object-top opacity-0 transition-opacity duration-200 group-hover/card:opacity-100"
+            data-media-video
+          />
+        </div>
       </div>
     )
   }

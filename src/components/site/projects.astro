@@ -1,18 +1,18 @@
 ---
 import ProjectCard from '@/components/site/project-card.astro'
-import stackrLight from '@/assets/projects/stackr-light.png'
-import stackrDark from '@/assets/projects/stackr-dark.png'
-import caretLight from '@/assets/projects/caret-light.png'
-import caretDark from '@/assets/projects/caret-dark.png'
+import stackrPoster from '@/assets/projects/stackr.png'
+import caretPoster from '@/assets/projects/caret.png'
+import stackrVideo from '@/assets/videos/stackr.mp4?url'
+import caretVideo from '@/assets/videos/caret.mp4?url'
 
 const projects = [
   {
     name: 'Stackr',
     description:
       'VS Code extension for multi-file LLM context preparation. 1,000+ downloads on Open VSX. Drag-and-drop file staging, live token counting, pinned files that survive session restarts.',
-    imageLight: stackrLight,
-    imageDark: stackrDark,
-    imageAlt: 'Stackr — context management for AI chat',
+    poster: stackrPoster,
+    videoSrc: stackrVideo,
+    mediaAlt: 'Stackr — VS Code panel showing staged files and a context preview',
     links: [
       {
         label: 'VS Code Marketplace',
@@ -29,9 +29,9 @@ const projects = [
     name: 'Caret',
     description:
       'Chrome extension for saving and invoking prompts in Claude, Gemini, and ChatGPT. Trigger-symbol search and keyboard-driven injection from a command-palette dropdown anchored on the chat input.',
-    imageLight: caretLight,
-    imageDark: caretDark,
-    imageAlt: 'Caret — prompt library for AI chat',
+    poster: caretPoster,
+    videoSrc: caretVideo,
+    mediaAlt: 'Caret — chat input showing a trigger-character palette of saved prompts',
     links: [
       {
         label: 'Chrome Web Store',
@@ -54,9 +54,9 @@ const projects = [
           <ProjectCard
             name={project.name}
             description={project.description}
-            imageLight={project.imageLight}
-            imageDark={project.imageDark}
-            imageAlt={project.imageAlt}
+            poster={project.poster}
+            videoSrc={project.videoSrc}
+            mediaAlt={project.mediaAlt}
             links={project.links}
             index={index}
           />
@@ -92,4 +92,12 @@ const projects = [
       observer.observe(target)
     }
   }
+</script>
+
+<script>
+  import { initProjectMedia } from './project-media'
+  import { initTilt } from './tilt'
+
+  initProjectMedia()
+  initTilt()
 </script>
