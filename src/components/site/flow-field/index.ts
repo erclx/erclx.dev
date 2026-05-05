@@ -40,12 +40,14 @@ function mountFlowField(canvas: HTMLCanvasElement): () => void {
 
   function resize(): void {
     const rect = canvas.getBoundingClientRect()
-    width = Math.max(1, Math.floor(rect.width))
-    height = Math.max(1, Math.floor(rect.height))
+    const nextWidth = Math.max(1, Math.floor(rect.width))
+    const nextHeight = Math.max(1, Math.floor(rect.height))
+    if (nextWidth === width && nextHeight === height) return
+    width = nextWidth
+    height = nextHeight
     canvas.width = Math.floor(width * dpr)
     canvas.height = Math.floor(height * dpr)
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    spawnAll(pool, width, height)
   }
 
   function handlePointerMove(event: PointerEvent): void {
@@ -143,6 +145,7 @@ function mountFlowField(canvas: HTMLCanvasElement): () => void {
   }
 
   resize()
+  spawnAll(pool, width, height)
   window.addEventListener('resize', handleResize)
   window.addEventListener('pointermove', handlePointerMove)
   window.addEventListener('pointerleave', handlePointerLeave)
