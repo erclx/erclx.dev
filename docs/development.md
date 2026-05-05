@@ -18,6 +18,7 @@ src/
 ├── components/
 │   ├── site/            ← landing-page sections and primitives
 │   └── ui/              ← shadcn primitives, owned by this repo
+├── assets/              ← page-owned media: hero field, project posters/videos, signature
 ├── lib/
 │   └── utils.ts         ← cn() and shared helpers
 ├── styles/
