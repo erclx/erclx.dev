@@ -33,7 +33,7 @@ Three Fraunces serif elements anchor the page from top to bottom: the hero H1, t
 
 ### Editorial numerals
 
-Each project card carries a Fraunces 600 numeral (`01`, `02`) absolutely positioned per card, set in `--color-foreground` and dimmed via alpha so it reads as ambient typography rather than a label. At `lg`+ the numeral hangs in the side margin of the card (left of the first column, right of the second) at 0.15 alpha and ~8rem. Below `lg` the grid collapses to one column and the numeral sits behind the card content at 0.05 alpha and ~5rem. The element is `aria-hidden`, `pointer-events-none`, and `select-none` so it never disrupts reading order or interaction.
+Each project card carries a Fraunces 600 numeral (`01`, `02`) absolutely positioned per card, set in `--color-foreground` and dimmed via alpha so it reads as ambient typography rather than a label. At `lg`+ the numeral hangs in the side margin of the card (left of the first column, right of the second) at 0.25 alpha, ~8rem, and a 3rem outdent so it clears the card's dark image area. Below `lg` the grid collapses to one column and the numeral sits behind the card content at 0.10 alpha and ~5rem. The element is `aria-hidden`, `pointer-events-none`, and `select-none` so it never disrupts reading order or interaction.
 
 ### Footer masthead
 
@@ -94,7 +94,7 @@ The projects section unfurls from the bottom edge as it enters the viewport. The
 
 ### Signature wipe
 
-The footer signature is an inlined SVG of filled paths sized to ~6rem wide and rendered in `--color-foreground`. On viewport entry it animates `clip-path: inset(0 100% 0 0)` to `inset(0)` over 1200ms ease-out, gated on `[data-js='true']` so the no-JS state shows the signature fully revealed. An `IntersectionObserver` at threshold 0.4 toggles `data-revealed='true'` once and disconnects so the wipe runs once per page-load. Skipped under `prefers-reduced-motion: reduce`, where the signature renders statically. Filled paths from auto-vectorization preclude `stroke-dashoffset`, so the wipe substitutes for the stroke-draw effect at footer scale.
+The footer signature is an inlined SVG of filled paths sized to ~6rem wide via an explicit aspect-ratio wrapper, rendered in `--color-foreground`. The signature is fully visible by default so a JS or observer failure does not hide it. On viewport entry an `IntersectionObserver` at threshold 0.1 with a -10% bottom rootMargin toggles `data-revealed='true'` once, which activates a CSS keyframe animation wiping `clip-path: inset(0 100% 0 0)` to `inset(0)` over 1200ms ease-out. The animation rule is gated on `[data-js='true']` and `prefers-reduced-motion: no-preference` so the no-JS and reduced-motion paths render statically. Filled paths from auto-vectorization preclude `stroke-dashoffset`, so the wipe substitutes for the stroke-draw effect at footer scale.
 
 ## Iconography
 

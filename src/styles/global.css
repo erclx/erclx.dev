@@ -166,12 +166,16 @@
       transform: none;
     }
 
-    [data-js='true'] [data-signature] {
-      clip-path: inset(0 100% 0 0);
-      transition: clip-path 1200ms ease-out;
+    @keyframes signature-wipe {
+      from {
+        clip-path: inset(0 100% 0 0);
+      }
+      to {
+        clip-path: inset(0);
+      }
     }
     [data-js='true'] [data-signature][data-revealed='true'] {
-      clip-path: inset(0);
+      animation: signature-wipe 1200ms ease-out both;
     }
   }
 
