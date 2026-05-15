@@ -22,10 +22,10 @@ node_modules/
 # Claude
 .claude/.tmp/
 .claude/memory/
+.claude/briefs/
 .claude/plans/
 .claude/review/
 .claude/worktrees/
-.claude/SYNC-QUEUE.md
 .claude/TASKS.md
 
 # Tests
@@ -34,4 +34,3 @@ test-results/
 playwright-report/
 blob-report/
 playwright/.cache/
-screenshots/

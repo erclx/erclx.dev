@@ -3,6 +3,7 @@
     "prettier --write --ignore-path .gitignore --ignore-path .prettierignore",
     "cspell --no-must-find-files"
   ],
+  "**/*.md": "aitk indexes regen",
   "**/*.{ts,tsx,astro,css,html}": ["cspell --no-must-find-files"],
   "**/*.sh": ["shfmt --write --indent 2", "shellcheck --severity=warning"]
 }
