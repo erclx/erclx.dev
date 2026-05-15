@@ -1,4 +1,7 @@
 import type { Page } from '@playwright/test'
+import { chromium } from '@playwright/test'
+import { mkdir, readdir, unlink } from 'fs/promises'
+import path from 'path'
 
 const ROUTES = [
   { name: 'home-desktop', path: '/', width: 1280, height: 800 },
@@ -8,39 +11,79 @@ const ROUTES = [
 
 type State = { name: string; setup?: (page: Page) => Promise<void> }
 const STATES: State[] = [
-  { name: 'default' },
+  { name: 'light' },
   { name: 'dark', setup: async (p) => p.emulateMedia({ colorScheme: 'dark' }) },
 ]
 
-import { chromium } from '@playwright/test'
-import { mkdir } from 'fs/promises'
-import path from 'path'
+type Case = {
+  label: string
+  route: (typeof ROUTES)[number]
+  state: State
+}
+
+const ALL_CASES: Case[] = ROUTES.flatMap((route) =>
+  STATES.map((state) => ({
+    label: `${route.name}--${state.name}`,
+    route,
+    state,
+  })),
+)
 
 const BASE_URL = process.env.SCREENSHOT_BASE_URL ?? 'http://localhost:4173'
-const OUT_DIR = 'screenshots'
+const OUT_DIR = '.claude/review/screenshots'
+const SCREENSHOT_FILTER = process.env.SCREENSHOT_FILTER?.trim() || null
 
-const browser = await chromium.launch()
+const cases = SCREENSHOT_FILTER
+  ? ALL_CASES.filter((c) => c.label.includes(SCREENSHOT_FILTER))
+  : ALL_CASES
+
+if (SCREENSHOT_FILTER && cases.length === 0) {
+  console.error(
+    `No cases matched SCREENSHOT_FILTER=${SCREENSHOT_FILTER}. Available labels:\n${ALL_CASES.map(
+      (c) => `  ${c.label}`,
+    ).join('\n')}`,
+  )
+  process.exit(1)
+}
+
 await mkdir(OUT_DIR, { recursive: true })
 
-for (const route of ROUTES) {
-  for (const state of STATES) {
-    const ctx = await browser.newContext({
-      viewport: { width: route.width, height: route.height },
-      reducedMotion: 'reduce',
-    })
-    const page = await ctx.newPage()
+async function wipeOutDir() {
+  const entries = await readdir(OUT_DIR)
+  await Promise.all(
+    entries
+      .filter((f) => f.endsWith('.png'))
+      .map((f) => unlink(path.join(OUT_DIR, f))),
+  )
+}
 
-    if (state.setup) await state.setup(page)
+if (SCREENSHOT_FILTER) {
+  console.log(
+    `Filtered to ${cases.length} case(s) matching "${SCREENSHOT_FILTER}". Skipping output-dir wipe.`,
+  )
+} else {
+  await wipeOutDir()
+}
 
-    await page.goto(`${BASE_URL}${route.path}`)
-    await page.waitForLoadState('networkidle')
+const browser = await chromium.launch()
 
-    const file = path.join(OUT_DIR, `${route.name}-${state.name}.png`)
-    await page.screenshot({ path: file, fullPage: true })
-    console.log(`captured ${file}`)
+for (const { label, route, state } of cases) {
+  const ctx = await browser.newContext({
+    viewport: { width: route.width, height: route.height },
+    reducedMotion: 'reduce',
+  })
+  const page = await ctx.newPage()
 
-    await ctx.close()
-  }
+  if (state.setup) await state.setup(page)
+
+  await page.goto(`${BASE_URL}${route.path}`)
+  await page.waitForLoadState('networkidle')
+
+  const file = path.join(OUT_DIR, `${label}.png`)
+  await page.screenshot({ path: file, fullPage: true })
+  console.log(`captured ${file}`)
+
+  await ctx.close()
 }
 
 await browser.close()
