@@ -1,4 +1,5 @@
 aitk
+autoplay
 axios
 bradlc
 bunx
@@ -20,6 +21,7 @@ jsdom
 jsxSingleQuote
 labelledby
 lerp
+lerps
 linecap
 linejoin
 lintstagedrc
@@ -34,6 +36,7 @@ oklch
 parallelizable
 pipefail
 pointermove
+regen
 scannability
 serviceworker
 shadcn

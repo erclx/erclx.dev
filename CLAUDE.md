@@ -4,7 +4,7 @@
 
 ## Context
 
-- Check `.claude/` state docs (`TASKS.md`, `ARCHITECTURE.md`, `REQUIREMENTS.md`, `DESIGN.md`, `WIREFRAMES.md`) for context before making changes, when present. The `claude-feature` skill reads them in parallel when planning a feature.
+- Check `.claude/` state docs (`TASKS.md`, `ARCHITECTURE.md`, `REQUIREMENTS.md`, `DESIGN.md`, `wireframes/`) for context before making changes, when present. The `claude-feature` skill reads them in parallel when planning a feature.
 - Coding standards live in `.claude/rules/` and load automatically. Always-on rules apply every session. Path-scoped rules apply to files matching their `paths:` glob.
 
 ## Behavior
@@ -13,6 +13,11 @@
 - When facing a judgment call with 2-3 reasonable options mid-flow, pick one and state the tradeoff in one sentence. Enumerate options only when the user's preference is the deciding factor.
 - Match edit scope to the request. Ship minimal v1 and queue extensions as follow-ups. Edit only what the user named on simplification requests. Do not add features they did not ask for.
 - When rewriting a section, preserve existing code blocks, tables, and grouped examples unless the user asked to remove them.
+- This is a public repo. Do not write personal names into READMEs, `docs/`, `.claude/` planning docs, source comments, or commit messages. Use neutral phrasing like "the user", "a recruiter", or "a local file". Brief content under `.tmp/` is local context, not output.
+- Do not cite `.claude/` paths (TASKS.md, plans, review, .tmp) from PR bodies, READMEs, or other artifacts a reviewer reads. Inline the context or use neutral phrasing like "queued as a follow-up".
+- For deploy infrastructure (Vercel, Cloudflare), prefer CLI over the dashboard. `vercel` is authenticated locally and persists across sessions. Run inspection, redeploy, env-var, and domain commands from Bash rather than asking the user to click through. Confirm before destructive operations (delete project, force-push production, change live DNS).
+- Before any multi-path `rm` or `rm -rf`, list every target path in chat and wait for explicit confirmation. "Clean up X" authorizes a different destructive action than a previous one, never a blanket nuke.
+- Before proposing a new doc home for a convention (screenshot output path, fixture format, scratch convention), grep `CLAUDE.md` and `docs/` for the topic. Extend the existing entry over creating a new section.
 
 ## Indexes
 
@@ -23,21 +28,38 @@
 ## Markdown
 
 - When editing any markdown file, follow `standards/prose.md`.
+- Before writing or editing an artifact with a matching standard in `standards/` (READMEs, PRs, commits, branches, snippets, skills, prose), read that file first and follow it.
+- When editing `README.md`, follow `standards/readme.md`. Keep it user-facing. Technical detail belongs in `docs/` or `.claude/`.
 
 ## Commands
 
 - Run `bun run check` before committing. Full script reference in `docs/development.md`.
 
+## Shipping
+
+- After implementing a feature, run `bun run check` plus any test suite for the surfaces you touched. Fix what fails before opening a PR.
+- After implementing a feature, run it end-to-end against the real surface (deployed preview, live page) and paste the output into the PR body under a `## Live smoke` section. If a live run is impossible, say so explicitly instead of claiming success.
+- Keep PR bodies evergreen. Beyond the `## Live smoke` block, run logs, follow-up notes, and polish narratives go into PR comments via `gh pr comment`, not the body.
+- After a local commit on a feature branch, stop and hand control back. Push only when the user signals after browser verification. User-invoked skills that push by design (`/toolkit:git-ship`, `/toolkit:git-followup`) are exempt for that invocation only. Manual edits made between skill invocations require a fresh push signal.
+
 ## Local development
 
 - Keep `bun run dev` running in the background on port 4321 during landing-page sessions so visual changes are immediately visible at http://localhost:4321.
 - Screenshots run through `bun run screenshot` and bind a separate preview server on port 4173 (`PREVIEW_PORT=4173 bash scripts/screenshot.sh`) so they do not collide with the dev server.
-- Outputs land in `screenshots/` (gitignored). Read them with the Read tool to verify changes. Both states render: light by default and dark via `emulateMedia`.
+- Outputs land in `.claude/review/screenshots/` (gitignored), named `<route>--<theme>.png`. Read them with the Read tool to verify changes. Both themes render: `--light` by default and `--dark` via `emulateMedia`.
 
 ## UI conventions
 
 - Outbound links default to same-tab. Use `target="_blank" rel="noopener"` only when the link opens a long-form resource the visitor likely wants to keep open while the page stays in another tab (resume PDFs, long-form articles).
 - After editing any file under `src/components/`, `src/layouts/`, `src/pages/`, or `src/styles/global.css`, re-run `bun run screenshot` and verify the diff before reporting work as done.
+
+## Output
+
+- After creating or modifying a file, include its path on its own line so terminal emulators can make it clickable. Do not paraphrase paths into prose ("the seeds folder", "your CLAUDE.md").
+- Use the path the user's editor can resolve. The editor is rooted at the main project root.
+- In the main worktree: relative from `pwd` works because `pwd` equals the editor root.
+- In a linked worktree (under `.claude/worktrees/<name>/`): use absolute paths. Relative paths from worktree `pwd` would not resolve against the editor's project root.
+- When the response covers multiple files, group paths under headers: `**Created:**`, `**Modified:**`, `**Deleted:**`. For single-file changes, the path on its own line is enough.
 
 ## Playwright MCP
 
@@ -46,16 +68,16 @@
 
 ## Key paths
 
-- `src/`: [description]
+- `src/`: Astro source for the single-page site (pages, layouts, components, styles, assets)
 - `.claude/`: planning docs (requirements, architecture, wireframes, design, tasks)
 - `.claude/review/`: gitignored scratch for review and UI-test output, overwritten on each run
-- `.claude/SYNC-QUEUE.md`: gitignored queue of pending content updates from the career repo
+- `.claude/briefs/SYNC-QUEUE.md`: gitignored queue of pending content updates from the career repo
 
 ## Sync queue
 
-- Content on the landing page is downstream of the career repo. Pending updates arrive as entries in `.claude/SYNC-QUEUE.md`.
-- On sync or landing-page work, read `.claude/SYNC-QUEUE.md` for the protocol and the queue
-- At the start of any landing-page work session, check `.claude/SYNC-QUEUE.md` for pending entries and offer to drain them before starting new work
+- Content on the landing page is downstream of the career repo. Pending updates arrive as entries in `.claude/briefs/SYNC-QUEUE.md`.
+- On sync or landing-page work, read `.claude/briefs/SYNC-QUEUE.md` for the protocol and the queue
+- At the start of any landing-page work session, check `.claude/briefs/SYNC-QUEUE.md` for pending entries and offer to drain them before starting new work
 - Never read career files for content once v1 has shipped. Use queue entries only.
 
 ## Spelling

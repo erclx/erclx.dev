@@ -22,27 +22,11 @@ Radix primitives provide accessible interactive components without locking in a 
 
 ### Content sourced via SYNC-QUEUE.md
 
-Page copy is canonical in the parent career repo, never authored here. Updates land in `.claude/SYNC-QUEUE.md` as full text. This prevents drift between Linkedin, the resume, the github profile, and the live page.
-
-### Dark mode uses the class-based shadcn pattern
-
-shadcn ships `@custom-variant dark (&:is(.dark *))`, which keys dark theme tokens off a `.dark` class on a parent element. `prefers-color-scheme` alone does not switch the theme. The layout runs a small inline script that reads the system preference and any localStorage override on first paint and adds `.dark` to `documentElement` before the body renders, to avoid a flash of the wrong scheme.
-
-### Theme toggle ships as static Astro, not a React island
-
-A React island for the toggle produced visible hydration flicker under both `client:load` and `client:only="react"`. The empty placeholder before JS replaced itself with the icon after JS, leaving a layout flash. Vanilla Astro with two inline SVGs that swap via `dark:hidden` plus a one-line `addEventListener` ships in HTML and renders in the correct state from first paint. For presentation-only toggles, the framework cost is not worth the layout shift.
-
-### Project cards as Astro components with vanilla TS modules, not React islands
-
-Cards render statically from a config array of `name`, `description`, `poster`, `videoSrc`, `mediaAlt`, and `links`. Interactivity (hover-play on the embedded video, parallax tilt on the card surface) ships as separate vanilla TypeScript modules (`project-media.ts`, `tilt.ts`) loaded via Astro `<script>` tags rather than as React islands. A single `requestAnimationFrame` loop handles tilt across all cards. Both modules check `prefers-reduced-motion` and bail early when the user opts out. Skipping the React tax is worth the discipline of keeping interactive logic small enough that vanilla TS reads cleaner than a hydrated component.
+Page copy is canonical in the parent career repo, never authored here. Updates land in `.claude/briefs/SYNC-QUEUE.md` as full text. This prevents drift between Linkedin, the resume, the github profile, and the live page.
 
 ### Critical fonts preloaded via Vite ?url imports
 
 Variable woff2 files for Fraunces and Inter weight-axis are imported as `?url` in `base.astro` and referenced through `<link rel="preload">`. This eliminates the FOUT swap from Fontsource's default `font-display: swap`. Vite resolves the path through `node_modules`, so no manual copy to `public/` is needed.
-
-### Hero flow field is hand-rolled, not a shader library
-
-The hero signature behind the header is a vanilla TypeScript particle field (simplex noise, cursor force with falloff, struct-of-arrays Float32 pool, single rAF loop). Shader libraries like `@paper-design/shaders` were rejected because animated mesh gradients have become a templated AI-era look by 2026. The hand-built canvas is the page's craft signal. Net new dependency is `rough-notation` only (~9kb gz) for the H1 underline. Render scope, perf budget, theme tracking, and reduced-motion fallback are codified in `DESIGN.md` § Motion and media.
 
 ### Editorial type pairing replaces Geist
 
