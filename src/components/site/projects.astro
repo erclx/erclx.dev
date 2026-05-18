@@ -24,7 +24,7 @@ const projects = [
   {
     name: 'Stackr',
     description:
-      'VS Code extension for multi-file LLM context preparation. 1,000+ downloads on Open VSX. Drag-and-drop file staging, live token counting, pinned files that survive session restarts.',
+      'VS Code extension for multi-file LLM context preparation. 1,300 downloads on Open VSX. Drag-and-drop file staging, live token counting, pinned files that survive session restarts.',
     poster: stackrPoster,
     videoSrc: stackrVideo,
     mediaAlt: 'Stackr — VS Code panel showing staged files and a context preview',
@@ -59,7 +59,11 @@ const projects = [
 ]
 ---
 
-<section class="px-6 py-16 md:py-20" data-scroll-reveal>
+<section
+  data-section="projects"
+  class="px-6 py-16 md:py-20"
+  data-scroll-reveal
+>
   <div class="mx-auto max-w-2xl lg:max-w-5xl">
     <h2
       data-fade
@@ -67,6 +71,13 @@ const projects = [
     >
       Projects
     </h2>
+    <p
+      data-fade
+      style="--fade-delay: 100ms"
+      class="text-muted-foreground text-body mt-4 italic"
+    >
+      Three tools shipped in 2026.
+    </p>
     <div class="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2">
       {
         projects.map((project, index) => {

@@ -32,6 +32,7 @@ njsproj
 noopener
 noreferrer
 ntvs
+nums
 oklch
 parallelizable
 pipefail

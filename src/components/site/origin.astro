@@ -1,0 +1,58 @@
+---
+interface HistoryEntry {
+  current?: boolean
+  year: string
+  event: string
+}
+
+const history: HistoryEntry[] = [
+  { current: true, year: '2026', event: 'ready for the next role' },
+  { year: '2026', event: 'jobtriage published' },
+  { year: '2026', event: 'stackr published, 1,300 on open vsx' },
+  { year: '2026', event: 'caret published' },
+  { year: '2025', event: 'volvo contract iii wrapped' },
+  { year: '2024', event: 'chalmers engineering physics graduate' },
+]
+---
+
+<section
+  data-section="origin"
+  class="px-6 py-16 md:py-20"
+  data-scroll-reveal
+>
+  <div class="mx-auto max-w-2xl">
+    <ol class="font-mono">
+      {
+        history.map((entry, idx) => (
+          <li
+            data-fade
+            style={`--fade-delay: ${idx * 100}ms`}
+            class:list={[
+              'text-body flex items-baseline gap-4 py-1',
+              entry.current ? 'text-foreground' : 'text-muted-foreground',
+            ]}
+          >
+            <span
+              aria-hidden="true"
+              class:list={[entry.current ? 'text-primary' : '']}
+            >
+              {entry.current ? '●' : '○'}
+            </span>
+            <span class="tabular-nums">{entry.year}</span>
+            <span aria-hidden="true" class="opacity-40">
+              ──
+            </span>
+            <span>{entry.event}</span>
+          </li>
+        ))
+      }
+    </ol>
+    <p
+      data-fade
+      style="--fade-delay: 750ms"
+      class="font-display text-body text-muted-foreground mt-10 max-w-xl italic"
+    >
+      Each entry made the next one possible.
+    </p>
+  </div>
+</section>
