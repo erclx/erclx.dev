@@ -1,0 +1,54 @@
+---
+const criteria = [
+  {
+    label: 'roles',
+    value: 'AI tooling · LLM apps · devex',
+  },
+  {
+    label: 'setup',
+    value: 'small to mid teams · Gothenburg or remote',
+  },
+  {
+    label: 'level',
+    value: 'junior to mid',
+  },
+  {
+    label: 'terms',
+    value: 'full-time or contract',
+  },
+]
+---
+
+<section
+  data-section="looking-for"
+  class="px-6 pt-16 pb-24 md:pt-20 md:pb-32"
+  data-scroll-reveal
+>
+  <div class="mx-auto max-w-2xl">
+    <div class="bg-card rounded-lg p-6 md:p-10">
+      <p
+        data-fade
+        class="text-muted-foreground font-mono text-label"
+      >
+        looking-for
+      </p>
+      <dl class="mt-6 grid gap-y-4">
+        {
+          criteria.map((item, idx) => (
+            <div
+              data-fade
+              style={`--fade-delay: ${150 + idx * 100}ms`}
+              class="group -ml-4 grid gap-x-10 border-l-2 border-transparent pl-4 hover:border-primary sm:grid-cols-[8rem_1fr]"
+            >
+              <dt class="text-muted-foreground group-hover:text-foreground font-mono text-label">
+                {item.label}
+              </dt>
+              <dd class="text-foreground text-body">{item.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>
+

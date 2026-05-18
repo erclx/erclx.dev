@@ -32,9 +32,12 @@ njsproj
 noopener
 noreferrer
 ntvs
+nums
 oklch
 parallelizable
 pipefail
+pointerenter
+pointerleave
 pointermove
 regen
 scannability

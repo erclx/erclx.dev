@@ -13,7 +13,7 @@ Appears at the bottom of the page. Carries a downloadable résumé link plus a c
 ┌──────────────────────────────────────────────────────────┐
 │   ─────────────────────────────────────────────────────  │  ← border-t
 │                                                          │
-│   Résumé              Set in Fraunces and Inter · 2026   │
+│   Résumé              Gothenburg, Sweden · 2026          │
 │                                                          │
 └──────────────────────────────────────────────────────────┘
 ```
@@ -25,8 +25,7 @@ Appears at the bottom of the page. Carries a downloadable résumé link plus a c
 │   ──────────────────────────     │
 │                                  │
 │   Résumé                         │
-│   Set in Fraunces and Inter ·    │
-│   Gothenburg, 2026               │
+│   Gothenburg, Sweden · 2026      │
 │                                  │
 └──────────────────────────────────┘
 ```
@@ -35,7 +34,7 @@ Appears at the bottom of the page. Carries a downloadable résumé link plus a c
 
 - Layout switches from row to column under `md`. On narrow viewports the link sits above the colophon with comfortable spacing between.
 - Résumé link opens in a new tab so the landing page stays in the originating tab while the PDF reads in another.
-- Year derives from the current build time. The colophon credits the type families plus the city, in place of a copyright line.
+- Year derives from the current build time. The colophon carries the city plus the year in place of a copyright line. Font families are not named. The page itself shows them.
 
 ## Masthead
 

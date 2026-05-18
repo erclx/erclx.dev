@@ -1,0 +1,161 @@
+---
+interface HistoryEntry {
+  current?: boolean
+  year: string
+  event: string
+}
+
+const history: HistoryEntry[] = [
+  { current: true, year: '2026', event: 'ready for the next role' },
+  { year: '2026', event: 'jobtriage published' },
+  { year: '2026', event: 'stackr published, 1,300 on open vsx' },
+  { year: '2026', event: 'caret published' },
+  { year: '2025', event: 'volvo contract iii wrapped' },
+  { year: '2024', event: 'chalmers engineering physics graduate' },
+]
+---
+
+<section
+  data-section="origin"
+  class="px-6 py-16 md:py-20"
+  data-scroll-reveal
+>
+  <div class="mx-auto max-w-2xl">
+    <p
+      data-fade
+      class="text-muted-foreground font-mono text-label"
+    >
+      origin
+    </p>
+    <ol class="origin-list mt-6 font-mono">
+      {
+        history.map((entry, idx) => (
+          <li
+            data-fade
+            data-default-active={entry.current ? 'true' : undefined}
+            aria-current={entry.current ? 'step' : undefined}
+            style={`--fade-delay: ${150 + idx * 100}ms`}
+            class="origin-row text-body -ml-4 grid grid-cols-[1rem_3rem_1fr] items-baseline gap-x-4 border-l-2 border-transparent py-1 pl-4"
+          >
+            <span class="origin-marker self-center" aria-hidden="true" />
+            <span class="tabular-nums">{entry.year}</span>
+            <span>{entry.event}</span>
+          </li>
+        ))
+      }
+    </ol>
+    <p
+      data-fade
+      style="--fade-delay: 900ms"
+      class="font-display text-label text-muted-foreground mt-10 max-w-xl italic"
+    >
+      Each entry made the next one possible.
+    </p>
+  </div>
+</section>
+
+<style>
+  .origin-row {
+    color: var(--muted-foreground);
+  }
+  .origin-marker {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.55em;
+    border-radius: 9999px;
+    border: 1.5px solid currentColor;
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+  .origin-row[data-default-active='true'],
+  .origin-row[data-active='true'] {
+    color: var(--foreground);
+    border-color: var(--primary);
+  }
+  .origin-row[data-default-active='true'] .origin-marker,
+  .origin-row[data-active='true'] .origin-marker {
+    background-color: var(--primary);
+    border-color: var(--primary);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .origin-row,
+    .origin-marker {
+      transition:
+        color 150ms ease-out,
+        background-color 150ms ease-out,
+        border-color 150ms ease-out;
+    }
+  }
+</style>
+
+<script>
+  const list = document.querySelector<HTMLOListElement>('.origin-list')
+  if (list) {
+    const rows = Array.from(
+      list.querySelectorAll<HTMLLIElement>('.origin-row'),
+    )
+    const defaultIdx = Math.max(
+      0,
+      rows.findIndex((r) => r.dataset.defaultActive === 'true'),
+    )
+    let activeIdx = defaultIdx
+    let walkTimer: number | null = null
+
+    const setActive = (idx: number) => {
+      rows[activeIdx]?.removeAttribute('data-active')
+      rows[idx]?.setAttribute('data-active', 'true')
+      activeIdx = idx
+    }
+
+    const cancelWalk = () => {
+      if (walkTimer !== null) {
+        window.clearTimeout(walkTimer)
+        walkTimer = null
+      }
+    }
+
+    rows[defaultIdx]?.removeAttribute('data-default-active')
+    setActive(defaultIdx)
+
+    for (const [i, row] of rows.entries()) {
+      row.addEventListener('pointerenter', () => {
+        cancelWalk()
+        setActive(i)
+      })
+    }
+
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+
+    const baseDelay = 40
+    const maxDelay = 160
+
+    list.addEventListener('pointerleave', () => {
+      cancelWalk()
+      if (reduce || activeIdx === defaultIdx) {
+        setActive(defaultIdx)
+        return
+      }
+      const startDistance = Math.abs(activeIdx - defaultIdx)
+      const step = activeIdx > defaultIdx ? -1 : 1
+      let stepsTaken = 0
+
+      const scheduleNext = () => {
+        const progress = stepsTaken / startDistance
+        const delay = baseDelay + progress * progress * (maxDelay - baseDelay)
+        walkTimer = window.setTimeout(() => {
+          setActive(activeIdx + step)
+          stepsTaken += 1
+          if (activeIdx === defaultIdx) {
+            walkTimer = null
+          } else {
+            scheduleNext()
+          }
+        }, delay)
+      }
+
+      scheduleNext()
+    })
+  }
+</script>

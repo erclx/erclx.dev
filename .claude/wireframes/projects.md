@@ -15,7 +15,7 @@ Appears below the header. Lists shipped tools as cards stacked in a single colum
 │   │ Stackr                                           │   │  ← display heading
 │   │                                                  │   │
 │   │ VS Code extension for multi-file LLM context     │   │  ← description body
-│   │ preparation. 1,000+ downloads on Open VSX ...    │   │
+│   │ preparation. 1,300 downloads on Open VSX ...     │   │
 │   │                                                  │   │
 │   │ VS Code Marketplace   Open VSX   GitHub          │   │  ← link row, wraps when needed
 │   └──────────────────────────────────────────────────┘   │
