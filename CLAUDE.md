@@ -51,6 +51,7 @@
 
 - Keep `bun run dev` running in the background on port 4321 during landing-page sessions so visual changes are immediately visible at http://localhost:4321.
 - Screenshots run through `bun run screenshot` and bind a separate preview server on port 4173 (`PREVIEW_PORT=4173 bash scripts/screenshot.sh`) so they do not collide with the dev server.
+- Pass `SCREENSHOT_FILTER=<section>[,<section>]` to limit capture to specific sections (`header`, `origin`, `projects`, `looking-for`, `footer`). Use it on targeted polish loops so only the touched sections re-snap. Omit it for full-page verification before a PR.
 - Outputs land in `.claude/review/screenshots/` (gitignored), named `<route>--<theme>.png`. Read them with the Read tool to verify changes. Both themes render: `--light` by default and `--dark` via `emulateMedia`.
 
 ## UI conventions
