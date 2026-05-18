@@ -44,6 +44,8 @@
 - After implementing a feature, run it end-to-end against the real surface (deployed preview, live page) and paste the output into the PR body under a `## Live smoke` section. If a live run is impossible, say so explicitly instead of claiming success.
 - Keep PR bodies evergreen. Beyond the `## Live smoke` block, run logs, follow-up notes, and polish narratives go into PR comments via `gh pr comment`, not the body.
 - After a local commit on a feature branch, stop and hand control back. Push only when the user signals after browser verification. User-invoked skills that push by design (`/toolkit:git-ship`, `/toolkit:git-followup`) are exempt for that invocation only. Manual edits made between skill invocations require a fresh push signal.
+- Hold the diff in the worktree across multi-step flows. Do not commit between visual-tuning iterations or between items in a multi-item batch. Commit on explicit ship signal and use `/toolkit:git-stage` to split into focused commits at that point.
+- After pushing a UI branch and stopping short of opening the PR, end with the running dev-server URL and a 4-7 item visual-review checklist (hierarchy, breakpoints, animation triggers, dark mode, narrow-viewport overflow, regressions).
 
 ## Local development
 
