@@ -99,10 +99,7 @@ for (const c of cases) {
 
   const sectionDir = path.join(OUT_DIR, c.section)
   await mkdir(sectionDir, { recursive: true })
-  const file = path.join(
-    sectionDir,
-    `${c.viewport.name}--${c.theme}.png`,
-  )
+  const file = path.join(sectionDir, `${c.viewport.name}--${c.theme}.png`)
   await target.screenshot({ path: file })
   console.log(`captured ${file}`)
 
