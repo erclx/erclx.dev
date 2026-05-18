@@ -28,7 +28,7 @@ src/
 
 e2e/
 ├── home.spec.ts         ← playwright smoke for the apex
-└── screenshot.ts        ← node script, desktop + mobile + 320 narrow per route
+└── screenshot.ts        ← node script, per-section captures across desktop, mobile, narrow widths and light / dark themes
 
 public/
 └── resume.pdf           ← downloadable résumé, served at /resume.pdf
