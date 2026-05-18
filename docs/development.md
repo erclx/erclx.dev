@@ -49,24 +49,24 @@ For the rationale behind these choices (Astro over Next, shadcn install path, fo
 
 ## Scripts
 
-| Command                 | Purpose                                              |
-| ----------------------- | ---------------------------------------------------- |
-| `bun run check`         | Full verification. Auto-formats, then asserts clean. |
-| `bun run format`        | Auto-fix prettier and shfmt formatting.              |
-| `bun run clean`         | Wipe `node_modules/`, clear bun cache, reinstall.    |
-| `bun run update`        | Interactive `bun update` followed by verification.   |
-| `bun run dev`           | Start the Astro dev server on port 4321.             |
-| `bun run build`         | Run `astro check` then build the static output.      |
-| `bun run preview`       | Serve the built site locally.                        |
-| `bun run astro`         | Expose the Astro CLI.                                |
-| `bun run typecheck`     | Run `astro check`.                                   |
-| `bun run lint`          | Run ESLint with zero warnings allowed.               |
-| `bun run lint:fix`      | Auto-fix ESLint issues.                              |
-| `bun run test`          | Run Vitest in watch mode.                            |
-| `bun run test:run`      | Run Vitest once with verbose reporter.               |
-| `bun run test:coverage` | Run Vitest with coverage.                            |
-| `bun run test:e2e`      | Run Playwright E2E tests.                            |
-| `bun run screenshot`    | Build, preview, then capture screenshots.            |
+| Command                 | Purpose                                                                                                                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `bun run check`         | Full verification. Auto-formats, then asserts clean.                                                                            |
+| `bun run format`        | Auto-fix prettier and shfmt formatting.                                                                                         |
+| `bun run clean`         | Wipe `node_modules/`, clear bun cache, reinstall.                                                                               |
+| `bun run update`        | Interactive `bun update` followed by verification.                                                                              |
+| `bun run dev`           | Start the Astro dev server on port 4321.                                                                                        |
+| `bun run build`         | Run `astro check` then build the static output.                                                                                 |
+| `bun run preview`       | Serve the built site locally.                                                                                                   |
+| `bun run astro`         | Expose the Astro CLI.                                                                                                           |
+| `bun run typecheck`     | Run `astro check`.                                                                                                              |
+| `bun run lint`          | Run ESLint with zero warnings allowed.                                                                                          |
+| `bun run lint:fix`      | Auto-fix ESLint issues.                                                                                                         |
+| `bun run test`          | Run Vitest in watch mode.                                                                                                       |
+| `bun run test:run`      | Run Vitest once with verbose reporter.                                                                                          |
+| `bun run test:coverage` | Run Vitest with coverage.                                                                                                       |
+| `bun run test:e2e`      | Run Playwright E2E tests.                                                                                                       |
+| `bun run screenshot`    | Build, preview, then capture screenshots. Pass `SCREENSHOT_FILTER=<section>[,<section>]` to limit capture to specific sections. |
 
 ## Shell scripts
 

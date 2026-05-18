@@ -1,6 +1,6 @@
 ---
 title: Page
-description: Single page at /. Three sections stack vertically inside the body.
+description: Single page at /. Five sections stack vertically inside the body.
 ---
 
 # Page
@@ -16,12 +16,16 @@ The single page at `/`. Five sections stack vertically inside the body. The head
 │   [body paragraph, max-w-xl]                             │
 │   [GitHub] [LinkedIn] [me@erclx.dev]                     │
 ├──────────────────────────────────────────────────────────┤
-│   ●  2026 ──  ready for the next role                    │
-│   ○  2026 ──  jobtriage published                        │
-│   ○  2026 ──  stackr published, 1,300 on open vsx        │
-│   ○  2026 ──  caret published                            │
-│   ○  2025 ──  volvo contract iii wrapped                 │
-│   ○  2024 ──  chalmers engineering physics graduate      │
+│   origin                                                 │
+│                                                          │
+│   ●  2026   ready for the next role                      │
+│   ○  2026   jobtriage published                          │
+│   ○  2026   stackr published, 1,300 on open vsx          │
+│   ○  2026   caret published                              │
+│   ○  2025   volvo contract iii wrapped                   │
+│   ○  2024   chalmers engineering physics graduate        │
+│                                                          │
+│      Each entry made the next one possible.              │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
 │   PROJECTS                                               │
@@ -41,18 +45,16 @@ The single page at `/`. Five sections stack vertically inside the body. The head
 │                                                          │
 │   ┌──────────────────────────────────────────────────┐   │
 │   │ looking-for                                      │   │
-│   │ roles        AI tooling, LLM apps, devex         │   │
-│   │ setup        Small to mid teams ...              │   │
-│   │ level        Junior to mid. 18 months ...        │   │
-│   │ ──────────────────────────────────               │   │
-│   │ availability                                     │   │
-│   │ ▸ Available immediately, full-time or contract_  │   │
-│   │ ──────────────────────────────────               │   │
-│   │ EU citizen · no sponsorship · SV, EN, VI         │   │
+│   │ roles        AI tooling · LLM apps · devex       │   │
+│   │ setup        small to mid teams · GBG/remote     │   │
+│   │ level        junior to mid                       │   │
+│   │ terms        full-time or contract               │   │
 │   └──────────────────────────────────────────────────┘   │
 │                                                          │
 ├──────────────────────────────────────────────────────────┤
 │   ──────── (border-t hairline) ────────                  │
-│   © 2026 Eric Le · Gothenburg, Sweden                    │
+│   Eric Le   [signature]                                  │
+│   Résumé                                                 │
+│   Gothenburg, Sweden · 2026                              │
 └──────────────────────────────────────────────────────────┘
 ```

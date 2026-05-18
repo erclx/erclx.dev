@@ -2,22 +2,21 @@
 const criteria = [
   {
     label: 'roles',
-    value: 'AI tooling, LLM applications, developer experience',
+    value: 'AI tooling · LLM apps · devex',
   },
   {
     label: 'setup',
-    value:
-      'Small to mid teams that take AI-assisted dev seriously. Gothenburg or remote, Swedish or English-speaking teams.',
+    value: 'small to mid teams · Gothenburg or remote',
   },
   {
     label: 'level',
-    value:
-      'Junior to mid. 18 months applied LLM at Volvo plus published side projects.',
+    value: 'junior to mid',
+  },
+  {
+    label: 'terms',
+    value: 'full-time or contract',
   },
 ]
-
-const buildDate = new Date()
-const syncedLabel = `${buildDate.getFullYear()}-${String(buildDate.getMonth() + 1).padStart(2, '0')}-${String(buildDate.getDate()).padStart(2, '0')}`
 ---
 
 <section
@@ -27,18 +26,12 @@ const syncedLabel = `${buildDate.getFullYear()}-${String(buildDate.getMonth() + 
 >
   <div class="mx-auto max-w-2xl">
     <div class="bg-card rounded-lg p-6 md:p-10">
-      <div
+      <p
         data-fade
-        class="text-muted-foreground font-mono text-label flex flex-wrap items-center justify-between gap-x-4 gap-y-1"
+        class="text-muted-foreground font-mono text-label"
       >
-        <p class="flex items-center gap-2">
-          <span
-            class="live-dot bg-chart-2 inline-block size-2 rounded-full"
-            aria-hidden="true"></span>
-          looking-for
-        </p>
-        <p>synced {syncedLabel}</p>
-      </div>
+        looking-for
+      </p>
       <dl class="mt-6 grid gap-y-4">
         {
           criteria.map((item, idx) => (
@@ -55,86 +48,7 @@ const syncedLabel = `${buildDate.getFullYear()}-${String(buildDate.getMonth() + 
           ))
         }
       </dl>
-      <div
-        data-fade
-        style="--fade-delay: 600ms"
-        class="border-border mt-10 border-t pt-6"
-      >
-        <p class="text-muted-foreground font-mono text-label">availability</p>
-        <p class="text-foreground mt-2 font-mono text-body">
-          <span class="text-primary" aria-hidden="true">▸</span><span
-            data-typewriter>Available immediately, full-time or contract</span
-          ><span class="cursor-blink" aria-hidden="true">_</span>
-        </p>
-      </div>
-      <div
-        data-fade
-        style="--fade-delay: 750ms"
-        class="border-border mt-10 border-t pt-4"
-      >
-        <p class="text-muted-foreground font-mono text-label">
-          EU citizen · no sponsorship · Swedish, English native · Vietnamese
-          limited
-        </p>
-      </div>
     </div>
   </div>
 </section>
 
-<style>
-  .cursor-blink {
-    display: inline-block;
-    animation: looking-for-cursor 1.1s steps(2) infinite;
-  }
-  @keyframes looking-for-cursor {
-    50% {
-      opacity: 0;
-    }
-  }
-  .live-dot {
-    animation: looking-for-live 2.6s ease-in-out infinite;
-  }
-  @keyframes looking-for-live {
-    50% {
-      opacity: 0.45;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .cursor-blink,
-    .live-dot {
-      animation: none;
-    }
-  }
-</style>
-
-<script>
-  const target = document.querySelector<HTMLElement>('[data-typewriter]')
-  if (target) {
-    const fullText = target.textContent ?? ''
-    const reduce = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches
-    if (!reduce) {
-      target.textContent = ''
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              observer.unobserve(entry.target)
-              let i = 0
-              const interval = window.setInterval(() => {
-                i += 1
-                target.textContent = fullText.slice(0, i)
-                if (i >= fullText.length) {
-                  window.clearInterval(interval)
-                }
-              }, 25)
-            }
-          }
-        },
-        { threshold: 0.1 },
-      )
-      observer.observe(target)
-    }
-  }
-</script>
