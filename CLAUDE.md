@@ -2,6 +2,8 @@
 
 [One-line description]
 
+@.claude/LOCAL.md
+
 ## Context
 
 - Check `.claude/` state docs (`TASKS.md`, `ARCHITECTURE.md`, `REQUIREMENTS.md`, `DESIGN.md`, `wireframes/`) for context before making changes, when present. The `claude-feature` skill reads them in parallel when planning a feature.
@@ -13,9 +15,10 @@
 - When facing a judgment call with 2-3 reasonable options mid-flow, pick one and state the tradeoff in one sentence. Enumerate options only when the user's preference is the deciding factor.
 - Match edit scope to the request. Ship minimal v1 and queue extensions as follow-ups. Edit only what the user named on simplification requests. Do not add features they did not ask for.
 - When rewriting a section, preserve existing code blocks, tables, and grouped examples unless the user asked to remove them.
+- When planning an edit to `CLAUDE.md`, show the proposed change as a fenced `diff` block in chat first, then wait for approval before calling `Edit`.
 - This is a public repo. Do not write personal names into READMEs, `docs/`, `.claude/` planning docs, source comments, or commit messages. Use neutral phrasing like "the user", "a recruiter", or "a local file". Brief content under `.tmp/` is local context, not output.
 - Do not cite `.claude/` paths (TASKS.md, plans, review, .tmp) from PR bodies, READMEs, or other artifacts a reviewer reads. Inline the context or use neutral phrasing like "queued as a follow-up".
-- For deploy infrastructure (Vercel, Cloudflare), prefer CLI over the dashboard. `vercel` is authenticated locally and persists across sessions. Run inspection, redeploy, env-var, and domain commands from Bash rather than asking the user to click through. Confirm before destructive operations (delete project, force-push production, change live DNS).
+- For deploy infrastructure (Vercel, Cloudflare), prefer CLI over the dashboard. Run inspection, redeploy, env-var, and domain commands from Bash rather than asking the user to click through. Confirm before destructive operations (delete project, force-push production, change live DNS).
 - Before any multi-path `rm` or `rm -rf`, list every target path in chat and wait for explicit confirmation. "Clean up X" authorizes a different destructive action than a previous one, never a blanket nuke.
 - Before proposing a new doc home for a convention (screenshot output path, fixture format, scratch convention), grep `CLAUDE.md` and `docs/` for the topic. Extend the existing entry over creating a new section.
 
@@ -71,14 +74,7 @@
 - `src/`: Astro source for the single-page site (pages, layouts, components, styles, assets)
 - `.claude/`: planning docs (requirements, architecture, wireframes, design, tasks)
 - `.claude/review/`: gitignored scratch for review and UI-test output, overwritten on each run
-- `.claude/briefs/SYNC-QUEUE.md`: gitignored queue of pending content updates from the career repo
-
-## Sync queue
-
-- Content on the landing page is downstream of the career repo. Pending updates arrive as entries in `.claude/briefs/SYNC-QUEUE.md`.
-- On sync or landing-page work, read `.claude/briefs/SYNC-QUEUE.md` for the protocol and the queue
-- At the start of any landing-page work session, check `.claude/briefs/SYNC-QUEUE.md` for pending entries and offer to drain them before starting new work
-- Never read career files for content once v1 has shipped. Use queue entries only.
+- `.claude/TASKS.md`: gitignored task board
 
 ## Spelling
 

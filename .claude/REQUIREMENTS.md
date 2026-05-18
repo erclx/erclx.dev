@@ -21,7 +21,7 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 1. Header: identity, role, location, headline, contact links
 2. Narrative: short prose paragraphs sourced from resume and intent
-3. Projects: cards for Stackr, Caret, and Toolkit pulled from the github profile
+3. Projects: cards for Jobtriage, Stackr, and Caret pulled from the github profile, plus a trailing one-liner for Toolkit
 4. Footer: identity links plus a downloadable resume PDF
 
 ## Tech stack
