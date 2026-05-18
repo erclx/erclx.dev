@@ -1,8 +1,8 @@
-# Design: editorial minimal
+# Design: hand-coded ambition
 
 ## Personality
 
-Quiet senior-IC confidence. The page reads like a thoughtful long-form essay. Restraint over flourish, generous whitespace, one accent color used sparingly. A visitor should feel they have arrived at the home of someone who has been doing this for a while and does not need to shout about it. Serif display headings give it weight without nostalgia.
+Senior-IC engineering depth made visible. A first-time visitor should hit a "this person can build" moment within the first scroll, carried by hand-coded ambient and editorial motion rather than copy or claims. Default to algorithmic or hand-drawn pieces with visible engineering depth. Preset-library shortcuts (mesh-gradient generators, off-the-shelf shader presets, drop-in animation packs) are rejected at proposal time. They read as the default AI-era visual and undercut the engineering signal the page is trying to send. Tasteful-quiet editorial restraint is the wrong floor for this page. Generous whitespace and disciplined typography still anchor the reading experience, but they frame the woah moments rather than replace them. Serif display headings give weight without nostalgia. Two impressions, in this order: this is a polished portfolio, and this person hand-built every layer of it.
 
 ## Color
 
