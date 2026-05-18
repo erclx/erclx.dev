@@ -36,6 +36,8 @@ nums
 oklch
 parallelizable
 pipefail
+pointerenter
+pointerleave
 pointermove
 regen
 scannability
