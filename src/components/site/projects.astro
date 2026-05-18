@@ -1,11 +1,26 @@
 ---
 import ProjectCard from '@/components/site/project-card.astro'
+import jobtriagePoster from '@/assets/projects/jobtriage.png'
 import stackrPoster from '@/assets/projects/stackr.png'
 import caretPoster from '@/assets/projects/caret.png'
+import jobtriageVideo from '@/assets/videos/jobtriage.mp4?url'
 import stackrVideo from '@/assets/videos/stackr.mp4?url'
 import caretVideo from '@/assets/videos/caret.mp4?url'
 
 const projects = [
+  {
+    name: 'Jobtriage',
+    description:
+      'Hosted retrieval and tool-using agent over the Swedish JobTech API. BYOK across Anthropic, OpenAI, and Gemini with a no-key mock fallback. Hybrid retrieval over a 50-query Swedish golden set with published ablation, plus a React Flow canvas with four views.',
+    poster: jobtriagePoster,
+    videoSrc: jobtriageVideo,
+    mediaAlt:
+      'Jobtriage, chat interface with retrieved ad cards on a React Flow canvas',
+    links: [
+      { label: 'Live demo', href: 'https://jobtriage.erclx.dev' },
+      { label: 'GitHub', href: 'https://github.com/erclx/jobtriage' },
+    ],
+  },
   {
     name: 'Stackr',
     description:
