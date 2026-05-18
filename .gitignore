@@ -27,6 +27,7 @@ node_modules/
 .claude/review/
 .claude/worktrees/
 .claude/TASKS.md
+.claude/LOCAL.md
 
 # Tests
 coverage/
