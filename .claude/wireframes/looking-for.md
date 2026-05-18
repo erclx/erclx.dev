@@ -25,7 +25,7 @@ Appears below the projects section as the page's closing call to action. Sits on
 - Panel chrome is `bg-card` with `rounded-lg` and `p-6 md:p-10`. No border. The card tint alone separates it from the page canvas.
 - Mono labels (`font-mono text-label text-muted-foreground`) carry the system-card character throughout.
 - The kicker is a single `looking-for` mono label. No availability statement, no status dot, no build-date stamp. The hero already carries the live status via its `[●] OPEN TO WORK` pill, and the panel earns its space by adding specificity rather than restating that signal.
-- Four criteria rows render as a `<dl>` with short fragment values (3-6 words each), not prose sentences. Detail belongs on the resume PDF, not in the closing block of the landing page.
+- Four criteria rows render as a `<dl>` with short fragment values (3-6 words each), not prose sentences. Both labels and values are rendered in mono so the panel reads as one unified config block rather than a label-plus-prose hybrid. Detail belongs on the resume PDF, not in the closing block of the landing page.
 
 ## Cascade reveal
 

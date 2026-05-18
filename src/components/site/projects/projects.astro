@@ -1,5 +1,5 @@
 ---
-import ProjectCard from '@/components/site/project-card.astro'
+import ProjectCard from './project-card.astro'
 import jobtriagePoster from '@/assets/projects/jobtriage.png'
 import stackrPoster from '@/assets/projects/stackr.png'
 import caretPoster from '@/assets/projects/caret.png'
@@ -59,11 +59,7 @@ const projects = [
 ]
 ---
 
-<section
-  data-section="projects"
-  class="px-6 py-16 md:py-20"
-  data-scroll-reveal
->
+<section data-section="projects" class="px-6 py-16 md:py-20">
   <div class="mx-auto max-w-2xl lg:max-w-5xl">
     <h2
       data-fade

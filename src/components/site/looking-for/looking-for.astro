@@ -22,7 +22,6 @@ const criteria = [
 <section
   data-section="looking-for"
   class="px-6 pt-16 pb-24 md:pt-20 md:pb-32"
-  data-scroll-reveal
 >
   <div class="mx-auto max-w-2xl">
     <div class="bg-card rounded-lg p-6 md:p-10">
@@ -43,7 +42,7 @@ const criteria = [
               <dt class="text-muted-foreground group-hover:text-foreground font-mono text-label">
                 {item.label}
               </dt>
-              <dd class="text-foreground text-body">{item.value}</dd>
+              <dd class="text-foreground font-mono text-body">{item.value}</dd>
             </div>
           ))
         }
