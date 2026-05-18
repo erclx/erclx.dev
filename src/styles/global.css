@@ -179,25 +179,4 @@
     }
   }
 
-  [data-scroll-reveal] {
-    view-timeline-name: --projects;
-  }
-
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      @keyframes scroll-reveal-rise {
-        from {
-          clip-path: inset(100% 0 0 0);
-        }
-        to {
-          clip-path: inset(0 0 0 0);
-        }
-      }
-      [data-scroll-reveal] {
-        animation: scroll-reveal-rise linear both;
-        animation-timeline: view(--projects);
-        animation-range: entry 0% cover 40%;
-      }
-    }
-  }
 }
