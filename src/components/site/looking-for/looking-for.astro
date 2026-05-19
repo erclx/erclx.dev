@@ -17,6 +17,9 @@ const criteria = [
     value: 'full-time or contract',
   },
 ]
+
+type Character = 'shiba' | 'ghost'
+const character = 'shiba' as Character
 ---
 
 <section
@@ -24,30 +27,201 @@ const criteria = [
   class="px-6 pt-16 pb-24 md:pt-20 md:pb-32"
 >
   <div class="mx-auto max-w-2xl">
-    <div class="bg-card rounded-lg p-6 md:p-10">
-      <p
-        data-fade
-        class="text-muted-foreground font-mono text-label"
+    <div class="looking-stage relative">
+      <div
+        class="looking-peek absolute top-0 right-8 z-0 w-24 md:right-14 md:w-28"
+        aria-hidden="true"
       >
-        looking-for
-      </p>
-      <dl class="mt-6 grid gap-y-4">
         {
-          criteria.map((item, idx) => (
-            <div
-              data-fade
-              style={`--fade-delay: ${150 + idx * 100}ms`}
-              class="group -ml-4 grid gap-x-10 border-l-2 border-transparent pl-4 hover:border-primary sm:grid-cols-[8rem_1fr]"
-            >
-              <dt class="text-muted-foreground group-hover:text-foreground font-mono text-label">
-                {item.label}
-              </dt>
-              <dd class="text-foreground font-mono text-body">{item.value}</dd>
-            </div>
-          ))
+          character === 'shiba' && (
+            <svg viewBox="0 0 120 130" class="block size-full">
+              <path d="M 14 32 L 30 4 L 42 32 Z" fill="#d4a574" />
+              <path d="M 106 32 L 90 4 L 78 32 Z" fill="#d4a574" />
+              <path d="M 24 28 L 30 14 L 36 28 Z" fill="#faecd3" />
+              <path d="M 96 28 L 90 14 L 84 28 Z" fill="#faecd3" />
+              <path
+                d="M 22 50 Q 22 24 60 24 Q 98 24 98 50 Q 98 80 60 96 Q 22 80 22 50 Z"
+                fill="#d4a574"
+              />
+              <path
+                d="M 30 94 Q 30 116 60 120 Q 90 116 90 94 L 90 130 L 30 130 Z"
+                fill="#d4a574"
+              />
+              <path
+                d="M 36 62 Q 36 56 60 54 Q 84 56 84 62 Q 84 82 60 96 Q 36 82 36 62 Z"
+                fill="#faecd3"
+              />
+              <ellipse cx="42" cy="48" rx="3.5" ry="2" fill="#faecd3" />
+              <ellipse cx="78" cy="48" rx="3.5" ry="2" fill="#faecd3" />
+              <ellipse cx="42" cy="58" rx="2.6" ry="3" fill="#2a1d14" />
+              <ellipse cx="78" cy="58" rx="2.6" ry="3" fill="#2a1d14" />
+              <ellipse cx="60" cy="72" rx="3.6" ry="2.6" fill="#2a1d14" />
+              <path
+                d="M 60 74 L 60 80"
+                stroke="#2a1d14"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M 60 80 Q 56 84 51 82"
+                stroke="#2a1d14"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M 60 80 Q 64 84 69 82"
+                stroke="#2a1d14"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <ellipse cx="36" cy="92" rx="9" ry="6.5" fill="#d4a574" />
+              <path
+                d="M 31 88 L 31 94"
+                stroke="#a07a52"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M 36 87 L 36 94"
+                stroke="#a07a52"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M 41 88 L 41 94"
+                stroke="#a07a52"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <ellipse cx="84" cy="92" rx="9" ry="6.5" fill="#d4a574" />
+              <path
+                d="M 79 88 L 79 94"
+                stroke="#a07a52"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M 84 87 L 84 94"
+                stroke="#a07a52"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M 89 88 L 89 94"
+                stroke="#a07a52"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                fill="none"
+              />
+            </svg>
+          )
         }
-      </dl>
+        {
+          character === 'ghost' && (
+            <svg viewBox="0 0 120 130" class="block size-full">
+              <path
+                d="M 60 6 Q 26 6 26 42 L 26 80 Q 12 82 12 92 Q 12 102 26 100 L 26 104 Q 30 112 36 104 Q 42 112 48 104 Q 54 112 60 104 Q 66 112 72 104 Q 78 112 84 104 Q 90 112 94 104 L 94 100 Q 108 102 108 92 Q 108 82 94 80 L 94 42 Q 94 6 60 6 Z"
+                fill="#fafafa"
+                stroke="#2a1d14"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <ellipse cx="44" cy="50" rx="4" ry="5.5" fill="#2a1d14" />
+              <ellipse cx="76" cy="50" rx="4" ry="5.5" fill="#2a1d14" />
+              <ellipse cx="60" cy="66" rx="2.5" ry="3.5" fill="#2a1d14" />
+            </svg>
+          )
+        }
+      </div>
+
+      <div class="looking-card bg-card relative z-10 rounded-lg p-6 md:p-10">
+        <p data-fade class="text-muted-foreground font-mono text-label">
+          looking-for
+        </p>
+        <dl class="mt-6 grid gap-y-4">
+          {
+            criteria.map((item, idx) => (
+              <div
+                data-fade
+                style={`--fade-delay: ${150 + idx * 100}ms`}
+                class="group -ml-4 grid gap-x-10 border-l-2 border-transparent pl-4 hover:border-primary sm:grid-cols-[8rem_1fr]"
+              >
+                <dt class="text-muted-foreground group-hover:text-foreground font-mono text-label">
+                  {item.label}
+                </dt>
+                <dd class="text-foreground font-display text-body">
+                  {item.value}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
     </div>
   </div>
 </section>
 
+<style>
+  .looking-peek {
+    transform: translateY(5%);
+    transition: transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .looking-stage[data-peek-visible='true'] .looking-peek {
+    transform: translateY(-73%);
+  }
+  .looking-stage[data-peek-visible='true'][data-peek-ducked='true']
+    .looking-peek {
+    transform: translateY(5%);
+    transition: transform 350ms ease-in;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .looking-peek {
+      transform: translateY(-73%);
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('.looking-stage')
+  const card = stage?.querySelector<HTMLElement>('.looking-card')
+  if (stage && card) {
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              stage.dataset.peekVisible = 'true'
+              observer.unobserve(entry.target)
+            }
+          }
+        },
+        { threshold: 0.4 },
+      )
+      observer.observe(stage)
+    } else {
+      stage.dataset.peekVisible = 'true'
+    }
+
+    if (!reduce) {
+      card.addEventListener('pointerenter', () => {
+        stage.dataset.peekDucked = 'true'
+      })
+      card.addEventListener('pointerleave', () => {
+        delete stage.dataset.peekDucked
+      })
+    }
+  }
+</script>
