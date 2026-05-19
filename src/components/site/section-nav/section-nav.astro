@@ -1,13 +1,28 @@
 ---
-const items = [
-  { id: 'origin', label: 'origin' },
-  { id: 'projects', label: 'projects' },
-  { id: 'looking-for', label: 'looking-for' },
-]
+interface SectionNavItem {
+  readonly id: string
+  readonly label: string
+}
+
+interface Props {
+  items?: readonly SectionNavItem[]
+  instant?: boolean
+}
+
+const {
+  items = [
+    { id: 'origin', label: 'origin' },
+    { id: 'projects', label: 'projects' },
+    { id: 'looking-for', label: 'looking-for' },
+  ],
+  instant = false,
+} = Astro.props
 ---
 
 <nav
   data-section-nav
+  data-instant={instant ? 'true' : undefined}
+  data-revealed={instant ? 'true' : undefined}
   aria-label="Sections"
   class="section-nav fixed top-1/2 left-6 z-20 hidden -translate-y-1/2 flex-col gap-3 xl:flex"
 >
@@ -50,7 +65,7 @@ const items = [
     border-color: var(--primary);
   }
   @media (prefers-reduced-motion: no-preference) {
-    .section-nav {
+    .section-nav:not([data-instant]) {
       transition: opacity 300ms ease-out;
     }
   }
@@ -81,64 +96,83 @@ const items = [
       }
     }
 
-    const visibility = new Map<string, number>()
-    const sectionObserver = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          visibility.set(entry.target.id, entry.intersectionRatio)
+    const ANCHOR_RATIO = 0.3
+    const CLICK_LOCK_MS = 700
+    let scrollFrame: number | null = null
+    let clickLockUntil = 0
+
+    const computeActive = () => {
+      scrollFrame = null
+      if (performance.now() < clickLockUntil) return
+      const atBottom =
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight - 4
+      if (atBottom && sections.length > 0) {
+        setActive(sections[sections.length - 1].id)
+        return
+      }
+      const anchor = window.innerHeight * ANCHOR_RATIO
+      let activeId: string | null = null
+      for (const section of sections) {
+        const top = section.getBoundingClientRect().top
+        if (top <= anchor) {
+          activeId = section.id
+        } else {
+          break
         }
-        let topId: string | null = null
-        let topRatio = 0
-        for (const [id, ratio] of visibility) {
-          if (ratio > topRatio) {
-            topId = id
-            topRatio = ratio
-          }
-        }
-        setActive(topRatio > 0 ? topId : null)
-      },
-      { rootMargin: '0px 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] },
-    )
-    for (const section of sections) {
-      sectionObserver.observe(section)
+      }
+      setActive(activeId)
     }
 
-    const footer = document.querySelector<HTMLElement>(
-      '[data-section="footer"]',
-    )
-    if (footer) {
-      const footerObserver = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              nav.setAttribute('data-near-footer', 'true')
-            } else {
-              nav.removeAttribute('data-near-footer')
-            }
-          }
-        },
-        { threshold: 0, rootMargin: '0px 0px -50% 0px' },
-      )
-      footerObserver.observe(footer)
+    const scheduleCompute = () => {
+      if (scrollFrame === null) {
+        scrollFrame = window.requestAnimationFrame(computeActive)
+      }
     }
 
-    const hero = document.querySelector<HTMLElement>(
-      '[data-section="header"]',
-    )
-    if (hero) {
-      const heroObserver = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              nav.removeAttribute('data-revealed')
-            } else {
-              nav.setAttribute('data-revealed', 'true')
-            }
-          }
-        },
-        { threshold: 0, rootMargin: '-50% 0px 0px 0px' },
+    window.addEventListener('scroll', scheduleCompute, { passive: true })
+    window.addEventListener('resize', scheduleCompute)
+    computeActive()
+
+    const isInstant = nav.dataset.instant === 'true'
+    if (!isInstant) {
+      const footer = document.querySelector<HTMLElement>(
+        '[data-section="footer"]',
       )
-      heroObserver.observe(hero)
+      if (footer) {
+        const footerObserver = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                nav.setAttribute('data-near-footer', 'true')
+              } else {
+                nav.removeAttribute('data-near-footer')
+              }
+            }
+          },
+          { threshold: 0, rootMargin: '0px 0px -50% 0px' },
+        )
+        footerObserver.observe(footer)
+      }
+
+      const hero = document.querySelector<HTMLElement>(
+        '[data-section="header"]',
+      )
+      if (hero) {
+        const heroObserver = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                nav.removeAttribute('data-revealed')
+              } else {
+                nav.setAttribute('data-revealed', 'true')
+              }
+            }
+          },
+          { threshold: 0, rootMargin: '-50% 0px 0px 0px' },
+        )
+        heroObserver.observe(hero)
+      }
     }
 
     for (const link of links) {
@@ -148,6 +182,8 @@ const items = [
         const target = document.getElementById(id)
         if (!target) return
         e.preventDefault()
+        setActive(id)
+        clickLockUntil = performance.now() + CLICK_LOCK_MS
         target.scrollIntoView({ behavior: 'smooth', block: 'start' })
       })
     }
