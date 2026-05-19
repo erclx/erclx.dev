@@ -1,5 +1,5 @@
 ---
-import { ThemeToggle } from '@/components/site/theme-toggle'
+import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 import flowFieldFallback from './flow-field/fallback.svg?raw'
 
 const links = [
@@ -35,7 +35,7 @@ const links = [
           aria-hidden="true"></span>
         Open to work
       </span>
-      <ThemeToggle client:only="react" />
+      <ThemeToggle />
     </div>
     <div data-fade style="--fade-delay: 150ms">
       <p
