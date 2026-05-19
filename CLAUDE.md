@@ -57,6 +57,7 @@
 ## UI conventions
 
 - Outbound links default to same-tab. Use `target="_blank" rel="noopener"` only when the link opens a long-form resource the visitor likely wants to keep open while the page stays in another tab (resume PDFs, long-form articles).
+- Before proposing a UI change, read the current `.claude/review/screenshots/` for the surfaces involved. ASCII wireframes do not capture color, weight, or visual-element collisions. Rendered captures do.
 - After editing any file under `src/components/`, `src/layouts/`, `src/pages/`, or `src/styles/global.css`, re-run `bun run screenshot` and verify the diff before reporting work as done.
 
 ## Output
