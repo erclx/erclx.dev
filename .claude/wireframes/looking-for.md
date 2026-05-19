@@ -23,9 +23,9 @@ Appears below the projects section as the page's closing call to action. Sits on
 ## Behavior
 
 - Panel chrome is `bg-card` with `rounded-lg` and `p-6 md:p-10`. No border. The card tint alone separates it from the page canvas.
-- Mono labels (`font-mono text-label text-muted-foreground`) carry the system-card character throughout.
+- Mono labels (`font-mono text-label text-muted-foreground`) carry the system-card character for the kicker and the four row labels.
 - The kicker is a single `looking-for` mono label. No availability statement, no status dot, no build-date stamp. The hero already carries the live status via its `[●] OPEN TO WORK` pill, and the panel earns its space by adding specificity rather than restating that signal.
-- Four criteria rows render as a `<dl>` with short fragment values (3-6 words each), not prose sentences. Both labels and values are rendered in mono so the panel reads as one unified config block rather than a label-plus-prose hybrid. Detail belongs on the resume PDF, not in the closing block of the landing page.
+- Four criteria rows render as a `<dl>` with short fragment values (3-6 words each), not prose sentences. Values render in Fraunces serif (`font-display text-body`) so the panel reads with the same mono-annotation, serif-statement hierarchy as the masthead and origin aside. Detail belongs on the resume PDF, not in the closing block of the landing page.
 
 ## Cascade reveal
 
@@ -34,3 +34,9 @@ On scroll-in, the card's interior reveals in sequence via the page's existing 70
 ## Row hover state
 
 Each criteria row carries a transparent 2px left border that becomes `border-primary` on hover, paired with the row's mono label shifting from `text-muted-foreground` to `text-foreground`. Negative left margin compensates for the border-side padding so card content does not shift on hover. Only the criteria rows respond to hover. The kicker line stays non-interactive.
+
+## Peek character
+
+A small filled-silhouette character peeks from behind the top-right corner of the card. Default behavior: hidden behind the card until the section enters the viewport, then springs up to a peeked position with hands or paws gripping the visible card edge. On `pointerenter` of the card the character ducks back behind. On `pointerleave` it pops back up. Reduced motion: character stays peeked, no transitions.
+
+The character SVG carries its own fixed palette (warm tan body, cream face mask, dark brown features) so identity stays consistent across light and dark themes rather than tracking the page tokens. A `character` const in the frontmatter switches between `shiba` (default) and a `ghost` fallback variant. The peek geometry depends on the SVG body extending below the visible head so the lower portion is naturally clipped behind the card edge.

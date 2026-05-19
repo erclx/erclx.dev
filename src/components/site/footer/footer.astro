@@ -8,35 +8,42 @@ const year = new Date().getFullYear()
   <div
     class="border-border mx-auto max-w-2xl border-t pt-10 md:pt-12 lg:max-w-5xl"
   >
-    <div class="flex flex-col gap-6 md:flex-row md:items-end md:gap-12">
-      <p
-        class="font-display text-foreground text-[clamp(2rem,_4vw_+_1rem,_3rem)] leading-none font-semibold"
-      >
-        Eric Le
-      </p>
-      <div
-        data-signature
-        aria-hidden="true"
-        class="text-foreground aspect-[716/255] w-24 max-w-full [&>svg]:block [&>svg]:size-full"
-        set:html={signatureSvg}
-      >
-      </div>
+    <div
+      data-signature
+      aria-hidden="true"
+      class="text-foreground aspect-[716/255] w-[clamp(7rem,_14vw_+_3rem,_16rem)] max-w-full [&>svg]:block [&>svg]:size-full"
+      set:html={signatureSvg}
+    >
     </div>
-    <div class="mt-8 md:mt-10">
+    <div
+      class="mt-8 flex flex-col gap-3 md:mt-10 md:flex-row md:items-end md:justify-between md:gap-12"
+    >
       <a
         href="/resume.pdf"
         target="_blank"
         rel="noopener"
-        class="text-foreground text-label underline-offset-4 hover:underline"
+        class="text-foreground text-label inline-flex items-center gap-2 underline-offset-4 hover:underline"
       >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          class="text-muted-foreground size-4 -rotate-12"
+        >
+          <path
+            d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.99 8.7l-8.57 8.57a2 2 0 0 1-2.83-2.83l8.49-8.49"
+          ></path>
+        </svg>
         Résumé
       </a>
+      <p class="font-display text-muted-foreground text-label font-normal">
+        Gothenburg, Sweden · {year}
+      </p>
     </div>
-    <p
-      class="font-display text-muted-foreground text-label mt-6 font-normal md:mt-10"
-    >
-      Gothenburg, Sweden · {year}
-    </p>
   </div>
 </footer>
 
