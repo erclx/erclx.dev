@@ -36,5 +36,5 @@ playwright-report/
 blob-report/
 playwright/.cache/
 
-# WSL
-C:\\
+# Lighthouse
+C:*
