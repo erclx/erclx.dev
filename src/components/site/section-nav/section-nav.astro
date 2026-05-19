@@ -73,8 +73,10 @@ const items = [
       for (const link of links) {
         if (link.dataset.target === id) {
           link.setAttribute('data-active', 'true')
+          link.setAttribute('aria-current', 'location')
         } else {
           link.removeAttribute('data-active')
+          link.removeAttribute('aria-current')
         }
       }
     }
