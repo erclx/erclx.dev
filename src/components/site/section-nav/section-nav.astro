@@ -1,0 +1,153 @@
+---
+const items = [
+  { id: 'origin', label: 'origin' },
+  { id: 'projects', label: 'projects' },
+  { id: 'looking-for', label: 'looking-for' },
+]
+---
+
+<nav
+  data-section-nav
+  aria-label="Sections"
+  class="section-nav fixed top-1/2 left-6 z-20 hidden -translate-y-1/2 flex-col gap-3 xl:flex"
+>
+  {
+    items.map((item) => (
+      <a
+        href={`#${item.id}`}
+        data-target={item.id}
+        class="section-nav-link text-muted-foreground font-mono text-label -ml-3 border-l-2 border-transparent pl-3"
+      >
+        {item.label}
+      </a>
+    ))
+  }
+</nav>
+
+<style>
+  .section-nav {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .section-nav[data-revealed='true'] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .section-nav[data-near-footer='true'] {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .section-nav-link {
+    transition:
+      color 150ms ease-out,
+      border-color 150ms ease-out;
+  }
+  .section-nav-link:hover {
+    color: var(--foreground);
+  }
+  .section-nav-link[data-active='true'] {
+    color: var(--foreground);
+    border-color: var(--primary);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .section-nav {
+      transition: opacity 300ms ease-out;
+    }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-section-nav]')
+  if (nav && 'IntersectionObserver' in window) {
+    const links = Array.from(
+      nav.querySelectorAll<HTMLAnchorElement>('.section-nav-link'),
+    )
+    const sections = links
+      .map((link) => {
+        const id = link.dataset.target
+        return id ? document.getElementById(id) : null
+      })
+      .filter((el): el is HTMLElement => el !== null)
+
+    const setActive = (id: string | null) => {
+      for (const link of links) {
+        if (link.dataset.target === id) {
+          link.setAttribute('data-active', 'true')
+        } else {
+          link.removeAttribute('data-active')
+        }
+      }
+    }
+
+    const visibility = new Map<string, number>()
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          visibility.set(entry.target.id, entry.intersectionRatio)
+        }
+        let topId: string | null = null
+        let topRatio = 0
+        for (const [id, ratio] of visibility) {
+          if (ratio > topRatio) {
+            topId = id
+            topRatio = ratio
+          }
+        }
+        setActive(topRatio > 0 ? topId : null)
+      },
+      { rootMargin: '0px 0px -50% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] },
+    )
+    for (const section of sections) {
+      sectionObserver.observe(section)
+    }
+
+    const footer = document.querySelector<HTMLElement>(
+      '[data-section="footer"]',
+    )
+    if (footer) {
+      const footerObserver = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              nav.setAttribute('data-near-footer', 'true')
+            } else {
+              nav.removeAttribute('data-near-footer')
+            }
+          }
+        },
+        { threshold: 0, rootMargin: '0px 0px -50% 0px' },
+      )
+      footerObserver.observe(footer)
+    }
+
+    const hero = document.querySelector<HTMLElement>(
+      '[data-section="header"]',
+    )
+    if (hero) {
+      const heroObserver = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              nav.removeAttribute('data-revealed')
+            } else {
+              nav.setAttribute('data-revealed', 'true')
+            }
+          }
+        },
+        { threshold: 0, rootMargin: '-50% 0px 0px 0px' },
+      )
+      heroObserver.observe(hero)
+    }
+
+    for (const link of links) {
+      link.addEventListener('click', (e) => {
+        const id = link.dataset.target
+        if (!id) return
+        const target = document.getElementById(id)
+        if (!target) return
+        e.preventDefault()
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    }
+  }
+</script>
