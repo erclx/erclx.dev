@@ -13,4 +13,5 @@ Per-surface ASCII layouts loaded on demand
 - [Origin](origin.md): Career git-log timeline that bridges the hero narrative into the projects section.
 - [Page](page.md): Single page at /. Five sections stack vertically inside the body.
 - [Projects](projects.md): Below the header. Shipped tools stacked as cards in a single column.
+- [Section nav](section-nav.md): Fixed left-margin rail that tracks the active section as the visitor scrolls. Hidden below xl and during the hero and footer beats.
 - [Theme toggle](theme-toggle.md): Top-right of the header content column, anchored to the same row as the status pill.

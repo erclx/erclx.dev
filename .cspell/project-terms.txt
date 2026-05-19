@@ -2,6 +2,7 @@ BYOK
 devex
 erclx
 Jobtriage
+laggy
 logomark
 Résumé
 shiba
