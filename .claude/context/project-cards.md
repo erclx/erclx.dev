@@ -9,10 +9,10 @@ The projects section. Cards render statically from a config array in `projects.a
 
 ## Layer responsibilities
 
-- `src/components/site/projects.astro` owns the section: the data array of cards and the `<script>` imports that mount interactivity
-- `src/components/site/project-card.astro` owns one card's DOM: poster image, hover video, headline, description, link row
-- `src/components/site/project-media.ts` owns hover-play. Reads `[data-tilt]` cards, plays the inner `[data-media-video]` on pointer enter, pauses and rewinds on leave.
-- `src/components/site/tilt.ts` owns parallax. Tracks pointer per card with `MAX_TILT_DEG` and `MAX_PARALLAX_PX`, lerps toward the target with `LERP`, runs one rAF loop across all cards.
+- `src/components/site/projects/projects.astro` owns the section: the data array of cards and the `<script>` imports that mount interactivity
+- `src/components/site/projects/project-card.astro` owns one card's DOM: poster image, hover video, headline, description, link row
+- `src/components/site/projects/project-media.ts` owns hover-play. Reads `[data-tilt]` cards, plays the inner `[data-media-video]` on pointer enter, pauses and rewinds on leave.
+- `src/components/site/projects/tilt.ts` owns parallax. Tracks pointer per card with `MAX_TILT_DEG` and `MAX_PARALLAX_PX`, lerps toward the target with `LERP`, runs one rAF loop across all cards.
 
 ## Decisions
 

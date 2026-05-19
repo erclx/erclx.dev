@@ -1,6 +1,6 @@
 ---
-import ThemeToggle from '@/components/site/theme-toggle.astro'
-import flowFieldFallback from '@/components/site/flow-field/fallback.svg?raw'
+import { ThemeToggle } from '@/components/site/theme-toggle'
+import flowFieldFallback from './flow-field/fallback.svg?raw'
 
 const links = [
   { label: 'GitHub', href: 'https://github.com/erclx' },
@@ -35,7 +35,7 @@ const links = [
           aria-hidden="true"></span>
         Open to work
       </span>
-      <ThemeToggle />
+      <ThemeToggle client:only="react" />
     </div>
     <div data-fade style="--fade-delay: 150ms">
       <p
@@ -76,8 +76,8 @@ const links = [
 </header>
 
 <script>
-  import { initAnnotations } from '@/components/site/annotate'
-import { initFlowField } from '@/components/site/flow-field'
+  import { initAnnotations } from './annotate'
+  import { initFlowField } from './flow-field'
 
   initFlowField()
   initAnnotations()

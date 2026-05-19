@@ -5,7 +5,7 @@ description: Hand-rolled particle canvas behind the header with cursor force and
 
 # Flow field
 
-The animated signature behind the header. Lives at `src/components/site/flow-field/` and renders into a `<canvas data-flow-field>` placed by `header.astro`.
+The animated signature behind the header. Lives at `src/components/site/header/flow-field/` and renders into a `<canvas data-flow-field>` placed by `header.astro`.
 
 ## Layer responsibilities
 

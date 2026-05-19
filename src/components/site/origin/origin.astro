@@ -1,0 +1,302 @@
+---
+interface HistoryEntry {
+  current?: boolean
+  year: string
+  event: string
+  nodeX: number
+  nodeY: number
+}
+
+const history: HistoryEntry[] = [
+  {
+    current: true,
+    year: '2026',
+    event: 'ready for the next role',
+    nodeX: 50,
+    nodeY: 18,
+  },
+  { year: '2026', event: 'jobtriage published', nodeX: 80, nodeY: 80 },
+  {
+    year: '2026',
+    event: 'stackr published, 1,300 on open vsx',
+    nodeX: 50,
+    nodeY: 80,
+  },
+  { year: '2026', event: 'caret published', nodeX: 20, nodeY: 80 },
+  {
+    year: '2025',
+    event: 'volvo contract iii wrapped',
+    nodeX: 50,
+    nodeY: 130,
+  },
+  {
+    year: '2024',
+    event: 'chalmers engineering physics graduate',
+    nodeX: 50,
+    nodeY: 162,
+  },
+]
+
+const edges: Array<[number, number]> = [
+  [5, 4], // chalmers -> volvo
+  [4, 3], // volvo -> caret
+  [4, 2], // volvo -> stackr
+  [4, 1], // volvo -> jobtriage
+  [3, 0], // caret -> ready
+  [2, 0], // stackr -> ready
+  [1, 0], // jobtriage -> ready
+]
+---
+
+<section data-section="origin" class="px-6 py-16 md:py-20">
+  <div class="mx-auto max-w-2xl">
+    <p
+      data-fade
+      class="text-muted-foreground font-mono text-label"
+    >
+      origin
+    </p>
+    <div
+      class="origin-stage mt-6 flex flex-col items-stretch gap-x-8 md:flex-row md:items-center"
+    >
+      <svg
+        data-fade
+        class="origin-graph order-2 hidden md:block"
+        viewBox="0 0 100 180"
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+      >
+        <g class="origin-graph-edges">
+          {
+            edges.map(([from, to]) => {
+              const a = history[from]
+              const b = history[to]
+              return (
+                <line
+                  x1={a.nodeX}
+                  y1={a.nodeY}
+                  x2={b.nodeX}
+                  y2={b.nodeY}
+                  stroke="currentColor"
+                  stroke-width="1"
+                  vector-effect="non-scaling-stroke"
+                  pathLength="1"
+                  stroke-dasharray="1"
+                  stroke-dashoffset="1"
+                />
+              )
+            })
+          }
+        </g>
+        <g class="origin-graph-nodes">
+          {
+            history.map((entry, idx) => (
+              <circle
+                cx={entry.nodeX}
+                cy={entry.nodeY}
+                r="4"
+                data-node-idx={idx}
+                data-default-active={entry.current ? 'true' : undefined}
+              />
+            ))
+          }
+        </g>
+      </svg>
+      <ol class="origin-list order-1 font-mono md:flex-1">
+        {
+          history.map((entry, idx) => (
+            <li
+              data-fade
+              data-default-active={entry.current ? 'true' : undefined}
+              aria-current={entry.current ? 'step' : undefined}
+              style={`--fade-delay: ${150 + idx * 100}ms`}
+              class="origin-row text-body -ml-4 grid grid-cols-[1rem_3rem_1fr] items-baseline gap-x-4 border-l-2 border-transparent py-1 pl-4"
+            >
+              <span class="origin-marker self-center" aria-hidden="true" />
+              <span class="tabular-nums">{entry.year}</span>
+              <span>{entry.event}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+    <p
+      data-fade
+      style="--fade-delay: 750ms"
+      class="font-display text-label text-muted-foreground mt-10 max-w-xl italic"
+    >
+      Each entry made the next one possible.
+    </p>
+  </div>
+</section>
+
+<style>
+  .origin-row {
+    color: var(--muted-foreground);
+  }
+  .origin-marker {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.55em;
+    border-radius: 9999px;
+    border: 1.5px solid currentColor;
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+  .origin-row[data-default-active='true'],
+  .origin-row[data-active='true'] {
+    color: var(--foreground);
+    border-color: var(--primary);
+  }
+  .origin-row[data-default-active='true'] .origin-marker,
+  .origin-row[data-active='true'] .origin-marker {
+    background-color: var(--primary);
+    border-color: var(--primary);
+  }
+  .origin-graph {
+    color: var(--muted-foreground);
+    width: 120px;
+    aspect-ratio: 100 / 180;
+    flex-shrink: 0;
+  }
+  .origin-graph-edges {
+    opacity: 0.5;
+  }
+  .origin-graph-nodes circle {
+    fill: currentColor;
+    stroke: none;
+    opacity: 0.5;
+  }
+  .origin-graph circle[data-default-active='true'],
+  .origin-graph circle[data-node-active='true'] {
+    fill: var(--primary);
+    opacity: 1;
+    r: 5;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .origin-row,
+    .origin-marker {
+      transition:
+        color 150ms ease-out,
+        background-color 150ms ease-out,
+        border-color 150ms ease-out;
+    }
+    .origin-graph circle,
+    .origin-graph-edges {
+      transition:
+        fill 200ms ease-out,
+        opacity 200ms ease-out;
+    }
+    .origin-graph[data-visible='true'] .origin-graph-edges line {
+      animation: origin-edge-draw 700ms ease-out both;
+    }
+    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(1) {
+      animation-delay: 150ms;
+    }
+    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(2),
+    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(3),
+    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(4) {
+      animation-delay: 300ms;
+    }
+    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(5),
+    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(6),
+    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(7) {
+      animation-delay: 500ms;
+    }
+    @keyframes origin-edge-draw {
+      from {
+        stroke-dashoffset: 1;
+      }
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .origin-graph .origin-graph-edges line {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('.origin-stage')
+  const list = stage?.querySelector<HTMLOListElement>('.origin-list')
+  if (stage && list) {
+    const rows = Array.from(
+      list.querySelectorAll<HTMLLIElement>('.origin-row'),
+    )
+    const nodes = Array.from(
+      stage.querySelectorAll<SVGCircleElement>('.origin-graph circle'),
+    )
+    const defaultIdx = Math.max(
+      0,
+      rows.findIndex((r) => r.dataset.defaultActive === 'true'),
+    )
+    let activeIdx = defaultIdx
+    let walkTimer: number | null = null
+
+    const setActive = (idx: number) => {
+      rows[activeIdx]?.removeAttribute('data-active')
+      nodes[activeIdx]?.removeAttribute('data-node-active')
+      rows[idx]?.setAttribute('data-active', 'true')
+      nodes[idx]?.setAttribute('data-node-active', 'true')
+      activeIdx = idx
+    }
+
+    const cancelWalk = () => {
+      if (walkTimer !== null) {
+        window.clearTimeout(walkTimer)
+        walkTimer = null
+      }
+    }
+
+    rows[defaultIdx]?.removeAttribute('data-default-active')
+    nodes[defaultIdx]?.removeAttribute('data-default-active')
+    setActive(defaultIdx)
+
+    const onEnter = (i: number) => () => {
+      cancelWalk()
+      setActive(i)
+    }
+
+    for (const [i, row] of rows.entries()) {
+      row.addEventListener('pointerenter', onEnter(i))
+      nodes[i]?.addEventListener('pointerenter', onEnter(i))
+    }
+
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+
+    const baseDelay = 40
+    const maxDelay = 160
+
+    stage.addEventListener('pointerleave', () => {
+      cancelWalk()
+      if (reduce || activeIdx === defaultIdx) {
+        setActive(defaultIdx)
+        return
+      }
+      const startDistance = Math.abs(activeIdx - defaultIdx)
+      const step = activeIdx > defaultIdx ? -1 : 1
+      let stepsTaken = 0
+
+      const scheduleNext = () => {
+        const progress = stepsTaken / startDistance
+        const delay = baseDelay + progress * progress * (maxDelay - baseDelay)
+        walkTimer = window.setTimeout(() => {
+          setActive(activeIdx + step)
+          stepsTaken += 1
+          if (activeIdx === defaultIdx) {
+            walkTimer = null
+          } else {
+            scheduleNext()
+          }
+        }, delay)
+      }
+
+      scheduleNext()
+    })
+  }
+</script>
