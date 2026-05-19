@@ -2,7 +2,7 @@
 
 Personal landing site for Eric Le. Live at https://erclx.dev.
 
-Astro v6 static build with React islands, Tailwind v4, and shadcn/ui. Deployed to Cloudflare Pages.
+Astro v6 static build with Tailwind v4 and shadcn/ui. Deployed to Cloudflare Pages.
 
 Where things live:
 
