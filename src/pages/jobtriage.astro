@@ -1,0 +1,478 @@
+---
+import BaseLayout from '@/layouts/base.astro'
+import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
+import SectionNav from '@/components/site/section-nav/section-nav.astro'
+
+const navItems = [
+  { id: 'problem', label: 'problem' },
+  { id: 'system', label: 'system' },
+  { id: 'retrieval', label: 'retrieval' },
+  { id: 'agent', label: 'agent' },
+]
+
+const deployTools = [
+  'lookupConcept',
+  'searchJobs',
+  'matchProfile',
+  'compareRoles',
+]
+
+const localTools = [
+  'hybrid retrieval',
+  'deadline filtering',
+  'engagement tracking',
+]
+
+const stack = [
+  { key: 'Frontend', value: 'Next.js App Router on Vercel, Vercel AI SDK' },
+  { key: 'Backend', value: 'FastAPI on Cloud Run europe-west1, 1Gi memory' },
+  {
+    key: 'Retrieval',
+    value: 'BM25 + multilingual-e5-base dense + RRF over SQLite',
+  },
+  {
+    key: 'BYOK',
+    value: 'Anthropic, OpenAI, Gemini, local Ollama, mock replay',
+  },
+  { key: 'Domain', value: 'Cloudflare A record fronting Vercel' },
+]
+
+const ablation = [
+  { config: 'filter-only', p1: '0.020', r10: '0.150', p95: '0.0' },
+  { config: 'bm25-only', p1: '0.680', r10: '0.920', p95: '1.2' },
+  { config: 'dense-only', p1: '0.780', r10: '0.965', p95: '7.8' },
+  { config: 'hybrid', p1: '0.720', r10: '0.950', p95: '15.2' },
+]
+
+const encoders = [
+  {
+    encoder: 'MiniLM (en)',
+    p1: '0.700',
+    r10: '0.855',
+    dim: '384',
+    p95: '4.2',
+  },
+  {
+    encoder: 'e5-base (ml)',
+    p1: '0.780',
+    r10: '0.965',
+    dim: '768',
+    p95: '6.0',
+  },
+  {
+    encoder: 'e5-large (ml)',
+    p1: '0.860',
+    r10: '0.945',
+    dim: '1024',
+    p95: '9.8',
+  },
+]
+
+const toolPairings = [
+  { data: 'searchJobs', spatial: 'placeAds' },
+  { data: 'triageBatch', spatial: 'groupAds' },
+  { data: 'matchProfile', spatial: 'connectProfileToAds' },
+  { data: 'compareRoles', spatial: 'pairAdsForCompare' },
+  { data: 'deadlineWatch', spatial: 'placeAdsOnTimeline' },
+  { data: 'trackStatus', spatial: 'markStatus' },
+]
+
+---
+
+<BaseLayout
+  title="Jobtriage case study · Eric Le"
+  description="Two postures share one agent shell. Hybrid retrieval, multilingual encoders, and pinned spatial tools behind the Jobtriage demo."
+>
+  <SectionNav items={navItems} instant />
+
+  <header
+    data-section="header"
+    class="border-border/60 flex items-center justify-between border-b px-6 py-4"
+  >
+    <a
+      href="/"
+      class="text-muted-foreground hover:text-foreground text-label inline-flex items-center gap-2 transition-colors"
+    >
+      <span aria-hidden="true">←</span>
+      Eric Le
+    </a>
+    <ThemeToggle />
+  </header>
+
+  <main>
+    <section class="px-6 pt-16 pb-12 md:pt-20 md:pb-16">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          case study
+        </p>
+        <h1
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+        >
+          Jobtriage
+        </h1>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="text-muted-foreground text-body mt-4 max-w-xl"
+        >
+          Live agent triages Swedish job ads against any profile.
+        </p>
+        <ul
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="mt-6 flex flex-wrap gap-x-6 gap-y-2"
+        >
+          <li>
+            <a
+              href="https://jobtriage.erclx.dev"
+              class="text-foreground text-label underline-offset-4 hover:underline"
+            >
+              Live demo
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/erclx/jobtriage"
+              class="text-foreground text-label underline-offset-4 hover:underline"
+            >
+              GitHub
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="problem" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          problem
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6 max-w-xl"
+        >
+          Job boards rank for the platform's monetization, not the candidate's
+          fit. Profile-driven match should be a first-class operation, not a
+          retrieval-as-a-feature bolt-on.
+        </p>
+      </div>
+    </section>
+
+    <section id="system" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          system
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6 max-w-xl"
+        >
+          Two postures share one agent shell. Same prompt, same tools,
+          different data path.
+        </p>
+
+        <figure
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="bg-card mt-10 rounded-lg p-6 md:p-10"
+        >
+          <div class="font-mono text-label flex flex-col items-center gap-6">
+            <div
+              class="border-border text-foreground rounded-md border px-4 py-2"
+            >
+              agent shell
+            </div>
+            <div
+              aria-hidden="true"
+              class="bg-border h-6 w-px"
+            >
+            </div>
+            <div
+              aria-hidden="true"
+              class="bg-border h-px w-3/4"
+            >
+            </div>
+            <div class="grid w-full grid-cols-1 gap-8 sm:grid-cols-2">
+              <div class="flex flex-col items-center gap-3">
+                <div
+                  aria-hidden="true"
+                  class="bg-border -mt-8 h-6 w-px"
+                >
+                </div>
+                <div
+                  class="text-muted-foreground tracking-wide uppercase"
+                >
+                  deploy
+                </div>
+                <ul
+                  class="border-border text-foreground flex flex-col gap-1 rounded-md border px-4 py-3 text-center"
+                >
+                  {deployTools.map((tool) => <li>{tool}</li>)}
+                </ul>
+                <div
+                  aria-hidden="true"
+                  class="bg-border h-6 w-px"
+                >
+                </div>
+                <div
+                  class="text-muted-foreground"
+                >
+                  live JobTech APIs
+                </div>
+              </div>
+              <div class="flex flex-col items-center gap-3">
+                <div
+                  aria-hidden="true"
+                  class="bg-border -mt-8 h-6 w-px"
+                >
+                </div>
+                <div
+                  class="text-muted-foreground tracking-wide uppercase"
+                >
+                  local
+                </div>
+                <ul
+                  class="border-border text-foreground flex flex-col gap-1 rounded-md border px-4 py-3 text-center"
+                >
+                  {localTools.map((tool) => <li>{tool}</li>)}
+                </ul>
+                <div
+                  aria-hidden="true"
+                  class="bg-border h-6 w-px"
+                >
+                </div>
+                <div
+                  class="text-muted-foreground"
+                >
+                  SQLite corpus
+                </div>
+              </div>
+            </div>
+          </div>
+        </figure>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="text-muted-foreground text-body mt-8 max-w-xl"
+        >
+          Deploy runs against the JobTech taxonomy and JobSearch APIs. Local
+          CLI and local dev run the hybrid retrieval stack against a SQLite
+          corpus.
+        </p>
+
+        <dl
+          data-fade data-visible="true"
+          style="--fade-delay: 450ms"
+          class="mt-10 grid gap-y-2 sm:grid-cols-[8rem_1fr]"
+        >
+          {
+            stack.map((row) => (
+              <div class="contents font-mono text-label">
+                <dt class="text-muted-foreground">{row.key}</dt>
+                <dd class="text-foreground">{row.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 550ms"
+          class="text-muted-foreground text-body mt-8 max-w-xl"
+        >
+          The mock-replay path lets a recruiter try the surface in five
+          seconds. BYOK lets a technical visitor drive the agent with their
+          own key. Most agent demos punt on both.
+        </p>
+      </div>
+    </section>
+
+    <section id="retrieval" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          retrieval
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6 max-w-xl"
+        >
+          50-query Swedish golden set against a 59-ad corpus from Spotify,
+          Klarna, Volvo Group, Volvo Cars, Ericsson, HT Engineering, Stig
+          Ericsson Bil, Montico, and Isaksson Rekrytering. Embeddings from
+          <code class="font-mono">intfloat/multilingual-e5-base</code>.
+        </p>
+
+        <figure
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+        >
+          <figcaption
+            class="text-muted-foreground font-mono text-label mb-4"
+          >
+            hybrid retrieval ablation
+          </figcaption>
+          <table class="font-mono text-label w-full min-w-[20rem]">
+            <thead>
+              <tr class="text-muted-foreground">
+                <th class="text-left font-normal">configuration</th>
+                <th class="text-right font-normal tabular-nums">P@1</th>
+                <th class="text-right font-normal tabular-nums">R@10</th>
+                <th class="text-right font-normal tabular-nums">p95 ms</th>
+              </tr>
+            </thead>
+            <tbody class="text-foreground">
+              {
+                ablation.map((row) => (
+                  <tr>
+                    <td class="py-1 pr-4">{row.config}</td>
+                    <td class="py-1 pl-4 text-right tabular-nums">{row.p1}</td>
+                    <td class="py-1 pl-4 text-right tabular-nums">{row.r10}</td>
+                    <td class="py-1 pl-4 text-right tabular-nums">
+                      {row.p95}
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </figure>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="text-muted-foreground text-body mt-6 max-w-xl"
+        >
+          Dense alone wins P@1 by 6 points over hybrid on this corpus. Hybrid
+          earns its place on adversarial queries where exact keyword matches
+          dominate (model names, employer jargon). An RRF score floor at
+          <code class="font-mono">JOBTRIAGE_RRF_FLOOR=0.025</code>
+          suppresses low-relevance noise at the API boundary.
+        </p>
+
+        <figure
+          data-fade data-visible="true"
+          style="--fade-delay: 450ms"
+          class="bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+        >
+          <figcaption
+            class="text-muted-foreground font-mono text-label mb-4"
+          >
+            multilingual encoder comparison (dense)
+          </figcaption>
+          <table class="font-mono text-label w-full min-w-[20rem]">
+            <thead>
+              <tr class="text-muted-foreground">
+                <th class="text-left font-normal">encoder</th>
+                <th class="text-right font-normal tabular-nums">P@1</th>
+                <th class="text-right font-normal tabular-nums">R@10</th>
+                <th class="text-right font-normal tabular-nums">dim</th>
+                <th class="text-right font-normal tabular-nums">p95 ms</th>
+              </tr>
+            </thead>
+            <tbody class="text-foreground">
+              {
+                encoders.map((row) => (
+                  <tr>
+                    <td class="py-1 pr-4">{row.encoder}</td>
+                    <td class="py-1 pl-4 text-right tabular-nums">{row.p1}</td>
+                    <td class="py-1 pl-4 text-right tabular-nums">{row.r10}</td>
+                    <td class="py-1 pl-4 text-right tabular-nums">{row.dim}</td>
+                    <td class="py-1 pl-4 text-right tabular-nums">
+                      {row.p95}
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </figure>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 550ms"
+          class="text-muted-foreground text-body mt-6 max-w-xl"
+        >
+          English-only MiniLM loses 11 points of recall@10 against e5-base on
+          the Swedish golden set. BM25 fusion recovers 7 of those points and
+          the 4-point residual gap holds. e5-large lifts P@1 by 8 points over
+          e5-base for roughly 70% more dense latency. The MiniLM dense numbers
+          run slightly suppressed because the e5 prefix tokens it never
+          trained on read as noise. The multilingual encoder choice was
+          load-bearing, not aesthetic.
+        </p>
+      </div>
+    </section>
+
+    <section id="agent" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          agent
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6 max-w-xl"
+        >
+          Spatial tool pairings are pinned in the system prompt. After every
+          data tool the agent fires a spatial tool. The canvas is the answer,
+          not a decoration.
+        </p>
+
+        <dl
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="mt-10 grid gap-y-2 sm:grid-cols-[1fr_auto_1fr]"
+        >
+          {
+            toolPairings.map((pair) => (
+              <div class="contents font-mono text-label">
+                <dt class="text-foreground">{pair.data}</dt>
+                <span
+                  aria-hidden="true"
+                  class="text-muted-foreground hidden sm:inline-block sm:px-4"
+                >
+                  →
+                </span>
+                <dd class="text-foreground">{pair.spatial}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="text-muted-foreground text-body mt-8 max-w-xl"
+        >
+          React Flow surfaces four canonical views: triage clusters, deadline
+          timeline, side-by-side compare, and pinned shortlist. Custom nodes
+          per view, not the React Flow defaults.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer
+    data-section="footer"
+    class="border-border/60 px-6 py-10 md:py-12"
+  >
+    <div class="border-border/60 mx-auto max-w-2xl border-t pt-10">
+      <a
+        href="/"
+        class="text-muted-foreground hover:text-foreground text-label inline-flex items-center gap-2 transition-colors"
+      >
+        <span aria-hidden="true">←</span>
+        Back to Eric Le
+      </a>
+    </div>
+  </footer>
+
+</BaseLayout>
