@@ -10,19 +10,6 @@ const navItems = [
   { id: 'agent', label: 'agent' },
 ]
 
-const deployTools = [
-  'lookupConcept',
-  'searchJobs',
-  'matchProfile',
-  'compareRoles',
-]
-
-const localTools = [
-  'hybrid retrieval',
-  'deadline filtering',
-  'engagement tracking',
-]
-
 const stack = [
   { key: 'Frontend', value: 'Next.js App Router on Vercel, Vercel AI SDK' },
   { key: 'Backend', value: 'FastAPI on Cloud Run europe-west1, 1Gi memory' },
@@ -45,27 +32,9 @@ const ablation = [
 ]
 
 const encoders = [
-  {
-    encoder: 'MiniLM (en)',
-    p1: '0.700',
-    r10: '0.855',
-    dim: '384',
-    p95: '4.2',
-  },
-  {
-    encoder: 'e5-base (ml)',
-    p1: '0.780',
-    r10: '0.965',
-    dim: '768',
-    p95: '6.0',
-  },
-  {
-    encoder: 'e5-large (ml)',
-    p1: '0.860',
-    r10: '0.945',
-    dim: '1024',
-    p95: '9.8',
-  },
+  { encoder: 'MiniLM (en)', p1: '0.700', r10: '0.855', dim: '384' },
+  { encoder: 'e5-base (ml)', p1: '0.780', r10: '0.965', dim: '768' },
+  { encoder: 'e5-large (ml)', p1: '0.860', r10: '0.945', dim: '1024' },
 ]
 
 const toolPairings = [
@@ -208,20 +177,10 @@ const toolPairings = [
                 >
                   deploy
                 </div>
-                <ul
-                  class="border-border text-foreground flex flex-col gap-1 rounded-md border px-4 py-3 text-center"
-                >
-                  {deployTools.map((tool) => <li>{tool}</li>)}
-                </ul>
                 <div
-                  aria-hidden="true"
-                  class="bg-border h-6 w-px"
+                  class="border-border text-foreground rounded-md border px-4 py-3 text-center"
                 >
-                </div>
-                <div
-                  class="text-muted-foreground"
-                >
-                  live JobTech APIs
+                  JobTech taxonomy and JobSearch APIs
                 </div>
               </div>
               <div class="flex flex-col items-center gap-3">
@@ -235,20 +194,10 @@ const toolPairings = [
                 >
                   local
                 </div>
-                <ul
-                  class="border-border text-foreground flex flex-col gap-1 rounded-md border px-4 py-3 text-center"
-                >
-                  {localTools.map((tool) => <li>{tool}</li>)}
-                </ul>
                 <div
-                  aria-hidden="true"
-                  class="bg-border h-6 w-px"
+                  class="border-border text-foreground rounded-md border px-4 py-3 text-center"
                 >
-                </div>
-                <div
-                  class="text-muted-foreground"
-                >
-                  SQLite corpus
+                  SQLite corpus, hybrid retrieval stack
                 </div>
               </div>
             </div>
@@ -373,7 +322,6 @@ const toolPairings = [
                 <th class="text-right font-normal tabular-nums">P@1</th>
                 <th class="text-right font-normal tabular-nums">R@10</th>
                 <th class="text-right font-normal tabular-nums">dim</th>
-                <th class="text-right font-normal tabular-nums">p95 ms</th>
               </tr>
             </thead>
             <tbody class="text-foreground">
@@ -384,9 +332,6 @@ const toolPairings = [
                     <td class="py-1 pl-4 text-right tabular-nums">{row.p1}</td>
                     <td class="py-1 pl-4 text-right tabular-nums">{row.r10}</td>
                     <td class="py-1 pl-4 text-right tabular-nums">{row.dim}</td>
-                    <td class="py-1 pl-4 text-right tabular-nums">
-                      {row.p95}
-                    </td>
                   </tr>
                 ))
               }
@@ -400,12 +345,10 @@ const toolPairings = [
           class="text-muted-foreground text-body mt-6 max-w-xl"
         >
           English-only MiniLM loses 11 points of recall@10 against e5-base on
-          the Swedish golden set. BM25 fusion recovers 7 of those points and
-          the 4-point residual gap holds. e5-large lifts P@1 by 8 points over
-          e5-base for roughly 70% more dense latency. The MiniLM dense numbers
-          run slightly suppressed because the e5 prefix tokens it never
-          trained on read as noise. The multilingual encoder choice was
-          load-bearing, not aesthetic.
+          the Swedish golden set. e5-large lifts P@1 by another 8 points over
+          e5-base. The MiniLM dense numbers run slightly suppressed because the
+          e5 prefix tokens it never trained on read as noise. The multilingual
+          encoder choice was load-bearing, not aesthetic.
         </p>
       </div>
     </section>
