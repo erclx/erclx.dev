@@ -9,6 +9,7 @@ Per-surface ASCII layouts loaded on demand
 
 - [Footer](footer.md): Bottom of the page. Carries a downloadable résumé link plus a copyright line.
 - [Header](header.md): Top-of-page band on every viewport. Carries identity, status, headline, narrative, and primary contact links.
+- [Jobtriage case study](jobtriage.md): Long-form sub-page at /jobtriage that surfaces the problem framing, system posture, retrieval evaluation, agent loop, and queued improvements for the Jobtriage retrieval agent.
 - [Looking-for](looking-for.md): Sits below the projects section as the page's closing call to action. System-card surfacing recruit-funnel criteria.
 - [Origin](origin.md): Career git-log timeline that bridges the hero narrative into the projects section.
 - [Page](page.md): Single page at /. Five sections stack vertically inside the body.

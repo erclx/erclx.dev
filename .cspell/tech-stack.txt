@@ -17,6 +17,7 @@ FOUT
 Fraunces
 frontmatter
 iconify
+intfloat
 jsdom
 jsxSingleQuote
 labelledby
@@ -34,6 +35,7 @@ noreferrer
 ntvs
 nums
 oklch
+Ollama
 parallelizable
 pipefail
 pointerenter
@@ -50,6 +52,7 @@ sonner
 subfolders
 tabindex
 timonwong
+Vercel
 viewports
 visibilitychange
 vitest

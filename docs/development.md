@@ -12,7 +12,8 @@ Local dev workflow for this project.
 ```plaintext
 src/
 ├── pages/
-│   └── index.astro      ← single page, composes layout and sections
+│   ├── index.astro      ← landing page, composes layout and sections
+│   └── jobtriage.astro  ← Jobtriage case-study sub-page at /jobtriage
 ├── layouts/
 │   └── base.astro       ← html shell, font preload, first-paint theme script
 ├── components/
