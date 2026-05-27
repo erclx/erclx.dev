@@ -41,8 +41,8 @@ Appears below the header. Lists shipped tools as cards stacked in a single colum
 
 ## Editorial numerals
 
-Each project card carries a Fraunces 600 numeral such as `01` or `02` positioned per card, set in `--foreground` and dimmed via alpha so it reads as ambient typography rather than a label. At `lg`+ the numeral hangs in the side margin of the card, left of the first column and right of the second, at 0.40 alpha, ~8rem, with a 3rem outdent so the visible margin portion has weight without becoming a label. Below `lg` the grid collapses to one column and the numeral sits behind the card content at 0.15 alpha and ~5rem. The element is `aria-hidden`, `pointer-events-none`, and `select-none` so it never disrupts reading order or interaction.
+Each project card carries a large Fraunces numeral (`01`, `02`, ...) dimmed so it reads as ambient typography rather than a label. On wide viewports the numeral hangs partly into the card's side margin so the visible portion has weight without becoming a label. On narrow viewports it sits faintly behind the card content. The numeral is decorative, hidden from assistive tech and non-interactive, so it never disrupts reading order.
 
 ## Card media and tilt
 
-For the per-card hover-play video and parallax tilt, see `.claude/context/project-cards.md`. Visual budget: dark MP4 ≤500kb at 720p, poster as a dark PNG, video fades in over 200ms once playback starts, media slot uses rounded inner corners with a hairline ring and soft shadow on a light surface inset.
+For the per-card hover-play video and parallax tilt, see `.claude/context/project-cards.md`.
