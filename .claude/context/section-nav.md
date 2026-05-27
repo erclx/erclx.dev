@@ -15,7 +15,7 @@ description: Scroll-position tracking, reveal gates, and click-lock behind the s
 
 ## Near-bottom override
 
-When `scrollY + innerHeight` reaches `document.documentElement.scrollHeight`, the handler forces the active label to the last section. Without it, a page that bottoms out before the final section crosses the 30% anchor would never mark that section active.
+When `scrollY + innerHeight` reaches `document.documentElement.scrollHeight - 4` (a 4px tolerance for sub-pixel scroll positions), the handler forces the active label to the last section. Without it, a page that bottoms out before the final section crosses the 30% anchor would never mark that section active.
 
 ## Click-intent lock
 

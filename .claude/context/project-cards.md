@@ -25,7 +25,7 @@ The projects section. Cards render statically from a config array in `projects.a
 ## Visual budget
 
 - One muted MP4 per project, dark theme only, ≤500kb, 720p, h.264 baseline. Poster is a single dark PNG extracted from the same clip.
-- Poster sits underneath the video. Video fades in over 200ms once playback starts.
+- Poster sits underneath the video. The video transitions from opacity 0 to opacity 100 over 200ms on card hover via CSS. `project-media.ts` calls `play()` in parallel on `pointerenter`, so the fade runs even if `play()` is rejected.
 - Media slot frames the dark clip as embedded media so it sits cleanly on either page theme: rounded inner corners, hairline ring, soft shadow, light surface inset.
 
 ## Hidden contracts

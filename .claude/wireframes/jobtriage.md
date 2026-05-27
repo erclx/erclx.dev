@@ -29,15 +29,15 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   │                ┌ agent shell ┐                       │     │
 │   │            ┌───────────┴───────────┐                 │     │
 │   │     ┌ deploy ──────────┐   ┌ local ───────────┐      │     │
-│   │     │ JobTech taxonomy  │   │ SQLite corpus,    │      │     │
-│   │     │ + JobSearch APIs  │   │ hybrid retrieval  │      │     │
+│   │     │ JobTech taxonomy   │   │ SQLite corpus,    │      │     │
+│   │     │ and JobSearch APIs │   │ hybrid retrieval  │      │     │
 │   │     └───────────────────┘   └───────────────────┘      │     │
 │   └──────────────────────────────────────────────────────┘     │
 │   Same prompt, same tools, different data path.               │
 │                                                                │
 │   Frontend: Next.js App Router on Vercel, Vercel AI SDK       │  ← stack list, mono
 │   Backend: FastAPI on Cloud Run europe-west1, 1Gi memory      │
-│   Retrieval: BM25 + multilingual-e5-base dense + RRF / SQLite │
+│   Retrieval: BM25 + multilingual-e5-base dense + RRF over SQLite │
 │   BYOK: Anthropic, OpenAI, Gemini, local Ollama, mock replay  │
 │   Domain: Cloudflare A record fronting Vercel                 │
 ├────────────────────────────────────────────────────────────────┤

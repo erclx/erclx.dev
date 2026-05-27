@@ -10,14 +10,14 @@ Appears below the projects section as the page's closing call to action. Sits on
 ## Desktop (≥768px)
 
 ```plaintext
-┌──────────────────────────────────────────────────┐
-│  looking-for                                     │
-│                                                  │
-│  roles         AI tooling · LLM apps · devex     │
-│  setup         small to mid teams · GBG/remote   │
-│  level         junior to mid                     │
-│  terms         full-time or contract             │
-└──────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│  looking-for                                             │
+│                                                          │
+│  roles         AI tooling · LLM apps · devex             │
+│  setup         small to mid teams · Gothenburg or remote │
+│  level         junior to mid                             │
+│  terms         full-time or contract                     │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ## Behavior

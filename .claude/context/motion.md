@@ -20,7 +20,7 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 - Hovering a row transfers the highlight. On `pointerleave` of the stage wrapper the highlight walks back row by row to the first row. Step delays follow a quadratic ease-out from 40ms to 160ms so the highlight reads as a ball settling, not a constant march.
 - The SVG career graph extends the same script: `setActive(idx)` toggles `[data-active]` on the row and `[data-node-active]` on the matching graph node. Hover works from either side. The `pointerleave` listener sits on the wrapper containing both list and graph so crossing between them does not trigger the walk-back.
 - The 2px left border, marker fill, and color shift transition at 150ms ease-out. A negative left margin compensates for the border-side padding so content does not shift.
-- Graph edges animate `stroke-dashoffset` from 1 to 0 in three batches (trunk 150ms, branches 300ms, converges 500ms) so the DAG reads as building from the foundation up. Reduced motion renders edges at full length.
+- Graph edges animate `stroke-dashoffset` from 1 to 0 with a single 700ms ease-out draw, staggered in three batches via `animation-delay` (trunk at 150ms, branches at 300ms, converges at 500ms) so the DAG reads as building from the foundation up. Reduced motion renders edges at full length.
 
 ## Footer signature wipe
 
@@ -31,6 +31,6 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 
 ## Header H1 annotation
 
-- One phrase in the hero H1 carries a `rough-notation` underline drawn ~950ms after the H1 fade settles, once per page load, never replayed.
-- The library imports dynamically from a client `<script>` so it executes browser-only. The stroke uses `--foreground`.
+- One phrase in the hero H1 carries a `rough-notation` underline drawn ~950ms after the H1 enters the viewport (roughly 100ms after the fade settles), once per page load, never replayed.
+- The library imports dynamically from a client `<script>` so it executes browser-only. The stroke uses `currentColor`, which inherits the H1's foreground text color.
 - Skipped entirely under `prefers-reduced-motion: reduce`. Only one phrase per page may carry an annotation, by editorial rule.
