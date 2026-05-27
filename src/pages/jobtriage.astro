@@ -346,9 +346,11 @@ const toolPairings = [
         >
           English-only MiniLM loses 11 points of recall@10 against e5-base on
           the Swedish golden set. e5-large lifts P@1 by another 8 points over
-          e5-base. The MiniLM dense numbers run slightly suppressed because the
-          e5 prefix tokens it never trained on read as noise. The multilingual
-          encoder choice was load-bearing, not aesthetic.
+          e5-base but gives back two points of recall@10, so e5-base ships as
+          the balanced default. The MiniLM dense numbers run slightly
+          suppressed because the e5 prefix tokens it never trained on read as
+          noise. The multilingual encoder choice was load-bearing, not
+          aesthetic.
         </p>
       </div>
     </section>

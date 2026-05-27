@@ -21,7 +21,7 @@ How the page picks and switches between light and dark. Spans `src/layouts/base.
 - In `system` mode, a `matchMedia('(prefers-color-scheme: dark)')` listener re-applies the resolved theme whenever the OS preference flips while the page is open.
 - The button uses the native browser `title="Cycle theme"` attribute as its hover tooltip. The matching `aria-label` carries the same string for screen readers. The shadcn `Tooltip` primitive was dropped along with the React island.
 - The first-paint script also writes `documentElement.dataset.js = 'true'`. Styles can key off `[data-js]` for progressive enhancement without flashing the no-JS state.
-- The `localStorage` key is `theme`. Stored values are `light` or `dark`. The first-paint script treats anything else (including the literal `system`) as "no explicit preference, fall back to system" and the toggle script removes the key when transitioning into `system` mode.
+- The `localStorage` key is `theme`. Valid stored values are `light`, `dark`, or `system`. The toggle removes the key when transitioning into `system` mode, so the literal `system` value normally never gets written. The first-paint script falls back to `system` for any missing or invalid value.
 
 ## Hidden contracts
 
