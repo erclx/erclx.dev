@@ -69,6 +69,21 @@ For the rationale behind these choices (Astro over Next, shadcn install path, fo
 | `bun run test:e2e`      | Run Playwright E2E tests.                                                                                                       |
 | `bun run screenshot`    | Build, preview, then capture screenshots. Pass `SCREENSHOT_FILTER=<section>[,<section>]` to limit capture to specific sections. |
 
+## Visual verification
+
+Keep `bun run dev` running in the background during landing-page sessions so changes are visible at http://localhost:4321 as they land.
+
+- `bun run screenshot` builds, then binds its own preview server on port 4173 via `scripts/screenshot.sh`. The separate port keeps it from colliding with the dev server on 4321, and the script hard-exits if its port is already taken.
+- `SCREENSHOT_FILTER=<section>[,<section>]` limits capture to `header`, `origin`, `projects`, `looking-for`, or `footer`.
+- Captures land in `.claude/review/screenshots/` (gitignored), named `<route>--<theme>.png`. Both themes render: `--light` by default and `--dark` via `emulateMedia`.
+
+## Playwright MCP
+
+Registered in `.mcp.json`, running via `bunx @playwright/mcp@latest`.
+
+- Reach for a screenshot when checking pure layout, or content against a canonical source.
+- Reach for Playwright MCP when the page has to react to input: hover states, responsive viewports, link clicks, computed-style inspection, accessibility.
+
 ## Shell scripts
 
 All `.sh` files live under `scripts/`. Do not place shell scripts outside `scripts/`.
