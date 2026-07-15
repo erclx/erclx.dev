@@ -7,6 +7,9 @@ subtitle: Per-domain narrative loaded on demand
 
 Per-domain narrative loaded on demand
 
+- [CI](ci.md): GitHub Actions workflow triggers and checks
+- [Deployment](deployment.md): Cloudflare Pages deploy pipeline, domain setup, and secret rotation
+- [Development](development.md): Local dev workflow, scripts, and husky hooks
 - [Flow field](flow-field.md): Hand-rolled particle canvas behind the header with cursor force and reduced-motion fallback
 - [Motion](motion.md): Scroll-reveal cascade primitive and the per-surface animations on the landing page
 - [Project cards](project-cards.md): Static Astro card rendering with hover-play video and parallax tilt as vanilla TS modules

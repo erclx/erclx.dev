@@ -16,11 +16,11 @@
 - Match edit scope to the request. Ship minimal v1 and queue extensions as follow-ups. Edit only what the user named on simplification requests. Do not add features they did not ask for.
 - When rewriting a section, preserve existing code blocks, tables, and grouped examples unless the user asked to remove them.
 - When planning an edit to `CLAUDE.md`, show the proposed change as a fenced `diff` block in chat first, then wait for approval before calling `Edit`.
-- This is a public repo. Do not write personal names into READMEs, `docs/`, `.claude/` planning docs, source comments, or commit messages. Use neutral phrasing like "the user", "a recruiter", or "a local file". Brief content under `.tmp/` is local context, not output.
+- This is a public repo. Do not write personal names into READMEs, `.claude/` planning docs and context entries, source comments, or commit messages. Use neutral phrasing like "the user", "a recruiter", or "a local file". Brief content under `.tmp/` is local context, not output.
 - Do not cite `.claude/` paths (TASKS.md, plans, review, .tmp) from PR bodies, READMEs, or other artifacts a reviewer reads. Inline the context or use neutral phrasing like "queued as a follow-up".
 - For deploy infrastructure (Vercel, Cloudflare), prefer CLI over the dashboard. Run inspection, redeploy, env-var, and domain commands from Bash rather than asking the user to click through. Confirm before destructive operations (delete project, force-push production, change live DNS).
 - Before any multi-path `rm` or `rm -rf`, list every target path in chat and wait for explicit confirmation. "Clean up X" authorizes a different destructive action than a previous one, never a blanket nuke.
-- Before proposing a new doc home for a convention (screenshot output path, fixture format, scratch convention), grep `CLAUDE.md` and `docs/` for the topic. Extend the existing entry over creating a new section.
+- Before proposing a new doc home for a convention (screenshot output path, fixture format, scratch convention), grep `CLAUDE.md` and `.claude/context/` for the topic. Extend the existing entry over creating a new section.
 
 ## Indexes
 
@@ -30,13 +30,13 @@
 
 ## Markdown
 
-- When editing any markdown file, follow `standards/prose.md`.
-- Before writing or editing an artifact with a matching standard in `standards/` (READMEs, PRs, commits, branches, snippets, skills, prose), read that file first and follow it.
-- When editing `README.md`, follow `standards/readme.md`. Keep it user-facing. Technical detail belongs in `docs/` or `.claude/`.
+- When editing any markdown file, follow `.claude/standards/prose.md`.
+- Before writing or editing an artifact with a matching standard in `.claude/standards/` (READMEs, PRs, commits, branches, snippets, skills, prose), read that file first and follow it.
+- When editing `README.md`, follow `.claude/standards/readme.md`. Keep it user-facing. Technical detail belongs in `.claude/context/`.
 
 ## Commands
 
-- Run `bun run check` before committing. Full script reference in `docs/development.md`.
+- Run `bun run check` before committing. Full script reference in `.claude/context/development.md`.
 
 ## Shipping
 
@@ -78,6 +78,9 @@
 
 - `src/`: Astro source for the single-page site (pages, layouts, components, styles, assets)
 - `.claude/`: planning docs (requirements, architecture, wireframes, design, tasks)
+- `.claude/context/`: per-domain narrative (how a domain is structured, decisions, gotchas), indexed via `.claude/context/index.md`
+- `.claude/standards/`: authoring conventions for prose, commits, PRs, and the `.claude/` docs themselves
+- `.claude/snippets/`: reusable prompts invoked with `@`
 - `.claude/review/`: gitignored scratch for review and UI-test output, overwritten on each run
 - `.claude/TASKS.md`: gitignored task board
 
