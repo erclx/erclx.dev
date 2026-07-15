@@ -73,16 +73,11 @@ For the rationale behind these choices (Astro over Next, shadcn install path, fo
 
 Keep `bun run dev` running in the background during landing-page sessions so changes are visible at http://localhost:4321 as they land.
 
-- `bun run screenshot` builds, then binds its own preview server on port 4173 via `scripts/screenshot.sh`. The separate port keeps it from colliding with the dev server on 4321, and the script hard-exits if its port is already taken.
+- `bun run screenshot` builds, then binds its own preview server on port 4173 via `scripts/screenshot.sh`. The separate port keeps it clear of the dev server on 4321, and the script exits rather than reuse a port already serving.
 - `SCREENSHOT_FILTER=<section>[,<section>]` limits capture to `header`, `origin`, `projects`, `looking-for`, or `footer`.
-- Captures land in `.claude/review/screenshots/` (gitignored), named `<route>--<theme>.png`. Both themes render: `--light` by default and `--dark` via `emulateMedia`.
+- Each run covers three viewports (`desktop`, `mobile`, `narrow`) in both themes, so a full sweep is 30 images and a single-section filter is 6.
 
-## Playwright MCP
-
-Registered in `.mcp.json`, running via `bunx @playwright/mcp@latest`.
-
-- Reach for a screenshot when checking pure layout, or content against a canonical source.
-- Reach for Playwright MCP when the page has to react to input: hover states, responsive viewports, link clicks, computed-style inspection, accessibility.
+For the per-section capture model and its output path, see `.claude/ARCHITECTURE.md` § Screenshots capture per-section, not full-page. For when to reach for Playwright MCP over a static capture, see § Playwright MCP for interactive verification in the same file.
 
 ## Shell scripts
 

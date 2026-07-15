@@ -8,6 +8,12 @@ For the source layout, test layout, and config-file inventory, see `.claude/cont
 
 ## Key technical decisions
 
+### Agent context split across three tiers under `.claude/`
+
+`CLAUDE.md` holds only always-load behavior. Path-scoped coding rules live in `.claude/rules/*.md` and load when a file matches their `paths:` glob. Per-domain narrative lives in `.claude/context/<domain>.md` and loads on demand through `.claude/context/index.md`. Standards and snippets sit at `.claude/standards/` and `.claude/snippets/`, where toolkit rules and skills resolve them.
+
+The root `docs/`, `standards/`, and `snippets/` folders are gone. Nothing in `docs/` served a visitor, so all three entries moved to `.claude/context/`. Toolkit standards are the source of truth and are reinstalled from source rather than hand-edited, with project customizations re-applied on top after each install.
+
 ### Astro over Next or a static React app
 
 Astro renders zero JS by default. The page is mostly prose and links, so shipping React on every visit would waste bytes. React only loads where an island opts in via `client:*`. Next would force a runtime model the site does not need.
