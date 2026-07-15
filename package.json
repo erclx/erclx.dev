@@ -30,7 +30,7 @@
     "test:e2e:report": "playwright show-report",
     "check:full": "./scripts/verify.sh && bun run test:e2e",
     "setup": "./scripts/setup.sh",
-    "screenshot": "PREVIEW_PORT=4321 bash scripts/screenshot.sh"
+    "screenshot": "bash scripts/screenshot.sh"
   },
   "dependencies": {
     "@fontsource-variable/fraunces": "^5.2.9",
