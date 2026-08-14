@@ -26,9 +26,11 @@ The v3 Astro integration is deprecated. v4 ships as a Vite plugin and reads its 
 
 Radix primitives provide accessible interactive components without locking in a design system. Nova ships a usable starting set of tokens and Lucide icons. Components live in `src/components/ui/` under repo ownership, so the team can edit them directly without forking a package.
 
-### Content sourced via SYNC-QUEUE.md
+### Content sourced through the task board
 
-Page copy is canonical in the parent career repo, never authored here. Updates land in `.claude/briefs/SYNC-QUEUE.md` as full text. This prevents drift between Linkedin, the resume, the github profile, and the live page.
+Page copy is canonical in the parent career repo, never authored here. Updates arrive as task files under `.claude/tasks/` carrying the replacement text in full. This prevents drift between Linkedin, the resume, the github profile, and the live page.
+
+An earlier design routed them through a single `.claude/briefs/SYNC-QUEUE.md`. That file was never created, the queue ran through the task board in practice, and the briefs folder was removed on 2026-08-14 once both surfaces agreed.
 
 ### Critical fonts preloaded via Vite ?url imports
 

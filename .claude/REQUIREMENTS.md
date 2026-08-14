@@ -36,6 +36,6 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 ## Constraints
 
-- Content is downstream of the parent career repo. After v1, page copy lands via `.claude/briefs/SYNC-QUEUE.md` and is never edited in place here.
+- Content is downstream of the parent career repo. After v1, page copy lands as a task file under `.claude/tasks/` and is never edited in place here.
 - Static rendering by default. Components opt into client-side hydration via `client:*` directives.
 - Single page at the apex. No additional routes without a goal change.
