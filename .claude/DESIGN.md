@@ -2,11 +2,7 @@
 
 ## Personality
 
-Senior-IC engineering depth made visible. A first-time visitor should hit a "this person can build" moment within the first scroll, carried by hand-coded ambient and editorial motion rather than copy or claims. Default to algorithmic or hand-drawn pieces with visible engineering depth.
-
-Preset-library shortcuts are rejected at proposal time: mesh-gradient generators, off-the-shelf shader presets, drop-in animation packs. They read as the default AI-era visual and undercut the engineering signal the page is trying to send.
-
-Tasteful-quiet editorial restraint is the wrong floor for this page. Generous whitespace and disciplined typography still anchor the reading experience, but they frame the woah moments rather than replace them. Serif display headings give weight without nostalgia. Two impressions, in this order: this is a polished portfolio, and this person hand-built every layer of it.
+Engineering depth made visible. The page should read as hand-built rather than assembled, carried by ambient and editorial motion rather than by copy or claims. Preset-library shortcuts are rejected at proposal time, since mesh-gradient generators, off-the-shelf shader presets, and drop-in animation packs read as the default AI-era visual. Generous whitespace and disciplined typography anchor the reading experience and frame that motion rather than replace it, with serif display headings giving weight without nostalgia.
 
 ## Color
 
