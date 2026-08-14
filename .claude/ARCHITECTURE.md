@@ -4,9 +4,15 @@
 
 Static Astro site that renders one page at the erclx.dev apex. The build emits HTML, CSS, and a small JS bundle for any interactive islands. Content is authored once in the parent career repo and flows here through a sync queue.
 
-For the source layout, test layout, and config-file inventory, see `docs/development.md` § Project layout.
+For the source layout, test layout, and config-file inventory, see `.claude/context/development.md` § Project layout.
 
 ## Key technical decisions
+
+### Agent context split across three tiers under `.claude/`
+
+`CLAUDE.md` holds only always-load behavior. Path-scoped coding rules live in `.claude/rules/*.md` and load when a file matches their `paths:` glob. Per-domain narrative lives in `.claude/context/<domain>.md` and loads on demand through `.claude/context/index.md`. Standards and snippets sit at `.claude/standards/` and `.claude/snippets/`, where toolkit rules and skills resolve them.
+
+The root `docs/`, `standards/`, and `snippets/` folders are gone. Nothing in `docs/` served a visitor, so all three entries moved to `.claude/context/`. Toolkit standards are the source of truth and are reinstalled from source rather than hand-edited, with project customizations re-applied on top after each install.
 
 ### Astro over Next or a static React app
 

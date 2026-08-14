@@ -1,13 +1,20 @@
-# Project
+# erclx.dev
 
-[One-line description]
-
-@.claude/LOCAL.md
+Personal landing site. Astro v6 static build with Tailwind v4, deployed to Cloudflare Pages at https://erclx.dev.
 
 ## Context
 
-- Check `.claude/` state docs (`TASKS.md`, `ARCHITECTURE.md`, `REQUIREMENTS.md`, `DESIGN.md`, `wireframes/`) for context before making changes, when present. The `claude-feature` skill reads them in parallel when planning a feature.
-- Coding standards live in `.claude/rules/` and load automatically. Always-on rules apply every session. Path-scoped rules apply to files matching their `paths:` glob.
+The project uses a three-tier context model. Know which tier holds what before reading or writing:
+
+- Always loaded: root `CLAUDE.md`, `.claude/REQUIREMENTS.md`, `.claude/ARCHITECTURE.md`, and the `.claude/context/index.md` and `.claude/wireframes/index.md` discovery anchors. Project-wide invariants, product scope, and the anchors for on-demand domain and surface context.
+- Path-scoped lazy: `.claude/rules/*.md` with `paths:` frontmatter. Coding standards that load only when files matching the glob are touched. Always-on rules apply every session.
+- On-demand lookup: `.claude/context/<domain>.md` entries and `.claude/wireframes/<surface>.md` surfaces. Per-domain narrative and per-surface layout, loaded only when that domain or surface is touched. Use the always-loaded index files to pick which to read.
+
+@.claude/LOCAL.md
+@.claude/REQUIREMENTS.md
+@.claude/ARCHITECTURE.md
+@.claude/context/index.md
+@.claude/wireframes/index.md
 
 ## Behavior
 
@@ -16,27 +23,28 @@
 - Match edit scope to the request. Ship minimal v1 and queue extensions as follow-ups. Edit only what the user named on simplification requests. Do not add features they did not ask for.
 - When rewriting a section, preserve existing code blocks, tables, and grouped examples unless the user asked to remove them.
 - When planning an edit to `CLAUDE.md`, show the proposed change as a fenced `diff` block in chat first, then wait for approval before calling `Edit`.
-- This is a public repo. Do not write personal names into READMEs, `docs/`, `.claude/` planning docs, source comments, or commit messages. Use neutral phrasing like "the user", "a recruiter", or "a local file". Brief content under `.tmp/` is local context, not output.
+- This is a public repo. Do not write personal names into READMEs, `.claude/` planning docs and context entries, source comments, or commit messages. Use neutral phrasing like "the user", "a recruiter", or "a local file". Brief content under `.tmp/` is local context, not output.
 - Do not cite `.claude/` paths (TASKS.md, plans, review, .tmp) from PR bodies, READMEs, or other artifacts a reviewer reads. Inline the context or use neutral phrasing like "queued as a follow-up".
 - For deploy infrastructure (Vercel, Cloudflare), prefer CLI over the dashboard. Run inspection, redeploy, env-var, and domain commands from Bash rather than asking the user to click through. Confirm before destructive operations (delete project, force-push production, change live DNS).
 - Before any multi-path `rm` or `rm -rf`, list every target path in chat and wait for explicit confirmation. "Clean up X" authorizes a different destructive action than a previous one, never a blanket nuke.
-- Before proposing a new doc home for a convention (screenshot output path, fixture format, scratch convention), grep `CLAUDE.md` and `docs/` for the topic. Extend the existing entry over creating a new section.
+- Before proposing a new doc home for a convention (screenshot output path, fixture format, scratch convention), grep `CLAUDE.md` and `.claude/context/` for the topic. Extend the existing entry over creating a new section.
 
 ## Indexes
 
 - When a folder has an `index.md`, check it before reading individual files in that folder.
 - For folders where an agent browses to pick a document, `index.md` is regenerated from each file's frontmatter. Do not hand-edit `index.md`. Code folders and scratch folders do not need one.
 - Every `index.md` carries its own frontmatter (`title`, `subtitle`) that the walker preserves. To keep a folder's `index.md` hand-edited, add `auto: false` to its frontmatter.
+- Before searching source in a domain or touching a UI surface, consult the relevant `index.md` (`.claude/context/`, `.claude/wireframes/`) and read the matching entry first. It orients faster than a blind grep.
+- When a diff adds a new top-level source domain folder, draft its `.claude/context/<domain>.md` entry at ship time per `.claude/standards/context.md`. `claude-docs` only refreshes existing entries and never auto-creates.
 
 ## Markdown
 
-- When editing any markdown file, follow `standards/prose.md`.
-- Before writing or editing an artifact with a matching standard in `standards/` (READMEs, PRs, commits, branches, snippets, skills, prose), read that file first and follow it.
-- When editing `README.md`, follow `standards/readme.md`. Keep it user-facing. Technical detail belongs in `docs/` or `.claude/`.
+- Before writing a PR, commit, branch name, or snippet, read its standard in `.claude/standards/` and follow it. File-edit standards (prose, README, context, wireframes, skills, rules) route automatically via `.claude/rules/claude/`.
+- Keep `README.md` user-facing. Technical detail belongs in `.claude/context/`.
 
 ## Commands
 
-- Run `bun run check` before committing. Full script reference in `docs/development.md`.
+- Run `bun run check` before committing. Full script reference in `.claude/context/development.md`.
 
 ## Shipping
 
@@ -46,20 +54,6 @@
 - After a local commit on a feature branch, stop and hand control back. Push only when the user signals after browser verification. User-invoked skills that push by design (`/toolkit:git-ship`, `/toolkit:git-followup`) are exempt for that invocation only. Manual edits made between skill invocations require a fresh push signal.
 - Hold the diff in the worktree across multi-step flows. Do not commit between visual-tuning iterations or between items in a multi-item batch. Commit on explicit ship signal and use `/toolkit:git-stage` to split into focused commits at that point.
 - When `public/resume.pdf` shows modified, it is an upstream résumé sync, not a stray edit. Always include it in the commit set as its own `chore(assets): sync resume pdf` commit. Do not stop and flag it as out of scope.
-- After pushing a UI branch and stopping short of opening the PR, end with the running dev-server URL and a 4-7 item visual-review checklist (hierarchy, breakpoints, animation triggers, dark mode, narrow-viewport overflow, regressions).
-
-## Local development
-
-- Keep `bun run dev` running in the background on port 4321 during landing-page sessions so visual changes are immediately visible at http://localhost:4321.
-- Screenshots run through `bun run screenshot` and bind a separate preview server on port 4173 (`PREVIEW_PORT=4173 bash scripts/screenshot.sh`) so they do not collide with the dev server.
-- Pass `SCREENSHOT_FILTER=<section>[,<section>]` to limit capture to specific sections (`header`, `origin`, `projects`, `looking-for`, `footer`). Use it on targeted polish loops so only the touched sections re-snap. Omit it for full-page verification before a PR.
-- Outputs land in `.claude/review/screenshots/` (gitignored), named `<route>--<theme>.png`. Read them with the Read tool to verify changes. Both themes render: `--light` by default and `--dark` via `emulateMedia`.
-
-## UI conventions
-
-- Outbound links default to same-tab. Use `target="_blank" rel="noopener"` only when the link opens a long-form resource the visitor likely wants to keep open while the page stays in another tab (resume PDFs, long-form articles).
-- Before proposing a UI change, read the current `.claude/review/screenshots/` for the surfaces involved. ASCII wireframes do not capture color, weight, or visual-element collisions. Rendered captures do.
-- After editing any file under `src/components/`, `src/layouts/`, `src/pages/`, or `src/styles/global.css`, re-run `bun run screenshot` and verify the diff before reporting work as done.
 
 ## Output
 
@@ -69,15 +63,14 @@
 - In a linked worktree (under `.claude/worktrees/<name>/`): use absolute paths. Relative paths from worktree `pwd` would not resolve against the editor's project root.
 - When the response covers multiple files, group paths under headers: `**Created:**`, `**Modified:**`, `**Deleted:**`. For single-file changes, the path on its own line is enough.
 
-## Playwright MCP
-
-- The Playwright MCP server is configured in `.mcp.json` and runs via `bunx @playwright/mcp@latest`. Use it when verification needs interaction (hover states, responsive viewports, link clicks, computed-style inspection) rather than a static screenshot diff.
-- Reach for screenshots when checking pure layout or content-vs-canonical-source. Reach for Playwright MCP when checking behavior, accessibility, or anything that requires the page to react to input.
-
 ## Key paths
 
 - `src/`: Astro source for the single-page site (pages, layouts, components, styles, assets)
 - `.claude/`: planning docs (requirements, architecture, wireframes, design, tasks)
+- `.claude/rules/`: path-scoped coding standards loaded by Claude Code on file match
+- `.claude/context/`: per-domain narrative (how a domain is structured, decisions, gotchas), indexed via `.claude/context/index.md`
+- `.claude/standards/`: authoring conventions for prose, commits, PRs, and the `.claude/` docs themselves
+- `.claude/snippets/`: reusable prompts invoked with `@`
 - `.claude/review/`: gitignored scratch for review and UI-test output, overwritten on each run
 - `.claude/TASKS.md`: gitignored task board
 

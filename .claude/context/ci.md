@@ -29,7 +29,7 @@ Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merg
 | E2E       | `bun run test:e2e`      | Playwright passes against the built preview |
 | Deploy    | `wrangler pages deploy` | Uploads `./dist/` to Cloudflare Pages       |
 
-For the deploy mechanism, custom domain wiring, and secrets, see `docs/deployment.md`.
+For the deploy mechanism, custom domain wiring, and secrets, see `.claude/context/deployment.md`.
 
 ## Runtime
 

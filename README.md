@@ -6,7 +6,7 @@ Astro v6 static build with Tailwind v4 and shadcn/ui. Deployed to Cloudflare Pag
 
 Where things live:
 
-- Local setup, scripts, and dev loop: [`docs/development.md`](docs/development.md)
-- GitHub Actions verify pipeline: [`docs/ci.md`](docs/ci.md)
-- Cloudflare Pages deploy and domain wiring: [`docs/deployment.md`](docs/deployment.md)
+- Local setup, scripts, and dev loop: [`.claude/context/development.md`](.claude/context/development.md)
+- GitHub Actions verify pipeline: [`.claude/context/ci.md`](.claude/context/ci.md)
+- Cloudflare Pages deploy and domain wiring: [`.claude/context/deployment.md`](.claude/context/deployment.md)
 - File tree and key technical decisions: [`.claude/ARCHITECTURE.md`](.claude/ARCHITECTURE.md)
