@@ -12,9 +12,9 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 ## Non-goals
 
-- Blog posts, content management, or per-project deep dives
+- Blog posts, a dated post feed, or a content management system
 - Authentication, comments, analytics dashboards, or any backend
-- Multiple pages or routes beyond the apex
+- Routes beyond the apex and one per case study
 - Hand-written copy that diverges from canonical career sources
 
 ## MVP features
@@ -23,6 +23,12 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 2. Narrative: short prose paragraphs sourced from resume and intent
 3. Projects: cards for Jobtriage, Stackr, and Caret pulled from the github profile, plus a trailing one-liner for Toolkit
 4. Footer: identity links plus a downloadable resume PDF
+
+## Case studies
+
+- A visitor wanting depth on one shipped project reads its problem framing, system design, and measured results without leaving the domain
+- Each case study answers for one project only. A second project earns a second case study rather than a section inside the first
+- The landing page stays the entry point, and a case study is reached from the project card that owns it
 
 ## Tech stack
 
@@ -38,4 +44,4 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 - Content is downstream of the parent career repo. After v1, page copy lands as a task file under `.claude/tasks/` and is never edited in place here.
 - Static rendering by default. Components opt into client-side hydration via `client:*` directives.
-- Single page at the apex. No additional routes without a goal change.
+- The apex is the entry point. A route beyond it is one case study, added as a scope change rather than ad hoc.
