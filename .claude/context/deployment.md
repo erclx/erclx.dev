@@ -5,21 +5,22 @@ description: Cloudflare Pages deploy pipeline, domain setup, and secret rotation
 
 # Deployment
 
+## Overview
+
 erclx.dev runs on Cloudflare Pages, project name `erclx-dev`. Every push to `main` builds in GitHub Actions and uploads `./dist/` to the project via `cloudflare/wrangler-action`. The apex domain `erclx.dev` and `www.erclx.dev` are both attached as custom domains on the same Pages project.
 
-## Why Cloudflare Pages
+The reasoning behind Cloudflare Pages and behind deploying from Actions rather than the Cloudflare Git integration lives in `.claude/ARCHITECTURE.md` § Key technical decisions.
 
-The apex domain is registered and zoned on Cloudflare. Pages attaches the custom domain without DNS migration and serves static output with no cold start. The free tier covers unlimited bandwidth and 500 builds per month, well beyond what a single-page site needs.
+## Decisions
 
-## Why deploy from GitHub Actions, not the Cloudflare Git integration
-
-The Pages project is a Direct Upload type. CI builds and runs the full verify suite (`static-checks`, `unit-tests`, `build-verify`, `e2e-tests`) before the `deploy` job uploads `./dist/` via wrangler. Cloudflare's native Git integration deploys on every push without honoring the test gate and runs builds in CF's environment with a separate bun version.
+- The Pages project is a Direct Upload type. Wrangler pushes a built `./dist/`, so Cloudflare never runs a build and never needs a bun version pinned on its side.
+- The free tier covers unlimited bandwidth and 500 builds per month. A single-page site stays well inside both, so no billing alarm is wired.
 
 ## Deploy job
 
-Defined in `.github/workflows/verify.yml`. Triggered only on `push: main` and gated on the four verify jobs. The job runs `bun run build` and then:
+Defined in `.github/workflows/verify.yml`. Triggered only on `push: main` and gated on the four verify jobs (`static-checks`, `unit-tests`, `build-verify`, `e2e-tests`). The job runs `bun run build` and then:
 
-```
+```bash
 wrangler pages deploy ./dist --project-name=erclx-dev --branch=main
 ```
 
@@ -29,7 +30,7 @@ wrangler pages deploy ./dist --project-name=erclx-dev --branch=main
 
 For one-off deploys outside CI, from the repo root:
 
-```
+```bash
 bun run build
 bunx wrangler pages deploy ./dist --project-name=erclx-dev --branch=main
 ```

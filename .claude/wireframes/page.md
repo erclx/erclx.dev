@@ -5,15 +5,19 @@ description: Single page at /. Five sections stack vertically inside the body.
 
 # Page
 
-The single page at `/`. Five sections stack vertically inside the body. The header carries its own background band that runs edge-to-edge. The origin paragraph, projects, Looking-for card, and footer sit on the page canvas. The narrative arc reads as story (origin) then proof (projects) then ask (looking-for) then close (footer).
+The single page at `/`. Five sections stack vertically inside the body. The header carries its own background band that runs edge-to-edge, while the origin paragraph, projects, Looking-for card, and footer sit on the page canvas.
+
+The narrative arc reads as story, then proof, then ask, then close. Origin carries the story, projects the proof, Looking-for the ask, and the footer the close.
+
+## Desktop (≥768px)
 
 ```plaintext
 ┌──────────────────────────────────────────────────────────┐
-│ [header band, bg-secondary, border-b]                    │
+│ [header band, tinted, hairline underneath]               │  ← runs edge-to-edge
 │   [pill]                                  [theme toggle] │
 │   Eric Le · Gothenburg, Sweden                           │
 │   I build LLM agents and developer tools                 │
-│   [body paragraph, max-w-xl]                             │
+│   [body paragraph, narrow measure]                       │
 │   [GitHub] [LinkedIn] [me@erclx.dev]                     │
 ├──────────────────────────────────────────────────────────┤
 │   origin                                                 │
@@ -52,7 +56,7 @@ The single page at `/`. Five sections stack vertically inside the body. The head
 │   └──────────────────────────────────────────────────┘   │
 │                                                          │
 ├──────────────────────────────────────────────────────────┤
-│   ──────── (border-t hairline) ────────                  │
+│   ──────── hairline rule ────────                        │
 │   Eric Le   [signature]                                  │
 │   Résumé                                                 │
 │   Gothenburg, Sweden · 2026                              │

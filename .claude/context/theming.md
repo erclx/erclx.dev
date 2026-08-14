@@ -5,6 +5,8 @@ description: Dark mode wiring across the first-paint script, theme toggle, and C
 
 # Theming
 
+## Overview
+
 How the page picks and switches between light and dark. Spans `src/layouts/base.astro`, `src/components/site/theme-toggle/theme-toggle.astro`, and `src/styles/global.css`.
 
 ## Layer responsibilities

@@ -7,6 +7,8 @@ description: Top-right of the header content column, anchored to the same row as
 
 Appears in the top-right of the header content column, anchored to the same row as the status pill. A tri-state cycle button that rotates through light, dark, and system on each click.
 
+## Cycle order
+
 ```plaintext
 [☼] light  →  [☾] dark  →  [▢] system  →  [☼] light
 ```

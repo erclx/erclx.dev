@@ -5,6 +5,8 @@ description: Scroll-position tracking, reveal gates, and click-lock behind the s
 
 # Section nav
 
+## Overview
+
 `src/components/site/section-nav/section-nav.astro` renders the fixed left-margin rail used on the landing page and the Jobtriage case study. It is a plain Astro file with an inline `<script>`. Layout and intent live in `.claude/wireframes/section-nav.md`. This entry covers how the tracking works.
 
 ## Active tracking
@@ -15,7 +17,7 @@ description: Scroll-position tracking, reveal gates, and click-lock behind the s
 
 ## Near-bottom override
 
-When `scrollY + innerHeight` reaches `document.documentElement.scrollHeight - 4` (a 4px tolerance for sub-pixel scroll positions), the handler forces the active label to the last section. Without it, a page that bottoms out before the final section crosses the 30% anchor would never mark that section active.
+When `scrollY + innerHeight` reaches `document.documentElement.scrollHeight - 4`, the handler forces the active label to the last section. The 4px slack absorbs sub-pixel scroll positions. Without it, a page that bottoms out before the final section crosses the 30% anchor would never mark that section active.
 
 ## Click-intent lock
 

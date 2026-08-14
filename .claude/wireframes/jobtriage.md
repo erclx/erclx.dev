@@ -119,7 +119,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 
 - **Problem.** Two short sentences framing the hook: job boards rank for monetization, not fit, and profile-driven match should be a first-class operation.
 - **System.** A lead on the two-posture split, then a diagram of the shared agent shell branching into a deploy data path (live JobTech APIs) and a local data path (SQLite corpus). Below it, a five-row stack list and a closing paragraph on the mock-replay plus BYOK posture as the differentiator.
-- **Retrieval.** A lead on the 50-query Swedish golden set and 59-ad corpus, then two tables in card containers: the hybrid retrieval ablation and the multilingual encoder comparison. Each table has a caption framing the headline narrative. The ablation caption notes dense wins P@1 on this corpus. The encoder caption notes e5-large lifts P@1 but gives back recall, so e5-base ships as the balanced default.
+- **Retrieval.** A lead on the 50-query Swedish golden set and 59-ad corpus, then two tables in card containers: the hybrid retrieval ablation and the multilingual encoder comparison. Each carries a caption framing its headline. The ablation notes dense wins P@1 here. The encoder notes e5-large lifts P@1 but gives back recall, so e5-base ships as default.
 - **Agent.** A lead on the pinned spatial tool pairings, a two-column data-tool-to-spatial-tool mapping list, and a closing paragraph on the four React Flow canvas views.
 
 ## Footer

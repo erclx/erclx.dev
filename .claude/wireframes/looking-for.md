@@ -5,7 +5,9 @@ description: Sits below the projects section as the page's closing call to actio
 
 # Looking-for
 
-Appears below the projects section as the page's closing call to action. Sits on a tinted card panel with rounded corners and generous padding, no border, so it reads as a distinct block within the page's flat editorial flow rather than a framed widget. The panel pairs a single `looking-for` kicker with four short criteria rows. Availability lives in the hero's `OPEN TO WORK` pill, so the panel does not restate it. The panel adds specificity (which roles, which team profile, which level, which terms) rather than restating the hero.
+Appears below the projects section as the page's closing call to action. Sits on a tinted card panel with rounded corners and generous padding, no border, so it reads as a distinct block within the page's flat editorial flow rather than a framed widget.
+
+The panel pairs a single `looking-for` kicker with four short criteria rows. Availability lives in the hero's `OPEN TO WORK` pill, so the panel does not restate it. What it adds instead is specificity: which roles, which team profile, which level, which terms.
 
 ## Desktop (≥768px)
 
@@ -37,6 +39,8 @@ Each criteria row carries a left border that turns primary on hover, paired with
 
 ## Peek character
 
-A small filled-silhouette character peeks from behind the top-right corner of the card. It stays hidden behind the card until the section enters the viewport, then springs up to a peeked position with paws gripping the visible card edge. When the cursor enters the card the character ducks back behind it. When the cursor leaves, it pops back up. Under reduced motion the character stays peeked with no transitions.
+A small filled-silhouette character peeks from behind the top-right corner of the card. It stays hidden behind the card until the section enters the viewport, then springs up to a peeked position with paws gripping the visible card edge.
 
-The character SVG carries its own fixed palette (warm tan body, cream face mask, dark brown features) so its identity stays consistent across light and dark themes rather than tracking the page tokens. Its body extends below its head so the lower portion clips naturally behind the card edge.
+When the cursor enters the card the character ducks back behind it. When the cursor leaves, it pops back up. Under reduced motion the character stays peeked with no transitions.
+
+The character SVG carries its own fixed palette of a warm tan body, a cream face mask, and dark brown features. That palette stays consistent across light and dark themes rather than tracking the page tokens, so the character keeps one identity. Its body extends below its head so the lower portion clips naturally behind the card edge.
