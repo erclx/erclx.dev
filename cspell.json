@@ -2,7 +2,7 @@
   "version": "0.2",
   "language": "en",
   "useGitignore": true,
-  "gitignoreRoot": ".",
+  "gitignoreRoot": ["."],
   "dictionaryDefinitions": [
     {
       "name": "project-terms",
