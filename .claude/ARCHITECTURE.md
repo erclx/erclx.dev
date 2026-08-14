@@ -4,7 +4,7 @@
 
 Static Astro site that renders one page at the erclx.dev apex. The build emits HTML, CSS, and a small JS bundle for any interactive islands. Content is authored once in the parent career repo and flows here through a sync queue.
 
-For the source layout, test layout, and config-file inventory, see `.claude/context/development.md` § Project layout.
+For the source and test layout, see `.claude/context/development.md` § Layout.
 
 ## Key technical decisions
 

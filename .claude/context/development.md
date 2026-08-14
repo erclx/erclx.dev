@@ -9,40 +9,20 @@ description: Local dev workflow, scripts, and husky hooks
 
 Local dev workflow for this project.
 
-## Project layout
+## Layout
 
-```plaintext
-src/
-├── pages/
-│   ├── index.astro      ← landing page, composes layout and sections
-│   └── jobtriage.astro  ← Jobtriage case-study sub-page at /jobtriage
-├── layouts/
-│   └── base.astro       ← html shell, font preload, first-paint theme script
-├── components/
-│   ├── site/            ← landing-page sections and primitives
-│   └── ui/              ← shadcn primitives, owned by this repo
-├── assets/              ← page-owned media: hero field, project posters/videos, signature
-├── lib/
-│   └── utils.ts         ← cn() and shared helpers
-├── styles/
-│   └── global.css       ← tailwind entry, theme tokens, base layer
-└── test/
-    └── setup.ts         ← jsdom + RTL cleanup for vitest
+- `src/pages/` owns the routes. The apex composes the landing sections, and each case study is its own file
+- `src/layouts/` owns the html shell: font preload and the first-paint theme script
+- `src/components/site/` owns the landing-page sections and their primitives
+- `src/components/ui/` owns the shadcn primitives, vendored into this repo rather than imported from a package
+- `src/assets/` owns page-owned media: the hero field, project posters and videos, the signature
+- `src/lib/` owns shared helpers
+- `src/styles/` owns the tailwind entry, the theme tokens, and the base layer
+- `src/test/` owns the vitest environment setup
+- `e2e/` owns the playwright smoke spec and the per-section screenshot script
+- `public/` owns files served verbatim at the domain root
 
-e2e/
-├── home.spec.ts         ← playwright smoke for the apex
-└── screenshot.ts        ← node script, per-section captures across desktop, mobile, narrow widths and light / dark themes
-
-public/
-└── resume.pdf           ← downloadable résumé, served at /resume.pdf
-
-vitest.config.ts         ← jsdom + globals + coverage v8
-playwright.config.ts     ← chromium + firefox + webkit, webServer auto-starts preview
-tsconfig.e2e.json        ← e2e-only tsconfig with @playwright/test + node types
-.mcp.json                ← Playwright MCP server registration
-```
-
-For the rationale behind these choices (Astro over Next, shadcn install path, font preload, theme toggle as static Astro), see `.claude/ARCHITECTURE.md` § Key technical decisions.
+For the rationale behind these choices, such as Astro over Next, the shadcn install path, font preload, and the theme toggle as static Astro, see `.claude/ARCHITECTURE.md` § Key technical decisions.
 
 ## Setup
 
