@@ -1,14 +1,17 @@
+accDescr
 aitk
 autoplay
 axios
 bradlc
 bunx
 changelogithub
+cksum
 commitlint
 cutover
 dbaeumer
 dotfolders
 elif
+errexit
 esac
 esbenp
 evenodd
@@ -16,6 +19,7 @@ fontsource
 FOUT
 Fraunces
 frontmatter
+gsub
 iconify
 intfloat
 jsdom
@@ -41,7 +45,10 @@ pipefail
 pointerenter
 pointerleave
 pointermove
+pyproject
 regen
+RLENGTH
+RSTART
 scannability
 serviceworker
 shadcn
@@ -52,6 +59,8 @@ sonner
 subfolders
 tabindex
 timonwong
+tolower
+toplevel
 Vercel
 viewports
 visibilitychange
