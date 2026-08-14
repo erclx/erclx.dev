@@ -8,11 +8,11 @@ For the source layout, test layout, and config-file inventory, see `.claude/cont
 
 ## Key technical decisions
 
-### Agent context split across three tiers under `.claude/`
+### Agent context split by load cost
 
-`CLAUDE.md` holds only always-load behavior. Path-scoped coding rules live in `.claude/rules/*.md` and load when a file matches their `paths:` glob. Per-domain narrative lives in `.claude/context/<domain>.md` and loads on demand through `.claude/context/index.md`. Standards and snippets sit at `.claude/standards/` and `.claude/snippets/`, where toolkit rules and skills resolve them.
+Always-loaded context is paid on every session whatever the task, so only project-wide invariants sit in that tier. Everything else keys to a trigger: path-scoped rules load when a file matches their `paths:` glob, and per-domain narrative loads on demand through an index. `CLAUDE.md` § Context carries the tier map a session reads to place a given file.
 
-The root `docs/`, `standards/`, and `snippets/` folders are gone. Nothing in `docs/` served a visitor, so all three entries moved to `.claude/context/`. Toolkit standards are the source of truth and are reinstalled from source rather than hand-edited, with project customizations re-applied on top after each install.
+The root `docs/`, `standards/`, and `snippets/` folders are gone. Nothing in `docs/` served a visitor, so all three moved under `.claude/`. Toolkit standards are the source of truth and are reinstalled from source rather than hand-edited, so an edit applied directly to one is lost on the next `aitk standards sync`. Project customizations are re-applied on top after each install.
 
 ### Astro over Next or a static React app
 
