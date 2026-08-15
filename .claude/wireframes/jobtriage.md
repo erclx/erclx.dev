@@ -11,7 +11,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 
 ```plaintext
 ┌────────────────────────────────────────────────────────────────┐
-│ ←  Eric Le                                          [theme]    │  ← thin top bar, back-link + theme toggle
+│    Eric Le                                          [theme]    │  ← thin top bar, identity wordmark + theme toggle
 ├────────────────────────────────────────────────────────────────┤
 │   case study                                                   │  ← mono kicker
 │   Jobtriage                                                    │  ← Fraunces display
@@ -69,7 +69,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   trackStatus       → markStatus                              │
 ├────────────────────────────────────────────────────────────────┤
 │   ─────────────── (border-t hairline) ──────────────────       │
-│   ←  Back to Eric Le                                           │
+│   [ ←  Back to Eric Le ]                                       │  ← the one way home, a bordered control
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -77,7 +77,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 
 ```plaintext
 ┌──────────────────────────────────┐
-│ ←  Eric Le             [theme]   │
+│    Eric Le             [theme]   │
 ├──────────────────────────────────┤
 │   case study                     │
 │   Jobtriage                      │
@@ -102,14 +102,14 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │    two lines per pair]           │
 ├──────────────────────────────────┤
 │   ──────────────                 │
-│   ←  Back to Eric Le             │
+│   [ ←  Back to Eric Le ]         │
 └──────────────────────────────────┘
 ```
 
 ## Behavior
 
 - Reuses the landing page's layout, theme toggle, and section-nav rail. The rail is present from first paint with no fade, since the page is otherwise static.
-- A thin top bar carries a back-link to `/` on the left and the theme toggle on the right. The case study earns a quieter opening than the landing hero, so there is no tinted band.
+- A thin top bar carries the identity wordmark linking to `/` on the left and the theme toggle on the right. The case study earns a quieter opening than the landing hero, so there is no tinted band. One control leads home, and it sits at the foot.
 - Section padding and the mono-kicker vocabulary (`case study`, `problem`, `system`, `retrieval`, `agent`) match origin and looking-for, so the editorial pace reads identical.
 - The display title sits one step smaller than the landing hero so the page reads as secondary to the apex.
 - The page renders static. Long-form depth optimizes for reading speed, so the cascade reveal stays on the landing page where each section is a focal moment.
@@ -124,7 +124,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 
 ## Footer
 
-A hairline separator, then a single `← Back to Eric Le` link. The landing page's signature wipe and résumé link stay on the landing page. The case study closes on the agent section's "the canvas is the answer" beat, not a roadmap section. Forward-motion content is reserved for live interview conversation.
+A hairline separator, then a single bordered `← Back to Eric Le` control carrying an arrow icon. The landing page's signature wipe and résumé link stay on the landing page. The case study closes on the agent section's "the canvas is the answer" beat, not a roadmap section. Forward-motion content is reserved for live interview conversation.
 
 ## Hold for interviews
 

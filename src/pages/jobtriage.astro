@@ -2,6 +2,12 @@
 import BaseLayout from '@/layouts/base.astro'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 import SectionNav from '@/components/site/section-nav/section-nav.astro'
+import { getLinkTargetAttributes } from '@/lib/links'
+
+const artifactLinks = [
+  { label: 'Live demo', href: 'https://jobtriage.erclx.dev' },
+  { label: 'GitHub', href: 'https://github.com/erclx/jobtriage' },
+]
 
 const navItems = [
   { id: 'problem', label: 'problem' },
@@ -60,9 +66,8 @@ const toolPairings = [
   >
     <a
       href="/"
-      class="text-muted-foreground hover:text-foreground text-label inline-flex items-center gap-2 transition-colors"
+      class="text-muted-foreground hover:text-foreground text-label inline-flex min-h-11 items-center transition-colors"
     >
-      <span aria-hidden="true">←</span>
       Eric Le
     </a>
     <ThemeToggle />
@@ -91,24 +96,21 @@ const toolPairings = [
         <ul
           data-fade data-visible="true"
           style="--fade-delay: 350ms"
-          class="mt-6 flex flex-wrap gap-x-6 gap-y-2"
+          class="mt-6 flex flex-wrap gap-x-6"
         >
-          <li>
-            <a
-              href="https://jobtriage.erclx.dev"
-              class="text-foreground text-label underline-offset-4 hover:underline"
-            >
-              Live demo
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://github.com/erclx/jobtriage"
-              class="text-foreground text-label underline-offset-4 hover:underline"
-            >
-              GitHub
-            </a>
-          </li>
+          {
+            artifactLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  {...getLinkTargetAttributes(link.href)}
+                  class="text-foreground text-label inline-flex min-h-11 items-center underline-offset-4 hover:underline"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
     </section>
@@ -412,9 +414,23 @@ const toolPairings = [
     <div class="border-border/60 mx-auto max-w-2xl border-t pt-10">
       <a
         href="/"
-        class="text-muted-foreground hover:text-foreground text-label inline-flex items-center gap-2 transition-colors"
+        class="border-border text-foreground hover:border-foreground/40 hover:bg-card text-label inline-flex min-h-11 items-center gap-2 rounded-md border px-4 transition-colors"
       >
-        <span aria-hidden="true">←</span>
+        <svg
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          class="text-muted-foreground"
+        >
+          <path d="m12 19-7-7 7-7"></path>
+          <path d="M19 12H5"></path>
+        </svg>
         Back to Eric Le
       </a>
     </div>
