@@ -37,8 +37,8 @@
       }
     },
     "governance": {
-      "commit": "d957d8a4",
-      "syncedAt": "2026-08-14T16:51:23.016Z",
+      "commit": "bc2c55b4",
+      "syncedAt": "2026-08-15T15:39:02.674Z",
       "files": {
         ".claude/rules/claude/500-prose.md": "sha256:efcd09441646abc406bdf087193e93c3f4275b092e9b3ec166f906fe6280f974",
         ".claude/rules/claude/501-markdown.md": "sha256:b72af45ca1a8c35a8eeb19873c9195b07efca60e22c8679b7b97a4c3c55d6991",
@@ -75,10 +75,10 @@
         ".claude/rules/lang/100-typescript.md": "sha256:5378af975febe5b4b2e2ac4edf4163fc0d9fddf406df8055a858a11bd9656416",
         ".claude/rules/lib/300-testing-ts.md": "sha256:d2a6d602384cbb6c148400e922aa621b681267e141bb7ad436aa5ed51f92374e",
         ".claude/rules/lib/350-security-web.md": "sha256:016a4e9fd6fc0a22088cc287ceaabcef8a4c81f36fa883b2fc99fd365aa8caf1",
-        ".claude/rules/ui/400-ui.md": "sha256:3e3d43fa2c94a4701598f0fee0b7d215c43549cab97daeb1c22e6ca3b0ffbd9a",
-        ".claude/rules/ui/410-a11y.md": "sha256:679b7f5db82e3af107d7a2cd574c22b30c4739308a23490d4d32dc83865f9a07",
-        ".claude/rules/ui/420-forms.md": "sha256:05337dd6ce1fe15bd647c4b75e223858355bd159a9ad2c5b67c2076531b7e1b6",
-        ".claude/rules/ui/430-ux-completeness.md": "sha256:b76fc1156f4842ca2e9700aa19fd1691b76c35e5e779875294fd945844af46b4"
+        ".claude/rules/ui/400-ui.md": "sha256:a9de23207b2d64699fc23fd5629962fdf43a71332fa43cb6c243f9f2dda3bc82",
+        ".claude/rules/ui/410-a11y.md": "sha256:539b05fa82d10cf1a0dcb8a055387f7f417416e96336b6bac69f72df54761f8c",
+        ".claude/rules/ui/420-forms.md": "sha256:aa28b685e331f07659a7babe89d3db21e1fef20268e5d05ad11de1fe3c0991d7",
+        ".claude/rules/ui/430-ux-completeness.md": "sha256:cfafb9398fc1c3404dffc6513b06ee8800132490bbb96314017be63713a2ff21"
       }
     },
     "tooling": {

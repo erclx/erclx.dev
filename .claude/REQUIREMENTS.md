@@ -21,8 +21,14 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 1. Header: identity, role, location, headline, contact links
 2. Narrative: short prose paragraphs sourced from resume and intent
-3. Projects: one card per shipped artifact, each carrying a still and linking to wherever a reader installs or opens the thing
+3. Projects: cards for Jobtriage, Stackr, and Caret pulled from the github profile, plus a trailing one-liner for Toolkit
 4. Footer: identity links plus a downloadable resume PDF
+
+## Project cards
+
+- A visitor sees one card per shipped artifact rather than the fixed roster the MVP named, so a newly shipped project earns a card without a scope change
+- Every card carries a still of the artifact rather than a logo or an icon
+- Every card links to wherever a reader installs or opens the artifact, which differs per project
 
 ## Case studies
 
