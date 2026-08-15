@@ -85,6 +85,36 @@ test('an open figure closes on Escape without leaving the page', async ({
   await expect(page.locator('[data-figure-dialog]')).toBeHidden()
 })
 
+test('the page behind an open figure does not scroll', async ({ page }) => {
+  await page.goto('/diction')
+  await page.locator('[data-figure-zoom]').first().click()
+  const resting = await page.evaluate(() => window.scrollY)
+
+  await page.mouse.wheel(0, 1200)
+  await page.waitForTimeout(300)
+
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(resting)
+})
+
+test('every opened figure fits without scrolling inside the dialog', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  const triggers = page.locator('[data-figure-zoom]')
+  const overflowing: string[] = []
+
+  for (let index = 0; index < (await triggers.count()); index += 1) {
+    await triggers.nth(index).click()
+    const scrolls = await page
+      .locator('[data-figure-scroll]')
+      .evaluate((el) => el.scrollHeight > el.clientHeight + 2)
+    if (scrolls) overflowing.push(`figure ${index + 1}`)
+    await page.keyboard.press('Escape')
+  }
+
+  expect(overflowing).toEqual([])
+})
+
 test('closing a figure returns focus to the figure that opened it', async ({
   page,
 }) => {
@@ -97,9 +127,7 @@ test('closing a figure returns focus to the figure that opened it', async ({
   await expect(trigger).toBeFocused()
 })
 
-test('each case study carries one bordered way home at the foot', async ({
-  page,
-}) => {
+test('each case study carries one way home at the foot', async ({ page }) => {
   await page.goto('/diction')
 
   await expect(page.getByRole('link', { name: 'Back to Eric Le' })).toHaveCount(
@@ -113,6 +141,32 @@ test('each case study also carries a way home in the top bar', async ({
   await page.goto('/diction')
 
   await page.getByRole('link', { name: 'Eric Le', exact: true }).click()
+
+  await expect(page).toHaveURL('/')
+})
+
+test('returning from a case study restores where the visitor left', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.locator('#projects').scrollIntoViewIfNeeded()
+  await page.waitForTimeout(400)
+  const left = await page.evaluate(() => window.scrollY)
+  await page.locator('#projects article').first().click()
+  await expect(page).toHaveURL('/aitk')
+
+  await page.getByRole('link', { name: 'Back to Eric Le' }).click()
+
+  await expect(page).toHaveURL('/')
+  await expect
+    .poll(() => page.evaluate(() => window.scrollY))
+    .toBeGreaterThan(left / 2)
+})
+
+test('a case study opened directly still links home', async ({ page }) => {
+  await page.goto('/aitk')
+
+  await page.getByRole('link', { name: 'Back to Eric Le' }).click()
 
   await expect(page).toHaveURL('/')
 })

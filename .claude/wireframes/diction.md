@@ -52,7 +52,7 @@ Reached from the diction project card on the landing page. Carries six measured 
 │   (three wide figures follow, each with a caption)       │
 │                                                          │
 ├──────────────────────────────────────────────────────────┤
-│   [ ← Back to Eric Le ]                                  │  ← the one way home, a bordered control
+│   ← Back to Eric Le                                      │  ← the way home at the foot
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -62,14 +62,15 @@ The section-nav rail sits in the left margin from `xl`, tracking the five sectio
 
 - Renders static. Reveal animations are no-ops and the nav rail is passed `instant`, so nothing fades on a page read for depth.
 - Carries no roadmap or "what's next" section, matching the other case studies.
-- Two controls lead home and both carry the same arrow, a quiet one in the top bar and a bordered one at the foot. The pair is deliberate: a reader who wants out partway through should not have to reach the end to find the way.
-- Clicking a chart opens it over the page at nearly the full screen width, with its caption under it. Escape, the close control, and a click outside all return the reader to the same scroll position.
+- Two controls lead home and both carry the same arrow, one in the top bar and one at the foot. Neither is boxed. The pair is deliberate: a reader who wants out partway through should not have to reach the end to find the way.
+- A reader who arrived from the landing page returns to the place they left rather than to the top of it, and the landing page does not replay its reveal animations on the way back. A reader who opened the case study directly lands at the top, since there is nowhere else to return to. Mechanism: `.claude/context/case-study-navigation.md`.
+- Clicking a chart opens it over the page with its caption under it and a close control clear of the image. The whole chart is visible without scrolling, whatever its shape. Escape, the close control, and a click outside all close it, and the page behind stays where it was rather than scrolling under the open panel.
 
 ## Figures
 
 Two widths, decided by the source rather than by the section. A portrait figure is capped in height and centred so the column is not handed to one image, and a landscape figure fills the column width. Each carries a caption naming what it shows, and the alt text states the finding rather than the file.
 
-Both widths render far below the source resolution in the column, so every chart opens on click. A landscape chart opens to the full width of the panel and fits on screen. A portrait chart opens taller than the screen and scrolls, bounded so the scroll stays around half a screen rather than running to the two or three a full-resolution chart would take. See `.claude/context/case-study-figures.md` for the mechanism.
+Both widths render far below the source resolution in the column, so every chart opens on click. A landscape chart fills the width of the panel. A portrait chart is bounded by the height of the screen instead, which is what keeps it from opening taller than the viewport and forcing a scroll to read one figure. Either way the whole chart is on screen at once. See `.claude/context/case-study-figures.md` for the mechanism.
 
 The score table is built from layout and type rather than from an image, so it carries no opening treatment. The table scrolls inside its own panel on a narrow viewport, so the page body never scrolls sideways.
 
