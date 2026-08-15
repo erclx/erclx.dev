@@ -9,7 +9,16 @@ test('the aitk case study renders its claim and sections', async ({ page }) => {
   await page.goto('/aitk')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('aitk')
+  await expect(page.locator('main')).toContainText(
+    'installs one set of agent rules, skills, and standards into every project',
+  )
   await expect(page.locator('main section[id]')).toHaveCount(5)
+})
+
+test('the aitk case study names the scoped package', async ({ page }) => {
+  await page.goto('/aitk')
+
+  await expect(page.locator('main')).toContainText('@erclx/aitk')
 })
 
 test('the diction case study renders its claim and sections', async ({
@@ -18,7 +27,18 @@ test('the diction case study renders its claim and sections', async ({
   await page.goto('/diction')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('diction')
+  await expect(page.locator('main')).toContainText(
+    'scores each sound against what a native speaker actually sounds like',
+  )
   await expect(page.locator('main section[id]')).toHaveCount(5)
+})
+
+test('the diction case study states the offline claim', async ({ page }) => {
+  await page.goto('/diction')
+
+  await expect(page.locator('main')).toContainText(
+    'Nothing leaves the machine it runs on',
+  )
 })
 
 test('every diction figure loads its image', async ({ page }) => {

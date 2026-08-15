@@ -39,3 +39,11 @@ test('the projects section states no count of its own cards', async ({
 
   await expect(page.locator('#projects')).not.toContainText('tools shipped')
 })
+
+test('the aitk card writes the npm scope', async ({ page }) => {
+  await page.goto('/')
+
+  await expect(page.locator('#projects article').first()).toContainText(
+    '@erclx/aitk',
+  )
+})
