@@ -86,6 +86,16 @@ The apex domain already lives in Cloudflare. Pages attaches the custom domain wi
 
 `cloudflare/wrangler-action` runs after `static-checks`, `unit-tests`, `build-verify`, and `e2e-tests` pass. CF's native Git integration would deploy on every push without honoring the test gate and would build in CF's environment with a separate bun version. Direct upload from Actions keeps the test gate and the build environment unified with CI.
 
+### Small rasters serve the tab, not the stippled vector
+
+The synced brand mark is 268 stippled dots inside a 512 disc, at a median radius near 6.7. At 16px each dot covers roughly 0.14 of a pixel in area, so a cream dot over a near-black ground averages to mid-grey. Masked to the disc, the vector peaks at luminance 129 at 16px and 148 at 32px with zero pixels above 180, while the purpose-built 32-square raster peaks at 221 and 255 with 30 and 152 such pixels. The rasters come from a pipeline tuned for small size in the parent checkout and are copied rather than generated, since this repository carries no image-processing dependency.
+
+Declaration order does not decide which icon an engine draws. With the raster declared first carrying explicit `sizes` and the vector second, headed Chromium and Firefox both fetched `/favicon.svg` and never requested the raster. Removing the vector from the icon relation is what moved both engines onto `/favicon-32.png`. The vector still ships at `/favicon.svg` for any surface with room for it, and the 180-square raster covers the home screen through `apple-touch-icon`.
+
+Do not restore the vector to an `icon` relation and do not replace either raster with a downsample of it. The measurement above is the whole reason the set exists. The parent checkout's sync overwrites `public/favicon.svg` and touches neither raster, so an upstream change to the vector leaves the tab as it is.
+
+Measured at cc12951 on 2026-08-15.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
