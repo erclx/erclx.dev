@@ -21,7 +21,7 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 1. Header: identity, role, location, headline, contact links
 2. Narrative: short prose paragraphs sourced from resume and intent
-3. Projects: cards for Jobtriage, Stackr, and Caret pulled from the github profile, plus a trailing one-liner for Toolkit
+3. Projects: one card per shipped artifact, each carrying a still and linking to wherever a reader installs or opens the thing
 4. Footer: identity links plus a downloadable resume PDF
 
 ## Case studies
@@ -42,6 +42,6 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 ## Constraints
 
-- Content is downstream of the parent career repo. After v1, page copy lands as a task file under `.claude/tasks/` and is never edited in place here.
+- Content is downstream of the parent career repo. Page copy is canonical there and read across the filesystem, never authored here. A wording change is made at the source and re-rendered.
 - Static rendering by default. Components opt into client-side hydration via `client:*` directives.
 - The apex is the entry point. A route beyond it is one case study, added as a scope change rather than ad hoc.

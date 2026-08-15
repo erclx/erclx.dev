@@ -26,13 +26,15 @@ The v3 Astro integration is deprecated. v4 ships as a Vite plugin and reads its 
 
 Radix primitives provide accessible interactive components without locking in a design system. Nova ships a usable starting set of tokens and Lucide icons. Components live in `src/components/ui/` under repo ownership, so the team can edit them directly without forking a package.
 
-### Content sourced through the task board
+### Content read from the parent checkout
 
-Page copy is canonical in the parent career repo, never authored here. Updates arrive as task files under `.claude/tasks/` carrying the replacement text in full. This prevents drift between Linkedin, the resume, the github profile, and the live page.
+Page copy is canonical in the parent career repo, never authored here. This repository is a gitignored clone sitting inside that checkout, so a session here reads the published portfolio copy up the same filesystem rather than waiting for it to be delivered. No handoff message is owed in either direction. This prevents drift between Linkedin, the resume, the github profile, and the live page.
 
-The task board is gitignored, so a queued sync sits on one machine until it ships. Nothing is unrecoverable, since the copy stays canonical upstream and a lost queue entry is re-derived from the source it came from. What is lost is the knowledge that a sync was pending.
+A wording correction goes to the source and is re-rendered. An upstream check compares the two, and a page-side edit is invisible to it, so fixing the string here reintroduces the drift the split exists to close.
 
-An earlier design routed them through a single `.claude/briefs/SYNC-QUEUE.md`. That file was never created, the queue ran through the task board in practice, and the briefs folder was removed on 2026-08-14 once both surfaces agreed.
+Figures a case study references are copied into `src/assets/` rather than read across the repository boundary. A build reaching outside its own repository for an asset breaks when that tree moves, and the files are small enough that the second copy costs nothing. What it costs instead is a second place they exist, which no check watches yet.
+
+Two earlier designs are retired. A single `.claude/briefs/SYNC-QUEUE.md` was never created, and the briefs folder was removed on 2026-08-14. A task-file queue under `.claude/tasks/` described the carry until 2026-08-15, when the build that consumed the copy read it directly instead. Verified 2026-08-15 against the portfolio copy folder in the parent checkout.
 
 ### Critical fonts preloaded via Vite ?url imports
 
@@ -45,6 +47,10 @@ Geist is removed. Replaced by Fraunces variable for display and headings, Inter 
 ### Playwright MCP for interactive verification
 
 `.mcp.json` registers `@playwright/mcp@latest`. Reach for it when verification needs hover, click, viewport changes, or computed-style inspection. Use the static `bun run screenshot` capture for layout review and content-vs-canonical-source diffing.
+
+### Screenshot capture waits for lazy images
+
+Card posters and case-study figures load lazily, so a per-section capture can shoot a slot whose image never entered the viewport and produce an empty box that reads as a rendering defect. The capture therefore walks the whole page and waits for every image to report pixels before it shoots. The wait is not fatal: an image that never loads warns and the capture proceeds, because the picture of the breakage is the evidence a reviewer came for and failing the run throws it away. Verified 2026-08-15 against the projects section, where the wait moved a card from an empty slot to its poster with no code change behind it.
 
 ### Screenshots capture per-section, not full-page
 
