@@ -21,4 +21,8 @@ paths:
 
 ## Handoff
 
-- After pushing a UI branch and stopping short of opening the PR, end with the running dev-server URL and a 4-7 item visual-review checklist covering hierarchy, breakpoints, animation triggers, dark mode, narrow-viewport overflow, and regressions.
+- End every UI change with a reachable URL, naming the dev-server address and the routes that changed.
+- Leave that dev server running. Do not report the address of a preview or capture run that has exited.
+- Verify breakpoints, dark mode, narrow-viewport overflow, animation triggers, and regressions from the captures and the e2e suite, and report what the run found.
+- Hand over only what a run cannot settle: aesthetic judgment, whether a layout compromise is acceptable, and whether copy reads right.
+- Do not hand over a checklist of dimensions the captures and the e2e suite already settle.
