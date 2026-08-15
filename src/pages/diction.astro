@@ -1,0 +1,466 @@
+---
+import { Image } from 'astro:assets'
+import BaseLayout from '@/layouts/base.astro'
+import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
+import SectionNav from '@/components/site/section-nav/section-nav.astro'
+import baselines from '@/assets/projects/diction-baselines.png'
+import separation from '@/assets/projects/diction-separation.png'
+import thresholds from '@/assets/projects/diction-thresholds.png'
+import verdicts from '@/assets/projects/diction-verdicts.png'
+import fluency from '@/assets/projects/diction-fluency.png'
+import gaze from '@/assets/projects/diction-gaze.png'
+
+const navItems = [
+  { id: 'problem', label: 'problem' },
+  { id: 'data', label: 'data' },
+  { id: 'fix', label: 'fix' },
+  { id: 'holdout', label: 'holdout' },
+  { id: 'beyond', label: 'beyond' },
+]
+
+const scores = [
+  {
+    score: 'Minimal-pair verdict',
+    before: "The target sound's own native band",
+    after: "The competing sound scored at the target's aligned frames",
+  },
+  {
+    score: 'Fluency',
+    before: '100 * (1 - pause ratio)',
+    after: 'Four timing features fit against human fluency labels',
+  },
+  {
+    score: 'Interview gaze',
+    before: 'A 15-degree head-turn gate',
+    after: 'A 7-degree gate, sitting in the measured gap between takes',
+  },
+]
+
+const figureClass = 'bg-card mt-10 rounded-lg p-6 md:p-10'
+const wideImageClass = 'w-full rounded-md'
+const tallImageClass = 'mx-auto max-h-[32rem] w-auto rounded-md'
+const captionClass = 'text-muted-foreground font-mono text-label mt-4'
+---
+
+<BaseLayout
+  title="diction case study · Eric Le"
+  description="One global confidence cutoff flagged native speakers and passed swapped vowels. Per-sound calibration, measured on held-out speech."
+>
+  <SectionNav items={navItems} instant />
+
+  <header
+    data-section="header"
+    class="border-border/60 flex items-center justify-between border-b px-6 py-4"
+  >
+    <a
+      href="/"
+      class="text-muted-foreground hover:text-foreground text-label inline-flex items-center gap-2 transition-colors"
+    >
+      <span aria-hidden="true">←</span>
+      Eric Le
+    </a>
+    <ThemeToggle />
+  </header>
+
+  <main>
+    <section class="px-6 pt-16 pb-12 md:pt-20 md:pb-16">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          case study
+        </p>
+        <h1
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+        >
+          diction
+        </h1>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="text-muted-foreground text-body mt-4"
+        >
+          A pronunciation trainer that scores each sound against what a native
+          speaker actually sounds like, and reports how often it is wrong.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 300ms"
+          class="text-muted-foreground text-body mt-3"
+        >
+          Local and offline. Nothing leaves the machine it runs on.
+        </p>
+        <ul
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="mt-6 flex flex-wrap gap-x-6 gap-y-2"
+        >
+          <li>
+            <a
+              href="https://github.com/erclx/diction"
+              class="text-foreground text-label underline-offset-4 hover:underline"
+            >
+              GitHub
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="problem" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          problem
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6"
+        >
+          The drill told native speakers they were wrong. It played a word,
+          listened to the reading, and flagged the sound when the acoustic
+          model's confidence fell below <code class="font-mono">-5.0</code>. One
+          number, applied to every sound in English.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          On real speech it failed in both directions at once. A native
+          <code class="font-mono">th</code> came back flagged. A swapped vowel
+          passed, so <em>ship</em> read for <em>sheep</em> and <em>wok</em> for
+          <em>walk</em> cleared the bar. A single cutoff cannot tell a good
+          sound from a bad one, and the reason is the whole finding.
+        </p>
+      </div>
+    </section>
+
+    <section id="data" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          data
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6"
+        >
+          speechocean762 supplies 5,000 English clips from non-native speakers,
+          each phoneme scored 0 to 2 by five human experts. That per-sound score
+          is the ground truth a threshold can be fit against, and the corpus is
+          Apache-2.0, so it ships.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          The acoustic model ran over 2,500 of those clips to read off its
+          confidence in each sound, a measure called Goodness of Pronunciation.
+          Transcription was skipped: the words being read are known in advance,
+          so only the acoustic model has to run, which cut an hours-long sweep
+          to minutes.
+        </p>
+
+        <figure data-fade data-visible="true" style="--fade-delay: 350ms" class={figureClass}>
+          <Image
+            src={baselines}
+            alt="Mean confidence per phoneme for clean and clearly-wrong readings, with the old global threshold marked far to the left of nearly every sound"
+            class={tallImageClass}
+          />
+          <figcaption class={captionClass}>
+            every sound sits somewhere different
+          </figcaption>
+        </figure>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 450ms"
+          class="text-muted-foreground text-body mt-8"
+        >
+          A native <code class="font-mono">s</code> sits near perfect
+          confidence. A native <code class="font-mono">th</code> averages
+          <code class="font-mono">-2.6</code>, because the model is less certain
+          about it even when a native speaker says it correctly. The clean and
+          wrong readings separate for every sound, and each pair sits at its own
+          place on the axis.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 550ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          The old <code class="font-mono">-5.0</code> line cuts none of it
+          cleanly. It falls so far left that a mangled
+          <code class="font-mono">th</code> still scores above it and passes,
+          while it clips the low end of confident vowels and flags them.
+          Different sounds do not share a baseline, so one vertical line was
+          never going to work.
+        </p>
+      </div>
+    </section>
+
+    <section id="fix" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          fix
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6"
+        >
+          The rule became per-sound. For each phoneme, take the mean and spread
+          of its native confidence, then flag a reading only where it falls more
+          than 1.6 standard deviations below that sound's own mean. The cut
+          travels with the sound.
+        </p>
+
+        <figure data-fade data-visible="true" style="--fade-delay: 250ms" class={figureClass}>
+          <Image
+            src={separation}
+            alt="Separation measured as AUC for all 27 sounds, every bar clearing the 0.75 reliability gate"
+            class={tallImageClass}
+          />
+          <figcaption class={captionClass}>
+            separation per sound, against the reliability gate
+          </figcaption>
+        </figure>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="text-muted-foreground text-body mt-8"
+        >
+          All 27 sounds separate, from 0.83 to 0.98. A reliability gate backs
+          the rule up: a sound whose confidence failed to separate clean from
+          wrong would be held out of the verdict rather than guessed at. Every
+          sound clears it today, and the gate is there for the next model.
+        </p>
+
+        <figure data-fade data-visible="true" style="--fade-delay: 450ms" class={figureClass}>
+          <Image
+            src={thresholds}
+            alt="Confidence distributions for long-e, th and w, each calibrated threshold falling between the clean and the clearly-wrong readings"
+            class={wideImageClass}
+          />
+          <figcaption class={captionClass}>
+            calibrated thresholds against the readings they separate
+          </figcaption>
+        </figure>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 550ms"
+          class="text-muted-foreground text-body mt-8"
+        >
+          One earlier read had written the long-e vowel off as hopeless, its
+          clean and wrong clouds apparently on top of each other. That came from
+          comparing clean speech against borderline speech. Set against
+          clearly-wrong readings, long-e separates at 0.98, as cleanly as any
+          consonant. What a measurement is compared against decides what it
+          concludes.
+        </p>
+      </div>
+    </section>
+
+    <section id="holdout" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          holdout
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6"
+        >
+          A rule fit to its own data proves nothing, so the thresholds were fit
+          on one half of the corpus and measured on the other half, held out
+          from start to finish.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          On unseen speech it false-flags native readings 7% of the time and
+          catches 66% of genuinely wrong sounds. That operating point is
+          deliberate. Nagging a correct speaker erodes trust faster than missing
+          an error does, so the cut keeps false alarms low and accepts that a
+          third of subtle errors slip past.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          It also fixes the two failures that started this. A native
+          <code class="font-mono">th</code> sits at its own baseline and passes.
+          A substituted vowel drops below its own line and flags.
+        </p>
+      </div>
+    </section>
+
+    <section id="beyond" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          beyond
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6"
+        >
+          Calibrating one score set the pattern for every other score the tool
+          presents.
+        </p>
+
+        <figure
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+        >
+          <table class="font-mono text-label w-full min-w-[28rem]">
+            <thead>
+              <tr class="text-muted-foreground">
+                <th class="text-left font-normal">score</th>
+                <th class="text-left font-normal">what it was</th>
+                <th class="text-left font-normal">what it is now</th>
+              </tr>
+            </thead>
+            <tbody class="text-foreground">
+              {
+                scores.map((row) => (
+                  <tr>
+                    <td class="py-1 pr-4 align-top">{row.score}</td>
+                    <td class="text-muted-foreground py-1 pr-4 align-top">
+                      {row.before}
+                    </td>
+                    <td class="py-1 align-top">{row.after}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </figure>
+
+        <figure data-fade data-visible="true" style="--fade-delay: 350ms" class={figureClass}>
+          <Image
+            src={verdicts}
+            alt="Verdict errors before and after the competitor check, false passes dropping from 15 to 2 while false retries rise from 5 to 6"
+            class={wideImageClass}
+          />
+          <figcaption class={captionClass}>
+            minimal-pair verdict errors, before and after
+          </figcaption>
+        </figure>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 450ms"
+          class="text-muted-foreground text-body mt-8"
+        >
+          The minimal-pair drill asks a different question from the one the
+          phoneme flag was fit for: whether a reading was
+          <code class="font-mono">θ</code> rather than
+          <code class="font-mono">f</code>, not whether it was an acceptable
+          <code class="font-mono">θ</code>. Scoring the competitor at the
+          target's own frames cut wrong words accepted from 15 to 2 across 32
+          pairs, and moved right words rejected from 5 to 6.
+        </p>
+
+        <figure data-fade data-visible="true" style="--fade-delay: 550ms" class={figureClass}>
+          <Image
+            src={fluency}
+            alt="Predicted against human fluency on the held-out split, beside the long-pause-ratio distribution that collapses to zero on a read-aloud corpus"
+            class={wideImageClass}
+          />
+          <figcaption class={captionClass}>
+            fluency against human judgment, and the feature that cannot be fit
+          </figcaption>
+        </figure>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 650ms"
+          class="text-muted-foreground text-body mt-8"
+        >
+          Fluency correlates with human judgment at 0.39 on held-out clips,
+          matching its in-sample fit. That is real and modest, so the score
+          reads as directional rather than as a grade. Two of its four features
+          carry the result and the two pause features cannot be fit at all here,
+          because a read-aloud corpus almost never hesitates. Those two stay
+          reasoned rather than fitted, and the whole score is labeled for what
+          it is.
+        </p>
+
+        <figure data-fade data-visible="true" style="--fade-delay: 750ms" class={figureClass}>
+          <Image
+            src={gaze}
+            alt="Per-frame yaw for a lens-look against a screen-glance, beside the threshold sweep where separation falls to zero at the old 15-degree gate and reaches 51 points at the new 7-degree one"
+            class={wideImageClass}
+          />
+          <figcaption class={captionClass}>
+            gaze yaw per frame, and the gate sweep behind the new threshold
+          </figcaption>
+        </figure>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 850ms"
+          class="text-muted-foreground text-body mt-8"
+        >
+          The interview gaze metric first read a lens-look and a screen-glance
+          as identical, since both keep the head inside 15 degrees. The raw yaw
+          separates them cleanly, at a median of +1.2 degrees against -7.3.
+          Tightening the gate to 7 degrees recovers a 51-point separation. Two
+          clips from one speaker is a separation check rather than a fit, and
+          the threshold is a directional placeholder until more recordings
+          arrive.
+        </p>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 950ms"
+          class="text-foreground text-body mt-10"
+        >
+          The flag is trustworthy now. The composite accent and prosody scores
+          are still labeled directional, and they stay that way until real
+          recorded pairs validate them. Calibrating a score presented as truth
+          is the hard part, and that part is done.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 1050ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          The whole experiment lives beside the case study in the repository.
+          <code class="font-mono">measure.py</code> runs the sweep,
+          <code class="font-mono">analyze.py</code> fits the thresholds,
+          <code class="font-mono">validate.py</code> checks them on held-out
+          speech, and <code class="font-mono">plots.py</code> draws these
+          figures. The models and the dataset cache on first download, so a
+          re-run takes minutes.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer
+    data-section="footer"
+    class="border-border/60 px-6 py-10 md:py-12"
+  >
+    <div class="border-border/60 mx-auto max-w-2xl border-t pt-10">
+      <a
+        href="/"
+        class="text-muted-foreground hover:text-foreground text-label inline-flex items-center gap-2 transition-colors"
+      >
+        <span aria-hidden="true">←</span>
+        Back to Eric Le
+      </a>
+    </div>
+  </footer>
+
+</BaseLayout>

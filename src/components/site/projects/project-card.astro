@@ -39,7 +39,7 @@ const fadeDelay = `${index * 200}ms`
   class="border-border hover:border-foreground/30 bg-card group/card relative overflow-hidden rounded-lg border transition-colors duration-200 [transform:perspective(900px)_rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))] [transform-style:preserve-3d] [will-change:transform]"
 >
   {
-    poster && videoSrc && mediaAlt && (
+    poster && mediaAlt && (
       <div
         data-media-slot
         class="bg-muted/40 relative aspect-[11/7] overflow-hidden border-b border-border/60 p-2 sm:p-3"
@@ -52,18 +52,20 @@ const fadeDelay = `${index * 200}ms`
             class="absolute inset-0 size-full object-cover"
             data-media-poster
           />
-          <video
-            src={videoSrc}
-            poster={poster.src}
-            muted
-            loop
-            playsinline
-            preload="none"
-            aria-hidden="true"
-            style={`object-position: ${mediaPosition}`}
-            class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-200 group-hover/card:opacity-100"
-            data-media-video
-          />
+          {videoSrc && (
+            <video
+              src={videoSrc}
+              poster={poster.src}
+              muted
+              loop
+              playsinline
+              preload="none"
+              aria-hidden="true"
+              style={`object-position: ${mediaPosition}`}
+              class="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-200 group-hover/card:opacity-100"
+              data-media-video
+            />
+          )}
         </div>
       </div>
     )

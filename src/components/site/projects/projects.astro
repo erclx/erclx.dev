@@ -1,13 +1,29 @@
 ---
 import ProjectCard from './project-card.astro'
+import aitkPoster from '@/assets/projects/aitk.png'
 import jobtriagePoster from '@/assets/projects/jobtriage.png'
 import stackrPoster from '@/assets/projects/stackr.png'
 import caretPoster from '@/assets/projects/caret.png'
+import dictionPoster from '@/assets/projects/diction.png'
 import jobtriageVideo from '@/assets/videos/jobtriage.mp4?url'
 import stackrVideo from '@/assets/videos/stackr.mp4?url'
 import caretVideo from '@/assets/videos/caret.mp4?url'
 
 const projects = [
+  {
+    name: 'aitk',
+    description:
+      'CLI that installs one set of agent rules, skills, and standards into every project and keeps them in step. Installs from npm as @erclx/aitk and as a Claude Code plugin.',
+    poster: aitkPoster,
+    mediaAlt:
+      'aitk — terminal transcript of the install command running in a project',
+    mediaPosition: 'left top',
+    links: [
+      { label: 'Case study', href: '/aitk' },
+      { label: 'GitHub', href: 'https://github.com/erclx/aitk' },
+      { label: 'npm', href: 'https://www.npmjs.com/package/@erclx/aitk' },
+    ],
+  },
   {
     name: 'Jobtriage',
     description:
@@ -25,7 +41,7 @@ const projects = [
   {
     name: 'Stackr',
     description:
-      'VS Code extension for multi-file LLM context preparation. 1,300 downloads on Open VSX. Drag-and-drop file staging, live token counting, pinned files that survive session restarts.',
+      'VS Code extension for multi-file LLM context preparation. Drag-and-drop file staging, live token counting, pinned files that survive session restarts.',
     poster: stackrPoster,
     videoSrc: stackrVideo,
     mediaAlt: 'Stackr — VS Code panel showing staged files and a context preview',
@@ -57,6 +73,19 @@ const projects = [
       { label: 'GitHub', href: 'https://github.com/erclx/caret' },
     ],
   },
+  {
+    name: 'diction',
+    description:
+      'Pronunciation trainer that scores each sound against what a native speaker actually sounds like, and reports how often it is wrong. Runs offline with nothing leaving the machine.',
+    poster: dictionPoster,
+    mediaAlt:
+      'diction — a scored passage reading, with the word thought flagged and the th correction shown',
+    mediaPosition: 'left top',
+    links: [
+      { label: 'Case study', href: '/diction' },
+      { label: 'GitHub', href: 'https://github.com/erclx/diction' },
+    ],
+  },
 ]
 ---
 
@@ -68,13 +97,6 @@ const projects = [
     >
       Projects
     </h2>
-    <p
-      data-fade
-      style="--fade-delay: 100ms"
-      class="text-muted-foreground text-body mt-4 italic"
-    >
-      Three tools shipped in 2026.
-    </p>
     <div class="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2">
       {
         projects.map((project, index) => {
@@ -113,18 +135,6 @@ const projects = [
         })
       }
     </div>
-    <p
-      data-fade
-      style="--fade-delay: 400ms"
-      class="text-muted-foreground text-body mt-6"
-    >
-      Plus <a
-        href="https://github.com/erclx/toolkit"
-        class="text-foreground underline underline-offset-4"
-        >Toolkit</a
-      >, an agent-first CLI that installs and syncs governance, skills, and
-      standards across projects.
-    </p>
   </div>
 </section>
 

@@ -2,6 +2,8 @@ import { chromium } from '@playwright/test'
 import { mkdir, rm } from 'fs/promises'
 import path from 'path'
 
+import { settleLazyImages } from './lazy-images'
+
 const SECTIONS = [
   'header',
   'origin',
@@ -91,6 +93,7 @@ for (const c of cases) {
 
   await page.goto(BASE_URL)
   await page.waitForLoadState('networkidle')
+  await settleLazyImages(page)
 
   const target = page.locator(`[data-section="${c.section}"]`).first()
   await target.waitFor({ state: 'visible', timeout: 10_000 })

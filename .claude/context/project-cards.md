@@ -26,12 +26,15 @@ The projects section. Cards render statically from a config array in `projects.a
 
 ## Gotchas
 
-- A card without `poster`, `videoSrc`, and `mediaAlt` skips the media slot entirely. Tilt still applies, but hover-play has nothing to bind.
+- The media slot needs `poster` and `mediaAlt`. A card missing either skips the slot entirely, and tilt still applies while hover-play has nothing to bind.
+- `videoSrc` is optional. A card carrying a still and no clip renders the still, and `project-media.ts` skips it because its `[data-media-video]` query returns nothing. Two cards ship this way while their screencasts are owed.
+- Card stills run `1280x720` or `1280x800` against an `aspect-[11/7]` slot, so `object-cover` crops horizontally under the default top position, roughly 6.5% off each edge at the wider ratio and under 2% at the taller one. A still whose content sits flush left, such as a terminal transcript or an app shell with a sidebar, needs `mediaPosition: 'left top'` or that content is cropped away.
+- A card still shows the artifact running rather than a result it produced. The card names the tool and its case study carries the measurement, which is the split every card on the page follows.
 - `fadeDelay` on the card uses the array index. Reordering the data array reorders the staggered fade-in.
 
 ## Visual budget
 
-- One muted MP4 per project, dark theme only, ≤500kb, 720p, h.264 baseline. Poster is a single dark PNG extracted from the same clip.
+- At most one muted MP4 per project, dark theme only, ≤500kb, 720p, h.264 baseline. Where a clip exists the poster is a single dark PNG extracted from it, and where none does the still is the card's own `1280x720` or `1280x800` image.
 - Poster sits underneath the video. The video transitions from opacity 0 to opacity 100 over 200ms on card hover via CSS. `project-media.ts` calls `play()` in parallel on `pointerenter`, so the fade runs even if `play()` is rejected.
 - Media slot frames the dark clip as embedded media so it sits cleanly on either page theme: rounded inner corners, hairline ring, soft shadow, light surface inset.
 

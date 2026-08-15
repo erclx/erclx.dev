@@ -61,6 +61,7 @@ Keep `bun run dev` running in the background during landing-page sessions so cha
 - Captures land in the working directory's own `.claude/review/screenshots/`, which the script clears before each run. A worktree keeps its own captures and never reaches the main checkout's, so copy anything worth keeping before removing the worktree.
 - `SCREENSHOT_FILTER=<section>[,<section>]` limits capture to `header`, `origin`, `projects`, `looking-for`, or `footer`.
 - Each run covers three viewports (`desktop`, `mobile`, `narrow`) in both themes, so a full sweep is 30 images and a single-section filter is 6.
+- The capture walks the whole page and waits for every image to report pixels before shooting a section, since card posters and case-study figures load lazily and a slot whose image never entered the viewport captures as an empty box. Read an empty media slot as a capture that skipped the wait before reading it as a rendering defect. An image that never loads warns and the capture proceeds, so the evidence survives.
 
 For the per-section capture model and its output path, see `.claude/ARCHITECTURE.md` § Screenshots capture per-section, not full-page. For when to reach for Playwright MCP over a static capture, see § Playwright MCP for interactive verification in the same file.
 
