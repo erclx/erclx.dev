@@ -42,7 +42,7 @@ The project uses a three-tier context model. Know which tier holds what before r
 
 ## Markdown
 
-- Before writing a PR, commit, branch name, or snippet, read its standard in `.claude/standards/` and follow it. File-edit standards (prose, markdown, README, context, wireframes, skills, rules) route automatically via `.claude/rules/claude/`.
+- Before writing a PR, commit, branch name, or snippet, read its standard in `.claude/standards/` and follow it. File-edit standards route automatically via `.claude/rules/claude/`.
 - Keep `README.md` user-facing. Technical detail belongs in `.claude/context/`.
 
 ## Commands

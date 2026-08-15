@@ -60,6 +60,49 @@ test('each case study links back to the landing page', async ({ page }) => {
 test('the project cards link to both case studies', async ({ page }) => {
   await page.goto('/')
 
-  await expect(page.locator('#projects a[href="/aitk"]')).toHaveCount(1)
-  await expect(page.locator('#projects a[href="/diction"]')).toHaveCount(1)
+  await expect(page.locator('#projects a[href="/aitk"]').first()).toBeVisible()
+  await expect(
+    page.locator('#projects a[href="/diction"]').first(),
+  ).toBeVisible()
+})
+
+test('a diction figure opens to a larger view', async ({ page }) => {
+  await page.goto('/diction')
+
+  await page.locator('[data-figure-zoom]').first().click()
+
+  await expect(page.locator('[data-figure-dialog]')).toBeVisible()
+})
+
+test('an open figure closes on Escape without leaving the page', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  await page.locator('[data-figure-zoom]').first().click()
+
+  await page.keyboard.press('Escape')
+
+  await expect(page.locator('[data-figure-dialog]')).toBeHidden()
+})
+
+test('closing a figure returns focus to the figure that opened it', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  const trigger = page.locator('[data-figure-zoom]').first()
+  await trigger.click()
+
+  await page.keyboard.press('Escape')
+
+  await expect(trigger).toBeFocused()
+})
+
+test('each case study carries one control back to the landing page', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  await expect(page.getByRole('link', { name: 'Back to Eric Le' })).toHaveCount(
+    1,
+  )
 })

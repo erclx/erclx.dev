@@ -4,14 +4,18 @@ import path from 'path'
 
 import { settleLazyImages } from './lazy-images'
 
-const SECTIONS = [
+const LANDING_SECTIONS = [
   'header',
   'origin',
   'projects',
   'looking-for',
   'footer',
 ] as const
-type Section = (typeof SECTIONS)[number]
+type Section = (typeof LANDING_SECTIONS)[number]
+
+// A case study is one long prose surface rather than a stack of distinct ones,
+// so it is captured whole and its `id` headings are not capture targets.
+const CASE_STUDY_ROUTES = ['aitk', 'jobtriage', 'diction'] as const
 
 interface Viewport {
   readonly name: string
@@ -25,26 +29,67 @@ const VIEWPORTS: readonly Viewport[] = [
   { name: 'narrow', width: 320, height: 800 },
 ]
 
+// Narrow catches a landing section wrapping at 320px. Long-form prose reflows
+// instead of breaking, so a route takes the other two widths only.
+const ROUTE_VIEWPORTS = VIEWPORTS.filter(
+  (viewport) => viewport.name !== 'narrow',
+)
+
 type Theme = 'light' | 'dark'
 const THEMES: readonly Theme[] = ['light', 'dark']
 
-interface Case {
-  readonly section: Section
+interface CaseBase {
+  readonly url: string
   readonly viewport: Viewport
   readonly theme: Theme
   readonly label: string
+  readonly dir: string
 }
 
-const ALL_CASES: readonly Case[] = SECTIONS.flatMap((section) =>
-  VIEWPORTS.flatMap((viewport) =>
-    THEMES.map((theme) => ({
-      section,
-      viewport,
-      theme,
-      label: `${section}/${viewport.name}--${theme}`,
-    })),
+interface SectionCase extends CaseBase {
+  readonly kind: 'section'
+  readonly section: Section
+}
+
+interface PageCase extends CaseBase {
+  readonly kind: 'page'
+}
+
+type Case = SectionCase | PageCase
+
+const SECTION_CASES: readonly SectionCase[] = LANDING_SECTIONS.flatMap(
+  (section) =>
+    VIEWPORTS.flatMap((viewport) =>
+      THEMES.map(
+        (theme): SectionCase => ({
+          kind: 'section',
+          url: '/',
+          section,
+          viewport,
+          theme,
+          label: `${section}/${viewport.name}--${theme}`,
+          dir: section,
+        }),
+      ),
+    ),
+)
+
+const PAGE_CASES: readonly PageCase[] = CASE_STUDY_ROUTES.flatMap((route) =>
+  ROUTE_VIEWPORTS.flatMap((viewport) =>
+    THEMES.map(
+      (theme): PageCase => ({
+        kind: 'page',
+        url: `/${route}`,
+        viewport,
+        theme,
+        label: `${route}/${viewport.name}--${theme}`,
+        dir: route,
+      }),
+    ),
   ),
 )
+
+const ALL_CASES: readonly Case[] = [...SECTION_CASES, ...PAGE_CASES]
 
 const BASE_URL = process.env.SCREENSHOT_BASE_URL ?? 'http://localhost:4173'
 const OUT_DIR = '.claude/review/screenshots'
@@ -91,19 +136,25 @@ for (const c of cases) {
   })
   const page = await ctx.newPage()
 
-  await page.goto(BASE_URL)
+  await page.goto(new URL(c.url, BASE_URL).href)
   await page.waitForLoadState('networkidle')
   await settleLazyImages(page)
 
-  const target = page.locator(`[data-section="${c.section}"]`).first()
-  await target.waitFor({ state: 'visible', timeout: 10_000 })
-  await target.scrollIntoViewIfNeeded()
-  await page.waitForTimeout(200)
+  const caseDir = path.join(OUT_DIR, c.dir)
+  await mkdir(caseDir, { recursive: true })
+  const file = path.join(caseDir, `${c.viewport.name}--${c.theme}.png`)
 
-  const sectionDir = path.join(OUT_DIR, c.section)
-  await mkdir(sectionDir, { recursive: true })
-  const file = path.join(sectionDir, `${c.viewport.name}--${c.theme}.png`)
-  await target.screenshot({ path: file })
+  if (c.kind === 'section') {
+    const target = page.locator(`[data-section="${c.section}"]`).first()
+    await target.waitFor({ state: 'visible', timeout: 10_000 })
+    await target.scrollIntoViewIfNeeded()
+    await page.waitForTimeout(200)
+    await target.screenshot({ path: file })
+  } else {
+    await page.waitForTimeout(200)
+    await page.screenshot({ path: file, fullPage: true })
+  }
+
   console.log(`captured ${file}`)
 
   await ctx.close()

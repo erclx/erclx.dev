@@ -47,3 +47,42 @@ test('the aitk card writes the npm scope', async ({ page }) => {
     '@erclx/aitk',
   )
 })
+
+test('clicking a card that owns a case study opens it', async ({ page }) => {
+  await page.goto('/')
+
+  await page.locator('#projects article').first().click()
+
+  await expect(page).toHaveURL('/aitk')
+})
+
+test('a card link stays reachable above the whole-card overlay', async ({
+  page,
+}) => {
+  await page.goto('/')
+  const link = page
+    .locator('#projects article')
+    .first()
+    .getByRole('link', { name: 'GitHub' })
+  await link.hover()
+
+  const topmost = await link.evaluate((element) => {
+    const box = element.getBoundingClientRect()
+    const hit = document.elementFromPoint(
+      box.x + box.width / 2,
+      box.y + box.height / 2,
+    )
+    return hit?.closest('a')?.getAttribute('href') ?? null
+  })
+
+  expect(topmost).toBe('https://github.com/erclx/aitk')
+})
+
+test('a card without a case study carries no whole-card overlay', async ({
+  page,
+}) => {
+  await page.goto('/')
+  const caretCard = page.locator('#projects article').nth(3)
+
+  await expect(caretCard.locator('a[aria-hidden="true"]')).toHaveCount(0)
+})

@@ -19,7 +19,7 @@ Local dev workflow for this project.
 - `src/lib/` owns shared helpers
 - `src/styles/` owns the tailwind entry, the theme tokens, and the base layer
 - `src/test/` owns the vitest environment setup
-- `e2e/` owns the playwright specs and the per-section screenshot script
+- `e2e/` owns the playwright specs and the screenshot script
 - `public/` owns files served verbatim at the domain root
 
 For the rationale behind these choices, such as Astro over Next, the shadcn install path, font preload, and the theme toggle as static Astro, see `.claude/ARCHITECTURE.md` § Key technical decisions.
@@ -32,24 +32,24 @@ For the rationale behind these choices, such as Astro over Next, the shadcn inst
 
 ## Scripts
 
-| Command                 | Purpose                                                                                                                         |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `bun run check`         | Full verification. Auto-formats, then asserts clean.                                                                            |
-| `bun run format`        | Auto-fix prettier and shfmt formatting.                                                                                         |
-| `bun run clean`         | Wipe `node_modules/`, clear bun cache, reinstall.                                                                               |
-| `bun run update`        | Interactive `bun update` followed by verification.                                                                              |
-| `bun run dev`           | Start the Astro dev server on port 4321.                                                                                        |
-| `bun run build`         | Run `astro check` then build the static output.                                                                                 |
-| `bun run preview`       | Serve the built site locally.                                                                                                   |
-| `bun run astro`         | Expose the Astro CLI.                                                                                                           |
-| `bun run typecheck`     | Run `astro check`.                                                                                                              |
-| `bun run lint`          | Run ESLint with zero warnings allowed.                                                                                          |
-| `bun run lint:fix`      | Auto-fix ESLint issues.                                                                                                         |
-| `bun run test`          | Run Vitest in watch mode.                                                                                                       |
-| `bun run test:run`      | Run Vitest once with verbose reporter.                                                                                          |
-| `bun run test:coverage` | Run Vitest with coverage.                                                                                                       |
-| `bun run test:e2e`      | Run Playwright E2E tests.                                                                                                       |
-| `bun run screenshot`    | Build, preview, then capture screenshots. Pass `SCREENSHOT_FILTER=<section>[,<section>]` to limit capture to specific sections. |
+| Command                 | Purpose                                                                                                                |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `bun run check`         | Full verification. Auto-formats, then asserts clean.                                                                   |
+| `bun run format`        | Auto-fix prettier and shfmt formatting.                                                                                |
+| `bun run clean`         | Wipe `node_modules/`, clear bun cache, reinstall.                                                                      |
+| `bun run update`        | Interactive `bun update` followed by verification.                                                                     |
+| `bun run dev`           | Start the Astro dev server on port 4321.                                                                               |
+| `bun run build`         | Run `astro check` then build the static output.                                                                        |
+| `bun run preview`       | Serve the built site locally.                                                                                          |
+| `bun run astro`         | Expose the Astro CLI.                                                                                                  |
+| `bun run typecheck`     | Run `astro check`.                                                                                                     |
+| `bun run lint`          | Run ESLint with zero warnings allowed.                                                                                 |
+| `bun run lint:fix`      | Auto-fix ESLint issues.                                                                                                |
+| `bun run test`          | Run Vitest in watch mode.                                                                                              |
+| `bun run test:run`      | Run Vitest once with verbose reporter.                                                                                 |
+| `bun run test:coverage` | Run Vitest with coverage.                                                                                              |
+| `bun run test:e2e`      | Run Playwright E2E tests.                                                                                              |
+| `bun run screenshot`    | Build, preview, then capture screenshots. Pass `SCREENSHOT_FILTER=<term>[,<term>]` to limit capture to named surfaces. |
 
 ## Visual verification
 
@@ -59,12 +59,13 @@ Keep `bun run dev` running in the background during landing-page sessions so cha
 - Three surfaces each hold their own port band so any two run at once: dev from 4321, screenshot from 4173, and Playwright from 4250. `playwright.config.ts` derives its `baseURL` from that base and passes the resolved port to `astro preview`.
 - `scripts/worktree-port.sh` shifts all three by the same per-worktree offset, derived from the worktree directory name. The offset caps at 50, which is what keeps the bands from overlapping. A linked worktree therefore runs every surface without colliding with the main checkout or with a sibling worktree.
 - Captures land in the working directory's own `.claude/review/screenshots/`, which the script clears before each run. A worktree keeps its own captures and never reaches the main checkout's, so copy anything worth keeping before removing the worktree.
-- `SCREENSHOT_FILTER=<section>[,<section>]` limits capture to `header`, `origin`, `projects`, `looking-for`, or `footer`.
-- Each run covers three viewports (`desktop`, `mobile`, `narrow`) in both themes, so a full sweep is 30 images and a single-section filter is 6.
-- The capture walks the whole page and waits for every image to report pixels before shooting a section, since card posters and case-study figures load lazily and a slot whose image never entered the viewport captures as an empty box. Read an empty media slot as a capture that skipped the wait before reading it as a rendering defect. An image that never loads warns and the capture proceeds, so the evidence survives.
+- `SCREENSHOT_FILTER=<term>[,<term>]` limits capture to a landing section (`header`, `origin`, `projects`, `looking-for`, `footer`) or a case-study route (`aitk`, `jobtriage`, `diction`). A term matches against the `<dir>/<viewport>--<theme>` label, so `desktop` or `dark` narrows across every surface instead.
+- A landing section covers three viewports (`desktop`, `mobile`, `narrow`) in both themes and a route covers two, dropping `narrow`. A full sweep is 42 images, a single-section filter is 6, and a single-route filter is 4.
+- The capture walks the whole page and waits for every image to report pixels before it shoots, since card posters and case-study figures load lazily and a slot whose image never entered the viewport captures as an empty box. Read an empty media slot as a capture that skipped the wait before reading it as a rendering defect. An image that never loads warns and the capture proceeds, so the evidence survives.
+- The wait skips an image carrying no source at all, which is the empty slot the figure dialog fills on demand. A second placeholder image added anywhere on the site needs no change, and one driven by `srcset` alone would need the check widened again.
 - No capture contains a favicon, so a tab-icon change is verified by loading the built page in a headed engine and sampling the icon through a canvas. Headless Chromium requests no favicon at all, so reading which icon an engine selects needs `xvfb-run` around a headed run. `e2e/favicon.spec.ts` holds that luminance sampling as a standing guard across all three engines.
 
-For the per-section capture model and its output path, see `.claude/ARCHITECTURE.md` § Screenshots capture per-section, not full-page. For when to reach for Playwright MCP over a static capture, see § Playwright MCP for interactive verification in the same file.
+For the capture model and its output path, see `.claude/ARCHITECTURE.md` § Screenshots capture per-section on the landing page and whole on a case study. For when to reach for Playwright MCP over a static capture, see § Playwright MCP for interactive verification in the same file.
 
 ## Shell scripts
 

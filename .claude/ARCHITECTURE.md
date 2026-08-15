@@ -62,9 +62,15 @@ Geist is removed. Replaced by Fraunces variable for display and headings, Inter 
 
 Card posters and case-study figures load lazily, so a per-section capture can shoot a slot whose image never entered the viewport and produce an empty box that reads as a rendering defect. The capture therefore walks the whole page and waits for every image to report pixels before it shoots. The wait is not fatal: an image that never loads warns and the capture proceeds, because the picture of the breakage is the evidence a reviewer came for and failing the run throws it away. Verified 2026-08-15 against the projects section, where the wait moved a card from an empty slot to its poster with no code change behind it.
 
-### Screenshots capture per-section, not full-page
+### Screenshots capture per-section on the landing page and whole on a case study
 
 `e2e/screenshot.ts` enumerates top-level `<section>` elements via the `[data-section="<id>"]` attribute and captures each one as its own image through Playwright's `locator.screenshot()`. Output lands at `.claude/review/screenshots/<section>/<viewport>--<theme>.png`. Full-page captures lose detail to compression and waste re-render time when only one surface changed. Per-section captures hand the reviewer one focused image per surface and let iteration target a single surface via `SCREENSHOT_FILTER` with comma-separated terms.
+
+A case-study route takes the opposite treatment, added on 2026-08-15 because the three routes had never been captured at all and the surface judged weakest was the one no review tool looked at. A case study is one long prose surface rather than a stack of distinct ones, and its mid-page headings carry `id` rather than `data-section`, so per-section capture there would shoot the top bar and the footer and miss the body. Each route is captured whole to `.claude/review/screenshots/<route>/<viewport>--<theme>.png`, which keeps the label format `<dir>/<viewport>--<theme>` that `SCREENSHOT_FILTER` matches on and leaves every landing path unchanged.
+
+The run is 42 cases: five landing sections across three viewports and two themes, plus three routes across two viewports and two themes. A route drops the 320px width, which exists to catch a landing section wrapping, because long-form prose reflows rather than breaking and the third width would add half again as much run time for that.
+
+Reading the full-page shape here as license to capture the landing page whole is the mistake to avoid. It is the answer for a single long surface, and the decision above is the answer for a page of five.
 
 ### The toolkit's surface-capture rule is declined here
 
