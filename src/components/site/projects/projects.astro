@@ -1,5 +1,6 @@
 ---
 import ProjectCard from './project-card.astro'
+import { isOutbound } from '@/lib/links'
 import aitkPoster from '@/assets/projects/aitk.png'
 import jobtriagePoster from '@/assets/projects/jobtriage.png'
 import stackrPoster from '@/assets/projects/stackr.png'
@@ -87,6 +88,11 @@ const projects = [
     ],
   },
 ]
+
+// A card's only internal link is the case study it owns. Every other link
+// leaves the site for the artifact itself.
+const findCaseStudyHref = (links: { href: string }[]): string | undefined =>
+  links.find((link) => !isOutbound(link.href))?.href
 ---
 
 <section id="projects" data-section="projects" class="px-6 py-16 md:py-20">
@@ -128,6 +134,7 @@ const projects = [
                 mediaAlt={project.mediaAlt}
                 mediaPosition={project.mediaPosition}
                 links={project.links}
+                caseStudyHref={findCaseStudyHref(project.links)}
                 index={index}
               />
             </div>

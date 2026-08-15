@@ -59,9 +59,12 @@ Appears below the header. Lists shipped tools as cards. The heading stands alone
 
 ## Behavior
 
-- Cards stack in document order. No filtering, no sorting, no interactivity beyond the link clicks.
+- Cards stack in document order. No filtering and no sorting.
+- A card owning a case study opens it from anywhere on the card, so the whole card is the control its `Case study` link advertises. A card with no case study has no single destination and stays inert between its links.
+- The links inside a card keep their own destinations, including on a card that opens as a whole.
 - Card link rows wrap when the viewport cannot hold every link on one line. Wrap is expected at 320px on cards with three or more links.
 - A card leading to a case study carries that link first in its row, ahead of the artifact's own listings.
+- A link leaving the site opens in a new tab. The case-study link stays in the current one.
 - The odd card count leaves a gap beside the trailing card from `lg`. The grid keeps two columns rather than reflowing the four cards above it.
 
 ## Card media
