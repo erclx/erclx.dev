@@ -12,7 +12,7 @@ Reached from the diction project card on the landing page. Carries six measured 
 
 ```plaintext
 ┌──────────────────────────────────────────────────────────┐
-│ Eric Le                                        [ theme ] │  ← thin bar, identity wordmark and toggle
+│ ← Eric Le                                      [ theme ] │  ← thin bar, way back and toggle
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
 │   case study                                             │  ← mono eyebrow
@@ -62,14 +62,14 @@ The section-nav rail sits in the left margin from `xl`, tracking the five sectio
 
 - Renders static. Reveal animations are no-ops and the nav rail is passed `instant`, so nothing fades on a page read for depth.
 - Carries no roadmap or "what's next" section, matching the other case studies.
-- One control leads home, at the foot. The identity wordmark in the top bar links to the same place as ordinary site chrome rather than as a second way back.
+- Two controls lead home and both carry the same arrow, a quiet one in the top bar and a bordered one at the foot. The pair is deliberate: a reader who wants out partway through should not have to reach the end to find the way.
 - Clicking a chart opens it over the page at nearly the full screen width, with its caption under it. Escape, the close control, and a click outside all return the reader to the same scroll position.
 
 ## Figures
 
 Two widths, decided by the source rather than by the section. A portrait figure is capped in height and centred so the column is not handed to one image, and a landscape figure fills the column width. Each carries a caption naming what it shows, and the alt text states the finding rather than the file.
 
-Both widths render far below the source resolution in the column, so every chart opens on click. The opened view fits the width and scrolls when the chart is taller than the screen, which is what a reader needs on a portrait chart. See `.claude/context/case-study-figures.md` for the mechanism.
+Both widths render far below the source resolution in the column, so every chart opens on click. A landscape chart opens to the full width of the panel and fits on screen. A portrait chart opens taller than the screen and scrolls, bounded so the scroll stays around half a screen rather than running to the two or three a full-resolution chart would take. See `.claude/context/case-study-figures.md` for the mechanism.
 
 The score table is built from layout and type rather than from an image, so it carries no opening treatment. The table scrolls inside its own panel on a narrow viewport, so the page body never scrolls sideways.
 
