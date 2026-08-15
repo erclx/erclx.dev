@@ -94,7 +94,7 @@ Declaration order does not decide which icon an engine draws. With the raster de
 
 Do not restore the vector to an `icon` relation and do not replace either raster with a downsample of it. The measurement above is the whole reason the set exists. The parent checkout's sync overwrites `public/favicon.svg` and touches neither raster, so an upstream change to the vector leaves the tab as it is.
 
-Measured at cc12951 on 2026-08-15.
+Measured at 60f1e0a on 2026-08-15.
 
 ## Risks / open questions
 
