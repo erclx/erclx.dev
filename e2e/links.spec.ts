@@ -62,15 +62,20 @@ for (const route of ROUTES) {
       .evaluateAll(
         (elements, minimum) =>
           elements
-            .filter(
-              (element) => element.getBoundingClientRect().height < minimum,
-            )
-            .map(
-              (element) =>
+            .map((element) => {
+              const box = element.getBoundingClientRect()
+              const label =
                 element.getAttribute('aria-label') ??
                 element.textContent?.trim().slice(0, 40) ??
-                '',
-            ),
+                ''
+              return {
+                label,
+                width: Math.round(box.width),
+                height: Math.round(box.height),
+              }
+            })
+            .filter((entry) => entry.width < minimum || entry.height < minimum)
+            .map((entry) => `${entry.label} (${entry.width}x${entry.height})`),
         MINIMUM_TAP_TARGET_PX,
       )
 
