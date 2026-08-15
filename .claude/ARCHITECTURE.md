@@ -74,7 +74,7 @@ Reading the full-page shape here as license to capture the landing page whole is
 
 ### The toolkit's surface-capture rule is declined here
 
-`440-surface-capture` ships with the astro stack and is deliberately not installed. It directs a session to capture the full page and not a component in isolation, which is the reverse of the decision above, and its `**/pages/**` glob overlaps `445-screenshot` on `src/pages/**` exactly, so both would load on one page edit stating opposite things. Both also name `bun run screenshot`, which the rule-authoring standard bars between siblings.
+`440-surface-capture` ships with the astro stack and is deliberately not installed. It directs a session to capture the full page and not a component in isolation. That is the reverse of what the landing page does and what a case-study route does, so its `**/pages/**` glob, which overlaps `445-screenshot` on `src/pages/**` exactly, would load both rules on one page edit stating opposite things for `index.astro` and agreeing for the other three. A rule that is right on three files of four is worse than one that is absent, since the reader has to know which case they are in. Both also name `bun run screenshot`, which the rule-authoring standard bars between siblings, and that bar holds whichever file is being edited.
 
 `445-screenshot` is this project's answer and stays. It is locally authored, so no sync touches it, and it carries the before-and-after discipline and the handoff rules the toolkit rule has no equivalent for.
 
