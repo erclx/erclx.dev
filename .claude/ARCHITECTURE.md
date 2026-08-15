@@ -66,6 +66,14 @@ Card posters and case-study figures load lazily, so a per-section capture can sh
 
 `e2e/screenshot.ts` enumerates top-level `<section>` elements via the `[data-section="<id>"]` attribute and captures each one as its own image through Playwright's `locator.screenshot()`. Output lands at `.claude/review/screenshots/<section>/<viewport>--<theme>.png`. Full-page captures lose detail to compression and waste re-render time when only one surface changed. Per-section captures hand the reviewer one focused image per surface and let iteration target a single surface via `SCREENSHOT_FILTER` with comma-separated terms.
 
+### The toolkit's surface-capture rule is declined here
+
+`440-surface-capture` ships with the astro stack and is deliberately not installed. It directs a session to capture the full page and not a component in isolation, which is the reverse of the decision above, and its `**/pages/**` glob overlaps `445-screenshot` on `src/pages/**` exactly, so both would load on one page edit stating opposite things. Both also name `bun run screenshot`, which the rule-authoring standard bars between siblings.
+
+`445-screenshot` is this project's answer and stays. It is locally authored, so no sync touches it, and it carries the before-and-after discipline and the handoff rules the toolkit rule has no equivalent for.
+
+Reading its absence as an install gap is the specific mistake to avoid: a session did exactly that on 2026-08-15 and installed it alongside two rules that were genuinely missing. The two apart is that `556-groundwork` and `557-intake` were named in `.claude/aitk.json` with no file behind them, while `440-surface-capture` appeared in neither the record nor the tree, which is what a declined rule looks like.
+
 ### Resume PDF served from `public/`
 
 The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source remains `assets/resumes/eric-le-resume.pdf` in the parent career repo. Updates land here as a binary copy via the sync queue rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
@@ -82,4 +90,5 @@ The apex domain already lives in Cloudflare. Pages attaches the custom domain wi
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
 - `.claude/aitk.json` records a governance commit that lives only on an unmerged toolkit branch, because the Astro glob fix was synced from a local checkout rather than a release. Running `aitk gov sync` against released 0.98.0 before erclx/aitk#1006 merges reverts all four `ui/` globs and rewrites the four hashes to match, so the record stays internally consistent while the fix disappears with nothing reporting it. Re-sync from a released build once that pull request ships, and check the four `paths:` blocks carry `'**/*.astro'` before trusting a sync run in the meantime.
-- The governance install carried three stack members short until 2026-08-15: `556-groundwork`, `557-intake`, and `440-surface-capture`, all shipped by the stacks this project installs. `aitk gov sync` refreshes rules already present and adds none, so the gap survived every sync and closed only under `aitk gov install`. A sync alone does not prove the install is complete. Compare the rule count against the stack before assuming it is.
+- The governance install carried two stack members short until 2026-08-15: `556-groundwork` and `557-intake`, both shipped by the base stack and both named in `.claude/aitk.json` while absent from disk. `aitk gov sync` refreshes rules already present and adds none, so the gap survived every sync and closed only under `aitk gov install`. A sync alone does not prove the install is complete, and the signal to read is a recorded path with no file behind it rather than the rule count on its own.
+- `aitk gov install` re-adds `440-surface-capture` every time it runs, and the decision below declines it. No mechanism exists to opt a project out of one rule its stack ships, so the decline holds only while each install is followed by removing that file and its record entry. Check for it after any install.

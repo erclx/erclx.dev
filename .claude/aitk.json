@@ -78,8 +78,7 @@
         ".claude/rules/ui/400-ui.md": "sha256:a9de23207b2d64699fc23fd5629962fdf43a71332fa43cb6c243f9f2dda3bc82",
         ".claude/rules/ui/410-a11y.md": "sha256:539b05fa82d10cf1a0dcb8a055387f7f417416e96336b6bac69f72df54761f8c",
         ".claude/rules/ui/420-forms.md": "sha256:aa28b685e331f07659a7babe89d3db21e1fef20268e5d05ad11de1fe3c0991d7",
-        ".claude/rules/ui/430-ux-completeness.md": "sha256:cfafb9398fc1c3404dffc6513b06ee8800132490bbb96314017be63713a2ff21",
-        ".claude/rules/ui/440-surface-capture.md": "sha256:e14ef916aa16adfab340a72d7214124c6f3829ef23dc91ff4d5c51c2c5e3d215"
+        ".claude/rules/ui/430-ux-completeness.md": "sha256:cfafb9398fc1c3404dffc6513b06ee8800132490bbb96314017be63713a2ff21"
       }
     },
     "tooling": {
