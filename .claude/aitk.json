@@ -37,8 +37,8 @@
       }
     },
     "governance": {
-      "commit": "d957d8a4",
-      "syncedAt": "2026-08-14T16:51:23.016Z",
+      "commit": "bc2c55b4",
+      "syncedAt": "2026-08-15T15:18:06.614Z",
       "files": {
         ".claude/rules/claude/500-prose.md": "sha256:efcd09441646abc406bdf087193e93c3f4275b092e9b3ec166f906fe6280f974",
         ".claude/rules/claude/501-markdown.md": "sha256:b72af45ca1a8c35a8eeb19873c9195b07efca60e22c8679b7b97a4c3c55d6991",
@@ -48,8 +48,6 @@
         ".claude/rules/claude/540-architecture.md": "sha256:d1287131cb66164e1380331ad15a3f3a6d2fc81fd6e341a25af344cf578ec5c2",
         ".claude/rules/claude/550-design.md": "sha256:e0ea5fda3b37fa71755e20f1d16940d7862ea91cb29a1c169797d8ce823567cb",
         ".claude/rules/claude/555-tasks.md": "sha256:e44d23fedbae0ff2379f9955d21e7db2cef6ee36cdd4f34254fcdb37013540d3",
-        ".claude/rules/claude/556-groundwork.md": "sha256:95553c4b911a7690d8b857448930ef81dcd5faf47f0fc0e4f6f6ccbba5c79b2a",
-        ".claude/rules/claude/557-intake.md": "sha256:593ab3798144923a254e404927ed26bb49cfaba718c2f6c2b8f3c880955e32ff",
         ".claude/rules/claude/558-plan.md": "sha256:8e4ac82a2728db0d99996fdc92a5ec71c2cd97c890f6dfa23d12caaf62ffa695",
         ".claude/rules/claude/559-memory.md": "sha256:c1b798f402acf4339191134bbc466b4e1878192872258bf1b338498f11a4167b",
         ".claude/rules/claude/560-diagrams.md": "sha256:3939cfb60b9b9ba1f5495cae67cfb0050f6cc903a99dcbb49658e888431750b2",
@@ -75,10 +73,10 @@
         ".claude/rules/lang/100-typescript.md": "sha256:5378af975febe5b4b2e2ac4edf4163fc0d9fddf406df8055a858a11bd9656416",
         ".claude/rules/lib/300-testing-ts.md": "sha256:d2a6d602384cbb6c148400e922aa621b681267e141bb7ad436aa5ed51f92374e",
         ".claude/rules/lib/350-security-web.md": "sha256:016a4e9fd6fc0a22088cc287ceaabcef8a4c81f36fa883b2fc99fd365aa8caf1",
-        ".claude/rules/ui/400-ui.md": "sha256:3e3d43fa2c94a4701598f0fee0b7d215c43549cab97daeb1c22e6ca3b0ffbd9a",
-        ".claude/rules/ui/410-a11y.md": "sha256:679b7f5db82e3af107d7a2cd574c22b30c4739308a23490d4d32dc83865f9a07",
-        ".claude/rules/ui/420-forms.md": "sha256:05337dd6ce1fe15bd647c4b75e223858355bd159a9ad2c5b67c2076531b7e1b6",
-        ".claude/rules/ui/430-ux-completeness.md": "sha256:b76fc1156f4842ca2e9700aa19fd1691b76c35e5e779875294fd945844af46b4"
+        ".claude/rules/ui/400-ui.md": "sha256:a9de23207b2d64699fc23fd5629962fdf43a71332fa43cb6c243f9f2dda3bc82",
+        ".claude/rules/ui/410-a11y.md": "sha256:539b05fa82d10cf1a0dcb8a055387f7f417416e96336b6bac69f72df54761f8c",
+        ".claude/rules/ui/420-forms.md": "sha256:aa28b685e331f07659a7babe89d3db21e1fef20268e5d05ad11de1fe3c0991d7",
+        ".claude/rules/ui/430-ux-completeness.md": "sha256:cfafb9398fc1c3404dffc6513b06ee8800132490bbb96314017be63713a2ff21"
       }
     },
     "tooling": {
