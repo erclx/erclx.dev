@@ -30,6 +30,8 @@ Radix primitives provide accessible interactive components without locking in a 
 
 Page copy is canonical in the parent career repo, never authored here. Updates arrive as task files under `.claude/tasks/` carrying the replacement text in full. This prevents drift between Linkedin, the resume, the github profile, and the live page.
 
+The task board is gitignored, so a queued sync sits on one machine until it ships. Nothing is unrecoverable, since the copy stays canonical upstream and a lost queue entry is re-derived from the source it came from. What is lost is the knowledge that a sync was pending.
+
 An earlier design routed them through a single `.claude/briefs/SYNC-QUEUE.md`. That file was never created, the queue ran through the task board in practice, and the briefs folder was removed on 2026-08-14 once both surfaces agreed.
 
 ### Critical fonts preloaded via Vite ?url imports

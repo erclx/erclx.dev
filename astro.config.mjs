@@ -7,7 +7,7 @@ const portOffset = Number(process.env.WORKTREE_PORT_OFFSET) || 0
 
 export default defineConfig({
   integrations: [react()],
-  site: process.env.ASTRO_SITE ?? 'https://erclx.dev',
+  site: process.env.ASTRO_SITE || 'https://erclx.dev',
   server: {
     port: 4321 + portOffset,
   },

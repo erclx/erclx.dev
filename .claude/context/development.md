@@ -56,7 +56,8 @@ For the rationale behind these choices, such as Astro over Next, the shadcn inst
 Keep `bun run dev` running in the background during landing-page sessions so changes are visible at http://localhost:4321 as they land.
 
 - `bun run screenshot` builds, then binds its own preview server on port 4173 via `scripts/screenshot.sh`. The separate port keeps it clear of the dev server on 4321, and the script exits rather than reuse a port already serving.
-- `scripts/worktree-port.sh` shifts both ports by the same per-worktree offset, derived from the worktree directory name. A linked worktree therefore serves dev and screenshot without colliding with the main checkout or with a sibling worktree.
+- Three surfaces each hold their own port band so any two run at once: dev from 4321, screenshot from 4173, and Playwright from 4250. `playwright.config.ts` derives its `baseURL` from that base and passes the resolved port to `astro preview`.
+- `scripts/worktree-port.sh` shifts all three by the same per-worktree offset, derived from the worktree directory name. The offset caps at 50, which is what keeps the bands from overlapping. A linked worktree therefore runs every surface without colliding with the main checkout or with a sibling worktree.
 - Captures land in the working directory's own `.claude/review/screenshots/`, which the script clears before each run. A worktree keeps its own captures and never reaches the main checkout's, so copy anything worth keeping before removing the worktree.
 - `SCREENSHOT_FILTER=<section>[,<section>]` limits capture to `header`, `origin`, `projects`, `looking-for`, or `footer`.
 - Each run covers three viewports (`desktop`, `mobile`, `narrow`) in both themes, so a full sweep is 30 images and a single-section filter is 6.

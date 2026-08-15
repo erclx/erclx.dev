@@ -6,6 +6,7 @@
     "timonwong.shellcheck",
     "mads-hartmann.bash-ide-vscode",
     "dbaeumer.vscode-eslint",
+    "astro-build.astro-vscode",
     "bradlc.vscode-tailwindcss",
     "ms-playwright.playwright",
     "vitest.explorer"
