@@ -5,6 +5,8 @@ description: Dark mode wiring across the first-paint script, theme toggle, and C
 
 # Theming
 
+## Overview
+
 How the page picks and switches between light and dark. Spans `src/layouts/base.astro`, `src/components/site/theme-toggle/theme-toggle.astro`, and `src/styles/global.css`.
 
 ## Layer responsibilities
@@ -12,6 +14,16 @@ How the page picks and switches between light and dark. Spans `src/layouts/base.
 - `src/layouts/base.astro` owns the first-paint inline script. Reads `localStorage.theme` and `prefers-color-scheme`, resolves the active mode, applies `.dark` to `documentElement`, and writes `documentElement.dataset.themeMode` before the body renders.
 - `src/components/site/theme-toggle/theme-toggle.astro` owns the in-page swap as a plain Astro `<button>` with an inline `<script>`. All three Lucide icons (Sun, Moon, Monitor) render in the markup. CSS shows only the one matching `html[data-theme-mode='<mode>']`. Click cycles `light → dark → system → light` and reapplies the resolved theme synchronously.
 - `src/styles/global.css` owns the token sets behind `@custom-variant dark (&:is(.dark *))`.
+
+## Token layers
+
+Color travels through three layers in `global.css`, and an edit at the wrong one either misses a theme or breaks the utility name.
+
+- `:root` declares the light palette as bare custom properties in oklch, such as `--background` and `--primary-foreground`
+- `.dark` redeclares the same property names with the dark values. A property declared in `:root` and missing here keeps its light value in dark mode rather than failing
+- `@theme inline` maps each bare property to its Tailwind color name, such as `--color-background: var(--background)`. This is what makes `bg-background` resolve, and a new token needs an entry here or the utility does not exist
+
+Values are authored in oklch rather than hex. The lightness channel is perceptually uniform, so a light and dark pair can hold the same chroma and hue while differing only in lightness. `.claude/DESIGN.md` § Color states these as intent and is the source for what a role means.
 
 ## Decisions
 

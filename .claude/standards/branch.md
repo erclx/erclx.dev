@@ -1,9 +1,21 @@
 ---
 title: Branch reference
 description: Branch naming format and type conventions
+consumers: git-branch, git-split, git-pr, claude-worktree
 ---
 
 # Branch reference
+
+## Scope
+
+Governs a git branch name: its structure, its length, and the type vocabulary it draws from.
+
+Does not govern:
+
+- Commit subject format, which shares the type vocabulary: `commit.md`
+- Pull request title and body: `pr.md`
+- Whether a phase label may appear in a branch name: `versioning.md`
+- Deriving a slug from a branch name for use in an output filename: `slug.md`
 
 ## Format
 

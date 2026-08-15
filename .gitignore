@@ -22,12 +22,14 @@ node_modules/
 # Claude
 .claude/.tmp/
 .claude/memory/
-.claude/briefs/
 .claude/plans/
 .claude/review/
 .claude/worktrees/
-.claude/TASKS.md
-.claude/LOCAL.md
+.claude/groundwork/
+.claude/intake/
+.claude/plans-archive/
+.claude/task-archive/
+.claude/tasks/
 
 # Tests
 coverage/

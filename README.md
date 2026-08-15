@@ -9,4 +9,4 @@ Where things live:
 - Local setup, scripts, and dev loop: [`.claude/context/development.md`](.claude/context/development.md)
 - GitHub Actions verify pipeline: [`.claude/context/ci.md`](.claude/context/ci.md)
 - Cloudflare Pages deploy and domain wiring: [`.claude/context/deployment.md`](.claude/context/deployment.md)
-- File tree and key technical decisions: [`.claude/ARCHITECTURE.md`](.claude/ARCHITECTURE.md)
+- Key technical decisions: [`.claude/ARCHITECTURE.md`](.claude/ARCHITECTURE.md)

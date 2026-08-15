@@ -5,6 +5,8 @@ description: Scroll-reveal cascade primitive and the per-surface animations on t
 
 # Motion
 
+## Overview
+
 How the landing page's scroll-triggered animation works. Layout and interaction intent for each surface live in its `.claude/wireframes/<surface>.md` file. This entry covers the shared mechanism.
 
 ## Cascade reveal primitive
@@ -31,6 +33,6 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 
 ## Header H1 annotation
 
-- One phrase in the hero H1 carries a `rough-notation` underline drawn ~950ms after the H1 enters the viewport (roughly 100ms after the fade settles), once per page load, never replayed.
+- One phrase in the hero H1 carries a `rough-notation` underline drawn ~950ms after the H1 enters the viewport, roughly 100ms after the fade settles. Runs once per page load and never replays.
 - The library imports dynamically from a client `<script>` so it executes browser-only. The stroke uses `currentColor`, which inherits the H1's foreground text color.
 - Skipped entirely under `prefers-reduced-motion: reduce`. Only one phrase per page may carry an annotation, by editorial rule.

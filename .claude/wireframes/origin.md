@@ -5,7 +5,9 @@ description: Career git-log timeline that bridges the hero narrative into the pr
 
 # Origin
 
-Appears between the header band and the projects section. Renders the career story two ways at once. A stylized git log on the left carries the temporal sequence as text rows. A small SVG career-graph on the right shows the same six entries as a DAG, with volvo as the branching hub and three parallel side projects converging into the current state. Replaces a prose paragraph in the same slot. Mono font ties the surface to the looking-for card at the bottom of the page.
+Appears between the header band and the projects section, replacing a prose paragraph in the same slot. Renders the career story two ways at once.
+
+A stylized git log on the left carries the temporal sequence as text rows. A small SVG career-graph on the right shows the same six entries as a DAG, with volvo as the branching hub and three parallel side projects converging into the current state. Mono font ties the surface to the looking-for card at the bottom of the page.
 
 ## Desktop (≥768px)
 
@@ -33,9 +35,11 @@ origin
 
 ## Career graph
 
-A small SVG to the right of the timeline shows the six entries as nodes connected into a DAG. Chalmers sits at the bottom as the foundation. Volvo above it is the branching hub. Three side projects (caret left, stackr center, jobtriage right) spread horizontally above volvo as parallel siblings, then converge into `ready` at the top. Edges read as the causal chain that produced the current state.
+A small SVG to the right of the timeline shows the six entries as nodes connected into a DAG. Chalmers sits at the bottom as the foundation, and volvo above it is the branching hub.
 
-The graph mirrors the timeline's active row. Hovering either the row or its matching node highlights the same entry, so the eye can land on either side and feel the link. The SVG is `aria-hidden` because the timeline text already conveys everything. The graph is a redundant visualization for sighted users.
+Three side projects spread horizontally above volvo as parallel siblings, ordered caret, stackr, jobtriage from left to right, then converge into `ready` at the top. Edges read as the causal chain that produced the current state.
+
+The graph mirrors the timeline's active row. Hovering either the row or its matching node highlights the same entry, so the eye can land on either side and feel the link. The SVG is `aria-hidden` because the timeline text already conveys everything, which makes the graph a redundant visualization for sighted users.
 
 ## Cascade reveal
 

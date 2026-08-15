@@ -7,6 +7,16 @@ description: Shape and content rules for .claude/REQUIREMENTS.md
 
 Applies to `.claude/REQUIREMENTS.md`. Describes what the product does and why, not how it works. Update when scope changes, goals shift, or a non-goal is promoted to a feature.
 
+## Scope
+
+Governs the product-scope document at `.claude/REQUIREMENTS.md`: problem, goals, non-goals, MVP features, distribution, stack, and constraints.
+
+Does not govern:
+
+- Rationale for a technical choice: `architecture.md`
+- Sequencing the scope into ordered versions: `roadmap.md`
+- Per-domain structure and narrative: `context.md`
+
 ## What goes in
 
 - The problem being solved and for whom
@@ -19,12 +29,23 @@ Applies to `.claude/REQUIREMENTS.md`. Describes what the product does and why, n
 ## What does not go in
 
 - Implementation details, API names, or internal component references
-- Rationale for tech choices. That belongs in `.claude/ARCHITECTURE.md`.
 - Anything that describes how a feature is built rather than what it does
 
 ## Sections
 
-Use `## Problem`, `## Goals`, `## Non-goals`, `## MVP features`, `## Tech stack`, and `## Constraints`. Drop a section rather than pad it with filler.
+Use `## Problem`, `## Goals`, `## Non-goals`, `## MVP features`, `## Tech stack`, and `## Constraints`. Add `## Distribution` when the rule below applies. Drop a section rather than pad it with filler.
+
+## Lifecycle
+
+The MVP list is a historical record of the original scope. Once those features ship it stays as written. Do not renumber it, do not append to it, and do not annotate entries with status. A reader telling the original scope apart from what followed depends on the first one staying legible.
+
+Later scope arrives as a new section rather than as an extension of the MVP list. Name the section for what it delivers and state its entries as outcomes, the same way the goals are stated. A roadmap sequences the MVP list alone, so a later scope section is sequenced by a fresh pass rather than folded into the roadmap that already shipped. The roadmap standard sends a project here once its last version ships, and this is the pass it means.
+
+## Distribution
+
+Include `## Distribution` only when the project ships to consumers outside its own repository. An internal service or a monorepo application has nothing to put in it, and a section every project is told to fill is one most projects pad. Place it after `## MVP features`.
+
+State each entry as an outcome the consumer reaches, never as the mechanism that delivers it. A registry name, a manifest format, a version scheme, or a release tool is implementation and belongs in `.claude/ARCHITECTURE.md`. Distribution pulls harder toward mechanism than any other section, which is why the rule is repeated here.
 
 ## Template
 
@@ -40,6 +61,8 @@ Use `## Problem`, `## Goals`, `## Non-goals`, `## MVP features`, `## Tech stack`
 ## MVP features
 
 1. Feature: description
+
+<!-- ## Distribution: include only when shipping outside the repository -->
 
 ## Tech stack
 

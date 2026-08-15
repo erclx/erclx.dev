@@ -2,7 +2,7 @@
 
 ## Personality
 
-Senior-IC engineering depth made visible. A first-time visitor should hit a "this person can build" moment within the first scroll, carried by hand-coded ambient and editorial motion rather than copy or claims. Default to algorithmic or hand-drawn pieces with visible engineering depth. Preset-library shortcuts (mesh-gradient generators, off-the-shelf shader presets, drop-in animation packs) are rejected at proposal time. They read as the default AI-era visual and undercut the engineering signal the page is trying to send. Tasteful-quiet editorial restraint is the wrong floor for this page. Generous whitespace and disciplined typography still anchor the reading experience, but they frame the woah moments rather than replace them. Serif display headings give weight without nostalgia. Two impressions, in this order: this is a polished portfolio, and this person hand-built every layer of it.
+Engineering depth made visible. The page should read as hand-built rather than assembled, carried by ambient and editorial motion rather than by copy or claims. Preset-library shortcuts are rejected at proposal time, since mesh-gradient generators, off-the-shelf shader presets, and drop-in animation packs read as the default AI-era visual. Generous whitespace and disciplined typography anchor the reading experience and frame that motion rather than replace it, with serif display headings giving weight without nostalgia.
 
 ## Color
 
@@ -29,7 +29,9 @@ Senior-IC engineering depth made visible. A first-time visitor should hit a "thi
 
 ### Page hierarchy
 
-Three Fraunces serif elements anchor the page from top to bottom: the hero H1, the `Projects` H2, and the footer masthead. They render at distinct sizes so the eye reads them as a hierarchy, not three competing focal points. Hero H1 stays at `text-display`. Projects H2 sits one step smaller. Footer masthead one step under the hero so the page closes without competing with the opener. Surface-specific sizes live in the relevant `.claude/wireframes/<surface>.md`.
+Three Fraunces serif elements anchor the page from top to bottom: the hero H1, the `Projects` H2, and the footer masthead. They render at distinct sizes so the eye reads them as a hierarchy rather than three competing focal points.
+
+Hero H1 holds the display size. Projects H2 sits one step smaller, and the footer masthead one step under the hero, so the page closes without competing with the opener. Surface-specific sizes live in the relevant `.claude/wireframes/<surface>.md`.
 
 ## Spacing
 
@@ -53,7 +55,7 @@ Use only the `1 / 2 / 4 / 6 / 10` Tailwind steps for micro-spacing inside a sect
 
 ## Motion
 
-150ms ease-out for hover and focus state changes. A 700ms fade-and-rise pattern is permitted on entry into the viewport, gated on `[data-js='true']` and `prefers-reduced-motion: no-preference` so the no-JS and reduced-motion experience stays static. Additional ambient and editorial motion lives in the per-surface wireframes and context entries: hero flow field and H1 annotation in `wireframes/header.md`, project card media, card tilt, and section reveal in `wireframes/projects.md`, footer masthead and signature wipe in `wireframes/footer.md`. Anything not named in those entries defaults back to the static rule.
+150ms ease-out for hover and focus state changes. A 700ms fade-and-rise pattern is permitted on entry into the viewport, gated on `[data-js='true']` and `prefers-reduced-motion: no-preference` so the no-JS and reduced-motion experience stays static. Additional ambient and editorial motion lives in the per-surface wireframes and context entries: hero flow field and H1 annotation in `.claude/wireframes/header.md`, project card media, card tilt, and section reveal in `.claude/wireframes/projects.md`, footer masthead and signature wipe in `.claude/wireframes/footer.md`. Anything not named in those entries defaults back to the static rule.
 
 ## Iconography
 

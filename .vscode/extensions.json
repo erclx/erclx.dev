@@ -1,12 +1,12 @@
 {
   "recommendations": [
-    "astro-build.astro-vscode",
     "esbenp.prettier-vscode",
     "streetsidesoftware.code-spell-checker",
     "mkhl.shfmt",
     "timonwong.shellcheck",
     "mads-hartmann.bash-ide-vscode",
     "dbaeumer.vscode-eslint",
+    "astro-build.astro-vscode",
     "bradlc.vscode-tailwindcss",
     "ms-playwright.playwright",
     "vitest.explorer"

@@ -7,6 +7,8 @@ description: Below the header. Shipped tools stacked as cards in a single column
 
 Appears below the header. Lists shipped tools as cards stacked in a single column. The page intentionally keeps to one reading axis, so the layout never branches into a grid.
 
+## All viewports
+
 ```plaintext
 ┌──────────────────────────────────────────────────────────┐
 │   Projects                                               │  ← Fraunces serif heading, second editorial anchor

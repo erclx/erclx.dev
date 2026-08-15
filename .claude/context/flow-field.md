@@ -5,6 +5,8 @@ description: Hand-rolled particle canvas behind the header with cursor force and
 
 # Flow field
 
+## Overview
+
 The animated signature behind the header. Lives at `src/components/site/header/flow-field/` and renders into a `<canvas data-flow-field>` placed by `header.astro`.
 
 ## Layer responsibilities
@@ -26,6 +28,11 @@ The animated signature behind the header. Lives at `src/components/site/header/f
 - Mount waits for the canvas to enter the viewport via `IntersectionObserver`. The rAF loop never starts on a page where the header is scrolled out of view.
 - Tab visibility pauses the loop. The `visibilitychange` listener stops on hidden and resumes on visible.
 
+## Gotchas
+
+- Per-frame perf samples over `config.perfWindowMs`. If observed fps drops below `config.perfFloorFps`, the pool sheds particles via `degrade()` and stops sampling.
+- `targetFrameMs` only throttles subsequent frames. The first frame after mount always renders at whatever the browser schedules.
+
 ## Visual budget
 
 - ~200 active particles at baseline. Half that on low-end devices.
@@ -39,8 +46,3 @@ The animated signature behind the header. Lives at `src/components/site/header/f
 - The fallback SVG renders when `prefers-reduced-motion: reduce` matches. Tailwind switches via `motion-reduce:hidden` on the canvas and `motion-reduce:block` on the fallback.
 - `data-flow-field` and `data-flow-field-fallback` are the public contract. Mount queries by these attributes, not by class or id.
 - The fallback SVG imports via `?raw` and renders with `set:html`. Build emits it inline, so reduced-motion users see the field on first paint with no network round trip.
-
-## Gotchas
-
-- Per-frame perf samples over `config.perfWindowMs`. If observed fps drops below `config.perfFloorFps`, the pool sheds particles via `degrade()` and stops sampling.
-- `targetFrameMs` only throttles subsequent frames. The first frame after mount always renders at whatever the browser schedules.

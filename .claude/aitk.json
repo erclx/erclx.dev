@@ -1,0 +1,91 @@
+{
+  "covers": ["standards", "snippets", "governance", "tooling"],
+  "domains": {
+    "standards": {
+      "commit": "d957d8a4",
+      "syncedAt": "2026-08-14T16:53:04.972Z",
+      "files": {
+        ".claude/standards/architecture.md": "sha256:ba5250a926df3a943bbd4a830ed99c0cb109b72c35e17a43687f24709ee13e8c",
+        ".claude/standards/context.md": "sha256:165b7e2a3aef0d05be54910faf420db8fb67bbdfc57ca523e9c3848a1abed4ea",
+        ".claude/standards/design.md": "sha256:3ffb517fc76312a63e63dbde02dd1a7e2050586ec600ec883969b097bc7f01c3",
+        ".claude/standards/diagrams.md": "sha256:c3bdcd013a43d54db5cafa8f31263d439d22b907c738cc38fa97492053e56b73",
+        ".claude/standards/groundwork.md": "sha256:59a7ccf1c25eb0a14061d1bb14a50000e8fdfdfa2c895ead1c2daebee9624b0e",
+        ".claude/standards/intake.md": "sha256:fa40cf0eff58051a6d86ed1957b51aed5e3ed297c00a79c5e8eb341cfa428cba",
+        ".claude/standards/markdown.md": "sha256:a7898f89aafbeb45ba3579ff08ccbadf7bf7860bde3424e8574d463918f80a83",
+        ".claude/standards/memory.md": "sha256:cdde98e2adfd32e8ed5eebe0bfd6c5db19b32861eee33358a9bd30a43ea6c39a",
+        ".claude/standards/plan.md": "sha256:9080fa6d0214ae2a866e3d8cce0615dff80f6ef2ea4d0b636c62ab8293c09c23",
+        ".claude/standards/prose.md": "sha256:2fe4a673df64d88f5d808d07742962b7031e1d829b85072b19b8a74c7fe5e479",
+        ".claude/standards/publish.md": "sha256:42592ad869b179b8034355fd968ab89fc9f8dd4cba6b3af89592b65ffa3f0635",
+        ".claude/standards/readme.md": "sha256:ee90c3e48176a9958b9de7c437e91d7639e943fee5405f7684b3c187132513d7",
+        ".claude/standards/requirements.md": "sha256:1a9be54cf38f6ac6d3b84366fac14df203912d758d437924431934639316eb34",
+        ".claude/standards/rule.md": "sha256:0db7c511653855520770fcba3ed62321090b4af235645ab1e98538a2746291d6",
+        ".claude/standards/session.md": "sha256:a096f3e6f752742716833ce8ff7d75e0ab9a33649c646b92f1a0c2cfca427a62",
+        ".claude/standards/skill.md": "sha256:4e9131b70396e76e22037ea30d2d8f07b1949a7ed487fb6d8e78940731d0ac36",
+        ".claude/standards/slug.md": "sha256:2632c57d33be681a9181f88e6d30d403b4ed7bae2269a5eac04534c55ec7894f",
+        ".claude/standards/standard.md": "sha256:9016f00caab9e2512824cddef9d2fda9904138977e39e1730ff738571eaea05c",
+        ".claude/standards/tasks.md": "sha256:3779eea4ed9ca256d6068fd3bd713be92cb368ff47bae09e50b8e2cfd6435833",
+        ".claude/standards/versioning.md": "sha256:d9cb4a7462121fe5126fe10175bcd5ec0316fc3d9e0bfb44173f7c9235798918",
+        ".claude/standards/wireframes.md": "sha256:2317cbda84ecfdb03e13a0c98f37a7d93c560746aa191df043e689d573fb1f2f"
+      }
+    },
+    "snippets": {
+      "syncedAt": "2026-08-14T18:20:46.768Z",
+      "files": {
+        ".claude/snippets/compact-summary.md": "sha256:bc5194176a43efd367ba50f612192817fb5f9e4553e0996cf41b40b9402351aa",
+        ".claude/snippets/decision-help.md": "sha256:21c940028d8de16f22d025499fded57620afe6fc7c994d094d270f60f69032a1",
+        ".claude/snippets/step-by-step.md": "sha256:9b6c210fa1fe88e9222fb5e81f0a943cf71fb3a8e072d27402764ab37dcff735"
+      }
+    },
+    "governance": {
+      "commit": "d957d8a4",
+      "syncedAt": "2026-08-14T16:51:23.016Z",
+      "files": {
+        ".claude/rules/claude/500-prose.md": "sha256:efcd09441646abc406bdf087193e93c3f4275b092e9b3ec166f906fe6280f974",
+        ".claude/rules/claude/501-markdown.md": "sha256:b72af45ca1a8c35a8eeb19873c9195b07efca60e22c8679b7b97a4c3c55d6991",
+        ".claude/rules/claude/510-context.md": "sha256:b724e033f54b196f484099d099e20e74195c8222e4d8925b04a4e21de3b79df7",
+        ".claude/rules/claude/520-wireframes.md": "sha256:41f8c9da124eb9acd0edd9272a072b6ee05eeb1dd077110bea6e431f115ab2b4",
+        ".claude/rules/claude/530-requirements.md": "sha256:303d24ab1406b8337bc43500f59f318f8f9eee97a1bbec58851693eddf29975b",
+        ".claude/rules/claude/540-architecture.md": "sha256:d1287131cb66164e1380331ad15a3f3a6d2fc81fd6e341a25af344cf578ec5c2",
+        ".claude/rules/claude/550-design.md": "sha256:e0ea5fda3b37fa71755e20f1d16940d7862ea91cb29a1c169797d8ce823567cb",
+        ".claude/rules/claude/555-tasks.md": "sha256:e44d23fedbae0ff2379f9955d21e7db2cef6ee36cdd4f34254fcdb37013540d3",
+        ".claude/rules/claude/556-groundwork.md": "sha256:95553c4b911a7690d8b857448930ef81dcd5faf47f0fc0e4f6f6ccbba5c79b2a",
+        ".claude/rules/claude/557-intake.md": "sha256:593ab3798144923a254e404927ed26bb49cfaba718c2f6c2b8f3c880955e32ff",
+        ".claude/rules/claude/558-plan.md": "sha256:8e4ac82a2728db0d99996fdc92a5ec71c2cd97c890f6dfa23d12caaf62ffa695",
+        ".claude/rules/claude/559-memory.md": "sha256:c1b798f402acf4339191134bbc466b4e1878192872258bf1b338498f11a4167b",
+        ".claude/rules/claude/560-diagrams.md": "sha256:3939cfb60b9b9ba1f5495cae67cfb0050f6cc903a99dcbb49658e888431750b2",
+        ".claude/rules/claude/570-skill.md": "sha256:8832ad1fe7030bcc1f215d936fc5540e1073fa3ba24bf059105412de6667875d",
+        ".claude/rules/claude/580-readme.md": "sha256:131a8c9a366262ca87879ea231e9ee05ef90fa8bc55544bc772bc133e6b1204c",
+        ".claude/rules/claude/590-rule-authoring.md": "sha256:df54373a10440ed1cc04772a156eb32defcc8c4647744ff188e080a2604c21ce",
+        ".claude/rules/claude/591-standard-authoring.md": "sha256:b6a2a6997e43641dc633aa4bc5f5e5adf2e1f0c871639d250e154e9c0a6c03e9",
+        ".claude/rules/core/000-constitution.md": "sha256:f0a61628b5a95bee868d6b62204df8a63c647906aa66af6157c6a6e8a3ecb7cc",
+        ".claude/rules/core/010-testing.md": "sha256:6506b7092bec6c633687d5311e880cf1adc800fb4413ed99aaa213d6697223bd",
+        ".claude/rules/core/020-concurrency.md": "sha256:df6a2e89d3f0ef02a5718caf7e1b17c67e1360f1386ace7f4661a33fbadd3908",
+        ".claude/rules/core/030-error-handling.md": "sha256:b3c028abf2229f245fe9a173b8bb84502843f1d73ac1940d10f48eebff0764b5",
+        ".claude/rules/core/040-performance.md": "sha256:174d2f9e6ad58b2b2ae43b7ab69d2efeaf344bc52ddebf9d38a47b2eb8882cda",
+        ".claude/rules/core/050-logging.md": "sha256:6257b92add0effa81c034c3a220698dd77c107e8736205e0ddbe7fc53df16297",
+        ".claude/rules/core/060-naming.md": "sha256:7b4bf67615c18078852b1e6fece426ba91689a5ac2842db031f580e13bba4481",
+        ".claude/rules/core/070-planning.md": "sha256:ac52b2d94f11c822e077d67c04a27368a9e0b3f368d6823a671701616396bce2",
+        ".claude/rules/core/075-dependencies.md": "sha256:b3af393d75e70bb58bd5519f32804f6e5badb53d7ec5c212daf88ee6d3a8ff8b",
+        ".claude/rules/core/080-config-comments.md": "sha256:70e23f9b7903ae9dc1239730ce3b8ecf5c0760c0fa411ece1bfac239b978c6dd",
+        ".claude/rules/core/090-code-comments.md": "sha256:b7b971b48e2d85a6343310c7c59cd1502dba6bae724cded28abb6c4bf4f3cb5a",
+        ".claude/rules/framework/200-react.md": "sha256:42cfe72c7458dc0ca5c27e6baad21852d8dfc81245be52f061f7ae3e2ee5c8bc",
+        ".claude/rules/framework/210-astro.md": "sha256:2126a4537abdec06ada1dc8862928cefd8959a6bfe3891201802fcc7b8ca3f46",
+        ".claude/rules/framework/250-tailwind.md": "sha256:5904032cc0c90abcd734ec2a64311e67b41c68bbf60c205af7575d72fd42cb7e",
+        ".claude/rules/framework/260-shadcn.md": "sha256:5d82aaa2cb5e8dbeef520feb3e32b76746771d9889962d760132c062306a38c9",
+        ".claude/rules/lang/100-typescript.md": "sha256:5378af975febe5b4b2e2ac4edf4163fc0d9fddf406df8055a858a11bd9656416",
+        ".claude/rules/lib/300-testing-ts.md": "sha256:d2a6d602384cbb6c148400e922aa621b681267e141bb7ad436aa5ed51f92374e",
+        ".claude/rules/lib/350-security-web.md": "sha256:016a4e9fd6fc0a22088cc287ceaabcef8a4c81f36fa883b2fc99fd365aa8caf1",
+        ".claude/rules/ui/400-ui.md": "sha256:3e3d43fa2c94a4701598f0fee0b7d215c43549cab97daeb1c22e6ca3b0ffbd9a",
+        ".claude/rules/ui/410-a11y.md": "sha256:679b7f5db82e3af107d7a2cd574c22b30c4739308a23490d4d32dc83865f9a07",
+        ".claude/rules/ui/420-forms.md": "sha256:05337dd6ce1fe15bd647c4b75e223858355bd159a9ad2c5b67c2076531b7e1b6",
+        ".claude/rules/ui/430-ux-completeness.md": "sha256:b76fc1156f4842ca2e9700aa19fd1691b76c35e5e779875294fd945844af46b4"
+      }
+    },
+    "tooling": {
+      "commit": "d957d8a4",
+      "syncedAt": "2026-08-14T17:02:20.881Z",
+      "files": {},
+      "chain": ["astro", "web", "base"]
+    }
+  }
+}

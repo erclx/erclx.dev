@@ -6,9 +6,9 @@
     "node": ">=22.18.0"
   },
   "scripts": {
-    "dev": "astro dev",
+    "dev": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) astro dev",
     "build": "astro check && astro build",
-    "preview": "astro preview",
+    "preview": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) astro preview",
     "astro": "astro",
     "check:spell": "cspell '**' '.*/**' '.*' --no-progress --color --show-context",
     "check:format": "prettier --check --log-level warn --ignore-path .gitignore --ignore-path .prettierignore . && shfmt --diff --indent 2 scripts/",
@@ -25,12 +25,12 @@
     "test:run": "vitest run --reporter=verbose",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
+    "test:e2e": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) playwright test",
+    "test:e2e:ui": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) playwright test --ui",
     "test:e2e:report": "playwright show-report",
     "check:full": "./scripts/verify.sh && bun run test:e2e",
     "setup": "./scripts/setup.sh",
-    "screenshot": "bash scripts/screenshot.sh"
+    "screenshot": "PREVIEW_PORT=$(bash scripts/worktree-port.sh 4173) bash scripts/screenshot.sh"
   },
   "dependencies": {
     "@fontsource-variable/fraunces": "^5.2.9",

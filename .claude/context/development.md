@@ -5,42 +5,24 @@ description: Local dev workflow, scripts, and husky hooks
 
 # Development
 
+## Overview
+
 Local dev workflow for this project.
 
-## Project layout
+## Layout
 
-```plaintext
-src/
-├── pages/
-│   ├── index.astro      ← landing page, composes layout and sections
-│   └── jobtriage.astro  ← Jobtriage case-study sub-page at /jobtriage
-├── layouts/
-│   └── base.astro       ← html shell, font preload, first-paint theme script
-├── components/
-│   ├── site/            ← landing-page sections and primitives
-│   └── ui/              ← shadcn primitives, owned by this repo
-├── assets/              ← page-owned media: hero field, project posters/videos, signature
-├── lib/
-│   └── utils.ts         ← cn() and shared helpers
-├── styles/
-│   └── global.css       ← tailwind entry, theme tokens, base layer
-└── test/
-    └── setup.ts         ← jsdom + RTL cleanup for vitest
+- `src/pages/` owns the routes. The apex composes the landing sections, and each case study is its own file
+- `src/layouts/` owns the html shell: font preload and the first-paint theme script
+- `src/components/site/` owns the landing-page sections and their primitives
+- `src/components/ui/` owns the shadcn primitives, vendored into this repo rather than imported from a package
+- `src/assets/` owns page-owned media: the hero field, project posters and videos, the signature
+- `src/lib/` owns shared helpers
+- `src/styles/` owns the tailwind entry, the theme tokens, and the base layer
+- `src/test/` owns the vitest environment setup
+- `e2e/` owns the playwright smoke spec and the per-section screenshot script
+- `public/` owns files served verbatim at the domain root
 
-e2e/
-├── home.spec.ts         ← playwright smoke for the apex
-└── screenshot.ts        ← node script, per-section captures across desktop, mobile, narrow widths and light / dark themes
-
-public/
-└── resume.pdf           ← downloadable résumé, served at /resume.pdf
-
-vitest.config.ts         ← jsdom + globals + coverage v8
-playwright.config.ts     ← chromium + firefox + webkit, webServer auto-starts preview
-tsconfig.e2e.json        ← e2e-only tsconfig with @playwright/test + node types
-.mcp.json                ← Playwright MCP server registration
-```
-
-For the rationale behind these choices (Astro over Next, shadcn install path, font preload, theme toggle as static Astro), see `.claude/ARCHITECTURE.md` § Key technical decisions.
+For the rationale behind these choices, such as Astro over Next, the shadcn install path, font preload, and the theme toggle as static Astro, see `.claude/ARCHITECTURE.md` § Key technical decisions.
 
 ## Setup
 
@@ -74,6 +56,9 @@ For the rationale behind these choices (Astro over Next, shadcn install path, fo
 Keep `bun run dev` running in the background during landing-page sessions so changes are visible at http://localhost:4321 as they land.
 
 - `bun run screenshot` builds, then binds its own preview server on port 4173 via `scripts/screenshot.sh`. The separate port keeps it clear of the dev server on 4321, and the script exits rather than reuse a port already serving.
+- Three surfaces each hold their own port band so any two run at once: dev from 4321, screenshot from 4173, and Playwright from 4250. `playwright.config.ts` derives its `baseURL` from that base and passes the resolved port to `astro preview`.
+- `scripts/worktree-port.sh` shifts all three by the same per-worktree offset, derived from the worktree directory name. The offset caps at 50, which is what keeps the bands from overlapping. A linked worktree therefore runs every surface without colliding with the main checkout or with a sibling worktree.
+- Captures land in the working directory's own `.claude/review/screenshots/`, which the script clears before each run. A worktree keeps its own captures and never reaches the main checkout's, so copy anything worth keeping before removing the worktree.
 - `SCREENSHOT_FILTER=<section>[,<section>]` limits capture to `header`, `origin`, `projects`, `looking-for`, or `footer`.
 - Each run covers three viewports (`desktop`, `mobile`, `narrow`) in both themes, so a full sweep is 30 images and a single-section filter is 6.
 

@@ -5,6 +5,8 @@ description: Static Astro card rendering with hover-play video and parallax tilt
 
 # Project cards
 
+## Overview
+
 The projects section. Cards render statically from a config array in `projects.astro`. Interactivity ships as two vanilla TypeScript modules loaded via `<script>` tags, not as React islands.
 
 ## Layer responsibilities
@@ -22,6 +24,11 @@ The projects section. Cards render statically from a config array in `projects.a
 - Tilt batches state in a single rAF loop rather than one loop per card.
 - Tilt rotates up to `MAX_TILT_DEG` (6°) toward the cursor. The inner media slot translates up to `MAX_PARALLAX_PX` (8px) against the rotation for parallax depth. Per-card values lerp toward the target with factor `LERP` of 0.18.
 
+## Gotchas
+
+- A card without `poster`, `videoSrc`, and `mediaAlt` skips the media slot entirely. Tilt still applies, but hover-play has nothing to bind.
+- `fadeDelay` on the card uses the array index. Reordering the data array reorders the staggered fade-in.
+
 ## Visual budget
 
 - One muted MP4 per project, dark theme only, ≤500kb, 720p, h.264 baseline. Poster is a single dark PNG extracted from the same clip.
@@ -34,8 +41,3 @@ The projects section. Cards render statically from a config array in `projects.a
 - `[data-media-video]` and `[data-media-poster]` are the inner contracts for the media slot.
 - The video element preloads `none` and starts muted. Autoplay-with-sound would trigger a browser block.
 - Tilt writes `--tilt-x`, `--tilt-y`, `--parallax-x`, and `--parallax-y` CSS variables on the card and inner slot. The card's class consumes them via `[transform:...]` attribute selectors. Renaming any one breaks the visual transform.
-
-## Gotchas
-
-- A card without `poster`, `videoSrc`, and `mediaAlt` skips the media slot entirely. Tilt still applies, but hover-play has nothing to bind.
-- `fadeDelay` on the card uses the array index. Reordering the data array reorders the staggered fade-in.
