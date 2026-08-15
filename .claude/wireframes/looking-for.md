@@ -27,7 +27,7 @@ The panel pairs a single `looking-for` kicker with four short criteria rows. Ava
 - The panel sits on a tinted card surface with rounded corners and generous padding, no border. The card tint alone separates it from the page canvas.
 - Mono labels carry the system-card character for the kicker and the four row labels.
 - The kicker is a single `looking-for` mono label. No availability statement, no status dot, no build-date stamp. The hero already carries the live status via its `OPEN TO WORK` pill, and the panel earns its space by adding specificity rather than restating that signal.
-- Four criteria rows render as a definition list with short fragment values (3-6 words each), not prose sentences. Values render in Fraunces serif so the panel keeps the same mono-annotation, serif-statement hierarchy as the masthead and origin aside. Detail belongs on the resume PDF, not the closing block of the landing page.
+- Four criteria rows render as a definition list with short fragment values (3-6 words each), not prose sentences. Values render in the body face, so the panel holds two faces the way the rest of the page does: a mono label against body prose. Setting them in the display serif at body size put a third face in one small card and read as a change of face rather than a change of level, which is what made the panel look foreign against everything above it. Detail belongs on the resume PDF, not the closing block of the landing page.
 
 ## Cascade reveal
 
