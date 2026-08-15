@@ -3,12 +3,18 @@ import { Image } from 'astro:assets'
 import BaseLayout from '@/layouts/base.astro'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 import SectionNav from '@/components/site/section-nav/section-nav.astro'
+import FigureDialog from '@/components/site/figures/figure-dialog.astro'
+import { getLinkTargetAttributes } from '@/lib/links'
 import baselines from '@/assets/projects/diction-baselines.png'
 import separation from '@/assets/projects/diction-separation.png'
 import thresholds from '@/assets/projects/diction-thresholds.png'
 import verdicts from '@/assets/projects/diction-verdicts.png'
 import fluency from '@/assets/projects/diction-fluency.png'
 import gaze from '@/assets/projects/diction-gaze.png'
+
+const artifactLinks = [
+  { label: 'GitHub', href: 'https://github.com/erclx/diction' },
+]
 
 const navItems = [
   { id: 'problem', label: 'problem' },
@@ -40,6 +46,7 @@ const figureClass = 'bg-card mt-10 rounded-lg p-6 md:p-10'
 const wideImageClass = 'w-full rounded-md'
 const tallImageClass = 'mx-auto max-h-[32rem] w-auto rounded-md'
 const captionClass = 'text-muted-foreground font-mono text-label mt-4'
+const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 ---
 
 <BaseLayout
@@ -54,9 +61,8 @@ const captionClass = 'text-muted-foreground font-mono text-label mt-4'
   >
     <a
       href="/"
-      class="text-muted-foreground hover:text-foreground text-label inline-flex items-center gap-2 transition-colors"
+      class="text-muted-foreground hover:text-foreground text-label inline-flex min-h-11 items-center transition-colors"
     >
-      <span aria-hidden="true">←</span>
       Eric Le
     </a>
     <ThemeToggle />
@@ -93,16 +99,21 @@ const captionClass = 'text-muted-foreground font-mono text-label mt-4'
         <ul
           data-fade data-visible="true"
           style="--fade-delay: 350ms"
-          class="mt-6 flex flex-wrap gap-x-6 gap-y-2"
+          class="mt-6 flex flex-wrap gap-x-6"
         >
-          <li>
-            <a
-              href="https://github.com/erclx/diction"
-              class="text-foreground text-label underline-offset-4 hover:underline"
-            >
-              GitHub
-            </a>
-          </li>
+          {
+            artifactLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  {...getLinkTargetAttributes(link.href)}
+                  class="text-foreground text-label inline-flex min-h-11 items-center underline-offset-4 hover:underline"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
     </section>
@@ -164,11 +175,13 @@ const captionClass = 'text-muted-foreground font-mono text-label mt-4'
         </p>
 
         <figure data-fade data-visible="true" style="--fade-delay: 350ms" class={figureClass}>
-          <Image
-            src={baselines}
-            alt="Mean confidence per phoneme for clean and clearly-wrong readings, with the old global threshold marked far to the left of nearly every sound"
-            class={tallImageClass}
-          />
+          <button type="button" data-figure-zoom class={zoomTriggerClass}>
+            <Image
+              src={baselines}
+              alt="Mean confidence per phoneme for clean and clearly-wrong readings, with the old global threshold marked far to the left of nearly every sound"
+              class={tallImageClass}
+            />
+          </button>
           <figcaption class={captionClass}>
             every sound sits somewhere different
           </figcaption>
@@ -218,11 +231,13 @@ const captionClass = 'text-muted-foreground font-mono text-label mt-4'
         </p>
 
         <figure data-fade data-visible="true" style="--fade-delay: 250ms" class={figureClass}>
-          <Image
-            src={separation}
-            alt="Separation measured as AUC for all 27 sounds, every bar clearing the 0.75 reliability gate"
-            class={tallImageClass}
-          />
+          <button type="button" data-figure-zoom class={zoomTriggerClass}>
+            <Image
+              src={separation}
+              alt="Separation measured as AUC for all 27 sounds, every bar clearing the 0.75 reliability gate"
+              class={tallImageClass}
+            />
+          </button>
           <figcaption class={captionClass}>
             separation per sound, against the reliability gate
           </figcaption>
@@ -240,11 +255,13 @@ const captionClass = 'text-muted-foreground font-mono text-label mt-4'
         </p>
 
         <figure data-fade data-visible="true" style="--fade-delay: 450ms" class={figureClass}>
-          <Image
-            src={thresholds}
-            alt="Confidence distributions for long-e, th and w, each calibrated threshold falling between the clean and the clearly-wrong readings"
-            class={wideImageClass}
-          />
+          <button type="button" data-figure-zoom class={zoomTriggerClass}>
+            <Image
+              src={thresholds}
+              alt="Confidence distributions for long-e, th and w, each calibrated threshold falling between the clean and the clearly-wrong readings"
+              class={wideImageClass}
+            />
+          </button>
           <figcaption class={captionClass}>
             calibrated thresholds against the readings they separate
           </figcaption>
@@ -346,11 +363,13 @@ const captionClass = 'text-muted-foreground font-mono text-label mt-4'
         </figure>
 
         <figure data-fade data-visible="true" style="--fade-delay: 350ms" class={figureClass}>
-          <Image
-            src={verdicts}
-            alt="Verdict errors before and after the competitor check, false passes dropping from 15 to 2 while false retries rise from 5 to 6"
-            class={wideImageClass}
-          />
+          <button type="button" data-figure-zoom class={zoomTriggerClass}>
+            <Image
+              src={verdicts}
+              alt="Verdict errors before and after the competitor check, false passes dropping from 15 to 2 while false retries rise from 5 to 6"
+              class={wideImageClass}
+            />
+          </button>
           <figcaption class={captionClass}>
             minimal-pair verdict errors, before and after
           </figcaption>
@@ -371,11 +390,13 @@ const captionClass = 'text-muted-foreground font-mono text-label mt-4'
         </p>
 
         <figure data-fade data-visible="true" style="--fade-delay: 550ms" class={figureClass}>
-          <Image
-            src={fluency}
-            alt="Predicted against human fluency on the held-out split, beside the long-pause-ratio distribution that collapses to zero on a read-aloud corpus"
-            class={wideImageClass}
-          />
+          <button type="button" data-figure-zoom class={zoomTriggerClass}>
+            <Image
+              src={fluency}
+              alt="Predicted against human fluency on the held-out split, beside the long-pause-ratio distribution that collapses to zero on a read-aloud corpus"
+              class={wideImageClass}
+            />
+          </button>
           <figcaption class={captionClass}>
             fluency against human judgment, and the feature that cannot be fit
           </figcaption>
@@ -396,11 +417,13 @@ const captionClass = 'text-muted-foreground font-mono text-label mt-4'
         </p>
 
         <figure data-fade data-visible="true" style="--fade-delay: 750ms" class={figureClass}>
-          <Image
-            src={gaze}
-            alt="Per-frame yaw for a lens-look against a screen-glance, beside the threshold sweep where separation falls to zero at the old 15-degree gate and reaches 51 points at the new 7-degree one"
-            class={wideImageClass}
-          />
+          <button type="button" data-figure-zoom class={zoomTriggerClass}>
+            <Image
+              src={gaze}
+              alt="Per-frame yaw for a lens-look against a screen-glance, beside the threshold sweep where separation falls to zero at the old 15-degree gate and reaches 51 points at the new 7-degree one"
+              class={wideImageClass}
+            />
+          </button>
           <figcaption class={captionClass}>
             gaze yaw per frame, and the gate sweep behind the new threshold
           </figcaption>
@@ -455,12 +478,33 @@ const captionClass = 'text-muted-foreground font-mono text-label mt-4'
     <div class="border-border/60 mx-auto max-w-2xl border-t pt-10">
       <a
         href="/"
-        class="text-muted-foreground hover:text-foreground text-label inline-flex items-center gap-2 transition-colors"
+        class="border-border text-foreground hover:border-foreground/40 hover:bg-card text-label inline-flex min-h-11 items-center gap-2 rounded-md border px-4 transition-colors"
       >
-        <span aria-hidden="true">←</span>
+        <svg
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          class="text-muted-foreground"
+        >
+          <path d="m12 19-7-7 7-7"></path>
+          <path d="M19 12H5"></path>
+        </svg>
         Back to Eric Le
       </a>
     </div>
   </footer>
 
+  <FigureDialog />
+
+  <script>
+    import { initFigureZoom } from '@/components/site/figures/figure-zoom'
+
+    initFigureZoom()
+  </script>
 </BaseLayout>
