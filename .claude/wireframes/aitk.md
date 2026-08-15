@@ -12,7 +12,7 @@ Reached from the aitk project card on the landing page. Carries the depth a visi
 
 ```plaintext
 ┌──────────────────────────────────────────────────────────┐
-│ Eric Le                                        [ theme ] │  ← thin bar, identity wordmark and toggle
+│ ← Eric Le                                      [ theme ] │  ← thin bar, way back and toggle
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
 │   case study                                             │  ← mono eyebrow
@@ -64,7 +64,7 @@ The section-nav rail sits in the left margin from `xl`, tracking the five sectio
 - Renders static. Reveal animations are no-ops and the nav rail is passed `instant`, so nothing fades on a page read for depth.
 - Carries no roadmap or "what's next" section, matching the other case studies.
 - The screencast this page is owed is not yet recorded, and no placeholder stands in for it.
-- One control leads home, at the foot. The identity wordmark in the top bar links to the same place as ordinary site chrome rather than as a second way back.
+- Two controls lead home and both carry the same arrow, a quiet one in the top bar and a bordered one at the foot. The pair is deliberate: a reader who wants out partway through should not have to reach the end to find the way.
 - Every figure here is built from layout and type, so none of them opens on click. The pronunciation case study is the only route carrying charts that do.
 
 ## Copy

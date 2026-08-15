@@ -97,7 +97,7 @@ test('closing a figure returns focus to the figure that opened it', async ({
   await expect(trigger).toBeFocused()
 })
 
-test('each case study carries one control back to the landing page', async ({
+test('each case study carries one bordered way home at the foot', async ({
   page,
 }) => {
   await page.goto('/diction')
@@ -105,4 +105,14 @@ test('each case study carries one control back to the landing page', async ({
   await expect(page.getByRole('link', { name: 'Back to Eric Le' })).toHaveCount(
     1,
   )
+})
+
+test('each case study also carries a way home in the top bar', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  await page.getByRole('link', { name: 'Eric Le', exact: true }).click()
+
+  await expect(page).toHaveURL('/')
 })

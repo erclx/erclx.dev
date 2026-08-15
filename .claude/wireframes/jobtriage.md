@@ -11,7 +11,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 
 ```plaintext
 ┌────────────────────────────────────────────────────────────────┐
-│    Eric Le                                          [theme]    │  ← thin top bar, identity wordmark + theme toggle
+│ ←  Eric Le                                          [theme]    │  ← thin top bar, way back + theme toggle
 ├────────────────────────────────────────────────────────────────┤
 │   case study                                                   │  ← mono kicker
 │   Jobtriage                                                    │  ← Fraunces display
@@ -77,7 +77,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 
 ```plaintext
 ┌──────────────────────────────────┐
-│    Eric Le             [theme]   │
+│ ←  Eric Le             [theme]   │
 ├──────────────────────────────────┤
 │   case study                     │
 │   Jobtriage                      │
@@ -109,7 +109,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 ## Behavior
 
 - Reuses the landing page's layout, theme toggle, and section-nav rail. The rail is present from first paint with no fade, since the page is otherwise static.
-- A thin top bar carries the identity wordmark linking to `/` on the left and the theme toggle on the right. The case study earns a quieter opening than the landing hero, so there is no tinted band. One control leads home, and it sits at the foot.
+- A thin top bar carries a way back to `/` on the left and the theme toggle on the right. The case study earns a quieter opening than the landing hero, so there is no tinted band. The foot carries the same control with a border around it, so a reader can leave from either end.
 - Section padding and the mono-kicker vocabulary (`case study`, `problem`, `system`, `retrieval`, `agent`) match origin and looking-for, so the editorial pace reads identical.
 - The display title sits one step smaller than the landing hero so the page reads as secondary to the apex.
 - The page renders static. Long-form depth optimizes for reading speed, so the cascade reveal stays on the landing page where each section is a focal moment.
