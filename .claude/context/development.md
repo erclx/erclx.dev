@@ -19,7 +19,7 @@ Local dev workflow for this project.
 - `src/lib/` owns shared helpers
 - `src/styles/` owns the tailwind entry, the theme tokens, and the base layer
 - `src/test/` owns the vitest environment setup
-- `e2e/` owns the playwright smoke spec and the per-section screenshot script
+- `e2e/` owns the playwright specs and the per-section screenshot script
 - `public/` owns files served verbatim at the domain root
 
 For the rationale behind these choices, such as Astro over Next, the shadcn install path, font preload, and the theme toggle as static Astro, see `.claude/ARCHITECTURE.md` § Key technical decisions.
@@ -62,6 +62,7 @@ Keep `bun run dev` running in the background during landing-page sessions so cha
 - `SCREENSHOT_FILTER=<section>[,<section>]` limits capture to `header`, `origin`, `projects`, `looking-for`, or `footer`.
 - Each run covers three viewports (`desktop`, `mobile`, `narrow`) in both themes, so a full sweep is 30 images and a single-section filter is 6.
 - The capture walks the whole page and waits for every image to report pixels before shooting a section, since card posters and case-study figures load lazily and a slot whose image never entered the viewport captures as an empty box. Read an empty media slot as a capture that skipped the wait before reading it as a rendering defect. An image that never loads warns and the capture proceeds, so the evidence survives.
+- No capture contains a favicon, so a tab-icon change is verified by loading the built page in a headed engine and sampling the icon through a canvas. Headless Chromium requests no favicon at all, so reading which icon an engine selects needs `xvfb-run` around a headed run. `e2e/favicon.spec.ts` holds that luminance sampling as a standing guard across all three engines.
 
 For the per-section capture model and its output path, see `.claude/ARCHITECTURE.md` § Screenshots capture per-section, not full-page. For when to reach for Playwright MCP over a static capture, see § Playwright MCP for interactive verification in the same file.
 
