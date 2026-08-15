@@ -53,7 +53,7 @@ Reached from the aitk project card on the landing page. Carries the depth a visi
 │   Every command has a non-interactive path ...           │
 │                                                          │
 ├──────────────────────────────────────────────────────────┤
-│   [ ← Back to Eric Le ]                                  │  ← the one way home, a bordered control
+│   ← Back to Eric Le                                      │  ← the way home at the foot
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -64,7 +64,8 @@ The section-nav rail sits in the left margin from `xl`, tracking the five sectio
 - Renders static. Reveal animations are no-ops and the nav rail is passed `instant`, so nothing fades on a page read for depth.
 - Carries no roadmap or "what's next" section, matching the other case studies.
 - The screencast this page is owed is not yet recorded, and no placeholder stands in for it.
-- Two controls lead home and both carry the same arrow, a quiet one in the top bar and a bordered one at the foot. The pair is deliberate: a reader who wants out partway through should not have to reach the end to find the way.
+- Two controls lead home and both carry the same arrow, one in the top bar and one at the foot. Neither is boxed. The pair is deliberate: a reader who wants out partway through should not have to reach the end to find the way.
+- A reader who arrived from the landing page returns to the place they left rather than to the top of it, and the landing page does not replay its reveal animations on the way back. A reader who opened the case study directly lands at the top, since there is nowhere else to return to. Mechanism: `.claude/context/case-study-navigation.md`.
 - Every figure here is built from layout and type, so none of them opens on click. The pronunciation case study is the only route carrying charts that do.
 
 ## Copy
