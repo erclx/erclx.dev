@@ -1,0 +1,46 @@
+---
+
+---
+
+<dialog
+  data-figure-dialog
+  class="bg-card text-foreground relative m-auto max-h-[85dvh] max-w-[min(92vw,1000px)] overflow-hidden rounded-lg p-0 backdrop:bg-black/70"
+>
+  <button
+    type="button"
+    data-figure-close
+    aria-label="Close figure"
+    class="text-muted-foreground hover:text-foreground absolute top-1 right-1 z-10 inline-flex size-11 items-center justify-center rounded-md transition-colors"
+  >
+    <svg
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M18 6 6 18"></path>
+      <path d="m6 6 12 12"></path>
+    </svg>
+  </button>
+  <div
+    data-figure-scroll
+    class="max-h-[85dvh] overflow-auto px-4 pt-12 pb-4 md:px-6 md:pb-6"
+  >
+    <img
+      data-figure-dialog-image
+      src=""
+      alt=""
+      class="mx-auto block h-auto max-h-[calc(85dvh-8rem)] w-auto max-w-full rounded-md object-contain"
+    />
+    <p
+      data-figure-dialog-caption
+      class="text-muted-foreground font-mono text-label mt-4"
+    >
+    </p>
+  </div>
+</dialog>

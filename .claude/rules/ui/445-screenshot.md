@@ -17,7 +17,8 @@ paths:
 ## After a change
 
 - Re-run `bun run screenshot` and verify the diff before reporting the work as done.
-- Pass `SCREENSHOT_FILTER=<section>[,<section>]` on targeted polish loops. Omit it for full-page verification before a PR.
+- Pass `SCREENSHOT_FILTER=<term>[,<term>]` on targeted polish loops, matching a landing section or a case-study route. Omit it for whole-site verification before a PR.
+- Read a case-study capture at native size. Each route is captured whole, so the reviewer's fitted view of a long page shows arrangement rather than detail.
 
 ## Handoff
 

@@ -2,6 +2,8 @@
 import { Image } from 'astro:assets'
 import type { ImageMetadata } from 'astro'
 
+import { getLinkTargetAttributes } from '@/lib/links'
+
 interface ProjectLink {
   label: string
   href: string
@@ -15,6 +17,7 @@ interface Props {
   mediaAlt?: string
   mediaPosition?: string
   links: ProjectLink[]
+  caseStudyHref?: string
   index?: number
 }
 
@@ -26,6 +29,7 @@ const {
   mediaAlt,
   mediaPosition = 'top',
   links,
+  caseStudyHref,
   index = 0,
 } = Astro.props
 
@@ -77,13 +81,14 @@ const fadeDelay = `${index * 200}ms`
     <p class="text-muted-foreground text-body mt-4">
       {description}
     </p>
-    <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+    <ul class="mt-6 flex flex-wrap gap-x-6">
       {
         links.map((link) => (
           <li>
             <a
               href={link.href}
-              class="text-foreground text-label underline-offset-4 hover:underline"
+              {...getLinkTargetAttributes(link.href)}
+              class="text-foreground text-label relative z-10 inline-flex min-h-11 min-w-11 items-center underline-offset-4 hover:underline"
             >
               {link.label}
             </a>
@@ -92,4 +97,14 @@ const fadeDelay = `${index * 200}ms`
       }
     </ul>
   </div>
+  {
+    caseStudyHref && (
+      <a
+        href={caseStudyHref}
+        aria-hidden="true"
+        tabindex="-1"
+        class="absolute inset-0"
+      />
+    )
+  }
 </article>

@@ -7,6 +7,8 @@ subtitle: Per-domain narrative loaded on demand
 
 Per-domain narrative loaded on demand
 
+- [Case study figures](case-study-figures.md): Native dialog that opens a raster case-study figure to fit the screen, and why only one route carries it
+- [Case study navigation](case-study-navigation.md): How the way-home controls return a reader to the position on the landing page they left from
 - [CI](ci.md): GitHub Actions workflow triggers and checks
 - [Deployment](deployment.md): Cloudflare Pages deploy pipeline, domain setup, and secret rotation
 - [Development](development.md): Local dev workflow, scripts, and husky hooks

@@ -22,6 +22,8 @@ export async function scrollThroughPage(page: Page): Promise<void> {
  * taken afterwards cannot land on a slot whose image never started loading.
  * A image that never loads resolves rather than throwing: the capture is the
  * evidence a reviewer wants, and losing it hides the breakage it would show.
+ * An image carrying no source at all is a slot a control fills on demand, which
+ * has nothing to wait for.
  */
 export async function settleLazyImages(page: Page): Promise<void> {
   await scrollThroughPage(page)
@@ -29,7 +31,9 @@ export async function settleLazyImages(page: Page): Promise<void> {
     .waitForFunction(
       () =>
         Array.from(document.images).every(
-          (image) => image.complete && image.naturalWidth > 0,
+          (image) =>
+            !image.getAttribute('src') ||
+            (image.complete && image.naturalWidth > 0),
         ),
       undefined,
       { timeout: 15_000 },

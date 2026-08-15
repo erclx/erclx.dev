@@ -12,7 +12,7 @@ The projects section. Cards render statically from a config array in `projects.a
 ## Layer responsibilities
 
 - `src/components/site/projects/projects.astro` owns the section: the data array of cards and the `<script>` imports that mount interactivity
-- `src/components/site/projects/project-card.astro` owns one card's DOM: poster image, hover video, headline, description, link row
+- `src/components/site/projects/project-card.astro` owns one card's DOM: poster image, hover video, headline, description, link row, and the overlay anchor on a card owning a case study
 - `src/components/site/projects/project-media.ts` owns hover-play. Reads `[data-tilt]` cards, plays the inner `[data-media-video]` on pointer enter, pauses and rewinds on leave.
 - `src/components/site/projects/tilt.ts` owns parallax. Tracks pointer per card with `MAX_TILT_DEG` and `MAX_PARALLAX_PX`, lerps toward the target with `LERP`, runs one rAF loop across all cards.
 
@@ -21,6 +21,9 @@ The projects section. Cards render statically from a config array in `projects.a
 - Vanilla TypeScript modules over React islands. Skipping the framework tax is worth the discipline of keeping interactive logic small enough that vanilla TS reads cleaner than a hydrated component.
 - Both interactivity modules query by `[data-tilt]`, the same attribute the card sets on its root `<article>`. One attribute, two consumers.
 - Both modules bail early on `prefers-reduced-motion: reduce`. The card stays static.
+- A whole-card click reaches the case study through an absolutely positioned anchor covering the card, with the link row raised above it. Nested anchors are invalid markup, so wrapping the card in one is not available, and the overlay is the shape that leaves the inner links reachable.
+- The overlay carries `aria-hidden` and sits outside the tab order. The `Case study` link in the row already reaches the same destination with a real label, so exposing the overlay too would announce and tab through one destination twice.
+- The overlay is passed as an optional `caseStudyHref` prop, derived in `projects.astro` from the one link on a card that stays inside the site. A card whose links all leave the site has no single destination the whole card could mean, so it renders without an overlay.
 - Tilt batches state in a single rAF loop rather than one loop per card.
 - Tilt rotates up to `MAX_TILT_DEG` (6°) toward the cursor. The inner media slot translates up to `MAX_PARALLAX_PX` (8px) against the rotation for parallax depth. Per-card values lerp toward the target with factor `LERP` of 0.18.
 
@@ -31,6 +34,9 @@ The projects section. Cards render statically from a config array in `projects.a
 - Card stills run `1280x720` or `1280x800` against an `aspect-[11/7]` slot, so `object-cover` crops horizontally under the default top position, roughly 6.5% off each edge at the wider ratio and under 2% at the taller one. A still whose content sits flush left, such as a terminal transcript or an app shell with a sidebar, needs `mediaPosition: 'left top'` or that content is cropped away.
 - A card still shows the artifact running rather than a result it produced. The card names the tool and its case study carries the measurement, which is the split every card on the page follows.
 - `fadeDelay` on the card uses the array index. Reordering the data array reorders the staggered fade-in.
+- The overlay covers the description, so that text is no longer selectable on a card owning a case study. Dragging across it starts a link drag rather than a navigation, which was the risk worth checking, and the lost selection is the accepted cost of the whole-card target. Measured 2026-08-15 against the built page.
+- Hover-play and tilt both survive the overlay because `pointermove` bubbles to the card and `pointerenter` fires on the card when the pointer crosses any descendant. An overlay that stopped propagation would break both while every automated check still passed.
+- The link row is raised by `z-10` on each `<a>` rather than on the `<ul>`. Raising the list would put its full-width box above the overlay and leave the gaps between links inert.
 
 ## Visual budget
 
