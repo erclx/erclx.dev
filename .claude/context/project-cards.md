@@ -28,7 +28,8 @@ The projects section. Cards render statically from a config array in `projects.a
 
 - The media slot needs `poster` and `mediaAlt`. A card missing either skips the slot entirely, and tilt still applies while hover-play has nothing to bind.
 - `videoSrc` is optional. A card carrying a still and no clip renders the still, and `project-media.ts` skips it because its `[data-media-video]` query returns nothing. Two cards ship this way while their screencasts are owed.
-- Card stills are `1280x720` against an `aspect-[11/7]` slot, so `object-cover` crops roughly 6.5% off each horizontal edge under the default top position. A still whose content sits flush left, such as a terminal transcript or a chart with axis labels, needs `mediaPosition: 'left top'` or that content is cropped away.
+- Card stills run `1280x720` or `1280x800` against an `aspect-[11/7]` slot, so `object-cover` crops horizontally under the default top position, roughly 6.5% off each edge at the wider ratio and under 2% at the taller one. A still whose content sits flush left, such as a terminal transcript or an app shell with a sidebar, needs `mediaPosition: 'left top'` or that content is cropped away.
+- A card still shows the artifact running rather than a result it produced. The card names the tool and its case study carries the measurement, which is the split every card on the page follows.
 - `fadeDelay` on the card uses the array index. Reordering the data array reorders the staggered fade-in.
 
 ## Visual budget

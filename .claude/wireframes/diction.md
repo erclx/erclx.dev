@@ -6,7 +6,7 @@ description: Long-form sub-page at /diction covering the calibration failure, th
 
 # diction case study
 
-Reached from the diction project card on the landing page. Carries six measured figures, which is what separates its layout from the other two case studies.
+Reached from the diction project card on the landing page. Carries six measured figures, which is what separates its layout from the other two case studies. The card that leads here shows the tool running, so this page is where the measurement lands rather than the card.
 
 ## All viewports
 
