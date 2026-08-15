@@ -61,6 +61,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
   >
     <a
       href="/"
+      data-way-home
       class="text-muted-foreground hover:text-foreground text-label inline-flex min-h-11 items-center gap-2 transition-colors"
     >
       <svg
@@ -492,7 +493,8 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
     <div class="border-border/60 mx-auto max-w-2xl border-t pt-10">
       <a
         href="/"
-        class="border-border text-foreground hover:border-foreground/40 hover:bg-card text-label inline-flex min-h-11 items-center gap-2 rounded-md border px-4 transition-colors md:min-h-0 md:px-3 md:py-2"
+        data-way-home
+        class="text-foreground text-label inline-flex min-h-11 items-center gap-2 underline-offset-4 transition-colors hover:underline md:min-h-0 md:py-2"
       >
         <svg
           viewBox="0 0 24 24"
@@ -517,8 +519,10 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
   <FigureDialog />
 
   <script>
-    import { initFigureZoom } from '@/components/site/figures/figure-zoom'
+    import { initWayHome } from '@/components/site/case-study/way-home'
+import { initFigureZoom } from '@/components/site/figures/figure-zoom'
 
     initFigureZoom()
+    initWayHome()
   </script>
 </BaseLayout>
