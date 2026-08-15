@@ -1,0 +1,412 @@
+---
+import BaseLayout from '@/layouts/base.astro'
+import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
+import SectionNav from '@/components/site/section-nav/section-nav.astro'
+
+const navItems = [
+  { id: 'problem', label: 'problem' },
+  { id: 'thesis', label: 'thesis' },
+  { id: 'taxonomy', label: 'taxonomy' },
+  { id: 'model', label: 'model' },
+  { id: 'agents', label: 'agents' },
+]
+
+const operations = [
+  {
+    name: 'install',
+    behavior: 'Overwrites. Runs once to bootstrap a project.',
+  },
+  {
+    name: 'sync',
+    behavior: 'Updates only files already present. Safe to re-run on a cadence.',
+  },
+  {
+    name: 'build',
+    behavior: 'Derives a payload from current state for pasting into any chat.',
+  },
+]
+
+const contentKinds = [
+  { kind: 'configs', rule: 'overwrite' },
+  { kind: 'seeds', rule: 'merge additively, survive user edits' },
+  { kind: 'references', rule: 'copy through an extends chain' },
+  { kind: 'generated', rule: 'derive from target state' },
+]
+
+const prescriptions = [
+  'Give the agent a way to pull in its own context from code, wikis, and discussions',
+  'Break work into loops and routines',
+  'Let the agent start other agents',
+]
+---
+
+<BaseLayout
+  title="aitk case study · Eric Le"
+  description="One set of agent rules, skills, and standards installed into every project and kept in step. The install taxonomy, the adoption thesis, and the operating model behind it."
+>
+  <SectionNav items={navItems} instant />
+
+  <header
+    data-section="header"
+    class="border-border/60 flex items-center justify-between border-b px-6 py-4"
+  >
+    <a
+      href="/"
+      class="text-muted-foreground hover:text-foreground text-label inline-flex items-center gap-2 transition-colors"
+    >
+      <span aria-hidden="true">←</span>
+      Eric Le
+    </a>
+    <ThemeToggle />
+  </header>
+
+  <main>
+    <section class="px-6 pt-16 pb-12 md:pt-20 md:pb-16">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          case study
+        </p>
+        <h1
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+        >
+          aitk
+        </h1>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="text-muted-foreground text-body mt-4"
+        >
+          A CLI that installs one set of agent rules, skills, and standards into
+          every project and keeps them in step.
+        </p>
+        <ul
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="mt-6 flex flex-wrap gap-x-6 gap-y-2"
+        >
+          <li>
+            <a
+              href="https://github.com/erclx/aitk"
+              class="text-foreground text-label underline-offset-4 hover:underline"
+            >
+              GitHub
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.npmjs.com/package/@erclx/aitk"
+              class="text-foreground text-label underline-offset-4 hover:underline"
+            >
+              npm
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="problem" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          problem
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6"
+        >
+          Every repository re-authors the same agent scaffolding. The rules an
+          agent reads, the skills it runs, the prose standards it writes
+          against, the tooling config it verifies with. Each copy starts from
+          the last one and drifts from it, so the same agent gets different
+          instructions depending on which checkout it opened.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          Drift on this surface is quiet. A rule that fell behind still loads,
+          still reads as authoritative, and produces work against a convention
+          the team abandoned two projects ago. Nothing fails, so nothing
+          reports it.
+        </p>
+      </div>
+    </section>
+
+    <section id="thesis" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          thesis
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6"
+        >
+          This is infrastructure that carries a team across a step of AI
+          adoption, rather than tooling one engineer prefers. Four prescriptions
+          are published for the gap between running agents ad hoc and running
+          them as a system. Three of them are what this installs.
+        </p>
+
+        <ul
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="mt-10 flex flex-col gap-3"
+        >
+          {
+            prescriptions.map((item) => (
+              <li class="text-foreground text-body border-border/60 border-l-2 pl-4">
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="text-muted-foreground text-body mt-8"
+        >
+          The fourth is raising agency and review speed once agents touch code
+          other teams own, which is an organizational permission rather than a
+          thing a CLI can install.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 450ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          The claim stops there deliberately, with the token budget named out
+          loud as the ceiling. A larger claim about autonomous fleets is one
+          question about agent count away from falling over.
+        </p>
+      </div>
+    </section>
+
+    <section id="taxonomy" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          taxonomy
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6"
+        >
+          Content reaches a project through three separate operations, and what
+          each one is allowed to touch is the whole design.
+        </p>
+
+        <dl
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="mt-10 grid gap-y-2 sm:grid-cols-[6rem_1fr]"
+        >
+          {
+            operations.map((row) => (
+              <div class="contents font-mono text-label">
+                <dt class="text-foreground">{row.name}</dt>
+                <dd class="text-muted-foreground">{row.behavior}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <figure
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+        >
+          <figcaption class="text-muted-foreground font-mono text-label mb-4">
+            content kinds and their merge rule
+          </figcaption>
+          <dl class="grid gap-y-2 sm:grid-cols-[8rem_1fr]">
+            {
+              contentKinds.map((row) => (
+                <div class="contents font-mono text-label">
+                  <dt class="text-muted-foreground">{row.kind}</dt>
+                  <dd class="text-foreground">{row.rule}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </figure>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 450ms"
+          class="text-muted-foreground text-body mt-8"
+        >
+          That taxonomy is what makes an update safe to run without reading it
+          first. A sync that only touches files already present cannot introduce
+          a surface the project never asked for, and a seed that merges rather
+          than replaces cannot discard the edits a team made to it. The cost of
+          pulling the toolkit forward drops to a command, which is the only
+          version of this a team actually runs.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 550ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          Stacks compose through the same <code class="font-mono">extends</code>
+          field. <code class="font-mono">react</code> extends
+          <code class="font-mono">node</code>, which extends
+          <code class="font-mono">base</code>, and installing one pulls
+          everything it inherits. Rules carry a path glob, so a Python rule
+          stays dormant in a TypeScript project rather than adding noise the
+          agent has to filter.
+        </p>
+      </div>
+    </section>
+
+    <section id="model" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          model
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6"
+        >
+          The toolkit ships the way of working alongside the files. Sessions
+          split by vantage rather than by capability.
+        </p>
+
+        <figure
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="bg-card mt-10 rounded-lg p-6 md:p-10"
+        >
+          <div class="font-mono text-label flex flex-col items-center gap-6">
+            <div class="border-border text-foreground rounded-md border px-4 py-2">
+              orchestrator, warm
+            </div>
+            <div aria-hidden="true" class="bg-border h-6 w-px"></div>
+            <div aria-hidden="true" class="bg-border h-px w-3/4"></div>
+            <div class="grid w-full grid-cols-1 gap-8 sm:grid-cols-2">
+              <div class="flex flex-col items-center gap-3">
+                <div aria-hidden="true" class="bg-border -mt-8 h-6 w-px"></div>
+                <div class="text-muted-foreground tracking-wide uppercase">
+                  plans and reviews
+                </div>
+                <div
+                  class="border-border text-foreground rounded-md border px-4 py-3 text-center"
+                >
+                  holds the cross-feature picture, edits no tracked file
+                </div>
+              </div>
+              <div class="flex flex-col items-center gap-3">
+                <div aria-hidden="true" class="bg-border -mt-8 h-6 w-px"></div>
+                <div class="text-muted-foreground tracking-wide uppercase">
+                  workers, cold
+                </div>
+                <div
+                  class="border-border text-foreground rounded-md border px-4 py-3 text-center"
+                >
+                  one plan each in its own worktree, stopping at the pull
+                  request
+                </div>
+              </div>
+            </div>
+          </div>
+        </figure>
+
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="text-muted-foreground text-body mt-8"
+        >
+          Review travels on the pull request itself. One skill posts findings to
+          it, another reads them back, fixes each, and pushes a follow-up, and
+          the review then runs again against only the commits that follow-up
+          added. The heading carries the state, so a reader knows whether
+          anything is open without reading the thread.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 450ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          The two passes differ by vantage rather than by depth. A worker's
+          self-review asks whether it built the plan and whether it passes, and
+          it is blind to its own misreadings, because the same misreading wrote
+          both the code and the review. The orchestrator's review is a fresh
+          session carrying every sibling branch in flight, so it can question
+          the plan itself.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 550ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          What binds the number of tracks is collision between file sets rather
+          than a fixed cap. A candidate opens only where its files are disjoint
+          from every track already running, and what thins as tracks multiply is
+          the review attention each one gets.
+        </p>
+      </div>
+    </section>
+
+    <section id="agents" class="px-6 py-16 md:py-20">
+      <div class="mx-auto max-w-2xl">
+        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+          agents
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-foreground text-body mt-6"
+        >
+          Every command has a non-interactive path, every listing emits JSON on
+          stdout, and the framed terminal UI goes to stderr. A skill shelling
+          out to the CLI can treat stdout as data without parsing around a
+          progress frame.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 250ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          Because <code class="font-mono">bash exec</code> drops parent traps,
+          each subcommand re-arms its exit trap before an early JSON exit, so
+          exactly one frame renders per invocation.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 350ms"
+          class="text-muted-foreground text-body mt-6"
+        >
+          Verification runs on sandbox scenarios rather than unit tests. Each
+          scenario provisions an isolated project state anchored to a baseline
+          git ref, and a disposable GitHub remote lets the skills that depend on
+          the GitHub CLI run end to end, including opening a pull request,
+          merging it, and editing its body. Naming a scenario through an
+          environment variable routes it non-interactively, so CI and an agent
+          exercise the same path a person would.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer
+    data-section="footer"
+    class="border-border/60 px-6 py-10 md:py-12"
+  >
+    <div class="border-border/60 mx-auto max-w-2xl border-t pt-10">
+      <a
+        href="/"
+        class="text-muted-foreground hover:text-foreground text-label inline-flex items-center gap-2 transition-colors"
+      >
+        <span aria-hidden="true">←</span>
+        Back to Eric Le
+      </a>
+    </div>
+  </footer>
+
+</BaseLayout>
