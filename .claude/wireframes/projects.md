@@ -50,9 +50,11 @@ Appears below the header. Lists shipped tools as cards. The heading stands alone
 │     │ Stackr                  │   │ Caret                   │      │
 │     └─────────────────────────┘   └─────────────────────────┘      │
 │                                                                    │
-│  05 ┌─────────────────────────┐                                    │  ← trailing card sits alone in the left column
-│     │ diction                 │                                    │
-│     └─────────────────────────┘                                    │
+│  05 ┌───────────────────────────────────────────────────────┐      │  ← trailing card closes the section across both columns
+│     │ ┌──────────────────────┐  diction                     │      │  ← still on one half, text on the other
+│     │ │        still         │  Pronunciation trainer ...    │      │
+│     │ └──────────────────────┘  Case study   GitHub          │      │
+│     └───────────────────────────────────────────────────────┘      │
 │                                                                    │
 └────────────────────────────────────────────────────────────────────┘
 ```
@@ -65,7 +67,8 @@ Appears below the header. Lists shipped tools as cards. The heading stands alone
 - Card link rows wrap when the viewport cannot hold every link on one line. Wrap is expected at 320px on cards with three or more links.
 - A card leading to a case study carries that link first in its row, ahead of the artifact's own listings.
 - A link leaving the site opens in a new tab. The case-study link stays in the current one.
-- The odd card count leaves a gap beside the trailing card from `lg`. The grid keeps two columns rather than reflowing the four cards above it.
+- An odd card count would leave the trailing card alone beside an empty half from `lg`, so that card runs the full width instead and turns the remainder into a deliberate closer. It lays its still beside its text rather than above it, which keeps its height in the range the cards above it sit in. The four cards above are untouched and the grid keeps two columns.
+- Cards in a row share a lower edge. A card whose text runs short holds the row's height rather than closing early.
 
 ## Card media
 

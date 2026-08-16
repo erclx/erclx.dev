@@ -25,6 +25,8 @@ The projects section. Cards render statically from a config array in `projects.a
 - The overlay carries `aria-hidden` and sits outside the tab order. The `Case study` link in the row already reaches the same destination with a real label, so exposing the overlay too would announce and tab through one destination twice.
 - The overlay is passed as an optional `caseStudyHref` prop, derived in `projects.astro` from the one link on a card that stays inside the site. A card whose links all leave the site has no single destination the whole card could mean, so it renders without an overlay.
 - Tilt batches state in a single rAF loop rather than one loop per card.
+- A card description is the canonical portfolio prose with two edits: drop the leading article, and drop the trailing sentence naming the links, which the card renders as its own row. Everything the source says about what the artifact does and where it is reached stays. The convention is readable off any card that already conforms rather than written down anywhere else, and `.claude/context/index.md` routes to `.claude/ARCHITECTURE.md` § Content read from the parent checkout for why the source is upstream.
+- An odd number of cards makes the last one span both columns from `lg`, laying its still beside its text so the closing card keeps a height near the paired ones. The four above it are untouched and the grid stays at two columns. Every card also fills its grid row, so two cards sharing a row share a lower edge rather than leaving a ragged one.
 - Tilt rotates up to `MAX_TILT_DEG` (6°) toward the cursor. The inner media slot translates up to `MAX_PARALLAX_PX` (8px) against the rotation for parallax depth. Per-card values lerp toward the target with factor `LERP` of 0.18.
 
 ## Gotchas

@@ -19,6 +19,7 @@ interface Props {
   links: ProjectLink[]
   caseStudyHref?: string
   index?: number
+  isWide?: boolean
 }
 
 const {
@@ -31,6 +32,7 @@ const {
   links,
   caseStudyHref,
   index = 0,
+  isWide = false,
 } = Astro.props
 
 const fadeDelay = `${index * 200}ms`
@@ -40,13 +42,19 @@ const fadeDelay = `${index * 200}ms`
   data-fade
   data-tilt
   style={`--fade-delay: ${fadeDelay}`}
-  class="border-border hover:border-foreground/30 bg-card group/card relative overflow-hidden rounded-lg border transition-colors duration-200 [transform:perspective(900px)_rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))] [transform-style:preserve-3d] [will-change:transform]"
+  class:list={[
+    'border-border hover:border-foreground/30 bg-card group/card relative flex h-full flex-col overflow-hidden rounded-lg border transition-colors duration-200 [transform:perspective(900px)_rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))] [transform-style:preserve-3d] [will-change:transform]',
+    isWide && 'lg:flex-row lg:items-stretch',
+  ]}
 >
   {
     poster && mediaAlt && (
       <div
         data-media-slot
-        class="bg-muted/40 relative aspect-[11/7] overflow-hidden border-b border-border/60 p-2 sm:p-3"
+        class:list={[
+          'bg-muted/40 relative aspect-[11/7] overflow-hidden border-b border-border/60 p-2 sm:p-3',
+          isWide && 'lg:aspect-auto lg:w-1/2 lg:min-h-72 lg:border-r lg:border-b-0',
+        ]}
       >
         <div class="ring-border/40 relative size-full overflow-hidden rounded-md shadow-sm ring-1 [transform:translate3d(var(--parallax-x,0),var(--parallax-y,0),0)] [will-change:transform]">
           <Image
@@ -74,7 +82,7 @@ const fadeDelay = `${index * 200}ms`
       </div>
     )
   }
-  <div class="p-6 md:p-10">
+  <div class:list={['p-6 md:p-10', isWide && 'lg:flex-1 lg:self-center']}>
     <h3 class="font-display text-heading text-foreground">
       {name}
     </h3>
