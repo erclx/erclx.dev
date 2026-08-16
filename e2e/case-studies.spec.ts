@@ -223,14 +223,18 @@ test('a focused figure keeps its ring legible on the plate in the dark theme', a
   await page.emulateMedia({ colorScheme: 'dark' })
   await page.goto('/diction')
   const plate = page.locator('main figure:has(img)').first()
-  await plate.locator('[data-figure-zoom]').focus()
+  const trigger = plate.locator('[data-figure-zoom]')
+  await trigger.focus()
 
   const plateColor = await paintedColor(plate, 'backgroundColor')
-  const ringColor = await paintedColor(
-    plate.locator('[data-figure-zoom]'),
-    'outlineColor',
+  const ringColor = await paintedColor(trigger, 'outlineColor')
+  // outlineColor resolves whether or not a ring paints, so the style is what
+  // separates a visible ring from a color nobody sees.
+  const ringStyle = await trigger.evaluate(
+    (element) => getComputedStyle(element).outlineStyle,
   )
 
+  expect(ringStyle).not.toBe('none')
   expect(contrastRatio(plateColor, ringColor)).toBeGreaterThan(3)
 })
 

@@ -7,7 +7,7 @@ description: Career git-log timeline that bridges the hero narrative into the pr
 
 Appears between the header band and the projects section, replacing a prose paragraph in the same slot. Renders the career story two ways at once.
 
-A stylized git log on the left carries the temporal sequence as text rows. A small SVG career-graph on the right shows the same six entries as a DAG, with volvo as the branching hub and three parallel side projects converging into the current state. Mono font ties the surface to the looking-for card at the bottom of the page.
+A stylized git log on the left carries the temporal sequence as text rows. A small SVG career-graph on the right shows the same six entries as a DAG, with volvo as the branching hub and three parallel side projects converging into the current state. A mono kicker over a flat list ties the surface to the looking-for section at the bottom of the page, which carries the same arrangement.
 
 ## Desktop (≥768px)
 
@@ -27,7 +27,7 @@ origin
 
 ## Behavior
 
-- A mono kicker `origin` heads the section, mirroring the `looking-for` label and pairing the two as the page's mono system-surfaces.
+- A mono kicker `origin` heads the section, mirroring the `looking-for` kicker and pairing the two as the page's flat list surfaces. The rows here stay mono because they are log lines, while the looking-for values take the body face, so the pairing rests on the kicker and the arrangement rather than on one face running through both.
 - Below the kicker sits a two-column grid: the timeline list on the left, the SVG career-graph on the right. The graph hides on narrow viewports so the timeline keeps full width.
 - The timeline renders as an ordered list in mono. Each row is a three-column layout of marker dot, fixed-width year, and event text. No glyph separator between year and event. Column structure carries the alignment, and digits align across rows.
 - One row is highlighted at a time as the "current state" anchor. The first row is highlighted by default. Hovering another row transfers the highlight to it. On leaving the list the highlight walks back row by row to the first row.

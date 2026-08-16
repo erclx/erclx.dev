@@ -125,7 +125,7 @@ const criteria = [
       </div>
 
       <div
-        class="looking-card border-border/60 bg-background relative z-10 border-t pt-8"
+        class="looking-rows border-border/60 bg-background relative z-10 border-t pt-8"
       >
         <dl class="grid gap-y-3">
           {
@@ -173,8 +173,8 @@ const criteria = [
 
 <script>
   const stage = document.querySelector<HTMLElement>('.looking-stage')
-  const card = stage?.querySelector<HTMLElement>('.looking-card')
-  if (stage && card) {
+  const rows = stage?.querySelector<HTMLElement>('.looking-rows')
+  if (stage && rows) {
     const reduce = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches
@@ -197,10 +197,10 @@ const criteria = [
     }
 
     if (!reduce) {
-      card.addEventListener('pointerenter', () => {
+      rows.addEventListener('pointerenter', () => {
         stage.dataset.peekDucked = 'true'
       })
-      card.addEventListener('pointerleave', () => {
+      rows.addEventListener('pointerleave', () => {
         delete stage.dataset.peekDucked
       })
     }

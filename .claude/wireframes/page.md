@@ -5,9 +5,11 @@ description: Single page at /. Five sections stack vertically inside the body.
 
 # Page
 
-The single page at `/`. Five sections stack vertically inside the body. The header carries its own background band that runs edge-to-edge, while the origin paragraph, projects, Looking-for card, and footer sit on the page canvas.
+The single page at `/`. Five sections stack vertically inside the body. The header carries its own background band that runs edge-to-edge, while the origin timeline, projects, looking-for, and footer sit on the page canvas.
 
-The narrative arc reads as story, then proof, then ask, then close. Origin carries the story, projects the proof, Looking-for the ask, and the footer the close.
+The narrative arc reads as story, then proof, then ask, then close. Origin carries the story, projects the proof, looking-for the ask, and the footer the close.
+
+Project cards are the only surface on the page holding a tinted panel, which is what a card earns by carrying a still. Every other section sits flat.
 
 ## Desktop (≥768px)
 
@@ -32,28 +34,26 @@ The narrative arc reads as story, then proof, then ask, then close. Origin carri
 │      Each entry made the next one possible.              │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
-│   PROJECTS                                               │
-│   Three tools shipped in 2026.                           │
-│   ┌──────────────────────────────────────────────────┐   │
-│   │ [project card: Jobtriage]                        │   │
+│   Projects                                               │  ← no line counting the cards
+│   ┌──────────────────────┐  ┌──────────────────────┐     │  ← two columns from lg
+│   │ [card: aitk]         │  │ [card: Jobtriage]    │     │
+│   └──────────────────────┘  └──────────────────────┘     │
+│   ┌──────────────────────┐  ┌──────────────────────┐     │
+│   │ [card: Stackr]       │  │ [card: Caret]        │     │
+│   └──────────────────────┘  └──────────────────────┘     │
+│   ┌──────────────────────────────────────────────────┐   │  ← odd count, so the last spans
+│   │ [card: diction, still beside text]               │   │
 │   └──────────────────────────────────────────────────┘   │
-│   ┌──────────────────────────────────────────────────┐   │
-│   │ [project card: Stackr]                           │   │
-│   └──────────────────────────────────────────────────┘   │
-│   ┌──────────────────────────────────────────────────┐   │
-│   │ [project card: Caret]                            │   │
-│   └──────────────────────────────────────────────────┘   │
-│   Plus Toolkit, an agent-first CLI ...                   │
 │                                                          │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
-│   ┌──────────────────────────────────────────────────┐   │
-│   │ looking-for                                      │   │
-│   │ roles        AI tooling · LLM apps · devex       │   │
-│   │ setup        small to mid teams · GBG/remote     │   │
-│   │ level        junior to mid                       │   │
-│   │ terms        full-time or contract               │   │
-│   └──────────────────────────────────────────────────┘   │
+│   looking-for                                            │
+│                                              ( ᴥ )       │  ← character perched on the rule
+│   ────────────────────────────────────────────────────   │
+│   roles        AI tooling · LLM apps · devex             │
+│   setup        small to mid teams · Gothenburg or remote │
+│   level        junior to mid                             │
+│   terms        full-time or contract                     │
 │                                                          │
 ├──────────────────────────────────────────────────────────┤
 │   ──────── hairline rule ────────                        │
