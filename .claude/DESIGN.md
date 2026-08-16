@@ -20,11 +20,15 @@ Engineering depth made visible. The page should read as hand-built rather than a
 
 Values name the light theme. The dark theme carries its own value per role rather than a derivation, since the theme control follows the operating system and roughly half of visitors meet each.
 
-Accent and interactive are two accent-shaped roles and the division is what keeps a surface from reaching for the wrong one. Interactive answers what a visitor operates: a link, a focus ring, a control that responds to a click. Accent answers where the visitor is and what the page wants read, which the rail marker and the timeline's current node both carry.
+Accent and interactive are two accent-shaped roles and the division is what keeps a surface from reaching for the wrong one. Interactive answers what a visitor can act on: a link, a focus ring, a control responding to a press. Accent answers where the visitor already is, which the rail marker and the timeline's current node both carry.
 
-The test between them is whether clicking the thing does something. A rail marker moves as the page scrolls and cannot be operated, so it states position rather than offering an action, and takes the accent. Two persistent placements is the ceiling. A third turns a mark that means "here" into decoration, and the hover on the closing block's rows is transient rather than a third.
+The test is what the mark asserts, never what its element does. A mark the page computes and moves on its own asserts position and takes the accent. A mark appearing in answer to the visitor, under a hover, a focus, or a press, asserts an action and takes interactive.
 
-Warmth is carried by hue temperature and lightness rather than by hue count. Every neutral sits in the 60 to 82 hue band that the shipped icon and the closing character already occupy, and the dark canvas lifts off near-black to #1A1815, the icon's own ground. A many-hued palette is rejected rather than unconsidered: it reads as consumer rather than engineering and would collide with the case-study charts, which carry their own teal and rust and are the actual content.
+One element can carry both, and the rail is the case worth stating because reading it by whether it can be clicked gets it wrong. Its label is an anchor that scrolls to a section, so the element is operable and its focus ring is interactive. The active border beside it tracks scroll position and would sit there under a reader who never clicked anything, so it is accent. Two roles on one element rather than a contradiction.
+
+Two persistent placements is the ceiling. A third turns a mark that means "here" into decoration, and the hover on the closing block's rows is transient rather than a third.
+
+Warmth is carried by hue temperature and lightness rather than by hue count. Every neutral carrying a hue sits in the 60 to 82 band that the shipped icon and the closing character already occupy, and the surfaces holding pure white carry no hue to place. The dark canvas lifts off near-black to #1A1815, the icon's own ground. A many-hued palette is rejected rather than unconsidered: it reads as consumer rather than engineering and would collide with the case-study charts, which carry their own teal and rust and are the actual content.
 
 Accent, canvas, and text are derived from the artwork the site already ships rather than picked. The icon carries rust #A4471C, cream #F4EFE6, and ground #1A1815, and the closing character carries a warm tan and the same cream. The character keeps its own fixed fills across both themes rather than tracking tokens, so it holds one identity, and the accent it donates is how it reaches the rest of the page.
 

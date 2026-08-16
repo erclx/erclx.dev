@@ -92,7 +92,7 @@
   --chart-2: oklch(0.51 0.144 152);
   --chart-3: oklch(0.535 0.143 60);
   --chart-4: oklch(0.502 0.197 27.4);
-  --chart-5: oklch(0.552 0.014 285);
+  --chart-5: oklch(0.552 0.016 62);
   --radius: 0.5rem;
 }
 
@@ -119,7 +119,7 @@
   --chart-2: oklch(0.65 0.144 152);
   --chart-3: oklch(0.65 0.143 60);
   --chart-4: oklch(0.65 0.2 27);
-  --chart-5: oklch(0.708 0.014 285);
+  --chart-5: oklch(0.708 0.018 74);
 }
 
 /* A raster figure is drawn on a light ground, so its plate stays light in the
