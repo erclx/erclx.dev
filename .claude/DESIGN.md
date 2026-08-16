@@ -20,11 +20,15 @@ Engineering depth made visible. The page should read as hand-built rather than a
 
 Values name the light theme. The dark theme carries its own value per role rather than a derivation, since the theme control follows the operating system and roughly half of visitors meet each.
 
-Accent and interactive are two accent-shaped roles and the division is what keeps a surface from reaching for the wrong one. Interactive answers what a visitor can act on: a link, a focus ring, a control responding to a press. Accent answers where the visitor already is, which the rail marker and the timeline's current node both carry.
+Accent and interactive are two accent-shaped roles and the division is what keeps a surface from reaching for the wrong one. Interactive answers what a visitor can act on: a link, a focus ring, a control responding to a press. Accent answers where the visitor already is and what the page wants read.
 
-The test is what the mark asserts, never what its element does. A mark the page computes and moves on its own asserts position and takes the accent. A mark appearing in answer to the visitor, under a hover, a focus, or a press, asserts an action and takes interactive.
+The test is what the mark offers. Not what its element does, and not what raised it. A mark offering an action takes interactive. A mark offering only emphasis or position takes the accent, whether the page computed it or the reader raised it.
 
-One element can carry both, and the rail is the case worth stating because reading it by whether it can be clicked gets it wrong. Its label is an anchor that scrolls to a section, so the element is operable and its focus ring is interactive. The active border beside it tracks scroll position and would sit there under a reader who never clicked anything, so it is accent. Two roles on one element rather than a contradiction.
+Two cases carry the whole rule, and each defeats one of the readings that look right.
+
+The rail defeats reading by the element. Its label is an anchor that scrolls to a section, so the element is operable, and its focus ring is interactive on those grounds. The active border beside it tracks scroll position and would sit there under a reader who never clicked anything, so it is accent. Two roles on one element rather than a contradiction.
+
+The closing block's criteria rows defeat reading by the trigger. Their border is raised by a hover, which is the reader acting, and it still takes the accent, because the rows are read rather than operated and the border offers emphasis rather than an affordance. A hover raising emphasis on something inert is not an action mark.
 
 Two persistent placements is the ceiling. A third turns a mark that means "here" into decoration, and the hover on the closing block's rows is transient rather than a third.
 
