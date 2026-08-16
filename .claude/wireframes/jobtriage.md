@@ -114,6 +114,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 - A reader who arrived from the landing page returns to the place they left rather than to the top of it, and the landing page does not replay its reveal animations on the way back. A reader who opened the case study directly lands at the top, since there is nowhere else to return to. Mechanism: `.claude/context/case-study-navigation.md`.
 - Section padding and the mono-kicker vocabulary (`case study`, `problem`, `system`, `retrieval`, `agent`) match origin and looking-for, so the editorial pace reads identical.
 - The display title sits one step smaller than the landing hero so the page reads as secondary to the apex.
+- Each section opens on a line set one step above the paragraphs under it, and the deck under the title reads at that same step. A reader finds where a section starts by size rather than by shade, which is what the opening line leaned on before the step existed.
 - The page renders static. Long-form depth optimizes for reading speed, so the cascade reveal stays on the landing page where each section is a focal moment.
 - In-page navigation between landing and case study is same-tab. `Live demo` and `GitHub` open in a new tab because they leave the site.
 

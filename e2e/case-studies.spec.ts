@@ -251,3 +251,51 @@ test('a figure built from type keeps the plate the page uses', async ({
 
   expect(relativeLuminance(tableColor)).toBeLessThan(0.1)
 })
+
+// The three tests above assert the plate clears a threshold, which catches a
+// plate that stopped being light and never catches one that stopped matching
+// the palette it borrows from. This asserts the equality instead.
+test('a figure plate tracks the light palette rather than a copy of it', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.goto('/diction')
+
+  const plate = page.locator('main figure:has(img)').first()
+  const source = await page.evaluate(() => {
+    const root = getComputedStyle(document.documentElement)
+    return {
+      card: root.getPropertyValue('--light-card').trim(),
+      mutedForeground: root.getPropertyValue('--light-muted-foreground').trim(),
+      ring: root.getPropertyValue('--light-ring').trim(),
+    }
+  })
+  const resolved = await plate.evaluate((element) => {
+    const style = getComputedStyle(element)
+    return {
+      card: style.getPropertyValue('--card').trim(),
+      mutedForeground: style.getPropertyValue('--muted-foreground').trim(),
+      ring: style.getPropertyValue('--ring').trim(),
+    }
+  })
+
+  expect(resolved).toEqual(source)
+})
+
+test('a section opener on a case study reads above body copy', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  const opener = page.locator('#problem p').nth(1)
+  const body = page.locator('#problem p').nth(2)
+
+  const openerSize = await opener.evaluate((element) =>
+    parseFloat(getComputedStyle(element).fontSize),
+  )
+  const bodySize = await body.evaluate((element) =>
+    parseFloat(getComputedStyle(element).fontSize),
+  )
+
+  expect(openerSize).toBeGreaterThan(bodySize)
+})

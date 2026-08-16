@@ -42,7 +42,7 @@ On scroll-in the kicker and the four rows reveal in a top-to-bottom cascade. Mec
 
 ## Row hover state
 
-Each criteria row carries a left border that turns primary on hover, paired with its mono label shifting from muted to foreground. Only the criteria rows respond to hover. The kicker line stays non-interactive.
+Each criteria row carries a left border that warms to the accent on hover, paired with its mono label shifting from muted to foreground. The rows are read rather than operated, so the border marks emphasis rather than an affordance, which is why it takes the warm accent and not the color a link or a focus ring carries. Only the criteria rows respond to hover. The kicker line stays non-interactive.
 
 ## Peek character
 

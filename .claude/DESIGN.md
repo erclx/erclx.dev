@@ -6,16 +6,35 @@ Engineering depth made visible. The page should read as hand-built rather than a
 
 ## Color
 
-| Role       | Intent                       | Value   |
-| ---------- | ---------------------------- | ------- |
-| background | warm off-white page canvas   | #FAFAF7 |
-| surface    | clean white cards and panels | #FFFFFF |
-| text       | near-black primary body      | #18181B |
-| muted      | secondary text and captions  | #71717A |
-| accent     | reserved for rare emphasis   | #1E40AF |
-| success    | restrained forest green      | #15803D |
-| warning    | muted amber caution          | #B45309 |
-| error      | dark red failure state       | #B91C1C |
+| Role        | Intent                               | Value   |
+| ----------- | ------------------------------------ | ------- |
+| background  | warm off-white page canvas           | #F8F4ED |
+| surface     | clean white cards and panels         | #FFFFFF |
+| text        | warm near-black primary body         | #1A1815 |
+| muted       | secondary text and captions          | #776E67 |
+| accent      | warm rust reserved for rare emphasis | #A4471C |
+| interactive | links and focus rings                | #133DAA |
+| success     | restrained forest green              | #15803D |
+| warning     | muted amber caution                  | #B45309 |
+| error       | dark red failure state               | #B91C1C |
+
+Values name the light theme. The dark theme carries its own value per role rather than a derivation, since the theme control follows the operating system and roughly half of visitors meet each.
+
+Accent and interactive are two accent-shaped roles and the division is what keeps a surface from reaching for the wrong one. Interactive answers what a visitor can act on: a link, a focus ring, a control responding to a press. Accent answers where the visitor already is and what the page wants read.
+
+The test is what the mark offers. Not what its element does, and not what raised it. A mark offering an action takes interactive. A mark offering only emphasis or position takes the accent, whether the page computed it or the reader raised it.
+
+Two cases carry the whole rule, and each defeats one of the readings that look right.
+
+The rail defeats reading by the element. Its label is an anchor that scrolls to a section, so the element is operable, and its focus ring is interactive on those grounds. The active border beside it tracks scroll position and would sit there under a reader who never clicked anything, so it is accent. Two roles on one element rather than a contradiction.
+
+The closing block's criteria rows defeat reading by the trigger. Their border is raised by a hover, which is the reader acting, and it still takes the accent, because the rows are read rather than operated and the border offers emphasis rather than an affordance. A hover raising emphasis on something inert is not an action mark.
+
+Two persistent placements is the ceiling. A third turns a mark that means "here" into decoration, and the hover on the closing block's rows is transient rather than a third.
+
+Warmth is carried by hue temperature and lightness rather than by hue count. Every neutral carrying a hue sits in the 60 to 82 band that the shipped icon and the closing character already occupy, and the surfaces holding pure white carry no hue to place. The dark canvas lifts off near-black to #1A1815, the icon's own ground. A many-hued palette is rejected rather than unconsidered: it reads as consumer rather than engineering and would collide with the case-study charts, which carry their own teal and rust and are the actual content.
+
+Accent, canvas, and text are derived from the artwork the site already ships rather than picked. The icon carries rust #A4471C, cream #F4EFE6, and ground #1A1815, and the closing character carries a warm tan and the same cream. The character keeps its own fixed fills across both themes rather than tracking tokens, so it holds one identity, and the accent it donates is how it reaches the rest of the page.
 
 ## Typography
 
@@ -23,9 +42,12 @@ Engineering depth made visible. The page should read as hand-built rather than a
 | ------- | -------------- | ------ | ---- | ----------- |
 | display | Fraunces       | 600    | 56px | 64px        |
 | heading | Fraunces       | 600    | 28px | 36px        |
+| lede    | Inter          | 400    | 21px | 30px        |
 | body    | Inter          | 400    | 17px | 28px        |
 | label   | Inter          | 500    | 14px | 20px        |
 | code    | JetBrains Mono | 400    | 14px | 22px        |
+
+Lede sits between heading and body and answers the opening paragraph of a section, where a surface would otherwise carry body size and separate itself by color alone. Reach for it once per section at most. A second lede in one section makes neither read as the opener.
 
 ### Page hierarchy
 
@@ -59,4 +81,4 @@ Use only the `1 / 2 / 4 / 6 / 10` Tailwind steps for micro-spacing inside a sect
 
 ## Iconography
 
-Lucide outline icons at 1.5px stroke. No custom icons. Accent color reserved for the rare interactive icon.
+Lucide outline icons at 1.5px stroke. No custom icons. Interactive color reserved for the rare interactive icon, since an icon a visitor operates takes the operable role rather than the emphasis one.

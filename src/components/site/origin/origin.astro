@@ -146,12 +146,12 @@ const edges: Array<[number, number]> = [
   .origin-row[data-default-active='true'],
   .origin-row[data-active='true'] {
     color: var(--foreground);
-    border-color: var(--primary);
+    border-color: var(--accent);
   }
   .origin-row[data-default-active='true'] .origin-marker,
   .origin-row[data-active='true'] .origin-marker {
-    background-color: var(--primary);
-    border-color: var(--primary);
+    background-color: var(--accent);
+    border-color: var(--accent);
   }
   .origin-graph {
     color: var(--muted-foreground);
@@ -169,7 +169,7 @@ const edges: Array<[number, number]> = [
   }
   .origin-graph circle[data-default-active='true'],
   .origin-graph circle[data-node-active='true'] {
-    fill: var(--primary);
+    fill: var(--accent);
     opacity: 1;
     r: 5;
   }

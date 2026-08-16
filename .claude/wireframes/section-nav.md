@@ -19,7 +19,7 @@ Appears as a fixed rail in the left margin once the visitor scrolls past the her
 └────────────────────────────────────────────────────────────┘
 ```
 
-The active label sits inside a 2px primary left border. Inactive labels render muted with a transparent border, matching the active-row treatment in `origin.md` and `looking-for.md`.
+The active label sits inside a 2px left border in the warm accent. Inactive labels render muted with a transparent border, matching the active-row treatment in `origin.md` and `looking-for.md`.
 
 ## Below xl (≤1280px)
 
@@ -28,7 +28,8 @@ Hidden. From md (768px) through lg (1024px) there is never a gutter wide enough 
 ## Behavior
 
 - A fixed rail in the left margin, vertically centered. Visible only at `xl` and up.
-- Labels are lowercase mono, mirroring the `origin` and `looking-for` kickers. The active label takes a 2px primary left border and foreground text. Inactive labels render muted with a transparent border. Hover lifts an inactive label toward the foreground color.
+- Labels are lowercase mono, mirroring the `origin` and `looking-for` kickers. The active label takes a 2px left border in the warm accent and foreground text. Inactive labels render muted with a transparent border. Hover lifts an inactive label toward the foreground color.
+- The label carries two marks answering to different things. Its focus ring appears when the reader reaches it and belongs to the operable role. Its active border tracks scroll position, sits there under a reader who never clicked, and belongs to the accent. Read the marks rather than the element, since the label is a clickable anchor and reading it by that alone puts the border on the wrong color. The timeline's current node carries the same position mark.
 - The rail tracks which story section the visitor is reading and marks its label active. Clicking a label smooth-scrolls to that section.
 - Over the hero the rail is hidden. It fades in once the visitor scrolls into the content and fades back out as the footer comes into view.
 - On the Jobtriage case study the rail is present from first paint with no fade, since that page is otherwise static.

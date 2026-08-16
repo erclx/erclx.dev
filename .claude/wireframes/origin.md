@@ -41,6 +41,8 @@ Three side projects spread horizontally above volvo as parallel siblings, ordere
 
 The graph mirrors the timeline's active row. Hovering either the row or its matching node highlights the same entry, so the eye can land on either side and feel the link. The SVG is `aria-hidden` because the timeline text already conveys everything, which makes the graph a redundant visualization for sighted users.
 
+The active row's rule and marker dot and the matching node all carry the warm accent, so one warm point marks where the reader is on a timeline that is otherwise muted. The rail marker in `section-nav.md` states position the same way and takes the same color.
+
 ## Cascade reveal
 
 On scroll-in the kicker, timeline rows, and graph reveal in a top-to-bottom cascade, and the graph edges draw from the foundation up. Mechanism: `.claude/context/motion.md`.
