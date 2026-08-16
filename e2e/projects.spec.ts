@@ -86,3 +86,70 @@ test('a card without a case study carries no whole-card overlay', async ({
 
   await expect(caretCard.locator('a[aria-hidden="true"]')).toHaveCount(0)
 })
+
+test('the trailing card closes the grid across both columns', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/')
+  const cards = page.locator('#projects article')
+
+  const first = await cards.first().boundingBox()
+  const trailing = await cards.nth(CARD_NAMES.length - 1).boundingBox()
+
+  expect(trailing?.width).toBeGreaterThan((first?.width ?? 0) * 1.8)
+})
+
+test('two cards sharing a row share a lower edge', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/')
+  const cards = page.locator('#projects article')
+  // The cards reveal on a stagger, so an early read catches one mid-transition.
+  await cards.first().scrollIntoViewIfNeeded()
+  await page.waitForTimeout(1200)
+
+  const left = await cards.first().boundingBox()
+  const right = await cards.nth(1).boundingBox()
+
+  const leftEdge = (left?.y ?? 0) + (left?.height ?? 0)
+  const rightEdge = (right?.y ?? 0) + (right?.height ?? 0)
+  expect(Math.abs(leftEdge - rightEdge)).toBeLessThan(2)
+})
+
+test('the Jobtriage card renders the description the source carries', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  await expect(page.locator('#projects article').nth(1)).toContainText(
+    'Live agent that triages Swedish job ads against a profile',
+  )
+})
+
+test('a card names no provider the source leaves out', async ({ page }) => {
+  await page.goto('/')
+
+  await expect(page.locator('#projects article').nth(1)).not.toContainText(
+    'OpenAI',
+  )
+})
+
+test('the Stackr card renders the description the source carries', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  await expect(page.locator('#projects article').nth(2)).toContainText(
+    'stages files across a workspace into one block of LLM context',
+  )
+})
+
+test('the Caret card renders the description the source carries', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  await expect(page.locator('#projects article').nth(3)).toContainText(
+    'saves prompts and drops them into Claude, Gemini, and ChatGPT',
+  )
+})

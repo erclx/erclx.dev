@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test'
 
+import { contrastRatio, paintedColor, relativeLuminance } from './colors'
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 
 const FIGURE_SELECTOR = 'main figure img'
 const DICTION_FIGURE_COUNT = 6
+const CASE_STUDY_ROUTES = ['/aitk', '/jobtriage', '/diction']
 
 test('the aitk case study renders its claim and sections', async ({ page }) => {
   await page.goto('/aitk')
@@ -169,4 +171,83 @@ test('a case study opened directly still links home', async ({ page }) => {
   await page.getByRole('link', { name: 'Back to Eric Le' }).click()
 
   await expect(page).toHaveURL('/')
+})
+
+for (const route of CASE_STUDY_ROUTES) {
+  test(`the top bar on ${route} sits at the same measure as the prose`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await page.goto(route)
+
+    const bar = await page.locator('header > div').boundingBox()
+    const column = await page
+      .locator('main section > div')
+      .first()
+      .boundingBox()
+
+    expect(Math.abs((bar?.width ?? 0) - (column?.width ?? 0))).toBeLessThan(2)
+  })
+}
+
+test('a figure plate holds a light ground in the dark theme', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.goto('/diction')
+  const plate = page.locator('main figure:has(img)').first()
+
+  const plateColor = await paintedColor(plate, 'backgroundColor')
+  const pageColor = await paintedColor(page.locator('body'), 'backgroundColor')
+
+  expect(relativeLuminance(plateColor)).toBeGreaterThan(0.8)
+  expect(relativeLuminance(pageColor)).toBeLessThan(0.1)
+})
+
+test('a figure caption stays readable on the plate in the dark theme', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.goto('/diction')
+  const plate = page.locator('main figure:has(img)').first()
+
+  const plateColor = await paintedColor(plate, 'backgroundColor')
+  const captionColor = await paintedColor(plate.locator('figcaption'), 'color')
+
+  expect(contrastRatio(plateColor, captionColor)).toBeGreaterThan(4.5)
+})
+
+test('a focused figure keeps its ring legible on the plate in the dark theme', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.goto('/diction')
+  const plate = page.locator('main figure:has(img)').first()
+  const trigger = plate.locator('[data-figure-zoom]')
+  await trigger.focus()
+
+  const plateColor = await paintedColor(plate, 'backgroundColor')
+  const ringColor = await paintedColor(trigger, 'outlineColor')
+  // outlineColor resolves whether or not a ring paints, so the style is what
+  // separates a visible ring from a color nobody sees.
+  const ringStyle = await trigger.evaluate(
+    (element) => getComputedStyle(element).outlineStyle,
+  )
+
+  expect(ringStyle).not.toBe('none')
+  expect(contrastRatio(plateColor, ringColor)).toBeGreaterThan(3)
+})
+
+test('a figure built from type keeps the plate the page uses', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.goto('/diction')
+
+  const tableColor = await paintedColor(
+    page.locator('main figure:has(table)').first(),
+    'backgroundColor',
+  )
+
+  expect(relativeLuminance(tableColor)).toBeLessThan(0.1)
 })

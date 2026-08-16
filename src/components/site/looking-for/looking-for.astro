@@ -25,7 +25,11 @@ const criteria = [
   class="px-6 pt-16 pb-24 md:pt-20 md:pb-32"
 >
   <div class="mx-auto max-w-2xl">
-    <div class="looking-stage relative">
+    <h2 data-fade class="text-muted-foreground font-mono text-label">
+      looking-for
+    </h2>
+
+    <div class="looking-stage relative mt-6 lg:mt-8">
       <div
         class="looking-peek absolute top-0 right-8 z-0 w-24 md:right-14 md:w-28"
         aria-hidden="true"
@@ -120,22 +124,21 @@ const criteria = [
         </svg>
       </div>
 
-      <div class="looking-card bg-card relative z-10 rounded-lg p-6 md:p-10">
-        <p data-fade class="text-muted-foreground font-mono text-label">
-          looking-for
-        </p>
-        <dl class="mt-6 grid gap-y-4">
+      <div
+        class="looking-rows border-border/60 bg-background relative z-10 border-t pt-8"
+      >
+        <dl class="grid gap-y-3">
           {
             criteria.map((item, idx) => (
               <div
                 data-fade
                 style={`--fade-delay: ${150 + idx * 100}ms`}
-                class="group -ml-4 grid items-baseline gap-x-6 border-l-2 border-transparent pl-4 hover:border-primary sm:grid-cols-[7rem_1fr]"
+                class="group -ml-4 grid items-baseline gap-x-6 border-l-2 border-transparent py-1 pl-4 hover:border-primary sm:grid-cols-[7rem_1fr]"
               >
                 <dt class="text-muted-foreground group-hover:text-foreground font-mono text-label">
                   {item.label}
                 </dt>
-                <dd class="text-foreground text-label">
+                <dd class="text-foreground text-body">
                   {item.value}
                 </dd>
               </div>
@@ -170,8 +173,8 @@ const criteria = [
 
 <script>
   const stage = document.querySelector<HTMLElement>('.looking-stage')
-  const card = stage?.querySelector<HTMLElement>('.looking-card')
-  if (stage && card) {
+  const rows = stage?.querySelector<HTMLElement>('.looking-rows')
+  if (stage && rows) {
     const reduce = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches
@@ -194,10 +197,10 @@ const criteria = [
     }
 
     if (!reduce) {
-      card.addEventListener('pointerenter', () => {
+      rows.addEventListener('pointerenter', () => {
         stage.dataset.peekDucked = 'true'
       })
-      card.addEventListener('pointerleave', () => {
+      rows.addEventListener('pointerleave', () => {
         delete stage.dataset.peekDucked
       })
     }

@@ -28,7 +28,7 @@ const projects = [
   {
     name: 'Jobtriage',
     description:
-      'Hosted retrieval and tool-using agent over the Swedish JobTech API. BYOK across Anthropic, OpenAI, and Gemini with a no-key mock fallback. Hybrid retrieval over a 50-query Swedish golden set with published ablation, plus a React Flow canvas with four views.',
+      'Live agent that triages Swedish job ads against a profile. Reachable at jobtriage.erclx.dev without a key, and the case study carries the retrieval numbers.',
     poster: jobtriagePoster,
     videoSrc: jobtriageVideo,
     mediaAlt:
@@ -42,7 +42,7 @@ const projects = [
   {
     name: 'Stackr',
     description:
-      'VS Code extension for multi-file LLM context preparation. Drag-and-drop file staging, live token counting, pinned files that survive session restarts.',
+      'VS Code extension that stages files across a workspace into one block of LLM context. Installed from the VS Code Marketplace and Open VSX.',
     poster: stackrPoster,
     videoSrc: stackrVideo,
     mediaAlt: 'Stackr — VS Code panel showing staged files and a context preview',
@@ -62,7 +62,7 @@ const projects = [
   {
     name: 'Caret',
     description:
-      'Chrome extension for saving and invoking prompts in Claude, Gemini, and ChatGPT. Trigger-symbol search and keyboard-driven injection from a command-palette dropdown anchored on the chat input.',
+      'Chrome extension that saves prompts and drops them into Claude, Gemini, and ChatGPT from the chat input. Live on the Chrome Web Store.',
     poster: caretPoster,
     videoSrc: caretVideo,
     mediaAlt: 'Caret — chat input showing a trigger-character palette of saved prompts',
@@ -109,8 +109,11 @@ const findCaseStudyHref = (links: { href: string }[]): string | undefined =>
           const numeral = String(index + 1).padStart(2, '0')
           const isLeftCol = index % 2 === 0
           const fadeDelay = `${index * 200}ms`
+          // An odd count leaves the last card alone in a two-column row, so it
+          // closes the section across both columns instead.
+          const isWide = projects.length % 2 === 1 && index === projects.length - 1
           return (
-            <div class="relative">
+            <div class:list={['relative', isWide && 'lg:col-span-2']}>
               <span
                 aria-hidden="true"
                 data-fade
@@ -136,6 +139,7 @@ const findCaseStudyHref = (links: { href: string }[]): string | undefined =>
                 links={project.links}
                 caseStudyHref={findCaseStudyHref(project.links)}
                 index={index}
+                isWide={isWide}
               />
             </div>
           )

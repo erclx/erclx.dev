@@ -15,6 +15,7 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 - On viewport entry the element reveals via a 700ms fade-and-rise. `--fade-delay` staggers siblings so a section's children cascade top to bottom.
 - `data-visible="true"` set at server render makes the fade a no-op. The Jobtriage case study sets it on every faded element so the long-form page renders static.
 - Under `prefers-reduced-motion: reduce` elements render at final position immediately.
+- The cascade defeats a geometry assertion that reads too early. Two cards in one grid row report positions several pixels apart while the later one is still rising, which reads as a layout defect and is not one. A test comparing positions scrolls the surface into view and waits out the longest delay first. Heights are unaffected, since the reveal translates rather than scales, so a height comparison needs no wait.
 
 ## Origin timeline
 

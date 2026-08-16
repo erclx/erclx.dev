@@ -136,6 +136,17 @@
   --sidebar-ring: oklch(0.7 0.15 264);
 }
 
+/* A raster figure is drawn on a light ground, so its plate stays light in the
+   dark theme and the chart reads as a framed card rather than a leak. Every
+   token the plate and its contents resolve takes its light-theme value, which
+   keeps the caption legible and the focus ring above 3:1 on white. These three
+   mirror what :root declares above and have to move with it. */
+.dark .figure-plate {
+  --card: oklch(1 0 0);
+  --muted-foreground: oklch(0.552 0.014 285);
+  --ring: oklch(0.41 0.18 264);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

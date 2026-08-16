@@ -34,6 +34,8 @@ Values are authored in oklch rather than hex. The lightness channel is perceptua
 - The button uses the native browser `title="Cycle theme"` attribute as its hover tooltip. The matching `aria-label` carries the same string for screen readers. The shadcn `Tooltip` primitive was dropped along with the React island.
 - The first-paint script also writes `documentElement.dataset.js = 'true'`. Styles can key off `[data-js]` for progressive enhancement without flashing the no-JS state.
 - The `localStorage` key is `theme`. Valid stored values are `light`, `dark`, or `system`. The toggle removes the key when transitioning into `system` mode, so the literal `system` value normally never gets written. The first-paint script falls back to `system` for any missing or invalid value.
+- A surface that has to stay light in the dark theme rebinds the tokens it consumes on a scoped class rather than pinning a color per element. `.dark .figure-plate` redeclares `--card`, `--muted-foreground`, and `--ring`, so `bg-card`, `text-muted-foreground`, and the focus ring all follow one declaration and every utility in the markup stays as written. Custom properties inherit, so descendants take the light values with no rule of their own. `.claude/context/case-study-figures.md` covers the one surface using it.
+- Rebinding `--ring` is the half a session skips. The dark ring at `oklch(0.7 0.15 264)` measures near 2.3:1 against white and fails the 3:1 that `410-a11y` sets, so any surface flipped light in the dark theme loses keyboard focus visibility until the ring moves with it. Read that as the cost of the technique rather than as a detail of the figure treatment, since it applies to the next such surface too.
 
 ## Hidden contracts
 
