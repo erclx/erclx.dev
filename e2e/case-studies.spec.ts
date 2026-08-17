@@ -7,6 +7,38 @@ const FIGURE_SELECTOR = 'main figure img'
 const DICTION_FIGURE_COUNT = 6
 const CASE_STUDY_ROUTES = ['/aitk', '/jobtriage', '/diction']
 
+for (const route of CASE_STUDY_ROUTES) {
+  test(`every section on ${route} opens on a real heading`, async ({
+    page,
+  }) => {
+    await page.goto(route)
+
+    const sections = await page.locator('main section[id]').count()
+    const headings = await page.locator('main section[id] h2').count()
+
+    expect(sections).toBeGreaterThan(0)
+    expect(headings).toBe(sections)
+  })
+
+  test(`a section heading on ${route} outsizes the prose under it`, async ({
+    page,
+  }) => {
+    await page.goto(route)
+
+    const sizes = await page.evaluate(() => {
+      const heading = document.querySelector('main section[id] h2')
+      const body = document.querySelector('main section[id] p')
+      if (!heading || !body) return { heading: 0, body: 0 }
+      return {
+        heading: parseFloat(getComputedStyle(heading).fontSize),
+        body: parseFloat(getComputedStyle(body).fontSize),
+      }
+    })
+
+    expect(sizes.heading).toBeGreaterThan(sizes.body)
+  })
+}
+
 test('the aitk case study renders its claim and sections', async ({ page }) => {
   await page.goto('/aitk')
 
@@ -287,8 +319,10 @@ test('a section opener on a case study reads above body copy', async ({
 }) => {
   await page.goto('/diction')
 
-  const opener = page.locator('#problem p').nth(1)
-  const body = page.locator('#problem p').nth(2)
+  // The section marker is a heading rather than a paragraph, so the lead is the
+  // first paragraph in the section and the body copy follows it.
+  const opener = page.locator('#problem p').nth(0)
+  const body = page.locator('#problem p').nth(1)
 
   const openerSize = await opener.evaluate((element) =>
     parseFloat(getComputedStyle(element).fontSize),
