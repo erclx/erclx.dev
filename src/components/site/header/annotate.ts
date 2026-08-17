@@ -1,5 +1,47 @@
-const FADE_SETTLE_MS = 850
 const UNDERLINE_DELAY_MS = 100
+
+/** Reveal timing read off the element, used only to bound the wait below. */
+function revealDurationMs(faded: HTMLElement): number {
+  const style = getComputedStyle(faded)
+  const seconds = (value: string) => parseFloat(value.split(',')[0]) || 0
+  return (
+    (seconds(style.transitionDelay) + seconds(style.transitionDuration)) * 1000
+  )
+}
+
+/**
+ * Run once the headline has finished rising. The end of the transition is the
+ * signal rather than any figure describing it, because the reveal observer
+ * writes the delay at intersection time and creates itself synchronously, while
+ * this module waits on a dynamic import: whichever order the two run in, a
+ * computed delay read here is either stale or already spent. An element the page
+ * rendered visible never transitions, so a settled opacity runs immediately, and
+ * the timeout covers a transition that is interrupted before it ends.
+ */
+function afterReveal(element: HTMLElement, run: () => void): void {
+  const faded = element.closest<HTMLElement>('[data-fade]')
+  if (!faded || parseFloat(getComputedStyle(faded).opacity) >= 1) {
+    window.setTimeout(run, UNDERLINE_DELAY_MS)
+    return
+  }
+
+  const onEnd = (event: TransitionEvent) => {
+    if (event.target !== faded || event.propertyName !== 'opacity') return
+    faded.removeEventListener('transitionend', onEnd)
+    window.clearTimeout(ceiling)
+    window.setTimeout(run, UNDERLINE_DELAY_MS)
+  }
+
+  const ceiling = window.setTimeout(
+    () => {
+      faded.removeEventListener('transitionend', onEnd)
+      run()
+    },
+    revealDurationMs(faded) + UNDERLINE_DELAY_MS,
+  )
+
+  faded.addEventListener('transitionend', onEnd)
+}
 
 export async function initAnnotations(): Promise<void> {
   const targets = document.querySelectorAll<HTMLElement>('[data-annotate]')
@@ -23,10 +65,7 @@ export async function initAnnotations(): Promise<void> {
           animationDuration: 600,
           iterations: 2,
         })
-        window.setTimeout(
-          () => annotation.show(),
-          FADE_SETTLE_MS + UNDERLINE_DELAY_MS,
-        )
+        afterReveal(element, () => annotation.show())
         observer.unobserve(element)
       }
     },

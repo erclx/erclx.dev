@@ -15,11 +15,12 @@ Appears at the top of the page on every viewport. Carries identity, status, head
 │   ● OPEN TO WORK                                    [☾]     │  ← row 1: status pill ↔ theme toggle
 │   ERIC LE · GOTHENBURG, SWEDEN                              │  ← row 2: identity meta
 │                                                             │
-│   I build LLM applications and developer tools              │  ← display heading
+│   I build the layer between a language        (photo)       │  ← display heading,
+│   model and the job it has to do.                           │    portrait floats in it
 │                                                             │
-│   Applied AI engineer working in LLM applications and       │
-│   prompt engineering. Spent 1.5 years building natural      │  ← body paragraph, capped measure
-│   language data agents at Volvo ...                         │
+│   In practice that means agents, and the developer tools    │
+│   around them. Some of that was paid work, eighteen months   │  ← body paragraph, capped measure
+│   of it at Volvo Technology, and the rest is tools I ...     │
 │                                                             │
 │   GitHub    LinkedIn    me@erclx.dev                        │  ← contact links row
 │                                                             │
@@ -35,8 +36,10 @@ Appears at the top of the page on every viewport. Carries identity, status, head
 │   ERIC LE · GOTHENBURG,          │  ← identity wraps to two lines
 │   SWEDEN                         │
 │                                  │
-│   I build LLM applications       │
-│   and developer tools            │
+│   I build the layer      (photo) │
+│   between a language             │
+│   model and the job              │
+│   it has to do.                  │
 │                                  │
 │   [body paragraph wraps]         │
 │                                  │
@@ -49,9 +52,16 @@ Appears at the top of the page on every viewport. Carries identity, status, head
 ## Behavior
 
 - Status pill and theme toggle anchor opposite ends of the same row. The toggle stays inside the header column rather than fixed to the viewport.
-- The identity meta line sits directly under the status pill, tightly spaced, so the two read as one block of meta information.
+- The identity meta line sits directly under the status pill, tightly spaced, so the two read as one block of meta information. Nothing may open a gap between the two: a portrait sharing that row on a centre alignment pushed the identity line off the pill, which broke the pairing.
+- The portrait floats to the top right inside the headline itself, so its top edge is the headline's own top at every width rather than a sum of the elements above it. It stays inside the content column rather than sitting in the margin beside it, so the band reads as centred, and it floats rather than taking a column of its own, so only the headline's first lines run short instead of every line losing the same width.
+- The status dot carries the size and the ring that the origin section's active marker carries, so the two read as one shape language. Its color stays its own: green states availability where the warm accent states position.
+- The dot and the toggle both align to the label's cap height rather than to its line box. A line box centres lower than uppercase text looks, because the empty descender space still counts toward the middle, and the drop is visible at this size.
 - The body paragraph caps its measure so line length stays readable on wide viewports while the band itself runs full width.
 - Contact links wrap to a new row when the viewport cannot hold all three on one line. Links are same-tab.
+
+## Status pulse
+
+The availability dot holds steady and a halo pings outward from it on a slow loop, so the status reads as live rather than as a printed label. It is the only always-on motion on the page. Under reduced motion the halo does not exist and the static ring remains. Mechanism: `.claude/context/motion.md`.
 
 ## H1 annotation
 

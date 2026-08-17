@@ -96,10 +96,10 @@ const findCaseStudyHref = (links: { href: string }[]): string | undefined =>
 ---
 
 <section id="projects" data-section="projects" class="px-6 py-16 md:py-20">
-  <div class="mx-auto max-w-2xl lg:max-w-5xl">
+  <div class="mx-auto max-w-3xl lg:max-w-5xl">
     <h2
       data-fade
-      class="font-display text-foreground text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+      class="font-display text-foreground section-heading leading-tight font-semibold"
     >
       Projects
     </h2>
@@ -151,14 +151,43 @@ const findCaseStudyHref = (links: { href: string }[]): string | undefined =>
 
 <script>
   const targets = document.querySelectorAll<HTMLElement>('[data-fade]')
+  const BATCH_STEP_MS = 80
+  // A step per element with no ceiling makes a large batch wait longer than the
+  // authored delays this replaces, so the whole batch is fitted to one window.
+  const BATCH_WINDOW_MS = 400
+
   if (targets.length > 0 && 'IntersectionObserver' in window) {
+    // The authored per-element delay assumes its surface arrives alone. A fast
+    // scroll delivers several surfaces in one callback, where a long-delayed
+    // card further up the page finishes after a short-delayed row below it and
+    // the page appears to reveal backwards. Everything arriving together is
+    // therefore re-staggered by document position, which is the order a reader
+    // expects whatever their scroll speed.
+    const documentOrder = new Map<Element, number>()
+    for (const [index, target] of targets.entries()) {
+      documentOrder.set(target, index)
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.setAttribute('data-visible', 'true')
-            observer.unobserve(entry.target)
-          }
+        const arriving = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort(
+            (a, b) =>
+              (documentOrder.get(a.target) ?? 0) -
+              (documentOrder.get(b.target) ?? 0),
+          )
+
+        const stepMs = Math.min(
+          BATCH_STEP_MS,
+          BATCH_WINDOW_MS / Math.max(1, arriving.length),
+        )
+
+        for (const [step, entry] of arriving.entries()) {
+          const element = entry.target as HTMLElement
+          element.style.setProperty('--fade-delay', `${step * stepMs}ms`)
+          element.setAttribute('data-visible', 'true')
+          observer.unobserve(element)
         }
       },
       { threshold: 0.15, rootMargin: '0px 0px -10% 0px' },

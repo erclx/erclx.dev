@@ -106,6 +106,18 @@ Do not restore the vector to an `icon` relation and do not replace either raster
 
 Measured at 60f1e0a on 2026-08-15.
 
+### Every figure sits inside the text column, and marks derive from type metrics
+
+A figure hanging into the page margin reads as an off-centre section even when the text column measures perfectly centred. The origin timeline shipped a graph in the right margin, measured centred at 672px with equal gaps at four widths, and the operator still read the section as offset because the section's visual mass sat right of its text. The graph is gone and the timeline carries a rail in its own row gutter instead, which also fixed what the figure could never do: the dots sit on their rows by construction rather than at hand-placed coordinates that could not track rows running 87 to 147 pixels apart.
+
+The same principle sends the header portrait inside the content column rather than into the margin beside it, floated within the headline so its top edge is the headline's own top at any width.
+
+A mark that has to line up with type takes its position from type metrics rather than from a measured constant. The origin dot centres inside a box one line-height tall, each rail segment runs from that box's centre to the next row's, and the status dot centres on a box one cap-height tall resting on the label's baseline. Three literals were removed to get there, and each had encoded a relationship that a change to the type scale, the marker size, or a control's tap height would have invalidated with nothing reporting it. Both marks measure where they are meant to sit: the status dot lands 0.0px from the cap centre and the toggle 0.8px, and the rail joins its dots to the pixel down a five-row list.
+
+What is banned is a literal standing in for a relationship two other values already fix, such as a nudge centring one element against another. Arithmetic over named values is the sanctioned form and is how the rule is kept, which is why a rail segment spans `calc(1lh / 2)` to the next row rather than a measured offset. A value that sets something rather than relating two things stays a literal, including spacing, type sizes, and the 44px tap minimum.
+
+An earlier draft of this entry claimed a line box centres about 2.5px lower than uppercase text. That figure is not reproducible: measured against this label at 14px, the two centres disagree by 0.3px, and the visible improvement came from the restructure and the tighter leading rather than from the offset the number described. Verified at 139af4f on 2026-08-17.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.

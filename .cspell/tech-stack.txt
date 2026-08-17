@@ -38,6 +38,7 @@ noopener
 noreferrer
 ntvs
 nums
+oklab
 oklch
 Ollama
 parallelizable

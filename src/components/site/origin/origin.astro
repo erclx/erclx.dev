@@ -1,108 +1,75 @@
 ---
 interface HistoryEntry {
   current?: boolean
-  year: string
-  event: string
-  nodeX: number
-  nodeY: number
+  span: string
+  head: string
+  // A beat holding two pieces of work carries a line for each, which is why
+  // this is a list rather than the single sentence the others need.
+  details: string[]
 }
 
 const history: HistoryEntry[] = [
   {
     current: true,
-    year: '2026',
-    event: 'ready for the next role',
-    nodeX: 50,
-    nodeY: 18,
-  },
-  { year: '2026', event: 'jobtriage published', nodeX: 80, nodeY: 80 },
-  {
-    year: '2026',
-    event: 'stackr published',
-    nodeX: 50,
-    nodeY: 80,
-  },
-  { year: '2026', event: 'caret published', nodeX: 20, nodeY: 80 },
-  {
-    year: '2025',
-    event: 'volvo contract iii wrapped',
-    nodeX: 50,
-    nodeY: 130,
+    span: '2026',
+    head: 'shipping independently, open to the next thing',
+    details: [
+      'Each project below answers a problem I ran into.',
+    ],
   },
   {
-    year: '2024',
-    event: 'chalmers engineering physics graduate',
-    nodeX: 50,
-    nodeY: 162,
+    span: 'jun to dec 2025',
+    head: 'working out what to build',
+    details: [
+      'Took the time to learn TypeScript and web application development, and to work out where to point AI next.',
+    ],
+  },
+  {
+    span: 'jan 2024 to jun 2025',
+    head: 'eighteen months at volvo technology',
+    details: [
+      'The job was an agent that let engineering teams plot and query truck data by asking in plain language.',
+      'It started as my master’s thesis and became a multi-step SQL pipeline with session memory.',
+    ],
+  },
+  {
+    span: 'sep 2022 to jun 2024',
+    head: 'msc in complex adaptive systems, chalmers',
+    details: [
+      'How simple agents and their environment produce behavior nobody designed.',
+    ],
+  },
+  {
+    span: 'sep 2019 to jun 2022',
+    head: 'bsc in engineering physics, chalmers',
+    details: [
+      'Where the modelling habits came from, before any of this was software.',
+    ],
   },
 ]
 
-const edges: Array<[number, number]> = [
-  [5, 4], // chalmers -> volvo
-  [4, 3], // volvo -> caret
-  [4, 2], // volvo -> stackr
-  [4, 1], // volvo -> jobtriage
-  [3, 0], // caret -> ready
-  [2, 0], // stackr -> ready
-  [1, 0], // jobtriage -> ready
+// The chips name the cards in the projects section below, in their rendered
+// order, since those artifacts are what the newest beat produced. An e2e test
+// compares the two lists so a card added there cannot drift from this one.
+const artifacts = [
+  { label: 'aitk', href: '#aitk' },
+  { label: 'Jobtriage', href: '#jobtriage' },
+  { label: 'Stackr', href: '#stackr' },
+  { label: 'Caret', href: '#caret' },
+  { label: 'diction', href: '#diction' },
 ]
 ---
 
 <section id="origin" data-section="origin" class="px-6 py-16 md:py-20">
-  <div class="mx-auto max-w-2xl">
-    <p
+  <div class="mx-auto max-w-3xl">
+    <h2
       data-fade
-      class="text-muted-foreground font-mono text-label"
+      class="font-display text-foreground section-heading leading-tight font-semibold"
     >
-      origin
-    </p>
-    <div
-      class="origin-stage mt-6 flex flex-col items-stretch gap-x-8 md:flex-row md:items-center"
-    >
-      <svg
-        data-fade
-        class="origin-graph order-2 hidden md:block"
-        viewBox="0 0 100 180"
-        preserveAspectRatio="xMidYMid meet"
-        aria-hidden="true"
-      >
-        <g class="origin-graph-edges">
-          {
-            edges.map(([from, to]) => {
-              const a = history[from]
-              const b = history[to]
-              return (
-                <line
-                  x1={a.nodeX}
-                  y1={a.nodeY}
-                  x2={b.nodeX}
-                  y2={b.nodeY}
-                  stroke="currentColor"
-                  stroke-width="1"
-                  vector-effect="non-scaling-stroke"
-                  pathLength="1"
-                  stroke-dasharray="1"
-                  stroke-dashoffset="1"
-                />
-              )
-            })
-          }
-        </g>
-        <g class="origin-graph-nodes">
-          {
-            history.map((entry, idx) => (
-              <circle
-                cx={entry.nodeX}
-                cy={entry.nodeY}
-                r="4"
-                data-node-idx={idx}
-                data-default-active={entry.current ? 'true' : undefined}
-              />
-            ))
-          }
-        </g>
-      </svg>
-      <ol class="origin-list order-1 font-mono md:flex-1">
+      Origin
+    </h2>
+    <div class="origin-stage mt-10 lg:mt-14">
+      <ol class="origin-list flex flex-col font-mono">
         {
           history.map((entry, idx) => (
             <li
@@ -110,11 +77,38 @@ const edges: Array<[number, number]> = [
               data-default-active={entry.current ? 'true' : undefined}
               aria-current={entry.current ? 'step' : undefined}
               style={`--fade-delay: ${150 + idx * 100}ms`}
-              class="origin-row text-body -ml-4 grid grid-cols-[1rem_3rem_1fr] items-baseline gap-x-4 border-l-2 border-transparent py-1 pl-4"
+              class="origin-row text-body grid grid-cols-[3.25rem_1fr] items-start"
             >
-              <span class="origin-marker self-center" aria-hidden="true" />
-              <span class="tabular-nums">{entry.year}</span>
-              <span>{entry.event}</span>
+              <span class="origin-gutter" aria-hidden="true">
+                <span class="origin-marker-line">
+                  <span class="origin-marker"></span>
+                </span>
+              </span>
+              <div>
+                <p class="origin-head">
+                  <span class="tabular-nums">{entry.span}</span>
+                  <span class="px-1" aria-hidden="true">
+                    ·
+                  </span>
+                  {entry.head}
+                </p>
+                {entry.details.map((detail) => (
+                  <p class="origin-detail text-label mt-2 font-sans">{detail}</p>
+                ))}
+                {entry.current && (
+                  <ul class="mt-3 flex flex-wrap gap-x-2">
+                    {artifacts.map((artifact) => (
+                      <li>
+                        <a href={artifact.href} class="origin-chip-hit">
+                          <span class="origin-chip text-label">
+                            {artifact.label}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </li>
           ))
         }
@@ -131,90 +125,107 @@ const edges: Array<[number, number]> = [
 </section>
 
 <style>
+  .origin-list {
+    --origin-beat-gap: 1.75rem;
+  }
   .origin-row {
     color: var(--muted-foreground);
+    padding-bottom: var(--origin-beat-gap);
+  }
+  .origin-row:last-child {
+    padding-bottom: 0;
+  }
+  /* Two derived positions carry the rail. The dot centres inside a box one line
+     tall, so it lands on the row's first line whatever the type scale does, and
+     each segment runs from that centre to the next row's, reaching it by the
+     one gap value the rows are spaced with. No offset is measured or written. */
+  .origin-gutter {
+    position: relative;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .origin-marker-line {
+    display: flex;
+    align-items: center;
+    height: 1lh;
+  }
+  .origin-row:not(:last-child) .origin-gutter::after {
+    content: '';
+    position: absolute;
+    top: calc(1lh / 2);
+    bottom: calc(-1 * (var(--origin-beat-gap) + 1lh / 2));
+    width: 1px;
+    background: var(--border);
+  }
+  /* The oldest beat trails off rather than stopping at its dot, so the record
+     reads as continuing behind the first entry. */
+  .origin-row:last-child .origin-gutter::after {
+    content: '';
+    position: absolute;
+    top: calc(1lh / 2);
+    height: var(--origin-beat-gap);
+    width: 1px;
+    background: linear-gradient(to bottom, var(--border), transparent);
+  }
+  .origin-detail {
+    color: var(--muted-foreground);
+    line-height: 1.65;
   }
   .origin-marker {
-    display: inline-block;
-    width: 0.55em;
-    height: 0.55em;
+    position: relative;
+    display: block;
+    width: 0.62em;
+    height: 0.62em;
     border-radius: 9999px;
     border: 1.5px solid currentColor;
+    background-color: var(--background);
     box-sizing: border-box;
     flex-shrink: 0;
   }
   .origin-row[data-default-active='true'],
   .origin-row[data-active='true'] {
     color: var(--foreground);
-    border-color: var(--accent);
   }
   .origin-row[data-default-active='true'] .origin-marker,
   .origin-row[data-active='true'] .origin-marker {
     background-color: var(--accent);
     border-color: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 18%, transparent);
   }
-  .origin-graph {
+  /* The link carries the phone tap minimum the landing page holds every link
+     to, and the pill inside it draws at the height the row wants. Sizing the
+     pill itself to 44px made it read as a button among log lines. */
+  .origin-chip-hit {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    justify-content: center;
+  }
+  .origin-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    padding: 0.2rem 0.75rem;
     color: var(--muted-foreground);
-    width: 120px;
-    aspect-ratio: 100 / 180;
-    flex-shrink: 0;
   }
-  .origin-graph-edges {
-    opacity: 0.5;
-  }
-  .origin-graph-nodes circle {
-    fill: currentColor;
-    stroke: none;
-    opacity: 0.5;
-  }
-  .origin-graph circle[data-default-active='true'],
-  .origin-graph circle[data-node-active='true'] {
-    fill: var(--accent);
-    opacity: 1;
-    r: 5;
+  .origin-chip-hit:hover .origin-chip {
+    border-color: var(--accent);
+    color: var(--foreground);
   }
   @media (prefers-reduced-motion: no-preference) {
     .origin-row,
-    .origin-marker {
+    .origin-marker,
+    .origin-chip {
       transition:
         color 150ms ease-out,
         background-color 150ms ease-out,
-        border-color 150ms ease-out;
-    }
-    .origin-graph circle,
-    .origin-graph-edges {
-      transition:
-        fill 200ms ease-out,
-        opacity 200ms ease-out;
-    }
-    .origin-graph[data-visible='true'] .origin-graph-edges line {
-      animation: origin-edge-draw 700ms ease-out both;
-    }
-    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(1) {
-      animation-delay: 150ms;
-    }
-    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(2),
-    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(3),
-    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(4) {
-      animation-delay: 300ms;
-    }
-    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(5),
-    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(6),
-    .origin-graph[data-visible='true'] .origin-graph-edges line:nth-child(7) {
-      animation-delay: 500ms;
-    }
-    @keyframes origin-edge-draw {
-      from {
-        stroke-dashoffset: 1;
-      }
-      to {
-        stroke-dashoffset: 0;
-      }
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .origin-graph .origin-graph-edges line {
-      stroke-dashoffset: 0;
+        border-color 150ms ease-out,
+        box-shadow 200ms ease-out;
     }
   }
 </style>
@@ -223,12 +234,7 @@ const edges: Array<[number, number]> = [
   const stage = document.querySelector<HTMLElement>('.origin-stage')
   const list = stage?.querySelector<HTMLOListElement>('.origin-list')
   if (stage && list) {
-    const rows = Array.from(
-      list.querySelectorAll<HTMLLIElement>('.origin-row'),
-    )
-    const nodes = Array.from(
-      stage.querySelectorAll<SVGCircleElement>('.origin-graph circle'),
-    )
+    const rows = Array.from(list.querySelectorAll<HTMLLIElement>('.origin-row'))
     const defaultIdx = Math.max(
       0,
       rows.findIndex((r) => r.dataset.defaultActive === 'true'),
@@ -238,9 +244,7 @@ const edges: Array<[number, number]> = [
 
     const setActive = (idx: number) => {
       rows[activeIdx]?.removeAttribute('data-active')
-      nodes[activeIdx]?.removeAttribute('data-node-active')
       rows[idx]?.setAttribute('data-active', 'true')
-      nodes[idx]?.setAttribute('data-node-active', 'true')
       activeIdx = idx
     }
 
@@ -252,22 +256,16 @@ const edges: Array<[number, number]> = [
     }
 
     rows[defaultIdx]?.removeAttribute('data-default-active')
-    nodes[defaultIdx]?.removeAttribute('data-default-active')
     setActive(defaultIdx)
 
-    const onEnter = (i: number) => () => {
-      cancelWalk()
-      setActive(i)
-    }
-
     for (const [i, row] of rows.entries()) {
-      row.addEventListener('pointerenter', onEnter(i))
-      nodes[i]?.addEventListener('pointerenter', onEnter(i))
+      row.addEventListener('pointerenter', () => {
+        cancelWalk()
+        setActive(i)
+      })
     }
 
-    const reduce = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     const baseDelay = 40
     const maxDelay = 160

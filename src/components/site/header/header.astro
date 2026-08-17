@@ -1,7 +1,9 @@
 ---
+import { Image } from 'astro:assets'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
 import flowFieldFallback from './flow-field/fallback.svg?raw'
+import portrait from '@/assets/header/portrait.jpg'
 
 const links = [
   { label: 'GitHub', href: 'https://github.com/erclx' },
@@ -26,37 +28,56 @@ const links = [
     set:html={flowFieldFallback}
   >
   </div>
-  <div class="relative mx-auto w-full max-w-2xl">
-    <div data-fade class="flex items-start justify-between gap-4">
-      <span
-        class="text-muted-foreground text-label inline-flex items-center gap-2 tracking-wide uppercase"
-      >
-        <span
-          class="bg-chart-2 inline-block size-2 rounded-full"
-          aria-hidden="true"></span>
-        Open to work
-      </span>
-      <ThemeToggle />
-    </div>
-    <div data-fade style="--fade-delay: 150ms">
-      <p
-        class="text-muted-foreground text-label mt-3 tracking-wide uppercase"
-      >
-        Eric Le · Gothenburg, Sweden
-      </p>
-      <h1 class="font-display text-display text-foreground mt-6">
-        I build LLM applications and <span data-annotate="underline"
-          >developer tools</span
-        >.
-      </h1>
-    </div>
-    <div data-fade style="--fade-delay: 300ms">
-      <p class="text-muted-foreground text-body mt-6 max-w-xl">
-        Applied AI engineer working in LLM applications and prompt engineering.
-        Eighteen months building natural language data agents at Volvo
-        Technology. Shipped Jobtriage, a retrieval agent over the Swedish
-        JobTech API. Published VS Code and Chrome extensions on the side.
-      </p>
+  <div data-header-column class="relative mx-auto w-full max-w-3xl">
+    <div>
+      <div data-fade>
+        {/* The toggle shares the status row but sits out of its flow, so its
+            tap height cannot push the identity line off the pill. Nothing
+            reserves space for it: the pill beside it is one short label. */}
+        <div class="relative">
+          <span
+            class="text-muted-foreground text-label inline-flex items-baseline gap-3 leading-none tracking-wide uppercase"
+          >
+            <span class="status-dot-slot" aria-hidden="true">
+              <span class="status-dot"></span>
+            </span>
+            Open to work
+          </span>
+          <div class="absolute top-1/2 right-0 -translate-y-1/2">
+            <ThemeToggle />
+          </div>
+        </div>
+        <p class="text-muted-foreground text-label mt-3 tracking-wide uppercase">
+          Eric Le · Gothenburg, Sweden
+        </p>
+      </div>
+      <div>
+        <div data-fade style="--fade-delay: 150ms">
+          {/* The portrait floats inside the headline, so its top is the
+              headline's own top at every width rather than a sum of the
+              elements that happen to sit above it. Its alt stays empty for the
+              same reason it sits here: alt text on an image inside a heading
+              prepends to that heading's accessible name, and the identity line
+              above already states the name a reader would gain from it. */}
+          <h1 class="font-display text-display text-foreground mt-6">
+            <Image
+              src={portrait}
+              alt=""
+              widths={[112, 160, 320]}
+              sizes="(min-width: 1024px) 10rem, (min-width: 768px) 7rem, 5rem"
+              data-portrait
+              class="border-border/60 bg-muted float-right ml-6 size-20 rounded-full border object-cover md:size-28 lg:size-40"
+            />
+            I build <span data-annotate="underline">the layer</span> between a
+            language model and the job it has to do.
+          </h1>
+        </div>
+        <div data-fade style="--fade-delay: 300ms">
+          <p class="text-muted-foreground text-body mt-6 max-w-2xl">
+            In practice that means agents, and the developer tools around them.
+            Some of that was paid work, eighteen months of it at Volvo Technology,
+            and the rest is tools I have built to make working with AI easier.
+          </p>
       <ul class="mt-8 flex flex-wrap gap-x-6">
       {
         links.map((link) => (
@@ -72,9 +93,62 @@ const links = [
         ))
       }
       </ul>
+        </div>
+      </div>
     </div>
   </div>
 </header>
+
+<style>
+  /* The slot sits on the label's baseline and stands one cap height tall, so the
+     dot inside it centres on the capitals rather than on the line box. A line
+     box centres lower than uppercase text looks, because the descender space
+     under the baseline is empty and still counts toward the middle. */
+  .status-dot-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1cap;
+  }
+  /* The status dot takes the size and the ring the origin section's active
+     marker carries, so the two read as one shape language. The color stays
+     its own: green states availability where the accent states position. */
+  .status-dot {
+    position: relative;
+    display: inline-block;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 9999px;
+    background-color: var(--chart-2);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--chart-2) 18%, transparent);
+  }
+  /* The halo is a pseudo-element so the pulse never changes the dot's own box
+     and nothing in the status row reflows on it. */
+  @media (prefers-reduced-motion: no-preference) {
+    .status-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-color: var(--chart-2);
+      animation: status-ping 2400ms cubic-bezier(0.2, 0, 0.4, 1) infinite;
+    }
+    @keyframes status-ping {
+      from {
+        opacity: 0.5;
+        transform: scale(1);
+      }
+      70% {
+        opacity: 0;
+        transform: scale(2.6);
+      }
+      to {
+        opacity: 0;
+        transform: scale(2.6);
+      }
+    }
+  }
+</style>
 
 <script>
   import { initAnnotations } from './annotate'
