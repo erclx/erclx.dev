@@ -41,6 +41,8 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 
 ## Header H1 annotation
 
-- One phrase in the hero H1 carries a `rough-notation` underline drawn ~950ms after the H1 enters the viewport, roughly 100ms after the fade settles. Runs once per page load and never replays.
+- One phrase in the hero H1 carries a `rough-notation` underline drawn 100ms after the headline's reveal transition ends. Runs once per page load and never replays.
+- The end of the transition is the signal rather than a figure describing it. The reveal observer writes the delay at intersection time and creates itself synchronously, while this module waits on a dynamic import, so a delay read inside the annotation is either stale or already spent depending on which runs first. A version reading the computed delay drew the underline at 0.01 opacity, on a headline that had barely started rising.
+- A headline the page rendered visible never transitions, so a settled opacity draws immediately, and a timeout bounded by the reveal duration covers a transition interrupted before it ends.
 - The library imports dynamically from a client `<script>` so it executes browser-only. The stroke uses `currentColor`, which inherits the H1's foreground text color.
 - Skipped entirely under `prefers-reduced-motion: reduce`. Only one phrase per page may carry an annotation, by editorial rule.

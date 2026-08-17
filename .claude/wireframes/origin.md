@@ -38,8 +38,7 @@ Origin
  ┊     software.
        ← rail fades out below the oldest dot
 
-    Each entry made the next one possible. I would rather ship something
-    small and use it than plan something bigger.
+    Each entry made the next one possible.
               — Fraunces italic, label size
 ```
 
