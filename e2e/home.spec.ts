@@ -17,7 +17,7 @@ test('the header states the claim line', async ({ page }) => {
   await page.goto('/')
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
-    'the layer that makes language models useful',
+    'the layer between a language model and the job it has to do',
   )
 })
 
@@ -52,14 +52,26 @@ test('the origin section renders one entry per beat', async ({ page }) => {
   await expect(page.locator('#origin ol > li')).toHaveCount(ORIGIN_ENTRY_COUNT)
 })
 
-test('every origin entry carries a span, a head, and a supporting sentence', async ({
+test('every origin entry carries a head and a supporting sentence', async ({
   page,
 }) => {
   await page.goto('/')
 
-  await expect(page.locator('#origin ol > li p')).toHaveCount(
-    ORIGIN_ENTRY_COUNT * 2,
+  await expect(page.locator('#origin .origin-head')).toHaveCount(
+    ORIGIN_ENTRY_COUNT,
   )
+  await expect(page.locator('#origin .origin-detail')).not.toHaveCount(0)
+})
+
+test('the beat holding two pieces of work carries a line for each', async ({
+  page,
+}) => {
+  await page.goto('/')
+  const volvoBeat = page.locator('#origin ol > li', {
+    hasText: 'volvo technology',
+  })
+
+  await expect(volvoBeat.locator('.origin-detail')).toHaveCount(2)
 })
 
 test('the origin rail marks every entry', async ({ page }) => {

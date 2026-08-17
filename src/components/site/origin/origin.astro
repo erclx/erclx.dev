@@ -3,7 +3,9 @@ interface HistoryEntry {
   current?: boolean
   span: string
   head: string
-  detail: string
+  // A beat holding two pieces of work carries a line for each, which is why
+  // this is a list rather than the single sentence the others need.
+  details: string[]
 }
 
 const history: HistoryEntry[] = [
@@ -11,31 +13,38 @@ const history: HistoryEntry[] = [
     current: true,
     span: '2026',
     head: 'shipping independently, open to the next thing',
-    detail: 'Every project below started as something that was slowing me down.',
+    details: [
+      'Each project below answers a problem I ran into.',
+    ],
   },
   {
-    span: '2025',
-    head: 'upskilling, and working out what to build',
-    detail:
-      'Going deeper on the tooling side before building anything worth showing.',
+    span: 'jun to dec 2025',
+    head: 'working out what to build',
+    details: [
+      'Took the time to learn TypeScript and web application development, and to work out where to point AI next.',
+    ],
   },
   {
-    span: '2024 to 2025',
+    span: 'jan 2024 to jun 2025',
     head: 'eighteen months at volvo technology',
-    detail:
-      'It started as a master’s thesis, an agent that turned plain questions into sandboxed Python over truck telematics data. I rebuilt it as a multi-step SQL pipeline with session memory that engineers tested against their own data.',
+    details: [
+      'The job was an agent that let engineering teams plot and query truck data by asking in plain language.',
+      'It started as my master’s thesis and became a multi-step SQL pipeline with session memory.',
+    ],
   },
   {
-    span: '2022 to 2024',
+    span: 'sep 2022 to jun 2024',
     head: 'msc in complex adaptive systems, chalmers',
-    detail:
+    details: [
       'How simple agents and their environment produce behavior nobody designed.',
+    ],
   },
   {
-    span: '2019 to 2022',
+    span: 'sep 2019 to jun 2022',
     head: 'bsc in engineering physics, chalmers',
-    detail:
-      'Taught me to break a problem down before reaching for a tool, which is most of the job now.',
+    details: [
+      'Where the modelling habits came from, before any of this was software.',
+    ],
   },
 ]
 
@@ -76,16 +85,16 @@ const artifacts = [
                 </span>
               </span>
               <div>
-                <p>
+                <p class="origin-head">
                   <span class="tabular-nums">{entry.span}</span>
                   <span class="px-1" aria-hidden="true">
                     ·
                   </span>
                   {entry.head}
                 </p>
-                <p class="origin-detail text-label mt-2 font-sans">
-                  {entry.detail}
-                </p>
+                {entry.details.map((detail) => (
+                  <p class="origin-detail text-label mt-2 font-sans">{detail}</p>
+                ))}
                 {entry.current && (
                   <ul class="mt-3 flex flex-wrap gap-x-2">
                     {artifacts.map((artifact) => (
