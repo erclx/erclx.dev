@@ -73,8 +73,9 @@ test('the origin rail marks every entry', async ({ page }) => {
 test('the origin chips name the cards below them', async ({ page }) => {
   await page.goto('/')
 
-  const chips = await page.locator('#origin ul a').allTextContents()
-  const cards = await page.locator('#projects h3').allTextContents()
+  const trimmed = (labels: string[]) => labels.map((label) => label.trim())
+  const chips = trimmed(await page.locator('#origin ul a').allTextContents())
+  const cards = trimmed(await page.locator('#projects h3').allTextContents())
 
   expect(chips).toEqual(cards)
 })

@@ -52,7 +52,7 @@ const artifacts = [
 ---
 
 <section id="origin" data-section="origin" class="px-6 py-16 md:py-20">
-  <div class="mx-auto max-w-2xl xl:max-w-3xl">
+  <div class="mx-auto max-w-3xl">
     <h2
       data-fade
       class="font-display text-foreground text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
@@ -68,7 +68,7 @@ const artifacts = [
               data-default-active={entry.current ? 'true' : undefined}
               aria-current={entry.current ? 'step' : undefined}
               style={`--fade-delay: ${150 + idx * 100}ms`}
-              class="origin-row text-body grid grid-cols-[2rem_1fr] items-start"
+              class="origin-row text-body grid grid-cols-[3.25rem_1fr] items-start"
             >
               <span class="origin-gutter" aria-hidden="true">
                 <span class="origin-marker-line">
@@ -83,15 +83,17 @@ const artifacts = [
                   </span>
                   {entry.head}
                 </p>
-                <p class="origin-detail text-label mt-2 max-w-xl font-sans">
+                <p class="origin-detail text-label mt-2 font-sans">
                   {entry.detail}
                 </p>
                 {entry.current && (
-                  <ul class="mt-4 flex flex-wrap gap-2">
+                  <ul class="mt-3 flex flex-wrap gap-x-2">
                     {artifacts.map((artifact) => (
                       <li>
-                        <a href={artifact.href} class="origin-chip text-label">
-                          {artifact.label}
+                        <a href={artifact.href} class="origin-chip-hit">
+                          <span class="origin-chip text-label">
+                            {artifact.label}
+                          </span>
                         </a>
                       </li>
                     ))}
@@ -183,20 +185,26 @@ const artifacts = [
     border-color: var(--accent);
     box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 18%, transparent);
   }
-  /* The pill clears the phone tap minimum rather than sizing to its label,
-     which the tap-target spec on the landing page holds every link to. */
+  /* The link carries the phone tap minimum the landing page holds every link
+     to, and the pill inside it draws at the height the row wants. Sizing the
+     pill itself to 44px made it read as a button among log lines. */
+  .origin-chip-hit {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    justify-content: center;
+  }
   .origin-chip {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 2.75rem;
-    min-width: 2.75rem;
     border: 1px solid var(--border);
     border-radius: 9999px;
-    padding: 0 0.9rem;
+    padding: 0.2rem 0.75rem;
     color: var(--muted-foreground);
   }
-  .origin-chip:hover {
+  .origin-chip-hit:hover .origin-chip {
     border-color: var(--accent);
     color: var(--foreground);
   }
