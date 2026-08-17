@@ -1,23 +1,27 @@
 ---
+// The upstream source lists these lowercase and states that the site owns how
+// a string renders, so the casing is decided here. Sentence case leaves the
+// uppercase treatment to the eyebrow and the diagram labels, which is the one
+// job it can hold consistently.
 const criteria = [
   {
-    label: 'what I want to build',
+    label: 'What I want to build',
     value: 'AI tooling · LLM apps · devex',
   },
   {
-    label: 'team',
+    label: 'Team',
     value: 'small to mid · close to the product',
   },
   {
-    label: 'where',
+    label: 'Where',
     value: 'Sweden, Gothenburg preferred · remote',
   },
   {
-    label: 'experience',
+    label: 'Experience',
     value: 'two years in',
   },
   {
-    label: 'terms',
+    label: 'Terms',
     value: 'full-time or contract',
   },
 ]
@@ -156,7 +160,7 @@ const criteria = [
                 style={`--fade-delay: ${150 + idx * 100}ms`}
                 class="group -ml-4 grid items-baseline gap-x-6 border-l-2 border-transparent py-1 pl-4 hover:border-accent sm:grid-cols-[13rem_1fr]"
               >
-                <dt class="text-muted-foreground group-hover:text-foreground text-label tracking-wide uppercase">
+                <dt class="text-muted-foreground group-hover:text-foreground text-label">
                   {item.label}
                 </dt>
                 <dd class="text-muted-foreground group-hover:text-foreground text-body">

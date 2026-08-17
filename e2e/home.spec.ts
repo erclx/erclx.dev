@@ -58,11 +58,34 @@ test('the rail tracks every section the page stacks', async ({ page }) => {
   const labels = await page.locator('[data-section-nav] a').allTextContents()
 
   expect(labels.map((label) => label.trim())).toEqual([
-    'about',
-    'experience',
-    'projects',
-    'looking-for',
+    'About me',
+    'Experience',
+    'Projects',
+    'Looking for',
   ])
+})
+
+test('every rail label reads as its own heading rather than an anchor id', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const headings = await page
+    .locator('[data-section-nav] a')
+    .evaluateAll((links) =>
+      links.map((link) => {
+        const id = link.getAttribute('href')?.slice(1) ?? ''
+        return {
+          label: link.textContent?.trim() ?? '',
+          heading:
+            document.querySelector(`#${id} h2`)?.textContent?.trim() ?? '',
+        }
+      }),
+    )
+
+  expect(headings).toEqual(
+    headings.map((entry) => ({ ...entry, label: entry.heading })),
+  )
 })
 
 test('the about surface reads as personal rather than professional', async ({
