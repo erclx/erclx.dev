@@ -1,4 +1,9 @@
 ---
+const intro = [
+  'In practice that means agents, and the developer tools around them. Some of that was paid work, eighteen months of it at Volvo Technology, and the rest is tools I have built to make working with AI easier.',
+  'I spend most of my working day with coding agents, and the tooling I build comes out of that. When the same rules kept drifting out of sync across my projects, that became a CLI. When staging files for a prompt got tedious, that became an extension.',
+]
+
 interface HistoryEntry {
   current?: boolean
   span: string
@@ -60,16 +65,44 @@ const artifacts = [
 ]
 ---
 
-<section id="origin" data-section="origin" class="px-6 py-16 md:py-20">
+<section id="experience" data-section="experience" class="px-6 py-16 md:py-20">
   <div class="mx-auto max-w-3xl">
     <h2
       data-fade
       class="font-display text-foreground section-heading leading-tight font-semibold"
     >
-      Origin
+      Experience
     </h2>
-    <div class="origin-stage mt-10 lg:mt-14">
-      <ol class="origin-list flex flex-col font-mono">
+
+    {/* The claim leads this section rather than the hero, and its elaboration
+        follows it here because that paragraph opens on a pronoun standing for
+        the claim. Splitting the two across surfaces left the pronoun with no
+        antecedent on either. */}
+    <p
+      data-fade
+      style="--fade-delay: 100ms"
+      class="font-display text-foreground mt-8 text-3xl leading-tight md:text-4xl"
+    >
+      I build <span data-annotate="underline">the layer</span> between a language
+      model and the job it has to do.
+    </p>
+
+    <div class="mt-8 space-y-6">
+      {
+        intro.map((paragraph, idx) => (
+          <p
+            data-fade
+            style={`--fade-delay: ${200 + idx * 100}ms`}
+            class="text-muted-foreground text-body"
+          >
+            {paragraph}
+          </p>
+        ))
+      }
+    </div>
+
+    <div class="experience-stage mt-10 lg:mt-14">
+      <ol class="experience-list flex flex-col font-mono">
         {
           history.map((entry, idx) => (
             <li
@@ -77,15 +110,15 @@ const artifacts = [
               data-default-active={entry.current ? 'true' : undefined}
               aria-current={entry.current ? 'step' : undefined}
               style={`--fade-delay: ${150 + idx * 100}ms`}
-              class="origin-row text-body grid grid-cols-[3.25rem_1fr] items-start"
+              class="experience-row text-body grid grid-cols-[3.25rem_1fr] items-start"
             >
-              <span class="origin-gutter" aria-hidden="true">
-                <span class="origin-marker-line">
-                  <span class="origin-marker"></span>
+              <span class="experience-gutter" aria-hidden="true">
+                <span class="experience-marker-line">
+                  <span class="experience-marker"></span>
                 </span>
               </span>
               <div>
-                <p class="origin-head">
+                <p class="experience-head">
                   <span class="tabular-nums">{entry.span}</span>
                   <span class="px-1" aria-hidden="true">
                     ·
@@ -93,14 +126,14 @@ const artifacts = [
                   {entry.head}
                 </p>
                 {entry.details.map((detail) => (
-                  <p class="origin-detail text-label mt-2 font-sans">{detail}</p>
+                  <p class="experience-detail text-label mt-2 font-sans">{detail}</p>
                 ))}
                 {entry.current && (
                   <ul class="mt-3 flex flex-wrap gap-x-2">
                     {artifacts.map((artifact) => (
                       <li>
-                        <a href={artifact.href} class="origin-chip-hit">
-                          <span class="origin-chip text-label">
+                        <a href={artifact.href} class="experience-chip-hit">
+                          <span class="experience-chip text-label">
                             {artifact.label}
                           </span>
                         </a>
@@ -125,55 +158,55 @@ const artifacts = [
 </section>
 
 <style>
-  .origin-list {
-    --origin-beat-gap: 1.75rem;
+  .experience-list {
+    --experience-beat-gap: 1.75rem;
   }
-  .origin-row {
+  .experience-row {
     color: var(--muted-foreground);
-    padding-bottom: var(--origin-beat-gap);
+    padding-bottom: var(--experience-beat-gap);
   }
-  .origin-row:last-child {
+  .experience-row:last-child {
     padding-bottom: 0;
   }
   /* Two derived positions carry the rail. The dot centres inside a box one line
      tall, so it lands on the row's first line whatever the type scale does, and
      each segment runs from that centre to the next row's, reaching it by the
      one gap value the rows are spaced with. No offset is measured or written. */
-  .origin-gutter {
+  .experience-gutter {
     position: relative;
     align-self: stretch;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  .origin-marker-line {
+  .experience-marker-line {
     display: flex;
     align-items: center;
     height: 1lh;
   }
-  .origin-row:not(:last-child) .origin-gutter::after {
+  .experience-row:not(:last-child) .experience-gutter::after {
     content: '';
     position: absolute;
     top: calc(1lh / 2);
-    bottom: calc(-1 * (var(--origin-beat-gap) + 1lh / 2));
+    bottom: calc(-1 * (var(--experience-beat-gap) + 1lh / 2));
     width: 1px;
     background: var(--border);
   }
   /* The oldest beat trails off rather than stopping at its dot, so the record
      reads as continuing behind the first entry. */
-  .origin-row:last-child .origin-gutter::after {
+  .experience-row:last-child .experience-gutter::after {
     content: '';
     position: absolute;
     top: calc(1lh / 2);
-    height: var(--origin-beat-gap);
+    height: var(--experience-beat-gap);
     width: 1px;
     background: linear-gradient(to bottom, var(--border), transparent);
   }
-  .origin-detail {
+  .experience-detail {
     color: var(--muted-foreground);
     line-height: 1.65;
   }
-  .origin-marker {
+  .experience-marker {
     position: relative;
     display: block;
     width: 0.62em;
@@ -184,12 +217,12 @@ const artifacts = [
     box-sizing: border-box;
     flex-shrink: 0;
   }
-  .origin-row[data-default-active='true'],
-  .origin-row[data-active='true'] {
+  .experience-row[data-default-active='true'],
+  .experience-row[data-active='true'] {
     color: var(--foreground);
   }
-  .origin-row[data-default-active='true'] .origin-marker,
-  .origin-row[data-active='true'] .origin-marker {
+  .experience-row[data-default-active='true'] .experience-marker,
+  .experience-row[data-active='true'] .experience-marker {
     background-color: var(--accent);
     border-color: var(--accent);
     box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 18%, transparent);
@@ -197,14 +230,14 @@ const artifacts = [
   /* The link carries the phone tap minimum the landing page holds every link
      to, and the pill inside it draws at the height the row wants. Sizing the
      pill itself to 44px made it read as a button among log lines. */
-  .origin-chip-hit {
+  .experience-chip-hit {
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;
     min-width: 2.75rem;
     justify-content: center;
   }
-  .origin-chip {
+  .experience-chip {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -213,14 +246,14 @@ const artifacts = [
     padding: 0.2rem 0.75rem;
     color: var(--muted-foreground);
   }
-  .origin-chip-hit:hover .origin-chip {
+  .experience-chip-hit:hover .experience-chip {
     border-color: var(--accent);
     color: var(--foreground);
   }
   @media (prefers-reduced-motion: no-preference) {
-    .origin-row,
-    .origin-marker,
-    .origin-chip {
+    .experience-row,
+    .experience-marker,
+    .experience-chip {
       transition:
         color 150ms ease-out,
         background-color 150ms ease-out,
@@ -231,10 +264,14 @@ const artifacts = [
 </style>
 
 <script>
-  const stage = document.querySelector<HTMLElement>('.origin-stage')
-  const list = stage?.querySelector<HTMLOListElement>('.origin-list')
+  import { initAnnotations } from '@/lib/annotate'
+
+  initAnnotations()
+
+  const stage = document.querySelector<HTMLElement>('.experience-stage')
+  const list = stage?.querySelector<HTMLOListElement>('.experience-list')
   if (stage && list) {
-    const rows = Array.from(list.querySelectorAll<HTMLLIElement>('.origin-row'))
+    const rows = Array.from(list.querySelectorAll<HTMLLIElement>('.experience-row'))
     const defaultIdx = Math.max(
       0,
       rows.findIndex((r) => r.dataset.defaultActive === 'true'),

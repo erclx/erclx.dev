@@ -7,7 +7,7 @@ import { settleLazyImages } from './lazy-images'
 const LANDING_SECTIONS = [
   'header',
   'about',
-  'origin',
+  'experience',
   'projects',
   'looking-for',
   'footer',

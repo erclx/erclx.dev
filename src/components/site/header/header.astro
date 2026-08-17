@@ -35,11 +35,11 @@ const links = [
             tap height cannot displace the line it centres on. Nothing reserves
             space for it: the line beside it is one short label. */}
         <div class="relative">
-          <p
-            data-identity-line
-            class="text-muted-foreground text-label tracking-wide uppercase"
-          >
-            Gothenburg, Sweden
+          {/* The location left this surface rather than moving here. The
+              closing ask already states it as a filter, so repeating it above
+              would be the same fact in two places. */}
+          <p data-hero-line class="text-muted-foreground text-label">
+            Welcome, this is my corner of the internet.
           </p>
           <div class="absolute top-1/2 right-0 -translate-y-1/2">
             <ThemeToggle />
@@ -66,22 +66,6 @@ const links = [
           </h1>
         </div>
         <div data-fade style="--fade-delay: 300ms">
-          {/* The claim sits under the name rather than as the heading, so the
-              page's one level-one heading is the person while the claim keeps
-              display weight. Its elaboration follows it here because that
-              paragraph opens on a pronoun standing for the claim. */}
-          <p
-            class="font-display text-foreground mt-6 text-3xl leading-tight md:text-4xl"
-          >
-            I build <span data-annotate="underline">the layer</span> between a
-            language model and the job it has to do.
-          </p>
-          <p class="text-muted-foreground text-body mt-6 max-w-2xl">
-            In practice that means agents, and the developer tools around them.
-            Some of that was paid work, eighteen months of it at Volvo
-            Technology, and the rest is tools I have built to make working with
-            AI easier.
-          </p>
           <ul class="mt-8 flex flex-wrap gap-x-6">
             {
               links.map((link) => (
@@ -104,9 +88,7 @@ const links = [
 </header>
 
 <script>
-  import { initAnnotations } from './annotate'
   import { initFlowField } from './flow-field'
 
   initFlowField()
-  initAnnotations()
 </script>
