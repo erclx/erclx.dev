@@ -7,42 +7,42 @@ description: Sits below the projects section as the page's closing call to actio
 
 Appears below the projects section as the page's closing call to action. Sits flat on the page canvas under a hairline rule, carrying no panel and no tint, so it reads as an editorial block in the flow the origin timeline already uses rather than as a framed widget.
 
-The section pairs a single `looking-for` kicker with four short criteria rows. Availability lives in the hero's `OPEN TO WORK` pill, so the section does not restate it. What it adds instead is specificity: which roles, which team profile, which level, which terms.
+The section pairs a display heading with four short criteria rows. Availability lives in the hero's `OPEN TO WORK` pill, so the section does not restate it. What it adds instead is specificity: which roles, which team profile, which level, which terms.
 
 ## Desktop (≥768px)
 
 ```plaintext
-   looking-for                                              ← mono kicker, and the section's heading
+   Looking for                                              ← display serif heading, matching Projects
 
                                                    ( ᴥ )    ← character perched on the rule
    ─────────────────────────────────────────────────────    ← hairline rule at the text measure
 
-   roles         AI tooling · LLM apps · devex
-   setup         small to mid teams · Gothenburg or remote
-   level         junior to mid
-   terms         full-time or contract
+   what I want to build   AI tooling · LLM apps · devex
+   setup                  small to mid teams · Gothenburg or remote
+   experience             two years in
+   terms                  full-time or contract
 ```
 
 ## Behavior
 
-- The section sits flat on the page canvas. A hairline rule between the kicker and the rows is the only separator, drawn at the same measure as the text under it.
+- The section sits flat on the page canvas. A hairline rule between the heading and the rows is the only separator, drawn at the same measure as the text under it.
 - A tinted panel is what this replaces, and the reason is worth keeping. Every other panel on the page is a project card, and a card earns its surface by holding a still. A panel around four short rows read as a widget among editorial blocks, which is what made the section the one thing on the page that did not belong.
-- Origin answers the same brief, a short list of factual fragments, and it sits flat under a mono kicker. Matching that arrangement is what ties this section to the page, so the two bracket the projects grid as a pair.
-- Mono carries the kicker and the four row labels, at label size. The four values take the body face at body size, which is what a project card description carries.
-- The kicker is a single `looking-for` mono label and doubles as the section's heading. No availability statement, no status dot, no build-date stamp. The hero already carries the live status via its `OPEN TO WORK` pill, and the section earns its space by adding specificity rather than restating that signal.
-- The kicker stays at label size rather than taking a display-serif heading like the projects section. A serif heading was measured against that one and matched it exactly, and it still read as too large here, because that heading sits over five large cards while this one sits over four short rows. Origin anchors the same shape of content with a mono kicker and no serif at all.
+- Origin answers the same brief, a short list of factual fragments, and it sits flat under a heading of the same weight. Matching that arrangement is what ties this section to the page, so the two bracket the projects grid as a pair.
+- Mono carries the four row labels, at label size. The four values take the body face at body size, which is what a project card description carries.
+- The heading names the section and nothing else. No availability statement, no status dot, no build-date stamp. The hero already carries the live status via its `OPEN TO WORK` pill, and the section earns its space by adding specificity rather than restating that signal.
+- The heading takes the display serif at the weight the projects heading carries, reversing the label-size mono kicker on 2026-08-17. That earlier call was measured and it was right about this section on its own: a serif heading does read large over four short rows. What outweighed it is the page rather than the section. Three of the four sections were findable at a glance and this one was not, and a reader scanning for what a stranger is looking for should not have to find a label the size of a row label. Origin moved the same way and for the same reason.
 - Four criteria rows render as a definition list with short fragment values (3-6 words each), not prose sentences. Values take the body face against the mono label beside them, which is the same size the project card descriptions carry.
-- The values were set in mono first, to match the origin rows exactly, and the face came back off. A monospace glyph holds a fixed advance, so at body size every character occupied 10px and the same string ran a fifth wider than it does now, which read as sparse and as larger than the size it was. Origin keeps mono because its entries are log lines, and these are written phrases, so the shared kicker and flat arrangement carry the match instead of the face.
+- The values were set in mono first, to match the origin rows exactly, and the face came back off. A monospace glyph holds a fixed advance, so at body size every character occupied 10px and the same string ran a fifth wider than it does now, which read as sparse and as larger than the size it was. Origin keeps mono because its entries are log lines, and these are written phrases, so the shared arrangement carries the match instead of the face.
 - Setting the values in the display serif put a third face in one small block and read as a change of face rather than a change of level. Detail belongs on the resume PDF, not the closing block of the landing page.
 - The label column and its value sit close enough to read as one row. A wide channel between them makes the eye travel, which reads as two lists rather than four pairs.
 
 ## Cascade reveal
 
-On scroll-in the kicker and the four rows reveal in a top-to-bottom cascade. Mechanism: `.claude/context/motion.md`.
+On scroll-in the heading and the four rows reveal in a top-to-bottom cascade. Mechanism: `.claude/context/motion.md`.
 
 ## Row hover state
 
-Each criteria row carries a left border that warms to the accent on hover, paired with its mono label shifting from muted to foreground. The rows are read rather than operated, so the border marks emphasis rather than an affordance, which is why it takes the warm accent and not the color a link or a focus ring carries. Only the criteria rows respond to hover. The kicker line stays non-interactive.
+Each criteria row carries a left border that warms to the accent on hover, paired with its mono label shifting from muted to foreground. The rows are read rather than operated, so the border marks emphasis rather than an affordance, which is why it takes the warm accent and not the color a link or a focus ring carries. Only the criteria rows respond to hover. The heading stays non-interactive.
 
 ## Peek character
 
@@ -50,7 +50,7 @@ A small filled-silhouette character perches at the right end of the hairline rul
 
 The character needs an opaque edge to rise out of rather than a panel to hide behind, which is what lets the section carry no panel and keep the peek. The rows block is painted in the page's own background, so it hides the character's body below the rule while showing nothing itself.
 
-The character rises past the kicker's own line and shares a band with it rather than being given clearance below it. The two never meet because the kicker sits at the left edge and the character at the right, at every width down to the narrowest. Buying that clearance vertically instead pushed the kicker roughly five times further from its rows than the origin kicker sits from its own, which read as a floating label.
+The character rises past the heading's own line and shares a band with it rather than being given clearance below it. The two never meet because the heading sits at the left edge and the character at the right, at every width down to the narrowest. Buying that clearance vertically instead pushed the heading roughly five times further from its rows than the origin heading sits from its own, which read as a floating label.
 
 When the cursor enters the rows the character ducks back below the rule. When the cursor leaves, it pops back up. Under reduced motion the character stays peeked with no transitions.
 
