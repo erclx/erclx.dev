@@ -1,8 +1,11 @@
 ---
+import { Image } from 'astro:assets'
+
 import BaseLayout from '@/layouts/base.astro'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
+import installTranscript from '@/assets/projects/aitk.png'
 
 const artifactLinks = [
   { label: 'GitHub', href: 'https://github.com/erclx/aitk' },
@@ -131,6 +134,22 @@ const prescriptions = [
             ))
           }
         </ul>
+
+        {/* The still closes the opening rather than interrupting it, so a
+            reader meets the artifact existing before the argument starts. */}
+        <figure
+          data-fade
+          data-visible="true"
+          style="--fade-delay: 450ms"
+          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+        >
+          <Image
+            src={installTranscript}
+            alt="A terminal installing aitk as a Claude Code plugin in three commands, ending with the plugin listed as enabled"
+            class="block h-auto w-full"
+            loading="eager"
+          />
+        </figure>
       </div>
     </section>
 

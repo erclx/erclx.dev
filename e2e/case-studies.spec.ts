@@ -333,3 +333,32 @@ test('a section opener on a case study reads above body copy', async ({
 
   expect(openerSize).toBeGreaterThan(bodySize)
 })
+
+test('the jobtriage canvas clip plays while it is hovered', async ({
+  page,
+}) => {
+  await page.goto('/jobtriage')
+
+  const clip = page.locator('[data-media-host] video[data-media-video]')
+  await expect(clip).toHaveCount(1)
+
+  await expect
+    .poll(() => clip.evaluate((video: HTMLVideoElement) => video.paused))
+    .toBe(true)
+
+  await clip.hover()
+
+  await expect
+    .poll(() => clip.evaluate((video: HTMLVideoElement) => video.paused))
+    .toBe(false)
+})
+
+test('the jobtriage clip posters an optimized derivative', async ({ page }) => {
+  await page.goto('/jobtriage')
+
+  const poster = await page
+    .locator('video[data-media-video]')
+    .getAttribute('poster')
+
+  expect(poster).toMatch(/\.webp$/)
+})
