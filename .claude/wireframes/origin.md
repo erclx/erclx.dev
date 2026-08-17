@@ -50,7 +50,6 @@ Origin
 - Each row is a dot in the gutter beside a block carrying a log line of span and head separated by a middle dot, then a supporting sentence under it. The supporting sentence takes the body face so a reader tells the log line from the prose under it, which is the one place this surface departs from mono throughout. The dot aligns to the log line rather than to the block.
 - Every dot sits exactly on its own row, which a fixed figure could never do once rows started running to different heights.
 - A span carries months rather than a year alone, because a year read as twelve months of work where the record held six.
-- The closing line gains a second sentence on how the work happens, which is the one line on the page about the person rather than the output.
 - One row is highlighted at a time as the "current state" anchor. The first row is highlighted by default. Hovering another row transfers the highlight to it. On leaving the list the highlight walks back row by row to the first row.
 - The highlighted dot fills with the warm accent and carries a soft ring, so one warm point marks where the reader is on a timeline that is otherwise muted. The rail marker in `section-nav.md` states position the same way and takes the same color.
 - The closing kicker line sits below the timeline in Fraunces italic, muted, bridging the timeline into a single narrative thought without competing with the rows.
