@@ -19,10 +19,14 @@
   --text-heading: 1.75rem;
   --text-heading--line-height: 2.25rem;
   --text-heading--font-weight: 600;
-  --text-lede: 1.3125rem;
-  --text-lede--line-height: 1.875rem;
-  --text-body: 1.0625rem;
-  --text-body--line-height: 1.75rem;
+  /* These two steps resolve through an alias rather than carrying their value,
+     because `inline` bakes a literal into the utility and a surface scoping the
+     token downstream could never reach it. The color tokens below already take
+     this form for the same reason. */
+  --text-lede: var(--lede-size);
+  --text-lede--line-height: var(--lede-leading);
+  --text-body: var(--body-size);
+  --text-body--line-height: var(--body-leading);
   --text-label: 0.875rem;
   --text-label--line-height: 1.25rem;
   --text-label--font-weight: 500;
@@ -76,7 +80,52 @@
   }
 }
 
+/* A case-study route scales its measure and its body together with the
+   viewport, so a wide screen carries a page rather than a narrow column inside
+   an empty one. The pair moves as one because widening the column alone pushes
+   the line past its comfortable ceiling. Every clamp holds today's value at
+   1280 and below, and stops growing past 1920. Line heights turn unitless here
+   so they track a body size that is no longer one number. */
+.surface-case-study {
+  --prose-column: clamp(42rem, 25vw + 22rem, 52rem);
+  --figure-column: clamp(56rem, 50vw + 16rem, 76rem);
+  --body-size: clamp(1.0625rem, 0.78125vw + 0.4375rem, 1.375rem);
+  --body-leading: 1.65;
+  --lede-size: clamp(1.3125rem, 0.78125vw + 0.6875rem, 1.625rem);
+  --lede-leading: 1.45;
+}
+
+/* The measure every case-study route sets its prose to. One source, so the
+   breakout below derives its overhang from the same value the prose reads. */
+@utility prose-column {
+  max-width: var(--prose-column);
+}
+
+/* A figure earns more width than the prose it sits between, and overhangs its
+   column symmetrically so a figure and its paragraphs keep one centre line.
+   The breakout waits for lg because the figure plus the page gutters needs
+   944px, and below that the overhang would push it past the viewport. */
+@utility figure-breakout {
+  @variant lg {
+    margin-inline: calc((var(--prose-column) - var(--figure-column)) / 2);
+  }
+}
+
 :root {
+  /* The measure a case-study route sets its prose to, and the wider step a
+     figure takes when it breaks past that prose. The breakout overhang is
+     arithmetic over the pair rather than a measured constant, so moving either
+     one moves every figure with it. */
+  --prose-column: 42rem;
+  --figure-column: 56rem;
+
+  /* The body and lede steps every surface reads by default. A surface that
+     scales them declares its own values over these. */
+  --body-size: 1.0625rem;
+  --body-leading: 1.75rem;
+  --lede-size: 1.3125rem;
+  --lede-leading: 1.875rem;
+
   /* The figure plate holds these three at their light values in both themes,
      so they are declared once here and never again in .dark. An alias is what
      lets the plate follow a light-palette edit instead of holding a copy that
