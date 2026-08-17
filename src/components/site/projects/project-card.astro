@@ -36,14 +36,17 @@ const {
 } = Astro.props
 
 const fadeDelay = `${index * 200}ms`
+// The origin graph fans into these cards and links each leaf to one by name.
+const cardId = name.toLowerCase()
 ---
 
 <article
+  id={cardId}
   data-fade
   data-tilt
   style={`--fade-delay: ${fadeDelay}`}
   class:list={[
-    'border-border hover:border-foreground/30 bg-card group/card relative flex h-full flex-col overflow-hidden rounded-lg border transition-colors duration-200 [transform:perspective(900px)_rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))] [transform-style:preserve-3d] [will-change:transform]',
+    'scroll-mt-24 border-border hover:border-foreground/30 bg-card group/card relative flex h-full flex-col overflow-hidden rounded-lg border transition-colors duration-200 [transform:perspective(900px)_rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))] [transform-style:preserve-3d] [will-change:transform]',
     isWide && 'lg:flex-row lg:items-stretch',
   ]}
 >
