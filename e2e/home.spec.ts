@@ -4,7 +4,7 @@ import { loadedImageCount, scrollThroughPage } from './lazy-images'
 
 const ORIGIN_ENTRY_COUNT = 5
 const PORTRAIT_SELECTOR = 'header [data-portrait]'
-// The reveal script re-staggers whatever arrives together at 80ms a step, so a
+// The reveal script fits whatever arrives together into one 400ms window, so a
 // surviving authored delay is the regression this bound catches.
 const MAX_REVEAL_DELAY_SECONDS = 0.5
 
@@ -44,6 +44,48 @@ test('the header portrait stays inside the content column', async ({
   })
 
   expect(overflow).toBeLessThanOrEqual(0)
+})
+
+test('the status dot and the theme toggle centre on the label cap height', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const offsets = await page.evaluate(() => {
+    const slot = document
+      .querySelector('.status-dot-slot')
+      ?.getBoundingClientRect()
+    const dot = document.querySelector('.status-dot')?.getBoundingClientRect()
+    const toggle = document
+      .querySelector('header button')
+      ?.getBoundingClientRect()
+    if (!slot || !dot || !toggle) return { dot: Number.NaN, toggle: Number.NaN }
+    const capCenter = (slot.top + slot.bottom) / 2
+    return {
+      dot: Math.abs((dot.top + dot.bottom) / 2 - capCenter),
+      toggle: Math.abs((toggle.top + toggle.bottom) / 2 - capCenter),
+    }
+  })
+
+  expect(offsets.dot).toBeLessThanOrEqual(1)
+  expect(offsets.toggle).toBeLessThanOrEqual(2)
+})
+
+test('the availability dot renders no pulse halo under reduced motion', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+
+  const halo = await page.evaluate(() => {
+    const dot = document.querySelector('.status-dot')
+    if (!dot) return { content: 'missing', animationName: 'missing' }
+    const style = getComputedStyle(dot, '::after')
+    return { content: style.content, animationName: style.animationName }
+  })
+
+  expect(halo.content).toBe('none')
+  expect(halo.animationName).toBe('none')
 })
 
 test('the origin section renders one entry per beat', async ({ page }) => {

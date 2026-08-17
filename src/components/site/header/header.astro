@@ -55,11 +55,14 @@ const links = [
         <div data-fade style="--fade-delay: 150ms">
           {/* The portrait floats inside the headline, so its top is the
               headline's own top at every width rather than a sum of the
-              elements that happen to sit above it. */}
+              elements that happen to sit above it. Its alt stays empty for the
+              same reason it sits here: alt text on an image inside a heading
+              prepends to that heading's accessible name, and the identity line
+              above already states the name a reader would gain from it. */}
           <h1 class="font-display text-display text-foreground mt-6">
             <Image
               src={portrait}
-              alt="Eric Le"
+              alt=""
               widths={[112, 160, 320]}
               sizes="(min-width: 1024px) 10rem, (min-width: 768px) 7rem, 5rem"
               data-portrait

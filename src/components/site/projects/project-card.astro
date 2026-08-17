@@ -36,7 +36,8 @@ const {
 } = Astro.props
 
 const fadeDelay = `${index * 200}ms`
-// The origin graph fans into these cards and links each leaf to one by name.
+// The origin section links a chip to each card by name, so every card needs a
+// stable target of its own.
 const cardId = name.toLowerCase()
 ---
 
