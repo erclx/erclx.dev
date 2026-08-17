@@ -7,7 +7,7 @@ description: Sits below the projects section as the page's closing call to actio
 
 Appears below the projects section as the page's closing call to action. Sits flat on the page canvas under a hairline rule, carrying no panel and no tint, so it reads as an editorial block in the flow the origin timeline already uses rather than as a framed widget.
 
-The section pairs a display heading with four short criteria rows. Availability lives in the hero's `OPEN TO WORK` pill, so the section does not restate it. What it adds instead is specificity: which roles, which team profile, which level, which terms.
+The section pairs a display heading with five short criteria rows, one question each. Team shape and location were one merged row until 2026-08-17 and answered neither cleanly. Availability lives in the hero's `OPEN TO WORK` pill, so the section does not restate it. What it adds instead is specificity: which roles, which team profile, which level, which terms.
 
 ## Desktop (≥768px)
 
@@ -18,7 +18,8 @@ The section pairs a display heading with four short criteria rows. Availability 
    ─────────────────────────────────────────────────────    ← hairline rule at the text measure
 
    what I want to build   AI tooling · LLM apps · devex
-   setup                  small to mid teams · Gothenburg or remote
+   team                   small to mid · close to the product
+   where                  Sweden, Gothenburg preferred · remote
    experience             two years in
    terms                  full-time or contract
 ```
@@ -31,7 +32,7 @@ The section pairs a display heading with four short criteria rows. Availability 
 - Mono carries the four row labels, at label size. The four values take the body face at body size, which is what a project card description carries.
 - The heading names the section and nothing else. No availability statement, no status dot, no build-date stamp. The hero already carries the live status via its `OPEN TO WORK` pill, and the section earns its space by adding specificity rather than restating that signal.
 - The heading takes the display serif at the weight the projects heading carries, reversing the label-size mono kicker on 2026-08-17. That earlier call was measured and it was right about this section on its own: a serif heading does read large over four short rows. What outweighed it is the page rather than the section. Three of the four sections were findable at a glance and this one was not, and a reader scanning for what a stranger is looking for should not have to find a label the size of a row label. Origin moved the same way and for the same reason.
-- Four criteria rows render as a definition list with short fragment values (3-6 words each), not prose sentences. Values take the body face against the mono label beside them, which is the same size the project card descriptions carry.
+- Five criteria rows render as a definition list with short fragment values (3-6 words each), not prose sentences. Values take the body face against the mono label beside them, which is the same size the project card descriptions carry.
 - Values also take the muted color, which is the page's rule for the body face rather than a choice this section makes. Measured across the page on 2026-08-17: every sans element at body size is muted, and full-contrast text is mono. These values were the one sans element at full contrast, which made the section read as a different typographic system from a reader's scroll even though the family matched. The value brightens to full contrast on row hover, so the emphasis survives without breaking the rule at rest.
 - The values were set in mono first, to match the origin rows exactly, and the face came back off. A monospace glyph holds a fixed advance, so at body size every character occupied 10px and the same string ran a fifth wider than it does now, which read as sparse and as larger than the size it was. Origin keeps mono because its entries are log lines, and these are written phrases, so the shared arrangement carries the match instead of the face.
 - Setting the values in the display serif put a third face in one small block and read as a change of face rather than a change of level. Detail belongs on the resume PDF, not the closing block of the landing page.
