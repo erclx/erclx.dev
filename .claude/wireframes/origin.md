@@ -45,7 +45,7 @@ Origin
 
 ## Behavior
 
-- The section runs at the page measure, the same one the header and looking-for hold. Nothing sits outside that column: a figure hanging into the margin left the text centered while the section read as offset, which is why the earlier diagram beside the list is gone.
+- The section runs at the page measure, which every section holds below the widest breakpoint. The projects grid and the footer break out past it at that breakpoint and nothing else does. Nothing sits outside this column: a figure hanging into the margin left the text centered while the section read as offset, which is why the earlier diagram beside the list is gone.
 - The rail starts at the newest dot and fades to nothing under the oldest one, so the record reads as continuing behind the first entry rather than stopping at a dot.
 - Each row is a dot in the gutter beside a block carrying a log line of span and head separated by a middle dot, then a supporting sentence under it. The supporting sentence takes the body face so a reader tells the log line from the prose under it, which is the one place this surface departs from mono throughout. The dot aligns to the log line rather than to the block.
 - Every dot sits exactly on its own row, which a fixed figure could never do once rows started running to different heights.

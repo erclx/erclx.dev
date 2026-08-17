@@ -112,9 +112,11 @@ A figure hanging into the page margin reads as an off-centre section even when t
 
 The same principle sends the header portrait inside the content column rather than into the margin beside it, floated within the headline so its top edge is the headline's own top at any width.
 
-A mark that has to line up with type takes its position from type metrics rather than from a measured constant. The origin dot centres inside a box one line-height tall, each rail segment runs from that box's centre to the next row's, and the status dot centres on a box one cap-height tall resting on the label's baseline. Three literals were removed to get there, and each had encoded a relationship that a change to the type scale, the marker size, or a control's tap height would have invalidated with nothing reporting it. A line box centres about 2.5px lower than uppercase text looks, which is what the cap-height box fixes.
+A mark that has to line up with type takes its position from type metrics rather than from a measured constant. The origin dot centres inside a box one line-height tall, each rail segment runs from that box's centre to the next row's, and the status dot centres on a box one cap-height tall resting on the label's baseline. Three literals were removed to get there, and each had encoded a relationship that a change to the type scale, the marker size, or a control's tap height would have invalidated with nothing reporting it. Both marks measure where they are meant to sit: the status dot lands 0.0px from the cap centre and the toggle 0.8px, and the rail joins its dots to the pixel down a five-row list.
 
-Read the arithmetic as banned rather than discouraged. Values that set something, such as spacing, type sizes, and the 44px tap minimum, stay literals. Verified at 1580509 on 2026-08-17.
+What is banned is a literal standing in for a relationship two other values already fix, such as a nudge centring one element against another. Arithmetic over named values is the sanctioned form and is how the rule is kept, which is why a rail segment spans `calc(1lh / 2)` to the next row rather than a measured offset. A value that sets something rather than relating two things stays a literal, including spacing, type sizes, and the 44px tap minimum.
+
+An earlier draft of this entry claimed a line box centres about 2.5px lower than uppercase text. That figure is not reproducible: measured against this label at 14px, the two centres disagree by 0.3px, and the visible improvement came from the restructure and the tighter leading rather than from the offset the number described. Verified at 139af4f on 2026-08-17.
 
 ## Risks / open questions
 

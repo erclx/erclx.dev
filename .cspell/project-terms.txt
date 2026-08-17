@@ -17,13 +17,11 @@ reranking
 retarget
 retargeted
 Résumé
-sandboxed
 screencasts
 shiba
 Stackr
 Stig
 telematics
 undercount
-upskilling
 woah
 wordmark

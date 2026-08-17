@@ -156,17 +156,20 @@ test('no revealed surface waits out an authored delay', async ({ page }) => {
   await page.goto('/')
   await scrollThroughPage(page)
 
-  const longestDelay = await page.evaluate(() => {
-    const revealed = Array.from(
+  const revealed = await page.evaluate(() => {
+    const elements = Array.from(
       document.querySelectorAll('[data-fade][data-visible="true"]'),
     )
-    const delays = revealed.map(
+    const delays = elements.map(
       (element) => parseFloat(getComputedStyle(element).transitionDelay) || 0,
     )
-    return Math.max(...delays)
+    // Report the count too: Math.max of an empty list is -Infinity, which would
+    // pass the bound below while proving the selector matched nothing.
+    return { count: elements.length, longestDelay: Math.max(0, ...delays) }
   })
 
-  expect(longestDelay).toBeLessThanOrEqual(MAX_REVEAL_DELAY_SECONDS)
+  expect(revealed.count).toBeGreaterThan(0)
+  expect(revealed.longestDelay).toBeLessThanOrEqual(MAX_REVEAL_DELAY_SECONDS)
 })
 
 test('the origin section names the field of the degree', async ({ page }) => {

@@ -1,5 +1,21 @@
-const FADE_SETTLE_MS = 850
 const UNDERLINE_DELAY_MS = 100
+
+/**
+ * How long the reveal on this element still has to run. The observer writes the
+ * delay at intersection time, so reading it here is the only way to land the
+ * underline on the settle rather than near it. An element revealed at server
+ * render carries a transition it will never run, and returns zero.
+ */
+function remainingRevealMs(element: HTMLElement): number {
+  const faded = element.closest<HTMLElement>('[data-fade]')
+  if (!faded || faded.dataset.visible === 'true') return 0
+
+  const style = getComputedStyle(faded)
+  const seconds = (value: string) => parseFloat(value.split(',')[0]) || 0
+  return (
+    (seconds(style.transitionDelay) + seconds(style.transitionDuration)) * 1000
+  )
+}
 
 export async function initAnnotations(): Promise<void> {
   const targets = document.querySelectorAll<HTMLElement>('[data-annotate]')
@@ -25,7 +41,7 @@ export async function initAnnotations(): Promise<void> {
         })
         window.setTimeout(
           () => annotation.show(),
-          FADE_SETTLE_MS + UNDERLINE_DELAY_MS,
+          remainingRevealMs(element) + UNDERLINE_DELAY_MS,
         )
         observer.unobserve(element)
       }

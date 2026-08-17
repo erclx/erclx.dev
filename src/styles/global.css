@@ -61,6 +61,21 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* The one source for a landing section's heading scale. Its base step reads the
+   theme's heading size rather than restating it, and the two larger steps sit
+   here rather than in each section, so the scale moves in one edit. */
+@utility section-heading {
+  font-size: var(--text-heading);
+
+  @variant sm {
+    font-size: 2.25rem;
+  }
+
+  @variant md {
+    font-size: 2.75rem;
+  }
+}
+
 :root {
   /* The figure plate holds these three at their light values in both themes,
      so they are declared once here and never again in .dark. An alias is what

@@ -11,7 +11,7 @@ Appears below the header. Lists shipped tools as cards. The heading stands alone
 
 ```plaintext
 ┌──────────────────────────────────────────────────────────┐
-│   Projects                                               │  ← serif heading, held at the page measure
+│   Projects                                               │  ← serif heading, aligned with the grid
 │                                                          │
 │   ┌──────────────────────────────────────────────────┐   │
 │   │ ┌──────────────────────────────────────────────┐ │   │  ← media slot, still with optional hover video
