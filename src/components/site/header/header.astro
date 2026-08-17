@@ -3,7 +3,7 @@ import { Image } from 'astro:assets'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
 import flowFieldFallback from './flow-field/fallback.svg?raw'
-import portraitPlaceholder from '@/assets/header/portrait-placeholder.png'
+import portrait from '@/assets/header/portrait.jpg'
 
 const links = [
   { label: 'GitHub', href: 'https://github.com/erclx' },
@@ -36,11 +36,11 @@ const links = [
             reserves space for it: the pill beside it is one short label. */}
         <div class="relative">
           <span
-            class="text-muted-foreground text-label inline-flex items-center gap-2 tracking-wide uppercase"
+            class="text-muted-foreground text-label inline-flex items-baseline gap-3 leading-none tracking-wide uppercase"
           >
-            <span
-              class="bg-chart-2 inline-block size-2 rounded-full"
-              aria-hidden="true"></span>
+            <span class="status-dot-slot" aria-hidden="true">
+              <span class="status-dot"></span>
+            </span>
             Open to work
           </span>
           <div class="absolute top-1/2 right-0 -translate-y-1/2">
@@ -58,8 +58,8 @@ const links = [
               elements that happen to sit above it. */}
           <h1 class="font-display text-display text-foreground mt-6">
             <Image
-              src={portraitPlaceholder}
-              alt=""
+              src={portrait}
+              alt="Eric Le"
               widths={[112, 160, 320]}
               sizes="(min-width: 1024px) 10rem, (min-width: 768px) 7rem, 5rem"
               data-portrait
@@ -95,6 +95,57 @@ const links = [
     </div>
   </div>
 </header>
+
+<style>
+  /* The slot sits on the label's baseline and stands one cap height tall, so the
+     dot inside it centres on the capitals rather than on the line box. A line
+     box centres lower than uppercase text looks, because the descender space
+     under the baseline is empty and still counts toward the middle. */
+  .status-dot-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1cap;
+  }
+  /* The status dot takes the size and the ring the origin section's active
+     marker carries, so the two read as one shape language. The color stays
+     its own: green states availability where the accent states position. */
+  .status-dot {
+    position: relative;
+    display: inline-block;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 9999px;
+    background-color: var(--chart-2);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--chart-2) 18%, transparent);
+  }
+  /* The halo is a pseudo-element so the pulse never changes the dot's own box
+     and nothing in the status row reflows on it. */
+  @media (prefers-reduced-motion: no-preference) {
+    .status-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-color: var(--chart-2);
+      animation: status-ping 2400ms cubic-bezier(0.2, 0, 0.4, 1) infinite;
+    }
+    @keyframes status-ping {
+      from {
+        opacity: 0.5;
+        transform: scale(1);
+      }
+      70% {
+        opacity: 0;
+        transform: scale(2.6);
+      }
+      to {
+        opacity: 0;
+        transform: scale(2.6);
+      }
+    }
+  }
+</style>
 
 <script>
   import { initAnnotations } from './annotate'
