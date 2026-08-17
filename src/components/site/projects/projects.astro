@@ -199,9 +199,10 @@ const findCaseStudyHref = (links: { href: string }[]): string | undefined =>
 </script>
 
 <script>
-  import { initProjectMedia } from './project-media'
-  import { initTilt } from './tilt'
+  import { initHoverVideo } from '@/lib/hover-video'
 
-  initProjectMedia()
+import { initTilt } from './tilt'
+
+  initHoverVideo()
   initTilt()
 </script>
