@@ -14,7 +14,7 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 - Blog posts, a dated post feed, or a content management system
 - Authentication, comments, analytics dashboards, or any backend
-- Routes beyond the apex and one per case study
+- Routes beyond the apex and one per shipped project
 - Hand-written copy that diverges from canonical career sources
 
 ## MVP features
@@ -30,11 +30,14 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 - Every card carries a still of the artifact rather than a logo or an icon
 - Every card links to wherever a reader installs or opens the artifact, which differs per project
 
-## Case studies
+## Project routes
 
-- A visitor wanting depth on one shipped project reads its problem framing, system design, and measured results without leaving the domain
-- Each case study answers for one project only. A second project earns a second case study rather than a section inside the first
-- The landing page stays the entry point, and a case study is reached from the project card that owns it
+- Every shipped project owns a route, so a card carrying a link and a card carrying none never reads as a ranking between them
+- A visitor wanting depth on one project reads its problem framing and how it works without leaving the domain. Where the project has measured results the route carries them, and where it has none it says what the thing does and why it exists rather than manufacturing a number
+- Each route answers for one project only. A second project earns a second route rather than a section inside the first
+- A route carries the demo the project card can only show small. A card renders its still at 498px against a 1280px recording, where a route reaches 896px and 1216px
+- The landing page stays the entry point, and a route is reached from the project card that owns it
+- The label is `Project` on every route and every card link. `Case study` was retired on 2026-08-18 because it promises measured results, which two of the five routes do not have and should not invent
 
 ## Tech stack
 
@@ -50,4 +53,4 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 - Content is downstream of the parent career repo. Page copy is canonical there and read across the filesystem, never authored here. A wording change is made at the source and re-rendered.
 - Static rendering by default. Components opt into client-side hydration via `client:*` directives.
-- The apex is the entry point. A route beyond it is one case study, added as a scope change rather than ad hoc.
+- The apex is the entry point. A route beyond it belongs to one shipped project, added as a scope change rather than ad hoc.
