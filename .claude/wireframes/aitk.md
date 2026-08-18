@@ -1,10 +1,10 @@
 ---
-title: aitk case study
+title: aitk project
 subtitle: Long-form sub-page at /aitk covering the adoption thesis, the install taxonomy, and the operating model
 description: Long-form sub-page at /aitk covering the adoption thesis, the install taxonomy, and the operating model
 ---
 
-# aitk case study
+# aitk project
 
 Reached from the aitk project card on the landing page. Carries the depth a visitor opted into by following the link, so it expands where the card compresses.
 
@@ -15,14 +15,14 @@ Reached from the aitk project card on the landing page. Carries the depth a visi
 │   ← Eric Le                                  [ theme ]   │  ← thin bar, way back and toggle
 │   ────────────────────────────────────────────────────   │  ← the rule stops at the text column
 │                                                          │
-│   case study                                             │  ← mono eyebrow
+│   PROJECT                                                │  ← eyebrow
 │   aitk                                                   │  ← display heading
 │   A CLI that installs one set of agent rules, skills,    │  ← the claim, one sentence
 │   and standards into every project and keeps them in     │
 │   step.                                                  │
 │   GitHub   npm                                           │  ← link row, no case-study link back to itself
 │                                                          │
-│   problem                                                │  ← mono section eyebrow, repeats per section
+│   problem                                                │  ← section heading, repeats per section
 │   Every repository re-authors the same agent             │
 │   scaffolding ...                                        │
 │                                                          │

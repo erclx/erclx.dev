@@ -1,10 +1,10 @@
 ---
-title: diction case study
+title: diction project
 subtitle: Long-form sub-page at /diction covering the calibration failure, the per-sound fix, and the held-out result
 description: Long-form sub-page at /diction covering the calibration failure, the per-sound fix, and the held-out result
 ---
 
-# diction case study
+# diction project
 
 Reached from the diction project card on the landing page. Carries six measured figures, which is what separates its layout from the other two case studies. The card that leads here shows the tool running, so this page is where the measurement lands rather than the card.
 
@@ -15,7 +15,7 @@ Reached from the diction project card on the landing page. Carries six measured 
 │   ← Eric Le                                  [ theme ]   │  ← thin bar, way back and toggle
 │   ────────────────────────────────────────────────────   │  ← the rule stops at the text column
 │                                                          │
-│   case study                                             │  ← mono eyebrow
+│   PROJECT                                                │  ← eyebrow
 │   diction                                                │  ← display heading
 │   A pronunciation trainer that scores each sound         │  ← the claim, one sentence
 │   against what a native speaker actually sounds like.    │
