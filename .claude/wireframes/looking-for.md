@@ -5,36 +5,39 @@ description: Sits below the projects section as the page's closing call to actio
 
 # Looking-for
 
-Appears below the projects section as the page's closing call to action. Sits flat on the page canvas under a hairline rule, carrying no panel and no tint, so it reads as an editorial block in the flow the origin timeline already uses rather than as a framed widget.
+Appears below the projects section as the page's closing call to action. Sits flat on the page canvas under a hairline rule, carrying no panel and no tint, so it reads as an editorial block in the flow the experience timeline already uses rather than as a framed widget.
 
-The section pairs a display heading with five short criteria rows, one question each. Team shape and location were one merged row until 2026-08-17 and answered neither cleanly. Availability lives in the hero's `OPEN TO WORK` pill, so the section does not restate it. What it adds instead is specificity: which roles, which team profile, which level, which terms.
+The section pairs a display heading with the availability status and five short criteria rows, one question each. Team shape and location were one merged row until 2026-08-17 and answered neither cleanly. The status moved here from the header on the same day, and it anchors the section rather than joining the rows: a sixth label would add a line to a surface that needs weight instead.
 
 ## Desktop (≥768px)
 
 ```plaintext
    Looking for                                              ← display serif heading, matching Projects
 
+   ● Open to work                                           ← status anchor, body size, foreground
+
                                                    ( ᴥ )    ← character perched on the rule
    ─────────────────────────────────────────────────────    ← hairline rule at the text measure
 
-   what I want to build   AI tooling · LLM apps · devex
-   team                   small to mid · close to the product
-   where                  Sweden, Gothenburg preferred · remote
-   experience             two years in
-   terms                  full-time or contract
+   What I want to build   AI tooling · LLM apps · devex
+   Team                   small to mid · close to the product
+   Where                  Sweden, Gothenburg preferred · remote
+   Experience             two years in
+   Terms                  full-time or contract
 ```
 
 ## Behavior
 
 - The section sits flat on the page canvas. A hairline rule between the heading and the rows is the only separator, drawn at the same measure as the text under it.
 - A tinted panel is what this replaces, and the reason is worth keeping. Every other panel on the page is a project card, and a card earns its surface by holding a still. A panel around four short rows read as a widget among editorial blocks, which is what made the section the one thing on the page that did not belong.
-- Origin answers the same brief, a short list of factual fragments, and it sits flat under a heading of the same weight. Matching that arrangement is what ties this section to the page, so the two bracket the projects grid as a pair.
-- Mono carries the four row labels, at label size. The four values take the body face at body size, which is what a project card description carries.
-- The heading names the section and nothing else. No availability statement, no status dot, no build-date stamp. The hero already carries the live status via its `OPEN TO WORK` pill, and the section earns its space by adding specificity rather than restating that signal.
-- The heading takes the display serif at the weight the projects heading carries, reversing the label-size mono kicker on 2026-08-17. That earlier call was measured and it was right about this section on its own: a serif heading does read large over four short rows. What outweighed it is the page rather than the section. Three of the four sections were findable at a glance and this one was not, and a reader scanning for what a stranger is looking for should not have to find a label the size of a row label. Origin moved the same way and for the same reason.
+- Experience answers the same brief, a short list of factual fragments, and it sits flat under a heading of the same weight. Matching that arrangement is what ties this section to the page, so the two bracket the projects grid as a pair.
+- Row labels take the body face in sentence case at label size, and the values take the body face at body size, which is what a project card description carries. The labels carried mono in uppercase until 2026-08-17, when mono contracted to literal machine values and uppercase to the eyebrow and diagram chrome. The label tier is now carried by size and color alone, which is a weaker signal than it had and is what the restage owes it.
+- The status dot takes the size and the ring the experience section's active marker carries, so the two read as one shape language. Its color stays its own: green states availability where the accent states position. The dot centres on a box one cap height tall resting on the label's baseline.
+- The heading names the section and the availability status sits directly under it, anchoring the surface. No build-date stamp and no sixth row, because the status carries the live signal and the rows carry the specificity.
+- The heading takes the display serif at the weight the projects heading carries, reversing the label-size mono kicker on 2026-08-17. That earlier call was measured and it was right about this section on its own: a serif heading does read large over four short rows. What outweighed it is the page rather than the section. Three of the four sections were findable at a glance and this one was not, and a reader scanning for what a stranger is looking for should not have to find a label the size of a row label. Experience moved the same way and for the same reason.
 - Five criteria rows render as a definition list with short fragment values (3-6 words each), not prose sentences. Values take the body face against the mono label beside them, which is the same size the project card descriptions carry.
 - Values also take the muted color, which is the page's rule for the body face rather than a choice this section makes. Measured across the page on 2026-08-17: every sans element at body size is muted, and full-contrast text is mono. These values were the one sans element at full contrast, which made the section read as a different typographic system from a reader's scroll even though the family matched. The value brightens to full contrast on row hover, so the emphasis survives without breaking the rule at rest.
-- The values were set in mono first, to match the origin rows exactly, and the face came back off. A monospace glyph holds a fixed advance, so at body size every character occupied 10px and the same string ran a fifth wider than it does now, which read as sparse and as larger than the size it was. Origin keeps mono because its entries are log lines, and these are written phrases, so the shared arrangement carries the match instead of the face.
+- The values were set in mono first, to match the timeline rows exactly, and the face came back off. A monospace glyph holds a fixed advance, so at body size every character occupied 10px and the same string ran a fifth wider than it does now, which read as sparse and as larger than the size it was. The timeline has since left mono as well, so the shared arrangement carries the match on both surfaces and neither leans on the face.
 - Setting the values in the display serif put a third face in one small block and read as a change of face rather than a change of level. Detail belongs on the resume PDF, not the closing block of the landing page.
 - The label column and its value sit close enough to read as one row. A wide channel between them makes the eye travel, which reads as two lists rather than four pairs.
 
@@ -52,8 +55,12 @@ A small filled-silhouette character perches at the right end of the hairline rul
 
 The character needs an opaque edge to rise out of rather than a panel to hide behind, which is what lets the section carry no panel and keep the peek. The rows block is painted in the page's own background, so it hides the character's body below the rule while showing nothing itself.
 
-The character rises past the heading's own line and shares a band with it rather than being given clearance below it. The two never meet because the heading sits at the left edge and the character at the right, at every width down to the narrowest. Buying that clearance vertically instead pushed the heading roughly five times further from its rows than the origin heading sits from its own, which read as a floating label.
+The character rises past the heading's own line and shares a band with it rather than being given clearance below it. The two never meet because the heading sits at the left edge and the character at the right, at every width down to the narrowest. Buying that clearance vertically instead pushed the heading roughly five times further from its rows than the experience heading sits from its own, which read as a floating label.
 
 When the cursor enters the rows the character ducks back below the rule. When the cursor leaves, it pops back up. Under reduced motion the character stays peeked with no transitions.
 
 The character SVG carries its own fixed palette of a warm tan body, a cream face mask, and dark brown features. That palette stays consistent across light and dark themes rather than tracking the page tokens, so the character keeps one identity. Its body extends below its head so the lower portion clips naturally behind the card edge.
+
+## Status pulse
+
+The availability dot holds steady and a halo pings outward from it on a slow loop, so the status reads as live rather than as a printed label. It is the only always-on motion on the page. Under reduced motion the halo does not exist and the static ring remains. Mechanism: `.claude/context/motion.md`.

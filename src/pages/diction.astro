@@ -42,7 +42,8 @@ const scores = [
   },
 ]
 
-const figureClass = 'figure-plate bg-card mt-10 rounded-lg p-6 md:p-10'
+const figureClass =
+  'figure-breakout figure-plate bg-card mt-10 rounded-lg p-6 md:p-10'
 const wideImageClass = 'w-full rounded-md'
 const tallImageClass = 'mx-auto max-h-[32rem] w-auto rounded-md'
 const captionClass = 'text-muted-foreground font-mono text-label mt-4'
@@ -52,12 +53,13 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 <BaseLayout
   title="diction case study · Eric Le"
   description="One global confidence cutoff flagged native speakers and passed swapped vowels. Per-sound calibration, measured on held-out speech."
+  surface="case-study"
 >
   <SectionNav items={navItems} instant />
 
   <header data-section="header" class="px-6">
     <div
-      class="border-border/60 mx-auto flex max-w-2xl items-center justify-between border-b py-4"
+      class="border-border/60 mx-auto flex prose-column items-center justify-between border-b py-4"
     >
       <a
         href="/"
@@ -86,9 +88,9 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 
   <main>
     <section class="px-6 pt-16 pb-12 md:pt-20 md:pb-16">
-      <div class="mx-auto max-w-2xl">
-        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
-          case study
+      <div class="mx-auto prose-column">
+        <p data-fade data-visible="true" class="text-muted-foreground text-label tracking-wide uppercase">
+          Project
         </p>
         <h1
           data-fade data-visible="true"
@@ -135,10 +137,10 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
     </section>
 
     <section id="problem" class="px-6 py-16 md:py-20">
-      <div class="mx-auto max-w-2xl">
-        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+      <div class="mx-auto prose-column">
+        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           problem
-        </p>
+        </h2>
         <p
           data-fade data-visible="true"
           style="--fade-delay: 150ms"
@@ -164,10 +166,10 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
     </section>
 
     <section id="data" class="px-6 py-16 md:py-20">
-      <div class="mx-auto max-w-2xl">
-        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+      <div class="mx-auto prose-column">
+        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           data
-        </p>
+        </h2>
         <p
           data-fade data-visible="true"
           style="--fade-delay: 150ms"
@@ -231,10 +233,10 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
     </section>
 
     <section id="fix" class="px-6 py-16 md:py-20">
-      <div class="mx-auto max-w-2xl">
-        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+      <div class="mx-auto prose-column">
+        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           fix
-        </p>
+        </h2>
         <p
           data-fade data-visible="true"
           style="--fade-delay: 150ms"
@@ -299,10 +301,10 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
     </section>
 
     <section id="holdout" class="px-6 py-16 md:py-20">
-      <div class="mx-auto max-w-2xl">
-        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+      <div class="mx-auto prose-column">
+        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           holdout
-        </p>
+        </h2>
         <p
           data-fade data-visible="true"
           style="--fade-delay: 150ms"
@@ -336,10 +338,10 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
     </section>
 
     <section id="beyond" class="px-6 py-16 md:py-20">
-      <div class="mx-auto max-w-2xl">
-        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+      <div class="mx-auto prose-column">
+        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           beyond
-        </p>
+        </h2>
         <p
           data-fade data-visible="true"
           style="--fade-delay: 150ms"
@@ -352,7 +354,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
         <figure
           data-fade data-visible="true"
           style="--fade-delay: 250ms"
-          class="bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
         >
           <table class="font-mono text-label w-full min-w-[28rem]">
             <thead>
@@ -491,7 +493,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
     data-section="footer"
     class="border-border/60 px-6 py-10 md:py-12"
   >
-    <div class="border-border/60 mx-auto max-w-2xl border-t pt-10">
+    <div class="border-border/60 mx-auto prose-column border-t pt-10">
       <a
         href="/"
         data-way-home

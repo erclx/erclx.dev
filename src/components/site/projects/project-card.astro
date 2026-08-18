@@ -45,6 +45,7 @@ const cardId = name.toLowerCase()
   id={cardId}
   data-fade
   data-tilt
+  data-media-host
   style={`--fade-delay: ${fadeDelay}`}
   class:list={[
     'scroll-mt-24 border-border hover:border-foreground/30 bg-card group/card relative flex h-full flex-col overflow-hidden rounded-lg border transition-colors duration-200 [transform:perspective(900px)_rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))] [transform-style:preserve-3d] [will-change:transform]',

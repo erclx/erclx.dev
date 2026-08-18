@@ -1,13 +1,22 @@
 ---
+import { getImage } from 'astro:assets'
+
 import BaseLayout from '@/layouts/base.astro'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
+import triageCanvas from '@/assets/projects/jobtriage.png'
+import canvasViews from '@/assets/videos/jobtriage.mp4?url'
 
 const artifactLinks = [
   { label: 'Live demo', href: 'https://jobtriage.erclx.dev' },
   { label: 'GitHub', href: 'https://github.com/erclx/jobtriage' },
 ]
+
+// A `poster` attribute takes a URL rather than an image, so it reaches for the
+// source file unless something derives the optimized one. The raw png is 333KB
+// against 43KB for the webp, on the first image the route paints.
+const triagePoster = await getImage({ src: triageCanvas, format: 'webp' })
 
 const navItems = [
   { id: 'problem', label: 'problem' },
@@ -57,12 +66,13 @@ const toolPairings = [
 <BaseLayout
   title="Jobtriage case study · Eric Le"
   description="Two postures share one agent shell. Hybrid retrieval, multilingual encoders, and pinned spatial tools behind the Jobtriage demo."
+  surface="case-study"
 >
   <SectionNav items={navItems} instant />
 
   <header data-section="header" class="px-6">
     <div
-      class="border-border/60 mx-auto flex max-w-2xl items-center justify-between border-b py-4"
+      class="border-border/60 mx-auto flex prose-column items-center justify-between border-b py-4"
     >
       <a
         href="/"
@@ -91,9 +101,9 @@ const toolPairings = [
 
   <main>
     <section class="px-6 pt-16 pb-12 md:pt-20 md:pb-16">
-      <div class="mx-auto max-w-2xl">
-        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
-          case study
+      <div class="mx-auto prose-column">
+        <p data-fade data-visible="true" class="text-muted-foreground text-label tracking-wide uppercase">
+          Project
         </p>
         <h1
           data-fade data-visible="true"
@@ -128,14 +138,38 @@ const toolPairings = [
             ))
           }
         </ul>
+
+        {/* The canvas closes the opening rather than interrupting it, so a
+            reader sees what triage looks like before the prose argues it. The
+            still is this clip's own opening frame, so it serves as the poster
+            rather than as a second figure of the same scene. It declares
+            `view` so a phone, which cannot hover, plays it on screen. */}
+        <figure
+          data-media-host="view"
+          data-fade
+          data-visible="true"
+          style="--fade-delay: 450ms"
+          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+        >
+          <video
+            src={canvasViews}
+            poster={triagePoster.src}
+            muted
+            loop
+            playsinline
+            preload="none"
+            data-media-video
+            aria-label="The Jobtriage canvas grouping Stockholm nursing ads into strong-fit and consider clusters, each ad carrying a match score and a one-line rationale"
+            class="block h-auto w-full"></video>
+        </figure>
       </div>
     </section>
 
     <section id="problem" class="px-6 py-16 md:py-20">
-      <div class="mx-auto max-w-2xl">
-        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+      <div class="mx-auto prose-column">
+        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           problem
-        </p>
+        </h2>
         <p
           data-fade data-visible="true"
           style="--fade-delay: 150ms"
@@ -149,10 +183,10 @@ const toolPairings = [
     </section>
 
     <section id="system" class="px-6 py-16 md:py-20">
-      <div class="mx-auto max-w-2xl">
-        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+      <div class="mx-auto prose-column">
+        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           system
-        </p>
+        </h2>
         <p
           data-fade data-visible="true"
           style="--fade-delay: 150ms"
@@ -165,7 +199,7 @@ const toolPairings = [
         <figure
           data-fade data-visible="true"
           style="--fade-delay: 250ms"
-          class="bg-card mt-10 rounded-lg p-6 md:p-10"
+          class="figure-breakout bg-card mt-10 rounded-lg p-6 md:p-10"
         >
           <div class="font-mono text-label flex flex-col items-center gap-6">
             <div
@@ -260,10 +294,10 @@ const toolPairings = [
     </section>
 
     <section id="retrieval" class="px-6 py-16 md:py-20">
-      <div class="mx-auto max-w-2xl">
-        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+      <div class="mx-auto prose-column">
+        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           retrieval
-        </p>
+        </h2>
         <p
           data-fade data-visible="true"
           style="--fade-delay: 150ms"
@@ -278,7 +312,7 @@ const toolPairings = [
         <figure
           data-fade data-visible="true"
           style="--fade-delay: 250ms"
-          class="bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
         >
           <figcaption
             class="text-muted-foreground font-mono text-label mb-4"
@@ -326,7 +360,7 @@ const toolPairings = [
         <figure
           data-fade data-visible="true"
           style="--fade-delay: 450ms"
-          class="bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
         >
           <figcaption
             class="text-muted-foreground font-mono text-label mb-4"
@@ -374,10 +408,10 @@ const toolPairings = [
     </section>
 
     <section id="agent" class="px-6 py-16 md:py-20">
-      <div class="mx-auto max-w-2xl">
-        <p data-fade data-visible="true" class="text-muted-foreground font-mono text-label">
+      <div class="mx-auto prose-column">
+        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           agent
-        </p>
+        </h2>
         <p
           data-fade data-visible="true"
           style="--fade-delay: 150ms"
@@ -418,6 +452,7 @@ const toolPairings = [
           timeline, side-by-side compare, and pinned shortlist. Custom nodes
           per view, not the React Flow defaults.
         </p>
+
       </div>
     </section>
 
@@ -427,7 +462,7 @@ const toolPairings = [
     data-section="footer"
     class="border-border/60 px-6 py-10 md:py-12"
   >
-    <div class="border-border/60 mx-auto max-w-2xl border-t pt-10">
+    <div class="border-border/60 mx-auto prose-column border-t pt-10">
       <a
         href="/"
         data-way-home
@@ -455,7 +490,9 @@ const toolPairings = [
 
   <script>
     import { initWayHome } from '@/components/site/case-study/way-home'
+    import { initHoverVideo } from '@/lib/hover-video'
 
     initWayHome()
+    initHoverVideo()
   </script>
 </BaseLayout>

@@ -1,11 +1,11 @@
 ---
 title: Projects
-description: Below the header. Shipped tools as cards, one column on narrow viewports and two from lg.
+description: Below the experience timeline. Shipped tools as cards, one column on narrow viewports and two from lg.
 ---
 
 # Projects
 
-Appears below the header. Lists shipped tools as cards. The heading stands alone, with no line counting the cards under it.
+Appears below the experience timeline, with about and experience between it and the header. Lists shipped tools as cards, one per shipped project, each linking to the route that project owns. The heading stands alone, with no line counting the cards under it.
 
 ## Narrow and mobile
 
@@ -22,13 +22,13 @@ Appears below the header. Lists shipped tools as cards. The heading stands alone
 │   │ CLI that installs one set of agent rules,        │   │  ← description body
 │   │ skills, and standards into every project ...     │   │
 │   │                                                  │   │
-│   │ Case study   GitHub   npm                        │   │  ← link row, wraps when needed
+│   │ Project   GitHub   npm                           │   │  ← link row, wraps when needed
 │   └──────────────────────────────────────────────────┘   │
 │                                                          │
 │   ┌──────────────────────────────────────────────────┐   │
 │   │ Jobtriage                                        │   │
 │   │ ...                                              │   │
-│   │ Live demo   Case study   GitHub                  │   │
+│   │ Live demo   Project   GitHub                     │   │
 │   └──────────────────────────────────────────────────┘   │
 │                                                          │
 │   (Stackr, Caret, diction follow in the same shape)      │
@@ -53,7 +53,7 @@ Appears below the header. Lists shipped tools as cards. The heading stands alone
 │  05 ┌───────────────────────────────────────────────────────┐      │  ← trailing card closes the section across both columns
 │     │ ┌──────────────────────┐  diction                     │      │  ← still on one half, text on the other
 │     │ │        still         │  Pronunciation trainer ...    │      │
-│     │ └──────────────────────┘  Case study   GitHub          │      │
+│     │ └──────────────────────┘  Project   GitHub             │      │
 │     └───────────────────────────────────────────────────────┘      │
 │                                                                    │
 └────────────────────────────────────────────────────────────────────┘
@@ -62,11 +62,11 @@ Appears below the header. Lists shipped tools as cards. The heading stands alone
 ## Behavior
 
 - Cards stack in document order. No filtering and no sorting.
-- A card owning a case study opens it from anywhere on the card, so the whole card is the control its `Case study` link advertises. A card with no case study has no single destination and stays inert between its links.
+- Every card owns a route and opens it from anywhere on the card, so the whole card is the control its `Project` link advertises.
 - The links inside a card keep their own destinations, including on a card that opens as a whole.
 - Card link rows wrap when the viewport cannot hold every link on one line. Wrap is expected at 320px on cards with three or more links.
-- A card leading to a case study carries that link first in its row, ahead of the artifact's own listings.
-- A link leaving the site opens in a new tab. The case-study link stays in the current one.
+- The `Project` link leads the row, ahead of the artifact's own listings, except on a card carrying a live demo. A running instance is the one destination worth reaching before the write-up about it.
+- A link leaving the site opens in a new tab. The `Project` link stays in the current one.
 - An odd card count would leave the trailing card alone beside an empty half from `lg`, so that card runs the full width instead and turns the remainder into a deliberate closer. It lays its still beside its text rather than above it, which keeps its height in the range the cards above it sit in. The four cards above are untouched and the grid keeps two columns.
 - Cards in a row share a lower edge. A card whose text runs short holds the row's height rather than closing early.
 

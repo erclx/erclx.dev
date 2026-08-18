@@ -1,9 +1,9 @@
 ---
-title: Jobtriage case study
+title: Jobtriage project
 description: Long-form sub-page at /jobtriage covering the problem framing, two-posture system, retrieval evaluation, and agent loop
 ---
 
-# Jobtriage case study
+# Jobtriage project
 
 Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The landing page name-drops Jobtriage. This page is where a recruiter or technical interviewer reads the depth: the framing, the two-posture system, the retrieval choices the ablation justifies, and the agent loop with its pinned spatial tools. Reuses the landing page's tokens, fonts, and chrome so the site reads as one product despite the extra route.
 
@@ -13,17 +13,17 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 ┌────────────────────────────────────────────────────────────────┐
 │   ←  Eric Le                                     [theme]       │  ← thin top bar, way back + theme toggle
 │   ─────────────────────────────────────────────────────        │  ← the rule stops at the text column
-│   case study                                                   │  ← mono kicker
+│   PROJECT                                                      │  ← eyebrow
 │   Jobtriage                                                    │  ← Fraunces display
 │   Live agent triages Swedish job ads against any profile.      │  ← Inter body, mirrors screencast subtitle
 │   [Live demo]    [GitHub]                                      │  ← header-row CTA links
 ├────────────────────────────────────────────────────────────────┤
-│   problem                                                      │  ← mono kicker
+│   problem                                                      │  ← section heading
 │   Job boards rank for the platform's monetization, not the     │
 │   candidate's fit. Profile-driven match should be a            │
 │   first-class operation, not a retrieval-as-a-feature bolt-on. │
 ├────────────────────────────────────────────────────────────────┤
-│   system                                                       │  ← mono kicker
+│   system                                                       │  ← section heading
 │   Two postures share one agent shell.                          │
 │   ┌──────────────────────────────────────────────────────┐     │
 │   │                ┌ agent shell ┐                       │     │
@@ -41,7 +41,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   BYOK: Anthropic, OpenAI, Gemini, local Ollama, mock replay  │
 │   Domain: Cloudflare A record fronting Vercel                 │
 ├────────────────────────────────────────────────────────────────┤
-│   retrieval                                                    │  ← mono kicker
+│   retrieval                                                    │  ← section heading
 │   50-query Swedish golden set against a 59-ad corpus.         │
 │                                                                │
 │   ┌─ hybrid retrieval ablation ────────────────────────┐      │
@@ -59,7 +59,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   │ e5-large (ml)    0.860   0.945   1024              │      │
 │   └────────────────────────────────────────────────────┘      │
 ├────────────────────────────────────────────────────────────────┤
-│   agent                                                        │  ← mono kicker
+│   agent                                                        │  ← section heading
 │   data tool         → spatial tool                            │  ← two-column mapping list
 │   searchJobs        → placeAds                                │
 │   triageBatch       → groupAds                                │
@@ -79,7 +79,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 ┌──────────────────────────────────┐
 │ ←  Eric Le             [theme]   │
 ├──────────────────────────────────┤
-│   case study                     │
+│   PROJECT                        │
 │   Jobtriage                      │
 │   Live agent triages Swedish     │
 │   job ads against any profile.   │
@@ -112,7 +112,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 - A thin top bar carries a way back to `/` on the left and the theme toggle on the right. The case study earns a quieter opening than the landing hero, so there is no tinted band. The foot carries the same control, so a reader can leave from either end.
 - The bar's controls and the rule under them sit at the same measure as the prose, so the frame agrees with the column instead of spanning past it. The foot already closed this way and the bar now matches it.
 - A reader who arrived from the landing page returns to the place they left rather than to the top of it, and the landing page does not replay its reveal animations on the way back. A reader who opened the case study directly lands at the top, since there is nowhere else to return to. Mechanism: `.claude/context/case-study-navigation.md`.
-- Section padding and the mono-kicker vocabulary (`case study`, `problem`, `system`, `retrieval`, `agent`) match origin and looking-for, so the editorial pace reads identical.
+- Section padding matches the landing surfaces, so the editorial pace reads identical across the site. The eyebrow reads `Project` and the section names are headings rather than mono kickers, both changed once mono contracted to literal machine values.
 - The display title sits one step smaller than the landing hero so the page reads as secondary to the apex.
 - Each section opens on a line set one step above the paragraphs under it, and the deck under the title reads at that same step. A reader finds where a section starts by size rather than by shade, which is what the opening line leaned on before the step existed.
 - The page renders static. Long-form depth optimizes for reading speed, so the cascade reveal stays on the landing page where each section is a focal moment.

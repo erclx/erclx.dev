@@ -1,23 +1,27 @@
 ---
+// The upstream source lists these lowercase and states that the site owns how
+// a string renders, so the casing is decided here. Sentence case leaves the
+// uppercase treatment to the eyebrow and the diagram labels, which is the one
+// job it can hold consistently.
 const criteria = [
   {
-    label: 'what I want to build',
+    label: 'What I want to build',
     value: 'AI tooling · LLM apps · devex',
   },
   {
-    label: 'team',
+    label: 'Team',
     value: 'small to mid · close to the product',
   },
   {
-    label: 'where',
+    label: 'Where',
     value: 'Sweden, Gothenburg preferred · remote',
   },
   {
-    label: 'experience',
+    label: 'Experience',
     value: 'two years in',
   },
   {
-    label: 'terms',
+    label: 'Terms',
     value: 'full-time or contract',
   },
 ]
@@ -35,6 +39,20 @@ const criteria = [
     >
       Looking for
     </h2>
+
+    {/* The availability status anchors this section rather than joining the
+        rows below it. It sits at body size in the foreground color because a
+        sixth label would add a line to a section that needs weight. */}
+    <p
+      data-fade
+      style="--fade-delay: 75ms"
+      class="text-foreground text-body mt-4 inline-flex items-baseline gap-3"
+    >
+      <span class="status-dot-slot" aria-hidden="true">
+        <span class="status-dot"></span>
+      </span>
+      Open to work
+    </p>
 
     <div class="looking-stage relative mt-10 lg:mt-14">
       <div
@@ -142,7 +160,7 @@ const criteria = [
                 style={`--fade-delay: ${150 + idx * 100}ms`}
                 class="group -ml-4 grid items-baseline gap-x-6 border-l-2 border-transparent py-1 pl-4 hover:border-accent sm:grid-cols-[13rem_1fr]"
               >
-                <dt class="text-muted-foreground group-hover:text-foreground font-mono text-label">
+                <dt class="text-muted-foreground group-hover:text-foreground text-label">
                   {item.label}
                 </dt>
                 <dd class="text-muted-foreground group-hover:text-foreground text-body">
@@ -158,6 +176,54 @@ const criteria = [
 </section>
 
 <style>
+  /* The slot rests on the label's baseline and stands one cap height tall, so
+     the dot inside it centres on the capitals rather than on the line box. The
+     descender space under the baseline is empty and still counts toward a line
+     box's middle. */
+  .status-dot-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1cap;
+  }
+  /* The dot takes the size and the ring the experience section's active marker
+     carries, so the two read as one shape language. The color stays its own:
+     green states availability where the accent states position. */
+  .status-dot {
+    position: relative;
+    display: inline-block;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 9999px;
+    background-color: var(--chart-2);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--chart-2) 18%, transparent);
+  }
+  /* The halo is a pseudo-element so the pulse never changes the dot's own box
+     and nothing on the status line reflows on it. */
+  @media (prefers-reduced-motion: no-preference) {
+    .status-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-color: var(--chart-2);
+      animation: status-ping 2400ms cubic-bezier(0.2, 0, 0.4, 1) infinite;
+    }
+    @keyframes status-ping {
+      from {
+        opacity: 0.5;
+        transform: scale(1);
+      }
+      70% {
+        opacity: 0;
+        transform: scale(2.6);
+      }
+      to {
+        opacity: 0;
+        transform: scale(2.6);
+      }
+    }
+  }
   .looking-peek {
     transform: translateY(5%);
     transition: transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1);

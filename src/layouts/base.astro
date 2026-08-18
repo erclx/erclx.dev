@@ -6,9 +6,12 @@ import interUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.w
 interface Props {
   title: string
   description: string
+  // A route naming its surface lets the stylesheet scope tokens to it. The
+  // landing page names none, so its measure and type stay where they are.
+  surface?: 'case-study'
 }
 
-const { title, description } = Astro.props
+const { title, description, surface } = Astro.props
 ---
 
 <html lang="en">
@@ -50,7 +53,12 @@ const { title, description } = Astro.props
       document.documentElement.dataset.js = 'true'
     </script>
   </head>
-  <body class="bg-background text-foreground font-sans antialiased">
+  <body
+    class:list={[
+      'bg-background text-foreground font-sans antialiased',
+      surface && `surface-${surface}`,
+    ]}
+  >
     <slot />
   </body>
 </html>

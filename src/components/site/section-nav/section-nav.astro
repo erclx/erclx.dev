@@ -10,10 +10,14 @@ interface Props {
 }
 
 const {
+  // A label reads as the heading it points at rather than as its anchor id,
+  // which is what had put a hyphenated slug in front of a reader. The case
+  // studies pass their own, lowercase, because their headings are.
   items = [
-    { id: 'origin', label: 'origin' },
-    { id: 'projects', label: 'projects' },
-    { id: 'looking-for', label: 'looking-for' },
+    { id: 'about', label: 'About me' },
+    { id: 'experience', label: 'Experience' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'looking-for', label: 'Looking for' },
   ],
   instant = false,
 } = Astro.props
@@ -31,7 +35,7 @@ const {
       <a
         href={`#${item.id}`}
         data-target={item.id}
-        class="section-nav-link text-muted-foreground font-mono text-label -ml-3 border-l-2 border-transparent pl-3"
+        class="section-nav-link text-muted-foreground text-label -ml-3 border-l-2 border-transparent pl-3"
       >
         {item.label}
       </a>

@@ -70,9 +70,9 @@ Card posters and case-study figures load lazily, so a per-section capture can sh
 
 A case-study route takes the opposite treatment, added on 2026-08-15 because the three routes had never been captured at all and the surface judged weakest was the one no review tool looked at. A case study is one long prose surface rather than a stack of distinct ones, and its mid-page headings carry `id` rather than `data-section`, so per-section capture there would shoot the top bar and the footer and miss the body. Each route is captured whole to `.claude/review/screenshots/<route>/<viewport>--<theme>.png`, which keeps the label format `<dir>/<viewport>--<theme>` that `SCREENSHOT_FILTER` matches on and leaves every landing path unchanged.
 
-The run is 42 cases: five landing sections across three viewports and two themes, plus three routes across two viewports and two themes. A route drops the 320px width, which exists to catch a landing section wrapping, because long-form prose reflows rather than breaking and the third width would add half again as much run time for that.
+The run is 56 cases: six landing sections across three viewports and two themes, plus five routes across two viewports and two themes. A route drops the 320px width, which exists to catch a landing section wrapping, because long-form prose reflows rather than breaking and the third width would add half again as much run time for that.
 
-Reading the full-page shape here as license to capture the landing page whole is the mistake to avoid. It is the answer for a single long surface, and the decision above is the answer for a page of five.
+Reading the full-page shape here as license to capture the landing page whole is the mistake to avoid. It is the answer for a single long surface, and the decision above is the answer for a page of six.
 
 ### The toolkit's surface-capture rule is declined here
 
@@ -106,7 +106,7 @@ Do not restore the vector to an `icon` relation and do not replace either raster
 
 Measured at 60f1e0a on 2026-08-15.
 
-### Every figure sits inside the text column, and marks derive from type metrics
+### A landing-page figure sits inside the text column, and marks derive from type metrics
 
 A figure hanging into the page margin reads as an off-centre section even when the text column measures perfectly centred. The origin timeline shipped a graph in the right margin, measured centred at 672px with equal gaps at four widths, and the operator still read the section as offset because the section's visual mass sat right of its text. The graph is gone and the timeline carries a rail in its own row gutter instead, which also fixed what the figure could never do: the dots sit on their rows by construction rather than at hand-placed coordinates that could not track rows running 87 to 147 pixels apart.
 
@@ -117,6 +117,22 @@ A mark that has to line up with type takes its position from type metrics rather
 What is banned is a literal standing in for a relationship two other values already fix, such as a nudge centring one element against another. Arithmetic over named values is the sanctioned form and is how the rule is kept, which is why a rail segment spans `calc(1lh / 2)` to the next row rather than a measured offset. A value that sets something rather than relating two things stays a literal, including spacing, type sizes, and the 44px tap minimum.
 
 An earlier draft of this entry claimed a line box centres about 2.5px lower than uppercase text. That figure is not reproducible: measured against this label at 14px, the two centres disagree by 0.3px, and the visible improvement came from the restructure and the tighter leading rather than from the offset the number described. Verified at 139af4f on 2026-08-17.
+
+The heading says landing page because the case-study routes take the opposite treatment, and the two do not conflict. What made the origin graph read as off-centre was a figure sitting beside its text rather than under it, so the section's mass fell to one side of its own column. A case-study figure stays centred on the prose it interrupts and overhangs it symmetrically, measured at 0px of centre offset across five widths. The landing page also varies its measure per section and has other ways to break a column, where a case study holds one measure for thousands of pixels and has none. Read the rule as barring a figure that pulls a section off its axis rather than as barring width.
+
+### A case-study route scales its measure with the viewport, and its figures overhang it
+
+Prose runs 672px at 1280 and 832px at 1920, and the body scales with it from 17px to 22px. Both are clamps that hold today's values at 1280 and below and stop growing past 1920. Figures overhang the prose symmetrically, reaching 896px and 1216px at those widths, which takes the widest viewport from 35% content to 63%.
+
+The pair moves together because the column cannot widen alone. At 48rem the 17px body reads 86 characters, past the comfortable ceiling, where 48rem at 20px reads 74. Character count stays between 73 and 76 across the whole range, so the measure never drifts while the page fills out. The landing page is a separate case and is not touched here: it reads 86 characters at 768px and is queued rather than fixed, because its measure belongs to the type system `v2.3` owns.
+
+The scoping mechanism is a `surface` prop on the layout that stamps a class on `body`, so the tokens reach the five project routes and nothing else. That indirection exists because of the trap below.
+
+`@theme inline` bakes a literal into the generated utility. A token declared as `--text-body: 1.0625rem` inside that block cannot be overridden by any downstream scope, because the utility carries the value rather than a reference to it. The first attempt at this scaled the column and left the body pinned at 17px, which produced 94 characters at 1920 and was worse than what it replaced. The color tokens escape this only because each resolves to a `var()` rather than to a literal, which is why `.dark .figure-plate` works. The two type steps now take the same form, resolving through `--body-size` and `--lede-size` declared in `:root`. A capture would not have caught this and the character measurement did.
+
+The prose and figure clamps carry different slopes, so their ratio drifts from 1.333 at 1280 to 1.462 at 1920. That is deliberate rather than an oversight. A constant 1.4 ratio would make the figure 941px at 1024, leaving 17px of gutter each side, where the drifting pair keeps the figure safe at the narrow end and generous at the wide one. Do not replace the two clamps with one ratio without re-checking 1024.
+
+Measured at d5d7723 on 2026-08-18.
 
 ## Risks / open questions
 

@@ -7,7 +7,7 @@ description: Scroll-position tracking, reveal gates, and click-lock behind the s
 
 ## Overview
 
-`src/components/site/section-nav/section-nav.astro` renders the fixed left-margin rail used on the landing page and the Jobtriage case study. It is a plain Astro file with an inline `<script>`. Layout and intent live in `.claude/wireframes/section-nav.md`. This entry covers how the tracking works.
+`src/components/site/section-nav/section-nav.astro` renders the fixed left-margin rail used on the landing page and every project route. It is a plain Astro file with an inline `<script>`. Layout and intent live in `.claude/wireframes/section-nav.md`. This entry covers how the tracking works.
 
 ## Active tracking
 
@@ -30,7 +30,7 @@ Clicking a rail link sets the clicked section active immediately and suppresses 
 
 ## instant prop
 
-When the `instant` prop is set, the rail renders with `data-revealed` already true at server render, a `data-instant` marker disables the opacity-transition CSS, and the hero and footer observers do not attach. Used on the Jobtriage case study, which is otherwise static, so the rail does not fade in alone.
+When the `instant` prop is set, the rail renders with `data-revealed` already true at server render, a `data-instant` marker disables the opacity-transition CSS, and the hero and footer observers do not attach. Used on every project route, which are otherwise static, so the rail does not fade in alone.
 
 ## Gotchas
 

@@ -1,0 +1,32 @@
+---
+const paragraphs = [
+  'I was born in Vietnam and came to Sweden in 2006, when I was six. First Borås, then south to Värnamo soon after, which is where I grew up before Gothenburg.',
+  'Outside work I listen to a lot of music, enough that one year it added up to over 4,000 hours, and I have played guitar since I was twelve. Otherwise I try to get some calisthenics in, or play tennis and badminton when the weather allows.',
+  'Most summers I travel, lately London, Copenhagen, Prague, and Hanoi.',
+]
+---
+
+<section id="about" data-section="about" class="px-6 pt-16 pb-20 md:pt-20">
+  <div class="mx-auto max-w-3xl">
+    <h2
+      data-fade
+      class="font-display text-foreground section-heading leading-tight font-semibold"
+    >
+      About me
+    </h2>
+
+    <div class="mt-8 space-y-6">
+      {
+        paragraphs.map((paragraph, idx) => (
+          <p
+            data-fade
+            style={`--fade-delay: ${100 + idx * 100}ms`}
+            class="text-muted-foreground text-body"
+          >
+            {paragraph}
+          </p>
+        ))
+      }
+    </div>
+  </div>
+</section>

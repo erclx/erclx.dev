@@ -1,11 +1,11 @@
 ---
 title: Theme toggle
-description: Top-right of the header content column, anchored to the same row as the status pill
+description: Top-right of the header content column, anchored to the same row as the greeting
 ---
 
 # Theme toggle
 
-Appears in the top-right of the header content column, anchored to the same row as the status pill. A tri-state cycle button that rotates through light, dark, and system on each click.
+Appears in the top-right of the header content column, anchored to the same row as the greeting. It shared that row with the availability status until 2026-08-17, when the status moved to the closing ask. A tri-state cycle button that rotates through light, dark, and system on each click.
 
 ## Cycle order
 

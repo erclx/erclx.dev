@@ -14,7 +14,7 @@ const links = [
 
 <header
   data-section="header"
-  class="bg-secondary relative flex overflow-hidden rounded-b-3xl px-6 pt-20 pb-16 md:min-h-[80vh] md:items-center md:pt-32 md:pb-20"
+  class="bg-secondary relative flex overflow-hidden rounded-b-3xl px-6 pt-20 pb-16 md:min-h-screen md:items-center md:pt-32 md:pb-20"
 >
   <canvas
     data-flow-field
@@ -31,34 +31,28 @@ const links = [
   <div data-header-column class="relative mx-auto w-full max-w-3xl">
     <div>
       <div data-fade>
-        {/* The toggle shares the status row but sits out of its flow, so its
-            tap height cannot push the identity line off the pill. Nothing
-            reserves space for it: the pill beside it is one short label. */}
+        {/* The toggle shares the identity row but sits out of its flow, so its
+            tap height cannot displace the line it centres on. Nothing reserves
+            space for it: the line beside it is one short label. */}
         <div class="relative">
-          <span
-            class="text-muted-foreground text-label inline-flex items-baseline gap-3 leading-none tracking-wide uppercase"
-          >
-            <span class="status-dot-slot" aria-hidden="true">
-              <span class="status-dot"></span>
-            </span>
-            Open to work
-          </span>
+          {/* The location left this surface rather than moving here. The
+              closing ask already states it as a filter, so repeating it above
+              would be the same fact in two places. */}
+          <p data-hero-line class="text-muted-foreground text-label">
+            Welcome, this is my corner of the internet.
+          </p>
           <div class="absolute top-1/2 right-0 -translate-y-1/2">
             <ThemeToggle />
           </div>
         </div>
-        <p class="text-muted-foreground text-label mt-3 tracking-wide uppercase">
-          Eric Le · Gothenburg, Sweden
-        </p>
       </div>
       <div>
         <div data-fade style="--fade-delay: 150ms">
-          {/* The portrait floats inside the headline, so its top is the
-              headline's own top at every width rather than a sum of the
-              elements that happen to sit above it. Its alt stays empty for the
-              same reason it sits here: alt text on an image inside a heading
-              prepends to that heading's accessible name, and the identity line
-              above already states the name a reader would gain from it. */}
+          {/* The portrait floats inside the heading, so its top is the heading's
+              own top at every width rather than a sum of the elements that
+              happen to sit above it. Its alt stays empty because alt text on an
+              image inside a heading prepends to that heading's accessible name,
+              and the heading already states the name. */}
           <h1 class="font-display text-display text-foreground mt-6">
             <Image
               src={portrait}
@@ -68,92 +62,33 @@ const links = [
               data-portrait
               class="border-border/60 bg-muted float-right ml-6 size-20 rounded-full border object-cover md:size-28 lg:size-40"
             />
-            I build <span data-annotate="underline">the layer</span> between a
-            language model and the job it has to do.
+            Eric Le
           </h1>
         </div>
         <div data-fade style="--fade-delay: 300ms">
-          <p class="text-muted-foreground text-body mt-6 max-w-2xl">
-            In practice that means agents, and the developer tools around them.
-            Some of that was paid work, eighteen months of it at Volvo Technology,
-            and the rest is tools I have built to make working with AI easier.
-          </p>
-      <ul class="mt-8 flex flex-wrap gap-x-6">
-      {
-        links.map((link) => (
-          <li>
-            <a
-              href={link.href}
-              {...getLinkTargetAttributes(link.href)}
-              class="text-foreground text-label inline-flex min-h-11 min-w-11 items-center underline-offset-4 hover:underline"
-            >
-              {link.label}
-            </a>
-          </li>
-        ))
-      }
-      </ul>
+          <ul class="mt-8 flex flex-wrap gap-x-6">
+            {
+              links.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    {...getLinkTargetAttributes(link.href)}
+                    class="text-foreground text-label inline-flex min-h-11 min-w-11 items-center underline-offset-4 hover:underline"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
         </div>
       </div>
     </div>
   </div>
 </header>
 
-<style>
-  /* The slot sits on the label's baseline and stands one cap height tall, so the
-     dot inside it centres on the capitals rather than on the line box. A line
-     box centres lower than uppercase text looks, because the descender space
-     under the baseline is empty and still counts toward the middle. */
-  .status-dot-slot {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 1cap;
-  }
-  /* The status dot takes the size and the ring the origin section's active
-     marker carries, so the two read as one shape language. The color stays
-     its own: green states availability where the accent states position. */
-  .status-dot {
-    position: relative;
-    display: inline-block;
-    width: 0.65rem;
-    height: 0.65rem;
-    border-radius: 9999px;
-    background-color: var(--chart-2);
-    box-shadow: 0 0 0 4px color-mix(in oklab, var(--chart-2) 18%, transparent);
-  }
-  /* The halo is a pseudo-element so the pulse never changes the dot's own box
-     and nothing in the status row reflows on it. */
-  @media (prefers-reduced-motion: no-preference) {
-    .status-dot::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background-color: var(--chart-2);
-      animation: status-ping 2400ms cubic-bezier(0.2, 0, 0.4, 1) infinite;
-    }
-    @keyframes status-ping {
-      from {
-        opacity: 0.5;
-        transform: scale(1);
-      }
-      70% {
-        opacity: 0;
-        transform: scale(2.6);
-      }
-      to {
-        opacity: 0;
-        transform: scale(2.6);
-      }
-    }
-  }
-</style>
-
 <script>
-  import { initAnnotations } from './annotate'
   import { initFlowField } from './flow-field'
 
   initFlowField()
-  initAnnotations()
 </script>
