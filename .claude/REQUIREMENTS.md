@@ -19,10 +19,14 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 ## MVP features
 
-1. Header: identity, role, location, headline, contact links
-2. Narrative: short prose paragraphs sourced from resume and intent
-3. Projects: cards for Jobtriage, Stackr, and Caret pulled from the github profile, plus a trailing one-liner for Toolkit
-4. Footer: identity links plus a downloadable resume PDF
+1. Header: identity, a greeting, contact links, and the portrait
+2. About: where the person is from and one thing that is not work, sitting directly under the header
+3. Experience: the claim, the short prose paragraphs sourced from resume and intent that elaborate it, and the timeline of beats
+4. Projects: cards for Jobtriage, Stackr, and Caret pulled from the github profile, plus a trailing one-liner for Toolkit
+5. Looking for: the criteria rows a reader filters on, anchored by the availability signal
+6. Footer: identity links plus a downloadable resume PDF
+
+The header lost the role, the headline, and the location on 2026-08-17. The claim and its elaboration moved to experience, because the elaboration opens on a pronoun standing for the claim and splitting the two left that pronoun without an antecedent on either surface. The location moved to the closing ask, where the rows already state it as a filter. The availability signal moved with it.
 
 ## Project cards
 

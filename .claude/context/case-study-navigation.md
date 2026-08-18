@@ -11,7 +11,7 @@ The behavior behind the two way-home controls a case-study route carries. Both a
 
 ## Layout
 
-- `src/components/site/case-study/` owns the module the three case-study routes load
+- `src/components/site/case-study/` owns the module all five project routes load
 
 ## Decisions
 

@@ -70,9 +70,9 @@ Card posters and case-study figures load lazily, so a per-section capture can sh
 
 A case-study route takes the opposite treatment, added on 2026-08-15 because the three routes had never been captured at all and the surface judged weakest was the one no review tool looked at. A case study is one long prose surface rather than a stack of distinct ones, and its mid-page headings carry `id` rather than `data-section`, so per-section capture there would shoot the top bar and the footer and miss the body. Each route is captured whole to `.claude/review/screenshots/<route>/<viewport>--<theme>.png`, which keeps the label format `<dir>/<viewport>--<theme>` that `SCREENSHOT_FILTER` matches on and leaves every landing path unchanged.
 
-The run is 42 cases: five landing sections across three viewports and two themes, plus three routes across two viewports and two themes. A route drops the 320px width, which exists to catch a landing section wrapping, because long-form prose reflows rather than breaking and the third width would add half again as much run time for that.
+The run is 56 cases: six landing sections across three viewports and two themes, plus five routes across two viewports and two themes. A route drops the 320px width, which exists to catch a landing section wrapping, because long-form prose reflows rather than breaking and the third width would add half again as much run time for that.
 
-Reading the full-page shape here as license to capture the landing page whole is the mistake to avoid. It is the answer for a single long surface, and the decision above is the answer for a page of five.
+Reading the full-page shape here as license to capture the landing page whole is the mistake to avoid. It is the answer for a single long surface, and the decision above is the answer for a page of six.
 
 ### The toolkit's surface-capture rule is declined here
 
@@ -126,7 +126,7 @@ Prose runs 672px at 1280 and 832px at 1920, and the body scales with it from 17p
 
 The pair moves together because the column cannot widen alone. At 48rem the 17px body reads 86 characters, past the comfortable ceiling, where 48rem at 20px reads 74. Character count stays between 73 and 76 across the whole range, so the measure never drifts while the page fills out. The landing page is a separate case and is not touched here: it reads 86 characters at 768px and is queued rather than fixed, because its measure belongs to the type system `v2.3` owns.
 
-The scoping mechanism is a `surface` prop on the layout that stamps a class on `body`, so the tokens reach the three routes and nothing else. That indirection exists because of the trap below.
+The scoping mechanism is a `surface` prop on the layout that stamps a class on `body`, so the tokens reach the five project routes and nothing else. That indirection exists because of the trap below.
 
 `@theme inline` bakes a literal into the generated utility. A token declared as `--text-body: 1.0625rem` inside that block cannot be overridden by any downstream scope, because the utility carries the value rather than a reference to it. The first attempt at this scaled the column and left the body pinned at 17px, which produced 94 characters at 1920 and was worse than what it replaced. The color tokens escape this only because each resolves to a `var()` rather than to a literal, which is why `.dark .figure-plate` works. The two type steps now take the same form, resolving through `--body-size` and `--lede-size` declared in `:root`. A capture would not have caught this and the character measurement did.
 
