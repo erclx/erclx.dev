@@ -13,7 +13,7 @@ The projects section. Cards render statically from a config array in `projects.a
 
 - `src/components/site/projects/projects.astro` owns the section: the data array of cards and the `<script>` imports that mount interactivity
 - `src/components/site/projects/project-card.astro` owns one card's DOM: poster image, hover video, headline, description, link row, and the overlay anchor on a card owning a case study
-- `src/components/site/projects/project-media.ts` owns hover-play. Reads `[data-tilt]` cards, plays the inner `[data-media-video]` on pointer enter, pauses and rewinds on leave.
+- `src/lib/hover-video.ts` owns hover-play, and is shared rather than local because a case-study route needs the same behavior. It finds each `[data-media-video]`, resolves its host through `closest('[data-media-host]')`, plays on pointer enter, and pauses and rewinds on leave. A host declaring `data-media-host="view"` also plays on intersection where the pointer cannot hover, which a card deliberately leaves out: its clip is revealed by a hover-driven opacity, so playing it on a touch device would run frames nobody can see.
 - `src/components/site/projects/tilt.ts` owns parallax. Tracks pointer per card with `MAX_TILT_DEG` and `MAX_PARALLAX_PX`, lerps toward the target with `LERP`, runs one rAF loop across all cards.
 
 ## Decisions
@@ -33,7 +33,7 @@ The projects section. Cards render statically from a config array in `projects.a
 ## Gotchas
 
 - The media slot needs `poster` and `mediaAlt`. A card missing either skips the slot entirely, and tilt still applies while hover-play has nothing to bind.
-- `videoSrc` is optional. A card carrying a still and no clip renders the still, and `project-media.ts` skips it because its `[data-media-video]` query returns nothing. Two cards ship this way while their screencasts are owed.
+- `videoSrc` is optional. A card carrying a still and no clip renders the still, and `hover-video.ts` skips it because its `[data-media-video]` query returns nothing. Two cards ship this way while their screencasts are owed.
 - Card stills run `1280x720` or `1280x800` against an `aspect-[11/7]` slot, so `object-cover` crops horizontally under the default top position, roughly 6.5% off each edge at the wider ratio and under 2% at the taller one. A still whose content sits flush left, such as a terminal transcript or an app shell with a sidebar, needs `mediaPosition: 'left top'` or that content is cropped away.
 - A card still shows the artifact running rather than a result it produced. The card names the tool and its case study carries the measurement, which is the split every card on the page follows.
 - `fadeDelay` on the card uses the array index. Reordering the data array reorders the staggered fade-in.
@@ -44,7 +44,8 @@ The projects section. Cards render statically from a config array in `projects.a
 ## Visual budget
 
 - At most one muted MP4 per project, dark theme only, ≤500kb, 720p, h.264 baseline. Where a clip exists the poster is a single dark PNG extracted from it, and where none does the still is the card's own `1280x720` or `1280x800` image.
-- Poster sits underneath the video. The video transitions from opacity 0 to opacity 100 over 200ms on card hover via CSS. `project-media.ts` calls `play()` in parallel on `pointerenter`, so the fade runs even if `play()` is rejected.
+- Poster sits underneath the video. The video transitions from opacity 0 to opacity 100 over 200ms on card hover via CSS. `hover-video.ts` calls `play()` in parallel on `pointerenter`, so the fade runs even if `play()` is rejected.
+- A card renders its poster at 498px and that width does not grow with the viewport, because the projects grid caps at `lg:max-w-5xl`. The clips are recorded at 1280 wide, so a card shows one at 39% of native. A case-study route shows the same clip at 896px or 1216px, which is the measurement behind giving every project a route.
 - Media slot frames the dark clip as embedded media so it sits cleanly on either page theme: rounded inner corners, hairline ring, soft shadow, light surface inset.
 
 ## Hidden contracts
