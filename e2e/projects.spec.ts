@@ -78,13 +78,16 @@ test('a card link stays reachable above the whole-card overlay', async ({
   expect(topmost).toBe('https://github.com/erclx/aitk')
 })
 
-test('a card without a case study carries no whole-card overlay', async ({
+test('every card owns a route and carries the overlay that opens it', async ({
   page,
 }) => {
   await page.goto('/')
-  const caretCard = page.locator('#projects article').nth(3)
+  const cards = page.locator('#projects article')
+  const total = await cards.count()
 
-  await expect(caretCard.locator('a[aria-hidden="true"]')).toHaveCount(0)
+  const overlays = await cards.locator('a[aria-hidden="true"]').count()
+
+  expect(overlays).toBe(total)
 })
 
 test('the trailing card closes the grid across both columns', async ({

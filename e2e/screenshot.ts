@@ -16,7 +16,13 @@ type Section = (typeof LANDING_SECTIONS)[number]
 
 // A case study is one long prose surface rather than a stack of distinct ones,
 // so it is captured whole and its `id` headings are not capture targets.
-const CASE_STUDY_ROUTES = ['aitk', 'jobtriage', 'diction'] as const
+const CASE_STUDY_ROUTES = [
+  'aitk',
+  'jobtriage',
+  'diction',
+  'stackr',
+  'caret',
+] as const
 
 interface Viewport {
   readonly name: string

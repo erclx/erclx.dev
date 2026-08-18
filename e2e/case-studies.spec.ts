@@ -5,7 +5,13 @@ import { loadedImageCount, scrollThroughPage } from './lazy-images'
 
 const FIGURE_SELECTOR = 'main figure img'
 const DICTION_FIGURE_COUNT = 6
-const CASE_STUDY_ROUTES = ['/aitk', '/jobtriage', '/diction']
+const CASE_STUDY_ROUTES = [
+  '/aitk',
+  '/jobtriage',
+  '/diction',
+  '/stackr',
+  '/caret',
+]
 
 for (const route of CASE_STUDY_ROUTES) {
   test(`every section on ${route} opens on a real heading`, async ({
