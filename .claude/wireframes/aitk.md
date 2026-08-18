@@ -20,7 +20,7 @@ Reached from the aitk project card on the landing page. Carries the depth a visi
 │   A CLI that installs one set of agent rules, skills,    │  ← the claim, one sentence
 │   and standards into every project and keeps them in     │
 │   step.                                                  │
-│   GitHub   npm                                           │  ← link row, no case-study link back to itself
+│   GitHub   npm                                           │  ← link row, no Project link back to itself
 │                                                          │
 │   problem                                                │  ← section heading, repeats per section
 │   Every repository re-authors the same agent             │
