@@ -155,8 +155,32 @@ const links = [
 </header>
 
 <style>
+  /* Stops follow smoothstep rather than a straight ramp, so the fade's slope
+     reaches zero at both ends instead of stopping dead.
+
+     A linear ramp meeting a flat field carries no step in value at all: the
+     join measures a luminance gap of 0.00. What it carries is a break in
+     slope, falling about 7 units per 100px and then holding exactly 0, and the
+     eye reports an edge at a slope break whether or not a value break is
+     there. Easing removes the break rather than lengthening the ramp, which
+     would only move the same edge further up the band. */
   [data-hero-fade] {
-    background: linear-gradient(to bottom, transparent, var(--background));
+    background: linear-gradient(
+      to bottom,
+      rgb(from var(--background) r g b / 0) 0%,
+      rgb(from var(--background) r g b / 0.003) 3.125%,
+      rgb(from var(--background) r g b / 0.011) 6.25%,
+      rgb(from var(--background) r g b / 0.04) 12.5%,
+      rgb(from var(--background) r g b / 0.16) 25%,
+      rgb(from var(--background) r g b / 0.32) 37.5%,
+      rgb(from var(--background) r g b / 0.5) 50%,
+      rgb(from var(--background) r g b / 0.68) 62.5%,
+      rgb(from var(--background) r g b / 0.84) 75%,
+      rgb(from var(--background) r g b / 0.96) 87.5%,
+      rgb(from var(--background) r g b / 0.989) 93.75%,
+      rgb(from var(--background) r g b / 0.997) 96.875%,
+      var(--background) 100%
+    );
   }
 </style>
 
