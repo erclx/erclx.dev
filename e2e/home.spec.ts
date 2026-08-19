@@ -197,6 +197,38 @@ test('the bar arrives once the reader has scrolled past the hero', async ({
   )
 })
 
+test('the bar is behind the controls by the time they land in it', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/')
+  await page.waitForSelector('[data-toggle-host][data-ready]')
+
+  // The scroll where the toggle has reached the top of the viewport. Landing
+  // ahead of the bar left both controls over page content with nothing behind
+  // them, which the two gates above and below this band never covered.
+  await page.evaluate(() =>
+    window.scrollTo({ top: 320, behavior: 'instant' as ScrollBehavior }),
+  )
+
+  // The position is painted on the next frame, so the landing is polled rather
+  // than read straight after the scroll.
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          document.querySelector('[data-theme-toggle]')?.getBoundingClientRect()
+            .top ?? Number.NaN,
+      ),
+    )
+    .toBeLessThan(40)
+
+  await expect(page.locator('[data-site-bar]')).toHaveAttribute(
+    'data-revealed',
+    'true',
+  )
+})
+
 test('the one promoted toggle still cycles the theme', async ({ page }) => {
   await page.goto('/')
   await page.waitForSelector('[data-toggle-host][data-ready]')

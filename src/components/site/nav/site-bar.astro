@@ -129,6 +129,15 @@
     window.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' })
   })
 
+  // Two things open the gate and the earlier one wins. The controls land before
+  // the hero has half left the viewport, and between those two moments they sat
+  // at the top of the screen over page content with no bar behind them, which
+  // reads as a rendering fault rather than as chrome. Measured at 1280x800: the
+  // toggle lands at 298 and the hero gate opened past 400.
+  let byArrival = false
+  let byHero = false
+  const sync = () => setRevealed(byArrival || byHero)
+
   if (bar) {
     setRevealed(false)
     if (!hero) {
@@ -143,7 +152,8 @@
       const observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            setRevealed(entry.intersectionRatio < 0.5)
+            byHero = entry.intersectionRatio < 0.5
+            sync()
           }
         },
         { threshold: [0, 0.5] },
@@ -154,5 +164,8 @@
     }
   }
 
-  initHeroHandoff()
+  initHeroHandoff((arrived) => {
+    byArrival = arrived
+    sync()
+  })
 </script>

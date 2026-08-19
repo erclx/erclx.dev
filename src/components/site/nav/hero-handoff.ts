@@ -9,7 +9,7 @@ const PLACEMENT_WAIT_MS = 3000
 // other two stay hidden while it flies, because the hero heading carries a
 // floated portrait and an overflow-hidden ancestor that a transformed child
 // cannot escape. The flyer is fixed, so neither constraint reaches it.
-export function initHeroHandoff(): void {
+export function initHeroHandoff(onArrive?: (arrived: boolean) => void): void {
   if (typeof window === 'undefined') return
 
   const source = document.querySelector<HTMLElement>('[data-hero-name]')
@@ -84,8 +84,26 @@ export function initHeroHandoff(): void {
     flyer.style.visibility = ''
   }
 
+  // The bar has to be behind the controls by the time the first of them lands,
+  // so the moment reported is the shorter of the two travels rather than the
+  // name's alone. The toggle starts higher in the hero and therefore lands
+  // first, and under reduced motion the name does not travel at all.
+  let arrived = false
+  const reportArrival = () => {
+    if (!onArrive) return
+    const distances = []
+    if (toggle && host) distances.push(Math.max(1, toggleFrom.y - toggleTo.y))
+    if (!stillName) distances.push(travel)
+    if (distances.length === 0) return
+    const landing = window.scrollY >= Math.min(...distances)
+    if (landing === arrived) return
+    arrived = landing
+    onArrive(landing)
+  }
+
   const paint = () => {
     paintToggle()
+    reportArrival()
     if (stillName) return
     const progress = Math.min(1, Math.max(0, window.scrollY / travel))
     const scale = from.size === 0 ? 1 : to.size / from.size
