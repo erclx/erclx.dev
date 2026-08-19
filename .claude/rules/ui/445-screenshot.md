@@ -20,6 +20,13 @@ paths:
 - Pass `SCREENSHOT_FILTER=<term>[,<term>]` on targeted polish loops, matching a landing section or a case-study route. Omit it for whole-site verification before a PR.
 - Read a case-study capture at native size. Each route is captured whole, so the reviewer's fitted view of a long page shows arrangement rather than detail.
 
+## Choosing between options
+
+- Render every candidate and compose them into one sheet before asking which wins. Do not put a call about size, weight, color, spacing, or arrangement as described options.
+- Call `captureVariants` from `e2e/variants.ts`. Keep the per-decision configuration in session scratch.
+- Record instead of shooting when the decision is about motion. Pass `video: true`.
+- Open the composed sheet before sending it. A sheet whose images failed to load shoots blank.
+
 ## Handoff
 
 - End every UI change with a reachable URL, naming the dev-server address and the routes that changed.
