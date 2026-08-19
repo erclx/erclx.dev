@@ -134,6 +134,32 @@ The prose and figure clamps carry different slopes, so their ratio drifts from 1
 
 Measured at d5d7723 on 2026-08-18.
 
+### A promoted control is measured against the settled page
+
+The sticky bar takes the hero's name and theme toggle rather than rendering its own. One element travels in each case, which is what keeps a single toggle wired and keeps the page's only `h1` carrying its accessible name. The cost is that both end up in fixed hosts holding a measured position, so a measurement taken against a page that has not settled is held for good.
+
+Three states make that measurement wrong, and all three were reached.
+
+A `type="module"` script does not block on pending stylesheets the way a parser-blocking one does, so the handoff could run against an unstyled document. In WebKit against the built page that left the toggle at the body's default 8px margin, 868px off its row, on every load. The 8px left offset in the transform is what identified it, where the failing assertion reported the vertical error alone. Placement now waits for `document.readyState`.
+
+The hero then reveals by translating its rows 16px into place, and a fixed copy placed at the settled position hangs off the row for the length of that. Placement waits for the transform to rest, which leaves the resize path as the one caller that can still land mid-reveal, so the reads discount the reveal's own offset.
+
+The toggle's home slot centres on its row by offsetting half its own height and hangs off the column's right edge, so once the control is promoted away the slot collapses to a point 22px low and 44px right. Every re-measure after the first read that empty box. The control is returned to its home for the reading rather than the slot being given a reserved size, so the control's own box stays the one source of the hero position.
+
+Neither condition placement waits on is guaranteed to arrive. A stalled subresource holds readiness open, and the reveal is driven by an observer in `projects.astro` that does nothing without `IntersectionObserver`. The wait therefore gives up after three seconds and places the control anyway, rather than spinning a frame callback for the life of the page and leaving the bar's slot empty.
+
+Measurement needs no scrolling. An element in flow states its position at rest as its own offset plus the current scroll, and the bar is fixed and already reports what the paint clamps against. An earlier draft scrolled the page to 0 and back on a resize listener, which fires per pixel of a window drag and once on a phone when the address bar collapses mid-scroll, so it yanked the page under the reader and cancelled the bar's own smooth scroll home.
+
+The bar's reveal keys to half the hero rather than half the viewport. A hero shorter than half the viewport clears a viewport-keyed margin without being scrolled at all, which at 390x844 put the bar on screen carrying the name while the reader was still looking at the hero carrying it. Reading the intersection ratio keys the same moment to the hero's own height and needs nothing measured. The rail still uses the viewport-keyed form and agrees with this wherever it is visible, since the hero holds the full viewport height from md up.
+
+Verified at 1280x720 and 390x844 across chromium, firefox, and webkit on 2026-08-19.
+
+### Cross-engine defects ship, because CI runs one engine
+
+The e2e job runs `--project=chromium` alone while the Playwright config defines three. A full three-engine run of the same suite on 2026-08-19 reported four failures against a green chromium run, one of which had already shipped in an earlier pull request. Two of the four were the production defects the decision above records, and neither reproduced in chromium at all.
+
+Read a lone WebKit or Firefox failure as a candidate defect rather than as a flake. Widening the job is queued rather than done, so until it is, a local three-engine run before a pull request is the only thing that sees them.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.

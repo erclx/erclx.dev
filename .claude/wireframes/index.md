@@ -19,5 +19,6 @@ Per-surface ASCII layouts loaded on demand
 - [Page](page.md): Single page at /. Six sections stack vertically inside the body.
 - [Projects](projects.md): Below the experience timeline. Shipped tools as cards, one column on narrow viewports and two from lg.
 - [Section nav](section-nav.md): Fixed left-margin rail that tracks the active section as the visitor scrolls. Hidden below xl and during the hero and footer beats
+- [Site bar](site-bar.md): Sticky top bar that the hero's name and theme toggle travel into as the reader scrolls, carrying the way back to the top at every viewport
 - [Stackr project](stackr.md): Sub-page at /stackr covering the context problem, named tracks, and the runtime stance
 - [Theme toggle](theme-toggle.md): Top-right of the header content column, anchored to the same row as the greeting
