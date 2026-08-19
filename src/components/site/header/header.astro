@@ -28,27 +28,21 @@ const links = [
     set:html={flowFieldFallback}
   >
   </div>
+  {/* The toggle sits in the header's own corner. Its old home was the greeting
+      row, and the greeting moved under the name, where the portrait floats
+      flush to the column's right edge for 160px from the heading's top and
+      covers every row below it.
+
+      The corner is 28px above the bar's slot and 260px to the right of it, so
+      the control crosses that width over the scroll the vertical gap sets
+      rather than traveling with the name. That is the arrival it is meant to
+      have. What the corner must not do is decide when the bar opens, which is
+      why `hero-handoff.ts` gates that on the name's travel alone. */}
+  <div data-hero-toggle-home class="absolute top-6 right-6 md:top-10 md:right-10">
+    <ThemeToggle />
+  </div>
   <div data-header-column class="relative mx-auto w-full max-w-3xl">
     <div>
-      <div data-fade>
-        {/* The toggle shares the identity row but sits out of its flow, so its
-            tap height cannot displace the line it centres on. Nothing reserves
-            space for it: the line beside it is one short label. */}
-        <div class="relative">
-          {/* The location left this surface rather than moving here. The
-              closing ask already states it as a filter, so repeating it above
-              would be the same fact in two places. */}
-          <p data-hero-line class="text-muted-foreground text-label">
-            Welcome, this is my corner of the internet.
-          </p>
-          <div
-            data-hero-toggle-home
-            class="absolute top-1/2 right-0 -translate-y-1/2"
-          >
-            <ThemeToggle />
-          </div>
-        </div>
-      </div>
       <div>
         <div data-fade style="--fade-delay: 150ms">
           {/* The portrait floats inside the heading, so its top is the heading's
@@ -56,7 +50,7 @@ const links = [
               happen to sit above it. Its alt stays empty because alt text on an
               image inside a heading prepends to that heading's accessible name,
               and the heading already states the name. */}
-          <h1 class="font-display text-display text-foreground mt-6">
+          <h1 class="font-display text-display text-foreground">
             <Image
               src={portrait}
               alt=""
@@ -72,7 +66,29 @@ const links = [
           </h1>
         </div>
         <div data-fade style="--fade-delay: 300ms">
-          <ul class="mt-8 flex flex-wrap gap-x-6">
+          {/* The greeting sits under the name rather than over it, so one line
+              does both jobs: it still opens the page and it now frames the
+              links, which stood bare under the name with nothing introducing
+              them. The name leading is what makes the surface read as an
+              introduction rather than as a subtitle over a heading.
+
+              It takes the display face at the lede step, so the two lines read
+              as one masthead rather than as a heading with a caption beneath
+              it. The location left this surface rather than moving here: the
+              closing ask already states it as a filter.
+
+              The margin reads small against the gap under the line because the
+              display step's line box carries about 25px of leading below its
+              baseline. Optically the two gaps are 33.5px and 28px, which is
+              what makes the three lines read as one block rather than as a
+              name and a separate pair. Measured at 1280 on 2026-08-19. */}
+          <p
+            data-hero-line
+            class="font-display text-lede text-muted-foreground mt-2"
+          >
+            Welcome, this is my corner of the internet.
+          </p>
+          <ul class="mt-3 flex flex-wrap gap-x-6">
             {
               links.map((link) => (
                 <li>
