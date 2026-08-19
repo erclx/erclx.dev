@@ -12,9 +12,15 @@ const links = [
 ]
 ---
 
+{/* The band holds a share of the viewport below md rather than only the
+    content's own height, where it read as a squeezed header rather than the
+    stage it is. It stops short of the full screen a wider viewport gets,
+    because a phone reader would otherwise scroll a whole screen before meeting
+    anything. The unit is `svh` rather than `vh`: a collapsing address bar grows
+    `vh` mid-scroll, which would overflow the band it is meant to bound. */}
 <header
   data-section="header"
-  class="bg-secondary relative flex overflow-hidden rounded-b-3xl px-6 pt-20 pb-16 md:min-h-screen md:items-center md:pt-32 md:pb-20"
+  class="bg-secondary relative flex min-h-[70svh] items-center overflow-hidden rounded-b-3xl px-6 pt-20 pb-16 md:min-h-screen md:pt-32 md:pb-20"
 >
   <canvas
     data-flow-field
@@ -33,11 +39,12 @@ const links = [
       flush to the column's right edge for 160px from the heading's top and
       covers every row below it.
 
-      The corner is 28px above the bar's slot and 260px to the right of it, so
-      the control crosses that width over the scroll the vertical gap sets
-      rather than traveling with the name. That is the arrival it is meant to
-      have. What the corner must not do is decide when the bar opens, which is
-      why `hero-handoff.ts` gates that on the name's travel alone. */}
+      The corner is 28px above the bar's slot and 216px to the right of it,
+      because it aligns to the viewport where the bar aligns to the content
+      column. `hero-handoff.ts` crosses that gap on the name's travel rather
+      than on the vertical one, so moving this anchor changes how far the
+      control has to go and not how long it takes. Below md the column is
+      wider than the viewport and the two coincide, so nothing crosses. */}
   <div data-hero-toggle-home class="absolute top-6 right-6 md:top-10 md:right-10">
     <ThemeToggle />
   </div>
