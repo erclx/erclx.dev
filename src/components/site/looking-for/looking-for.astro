@@ -163,9 +163,11 @@ const criteria = [
                 <dt class="text-muted-foreground group-hover:text-foreground text-label">
                   {item.label}
                 </dt>
-                <dd class="text-muted-foreground group-hover:text-foreground text-body">
-                  {item.value}
-                </dd>
+                {/* The value takes the label's size and the leading color, so
+                    the two columns hold one step and color alone separates the
+                    key from the answer. This is the pairing the experience
+                    beats already run, inverted here until 2026-08-19. */}
+                <dd class="text-foreground text-label">{item.value}</dd>
               </div>
             ))
           }
