@@ -124,15 +124,21 @@ The heading says landing page because the case-study routes take the opposite tr
 
 Prose runs 672px at 1280 and 832px at 1920, and the body scales with it from 17px to 22px. Both are clamps that hold today's values at 1280 and below and stop growing past 1920. Figures overhang the prose symmetrically, reaching 896px and 1216px at those widths, which takes the widest viewport from 35% content to 63%.
 
-The pair moves together because the column cannot widen alone. At 48rem the 17px body reads 86 characters, past the comfortable ceiling, where 48rem at 20px reads 74. Character count stays between 73 and 76 across the whole range, so the measure never drifts while the page fills out. The landing page is a separate case and is not touched here: it reads 86 characters at 768px and is queued rather than fixed, because its measure belongs to the type system `v2.3` owns.
+The pair moves together because the column cannot widen alone. Widening a column while the body stays put lengthens the line, which is the failure the trap below records reaching production once. The route holds 61.1ch at 768 and 1280 and 59.4ch at 1920, so the measure stays flat while the page fills out, which is what the pair buys.
+
+Both surfaces run about 90 characters to the line. Counted on the breaks the browser actually made, the route body averages 89 and the landing page 92, so the two agree within three characters and the gap an earlier draft of this entry described does not exist. What does hold is that 90 is past the comfortable ceiling near 75, on both surfaces rather than one. The route's pair keeps that count flat across the range rather than bringing it down, which is what the pair is for and is not the same as settling the measure.
+
+Two figures reached this entry before that one and neither survives. `86 characters against 73 to 76` came from dividing a column by an advance averaged over an alphabet including capitals, which are wider than the mix prose carries, so the divisor runs large and the count low. `65.5 to 69.8ch inside a 45 to 75 band` came from reading the right instrument against the wrong band: the band counts characters, and one `ch` is the advance of a zero. Measured here, running prose fits 1.32 characters per ch on the landing page and 1.46 on the route, so a column of 69.8ch carries 92 characters rather than 70.
+
+Count characters on real line breaks when the question is whether a surface sits inside the band, since that is the band's own unit. Read `ch` when the question is whether two columns are the same width, since it is text-independent where a character count is not. Neither reading answers the other's question, and an outcome was closed on one answering the other.
 
 The scoping mechanism is a `surface` prop on the layout that stamps a class on `body`, so the tokens reach the five project routes and nothing else. That indirection exists because of the trap below.
 
-`@theme inline` bakes a literal into the generated utility. A token declared as `--text-body: 1.0625rem` inside that block cannot be overridden by any downstream scope, because the utility carries the value rather than a reference to it. The first attempt at this scaled the column and left the body pinned at 17px, which produced 94 characters at 1920 and was worse than what it replaced. The color tokens escape this only because each resolves to a `var()` rather than to a literal, which is why `.dark .figure-plate` works. The two type steps now take the same form, resolving through `--body-size` and `--lede-size` declared in `:root`. A capture would not have caught this and the character measurement did.
+`@theme inline` bakes a literal into the generated utility. A token declared as `--text-body: 1.0625rem` inside that block cannot be overridden by any downstream scope, because the utility carries the value rather than a reference to it. The first attempt at this scaled the column and left the body pinned at 17px, which lengthened the line at 1920 and was worse than what it replaced. The color tokens escape this only because each resolves to a `var()` rather than to a literal, which is why `.dark .figure-plate` works. The two type steps now take the same form, resolving through `--body-size` and `--lede-size` declared in `:root`. A capture would not have caught this and the character measurement did.
 
 The prose and figure clamps carry different slopes, so their ratio drifts from 1.333 at 1280 to 1.462 at 1920. That is deliberate rather than an oversight. A constant 1.4 ratio would make the figure 941px at 1024, leaving 17px of gutter each side, where the drifting pair keeps the figure safe at the narrow end and generous at the wide one. Do not replace the two clamps with one ratio without re-checking 1024.
 
-Measured at d5d7723 on 2026-08-18.
+Measured at 101faed on 2026-08-19.
 
 ### A promoted control is measured against the settled page
 
@@ -144,7 +150,9 @@ A `type="module"` script does not block on pending stylesheets the way a parser-
 
 The hero then reveals by translating its rows 16px into place, and a fixed copy placed at the settled position hangs off the row for the length of that. Placement waits for the transform to rest, which leaves the resize path as the one caller that can still land mid-reveal, so the reads discount the reveal's own offset.
 
-The toggle's home slot centres on its row by offsetting half its own height and hangs off the column's right edge, so once the control is promoted away the slot collapses to a point 22px low and 44px right. Every re-measure after the first read that empty box. The control is returned to its home for the reading rather than the slot being given a reserved size, so the control's own box stays the one source of the hero position.
+The toggle's home slot holds no size of its own, so once the control is promoted away the slot collapses to a point and every re-measure after the first reads that empty box. The control is returned to its home for the reading rather than the slot being given a reserved size, so the control's own box stays the one source of the hero position.
+
+That home is the header's own corner rather than a text row. The greeting moved under the name on 2026-08-19, and the portrait floats flush to the column's right edge for 160px from the heading's top, so no row under the name has a free right side to centre a control against.
 
 Neither condition placement waits on is guaranteed to arrive. A stalled subresource holds readiness open, and the reveal is driven by an observer in `projects.astro` that does nothing without `IntersectionObserver`. The wait therefore gives up after three seconds and places the control anyway, rather than spinning a frame callback for the life of the page and leaving the bar's slot empty.
 
@@ -152,7 +160,13 @@ Measurement needs no scrolling. An element in flow states its position at rest a
 
 The bar's reveal keys to half the hero rather than half the viewport. A hero shorter than half the viewport clears a viewport-keyed margin without being scrolled at all, which at 390x844 put the bar on screen carrying the name while the reader was still looking at the hero carrying it. Reading the intersection ratio keys the same moment to the hero's own height and needs nothing measured. The rail still uses the viewport-keyed form and agrees with this wherever it is visible, since the hero holds the full viewport height from md up.
 
-Verified at 1280x720 and 390x844 across chromium, firefox, and webkit on 2026-08-19.
+Both controls run on the name's travel, and the bar's arrival gate reads that one distance. A control carries its own travel only where that travel describes the move a reader sees. The toggle's corner sits 28px above the bar's slot and 216px to the right of it, because the corner aligns to the viewport where the bar aligns to the content column, so its own vertical distance is the wrong clock twice over: driving the crossing off 28px sent the control across the page inside a thumb's worth of scroll, and gating the bar on the same 28px opened it after 28 pixels while the name was still 300 down the hero. Taking whichever control landed first was the earlier form and it fails the same way, since the nearer distance is the one that describes nothing. At 390 the column is wider than the viewport, the two anchors coincide, and nothing crosses at all.
+
+The toggle interpolates its position rather than riding the scroll. Riding it, as the name does, lands the control after those same 28px whatever the progress clock says, which is the same defect reached by another route.
+
+`measure` reads the name's geometry whether or not the name flies, and the visual takeover of the real name is a separate call. The two were one function, skipped together under reduced motion, which left the distance at its default of 1 once the toggle and the gate began reading it and snapped everything on the first pixel scrolled.
+
+Verified at 1280x800 and 390x844 across chromium, firefox, and webkit at f10cfb7 on 2026-08-19.
 
 ### Cross-engine defects ship, because CI runs one engine
 

@@ -46,10 +46,9 @@ I spend most of my working day with coding agents...
  ┊     Where the modelling habits came from, before any of this was
  ┊     software.
        ← rail fades out below the oldest dot
-
-    Each entry made the next one possible.
-              — Fraunces italic, label size
 ```
+
+The list opens on `Newest first.` in Fraunces italic at label size, which is the one thing the beats cannot state for themselves: they run 2026 backwards and a reader arriving from prose assumes the reverse.
 
 ## Behavior
 
@@ -61,7 +60,7 @@ I spend most of my working day with coding agents...
 - A span carries months rather than a year alone, because a year read as twelve months of work where the record held six.
 - One row is highlighted at a time as the "current state" anchor. The first row is highlighted by default. Hovering another row transfers the highlight to it. On leaving the list the highlight walks back row by row to the first row.
 - The highlighted dot fills with the warm accent and carries a soft ring, so one warm point marks where the reader is on a timeline that is otherwise muted. The rail marker in `section-nav.md` states position the same way and takes the same color.
-- The closing kicker line sits below the timeline in Fraunces italic, muted, bridging the timeline into a single narrative thought without competing with the rows.
+- The framing line sits above the timeline rather than below it, and states the reading order rather than a thought about the path. `each entry made the next one possible` closed the list until 2026-08-19 and came out on the operator's call: an aphorism about a career makes a claim no record can check, which is the register that reads as machine-written. A line describing the list is the page's to write and a line speaking for the person is not.
 
 ## Artifact chips
 

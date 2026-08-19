@@ -101,7 +101,19 @@ const artifacts = [
       }
     </div>
 
-    <div class="experience-stage mt-10 lg:mt-14">
+    {/* The one thing the list cannot state for itself: the beats run newest
+        first and a reader arriving from prose assumes the reverse. It says
+        nothing about the person, which is what keeps it out of the register
+        that made the line under this list read as written by a machine. */}
+    <p
+      data-fade
+      style="--fade-delay: 400ms"
+      class="font-display text-label text-muted-foreground mt-10 max-w-xl italic lg:mt-14"
+    >
+      Newest first.
+    </p>
+
+    <div class="experience-stage mt-6">
       <ol class="experience-list flex flex-col">
         {
           history.map((entry, idx) => (
@@ -109,7 +121,7 @@ const artifacts = [
               data-fade
               data-default-active={entry.current ? 'true' : undefined}
               aria-current={entry.current ? 'step' : undefined}
-              style={`--fade-delay: ${150 + idx * 100}ms`}
+              style={`--fade-delay: ${500 + idx * 100}ms`}
               class="experience-row text-body grid grid-cols-[3.25rem_1fr] items-start"
             >
               <span class="experience-gutter" aria-hidden="true">
@@ -147,13 +159,6 @@ const artifacts = [
         }
       </ol>
     </div>
-    <p
-      data-fade
-      style="--fade-delay: 750ms"
-      class="font-display text-label text-muted-foreground mt-10 max-w-xl italic"
-    >
-      Each entry made the next one possible.
-    </p>
   </div>
 </section>
 

@@ -4,9 +4,122 @@ const paragraphs = [
   'Outside work I listen to a lot of music, enough that one year it added up to over 4,000 hours, and I have played guitar since I was twelve. Otherwise I try to get some calisthenics in, or play tennis and badminton when the weather allows.',
   'Most summers I travel, lately London, Copenhagen, Prague, and Hanoi.',
 ]
+
+// Swept-wing airliner seen from above, pointing right, symmetric about y=30.
+// Drawn here rather than sourced, since the repository carries no icon set and
+// a single figure does not earn one.
+const PLANE_PATH = [
+  'M114 30',
+  'C100 26 88 25 72 25',
+  'L48 3 L40 5 L58 26',
+  'L26 27 L14 11 L7 13 L18 28',
+  'L6 30',
+  'L18 32 L7 47 L14 49 L26 33',
+  'L58 34 L40 55 L48 57 L72 35',
+  'C88 35 100 34 114 30 Z',
+].join(' ')
+
+// One cubic from off the left edge to where the aircraft comes to rest. The
+// shape lives here rather than emerging from two transforms disagreeing about
+// their easings, which is what produced a glide followed by a dive. Both the
+// aircraft and its contrail read this string, so they cannot drift apart.
+const FLIGHT_PATH = 'M -70 8 C 190 12 430 26 690 41'
 ---
 
-<section id="about" data-section="about" class="px-6 pt-16 pb-20 md:pt-20">
+<section
+  id="about"
+  data-section="about"
+  class="relative px-6 pt-16 pb-20 md:pt-20"
+>
+  {/* The figure arrives rather than sits. The surface is specified as prose
+      alone because a second image would compete with the portrait a reader met
+      seconds earlier, and a mark that flies in, settles, and then holds still
+      makes a quieter claim than one that is simply placed there.
+
+      What it draws is the one thing both ends of the paragraph share. The first
+      sentence arrives from Vietnam and the last one leaves most summers, where
+      a map of Sweden answered only the middle and put three towns in a corner
+      of an otherwise empty country.
+
+      It rests rather than exits, which is the pattern the character in the
+      closing ask already sets: a figure on this page arrives and stays. It
+      rests beside the heading rather than above it, because the band above is
+      where the sticky bar lands when a reader jumps here from the rail. */}
+  <div class="about-flight" aria-hidden="true">
+    <div class="about-flight-track">
+      {/* Drawn in the flight's own coordinates rather than in pixels, so the
+          curve scales with the column instead of overshooting it on a narrow
+          screen. */}
+      <svg
+        class="about-flight-stage"
+        viewBox="0 0 768 104"
+        preserveAspectRatio="xMaxYMid meet"
+      >
+        <defs>
+          <filter
+            id="about-flight-blur"
+            x="-10%"
+            y="-60%"
+            width="120%"
+            height="220%"
+          >
+            <feGaussianBlur stdDeviation="3.2"></feGaussianBlur>
+          </filter>
+          {/* Vapour thins where it stands rather than sliding forward, so
+              what fades the trail is a window that travels with the aircraft.
+              Air further back than the window has gone to nothing on its own,
+              which is what gives the trail a length without anything being
+              shortened. */}
+          <linearGradient
+            id="about-flight-decay"
+            gradientUnits="userSpaceOnUse"
+            x1="-300"
+            y1="0"
+            x2="0"
+            y2="0"
+          >
+            <stop offset="0" stop-color="black"></stop>
+            <stop offset="0.5" stop-color="#5a5a5a"></stop>
+            <stop offset="1" stop-color="white"></stop>
+          </linearGradient>
+          <mask id="about-flight-decay-mask">
+            <rect
+              class="about-flight-window"
+              x="-300"
+              y="-80"
+              width="1200"
+              height="280"
+              fill="url(#about-flight-decay)"></rect>
+          </mask>
+        </defs>
+
+        {/* The contrail traces the same curve the aircraft flies, so it bends
+            with the path rather than lying flat behind a climbing figure. It is
+            a dash the same length throughout, moved along by its own offset, so
+            it stays a trail behind the aircraft rather than a route drawn in
+            across the whole section. */}
+        <path
+          class="about-flight-trail"
+          d={FLIGHT_PATH}
+          pathLength="100"
+          fill="none"
+          stroke="currentColor"
+          stroke-opacity="0.4"
+          stroke-width="5"
+          stroke-linecap="round"
+          filter="url(#about-flight-blur)"
+          mask="url(#about-flight-decay-mask)"></path>
+
+        <g class="about-flight-craft" style={`--flight-path: path("${FLIGHT_PATH}")`}>
+          <path
+            d={PLANE_PATH}
+            fill="currentColor"
+            transform="translate(-27 -13.5) scale(0.45)"></path>
+        </g>
+      </svg>
+    </div>
+  </div>
+
   <div class="mx-auto max-w-3xl">
     <h2
       data-fade
@@ -30,3 +143,285 @@ const paragraphs = [
     </div>
   </div>
 </section>
+
+<style>
+  .about-flight {
+    position: absolute;
+    inset: 2.75rem 1.5rem auto;
+    height: 6.5rem;
+    pointer-events: none;
+    /* The character's own value, from the same upstream artwork the accent was
+       derived from, so the two figures read as one language rather than as two
+       unrelated marks. */
+    color: #d4a574;
+  }
+
+  /* The track carries the page measure, so the aircraft comes to rest at the
+     column's right edge rather than the viewport's. It also clips: the curve
+     begins outside the column and the stage does not clip its own overflow, so
+     without this the aircraft waits in the page margin in full view of a reader
+     who has not scrolled far enough to trigger it. */
+  .about-flight-track {
+    position: relative;
+    margin-inline: auto;
+    width: 100%;
+    max-width: 48rem;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .about-flight-stage {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* Parked off the curve's start until the section arrives, so nothing sits in
+     the band on a page the reader has not reached. */
+  .about-flight-craft {
+    offset-path: var(--flight-path);
+    /* The angle comes off the tangent, so the nose follows the descent instead
+       of being animated to a figure that has to agree with it. */
+    offset-rotate: auto;
+    offset-distance: 0%;
+  }
+
+  /* `pathLength` normalizes the curve to 100, so every figure below is a
+     percentage of the flight and holds at any column width. */
+  /* The tail is pinned at the start of the flight and never moves, so nothing
+     about the trail is ever taken back. Only its head advances. */
+  .about-flight-trail {
+    stroke-dasharray: 0 100;
+    stroke-dashoffset: 0;
+    opacity: 0.75;
+  }
+
+  .about-flight-window {
+    transform: translateX(-70px);
+  }
+
+  /* One motion, one easing. The curve owns the shape and the timing function
+     owns the speed, so the approach slows into its landing without the path
+     bending anywhere it did not already bend. */
+  .about-flight[data-flight='true'] .about-flight-craft {
+    animation: about-flight-run 2000ms cubic-bezier(0.45, 0.05, 0.35, 1) both;
+  }
+
+  .about-flight[data-flight='true'] .about-flight-trail {
+    animation: about-flight-draw 2000ms linear both;
+  }
+
+  .about-flight[data-flight='true'] .about-flight-window {
+    animation: about-flight-window 2000ms linear both;
+  }
+
+  @keyframes about-flight-run {
+    from {
+      offset-distance: 0%;
+    }
+    to {
+      offset-distance: 100%;
+    }
+  }
+
+  /* The dash travels at the rate the aircraft does, since both run on the same
+     curve and the same easing. It settles rather than clears, leaving a trace
+     of where the thing came from without the hard line a drawn route makes. */
+  /* Both sets are sampled from the aircraft's easing rather than written,
+     because a timing function applies per keyframe interval rather than across
+     an animation: a multi-step trail and a two-step aircraft would compute
+     their positions on different curves and drift apart. Evaluating the
+     aircraft's curve once and pinning everything to it leaves these running
+     linear, since the shape is already in the numbers.
+
+     The head holds 6% of the flight behind the aircraft. Measured, the curve
+     runs 760.8 units and the aircraft renders 48.6 wide, so half of it is 3.2%
+     of the flight, and a head closer than that draws inside the tail. */
+  @keyframes about-flight-draw {
+    0% {
+      stroke-dasharray: 0.0 100;
+    }
+    6.25% {
+      stroke-dasharray: 0.0 100;
+    }
+    12.5% {
+      stroke-dasharray: 0.0 100;
+    }
+    18.75% {
+      stroke-dasharray: 3.4 100;
+    }
+    25% {
+      stroke-dasharray: 11.0 100;
+    }
+    31.25% {
+      stroke-dasharray: 21.7 100;
+    }
+    37.5% {
+      stroke-dasharray: 34.8 100;
+    }
+    43.75% {
+      stroke-dasharray: 48.6 100;
+    }
+    50% {
+      stroke-dasharray: 60.8 100;
+    }
+    56.25% {
+      stroke-dasharray: 70.7 100;
+    }
+    62.5% {
+      stroke-dasharray: 78.3 100;
+    }
+    68.75% {
+      stroke-dasharray: 83.9 100;
+    }
+    75% {
+      stroke-dasharray: 88.0 100;
+    }
+    81.25% {
+      stroke-dasharray: 90.9 100;
+    }
+    87.5% {
+      stroke-dasharray: 92.7 100;
+    }
+    93.75% {
+      stroke-dasharray: 93.7 100;
+    }
+    100% {
+      stroke-dasharray: 94.0 100;
+    }
+  }
+
+  /* The window's leading edge is the aircraft's own position along the curve,
+     read off the arc length rather than the curve's parameter, which are not
+     the same walk. */
+  @keyframes about-flight-window {
+    0% {
+      transform: translateX(-70.0px);
+    }
+    6.25% {
+      transform: translateX(-59.6px);
+    }
+    12.5% {
+      transform: translateX(-37.0px);
+    }
+    18.75% {
+      transform: translateX(1.3px);
+    }
+    25% {
+      transform: translateX(59.6px);
+    }
+    31.25% {
+      transform: translateX(140.7px);
+    }
+    37.5% {
+      transform: translateX(240.5px);
+    }
+    43.75% {
+      transform: translateX(344.8px);
+    }
+    50% {
+      transform: translateX(437.9px);
+    }
+    56.25% {
+      transform: translateX(513.0px);
+    }
+    62.5% {
+      transform: translateX(570.6px);
+    }
+    68.75% {
+      transform: translateX(613.4px);
+    }
+    75% {
+      transform: translateX(644.5px);
+    }
+    81.25% {
+      transform: translateX(666.1px);
+    }
+    87.5% {
+      transform: translateX(680.0px);
+    }
+    93.75% {
+      transform: translateX(687.7px);
+    }
+    100% {
+      transform: translateX(690.0px);
+    }
+  }
+
+  /* The landed state, reached without the approach. A reader whose arrival
+     puts the band under the bar gets the figure where it comes to rest rather
+     than nothing at all, which is what the flight would have left behind
+     anyway. The values are the last keyframe of each animation above. */
+  .about-flight[data-flight='settled'] .about-flight-craft {
+    offset-distance: 100%;
+  }
+
+  .about-flight[data-flight='settled'] .about-flight-trail {
+    stroke-dasharray: 94 100;
+  }
+
+  .about-flight[data-flight='settled'] .about-flight-window {
+    transform: translateX(690px);
+  }
+
+  /* Nothing renders at all under a reduced-motion preference, which leaves the
+     surface as the prose-only section it is specified to be. The figure
+     carries no information, so there is nothing to substitute for it. */
+  @media (prefers-reduced-motion: reduce) {
+    .about-flight {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const band = document.querySelector<HTMLElement>('.about-flight')
+  const section = document.querySelector<HTMLElement>('[data-section="about"]')
+
+  // The band sits near the section's top edge, and a reader arriving from the
+  // rail lands with that edge pinned under the sticky bar.
+  const bar = document.querySelector<HTMLElement>('[data-site-bar]')
+
+  if (band && section) {
+    // The surface reaches one of two end states and never a third. It flies
+    // when the band is in clear air, and it is simply there, already landed,
+    // when it is not. An earlier gate declined the second case and left the
+    // figure unrendered: a reader arriving from the rail lands with the band
+    // under the bar, and scrolling on only carries the band further up and
+    // out, so the approach it was waiting for could never come.
+    const arrived = () => {
+      const box = section.getBoundingClientRect()
+      if (box.height === 0) return false
+      const shown =
+        Math.min(box.bottom, window.innerHeight) - Math.max(box.top, 0)
+      return shown / box.height >= 0.35
+    }
+
+    // Read against the bar's own box rather than a figure repeating it, so the
+    // two cannot drift apart.
+    const inClearAir = () =>
+      band.getBoundingClientRect().top >=
+      (bar?.getBoundingClientRect().bottom ?? 0)
+
+    let frame: number | null = null
+    const stop = () => {
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+    }
+    const check = () => {
+      frame = null
+      if (!arrived()) return
+      band.dataset.flight = inClearAir() ? 'true' : 'settled'
+      stop()
+    }
+    function schedule() {
+      if (frame !== null) return
+      frame = window.requestAnimationFrame(check)
+    }
+
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    check()
+  }
+</script>
