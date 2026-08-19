@@ -149,8 +149,11 @@ test('the theme toggle centres on the hero line it shares a row with', async ({
     const line = document
       .querySelector('[data-hero-line]')
       ?.getBoundingClientRect()
+    // The toggle is promoted out of the header into a fixed host so one
+    // control serves the hero and the bar, so it is found by its own hook
+    // rather than by where it happens to sit.
     const toggle = document
-      .querySelector('header button')
+      .querySelector('[data-theme-toggle]')
       ?.getBoundingClientRect()
     if (!line || !toggle) return Number.NaN
     const lineCenter = (line.top + line.bottom) / 2

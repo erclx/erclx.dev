@@ -211,22 +211,31 @@ test('a case study opened directly still links home', async ({ page }) => {
   await expect(page).toHaveURL('/')
 })
 
-for (const route of CASE_STUDY_ROUTES) {
-  test(`the top bar on ${route} sits at the same measure as the prose`, async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1280, height: 900 })
+test('the navigation bar holds one measure across every surface', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  const widths: number[] = []
+
+  await page.goto('/')
+  widths.push(
+    (await page.locator('[data-site-bar] > div').boundingBox())?.width ?? 0,
+  )
+
+  for (const route of CASE_STUDY_ROUTES) {
     await page.goto(route)
+    widths.push(
+      (await page.locator('header[data-section="header"] > div').boundingBox())
+        ?.width ?? 0,
+    )
+  }
 
-    const bar = await page.locator('header > div').boundingBox()
-    const column = await page
-      .locator('main section > div')
-      .first()
-      .boundingBox()
-
-    expect(Math.abs((bar?.width ?? 0) - (column?.width ?? 0))).toBeLessThan(2)
-  })
-}
+  // The bar is the one element that persists across a navigation, so it holds
+  // its shape rather than tracking the prose beneath it, which is fluid on a
+  // route and varies per section on the landing page.
+  expect(Math.min(...widths)).toBeGreaterThan(0)
+  expect(Math.max(...widths) - Math.min(...widths)).toBeLessThan(2)
+})
 
 test('a figure plate holds a light ground in the dark theme', async ({
   page,

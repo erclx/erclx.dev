@@ -1,0 +1,79 @@
+---
+import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
+
+interface Props {
+  // The route names itself, so a reader arriving from a shared link knows
+  // where they are rather than only how to leave.
+  here: string
+}
+
+const { here } = Astro.props
+---
+
+{/* The stylesheet makes this bar sticky, so it is the way home for the whole
+    scroll rather than the first 77px. Its column matches the one the landing
+    page's bar uses, so the chrome holds its shape across a navigation even
+    though the prose under it is a different width. */}
+<header data-section="header" class="px-6">
+  <div
+    class="border-border/60 mx-auto flex max-w-3xl items-center justify-between border-b py-4"
+  >
+    <a
+      href="/"
+      data-way-home
+      class="text-foreground text-label inline-flex min-h-11 items-center underline-offset-4 hover:underline"
+    >
+      Eric Le
+    </a>
+    {/* The name states where the reader is only once the page has stopped
+        stating it. Both on screen together covers the first screen of every
+        route, which is the duplication this closes. */}
+    <span
+      data-route-here
+      class="text-muted-foreground text-label truncate px-4"
+      aria-hidden="true">{here}</span
+    >
+    <ThemeToggle />
+  </div>
+</header>
+
+<style>
+  [data-route-here] {
+    opacity: 0;
+  }
+  [data-route-here][data-shown='true'] {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-route-here] {
+      transition: opacity 200ms ease-out;
+    }
+  }
+</style>
+
+<script>
+  const here = document.querySelector<HTMLElement>('[data-route-here]')
+  const title = document.querySelector<HTMLElement>('main h1')
+
+  if (here && title && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            here.removeAttribute('data-shown')
+          } else {
+            here.setAttribute('data-shown', 'true')
+          }
+        }
+      },
+      // The bar sits over the top of the page, so the title counts as gone
+      // once it passes behind the bar rather than once it clears the viewport.
+      { threshold: 0, rootMargin: '-77px 0px 0px 0px' },
+    )
+    observer.observe(title)
+  } else if (here) {
+    // Without an observer the name is the more useful of the two states, since
+    // a reader deep in a route has no other answer to where they are.
+    here.setAttribute('data-shown', 'true')
+  }
+</script>

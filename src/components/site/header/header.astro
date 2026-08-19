@@ -41,7 +41,10 @@ const links = [
           <p data-hero-line class="text-muted-foreground text-label">
             Welcome, this is my corner of the internet.
           </p>
-          <div class="absolute top-1/2 right-0 -translate-y-1/2">
+          <div
+            data-hero-toggle-home
+            class="absolute top-1/2 right-0 -translate-y-1/2"
+          >
             <ThemeToggle />
           </div>
         </div>
@@ -62,7 +65,10 @@ const links = [
               data-portrait
               class="border-border/60 bg-muted float-right ml-6 size-20 rounded-full border object-cover md:size-28 lg:size-40"
             />
-            Eric Le
+            {/* Only the text travels into the sticky bar. The portrait floats
+                inside this heading and stays with the hero, so the name is its
+                own element rather than the whole line. */}
+            <span data-hero-name>Eric Le</span>
           </h1>
         </div>
         <div data-fade style="--fade-delay: 300ms">

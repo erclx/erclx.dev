@@ -80,6 +80,20 @@
   }
 }
 
+/* A route's own top bar is the sticky one rather than a second control above
+   it, so a reader deep in a long route always has a way home. The landing page
+   has no such bar and mounts one instead. */
+body.surface-case-study > header[data-section='header'] {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  /* Near-opaque rather than lightly tinted. Prose passing under a bar much
+     below this reads through it as ghost text, which looks like a rendering
+     fault rather than a translucent surface. */
+  background-color: color-mix(in oklab, var(--background) 96%, transparent);
+  backdrop-filter: blur(12px);
+}
+
 /* A case-study route scales its measure and its body together with the
    viewport, so a wide screen carries a page rather than a narrow column inside
    an empty one. The pair moves as one because widening the column alone pushes

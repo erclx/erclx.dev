@@ -1,0 +1,152 @@
+---
+---
+
+{/* The flyer carries the name from the hero to the bar. It renders at the
+    hero's own size and scales down as it travels, so it lands crisp at the size
+    the bar holds. Hidden until the handoff script measures it, which keeps the
+    no-JS path on the hero's real heading. */}
+<span
+  data-hero-flyer
+  aria-hidden="true"
+  class="font-display text-display text-foreground pointer-events-none fixed top-0 left-0 z-40 origin-top-left"
+  style="visibility: hidden"
+>
+  Eric Le
+</span>
+
+{/* The single theme toggle rides here once the handoff promotes it, so one
+    control serves the hero and the bar rather than two where only the first
+    in the document is ever wired. */}
+<div
+  data-toggle-host
+  class="fixed top-0 left-0 z-40"
+  style="visibility: hidden"
+>
+</div>
+
+<div
+  data-site-bar
+  class="border-border/60 bg-background/96 fixed inset-x-0 top-0 z-30 border-b px-6 backdrop-blur-md"
+>
+    {/* The bar's contents sit in the same column the hero uses, on every
+      surface, so the chrome never resizes when a reader moves between the
+      landing page and a route. That also lands the name where it started, so
+      the travel is vertical and nothing drifts sideways. */}
+  <div class="mx-auto flex max-w-3xl items-center justify-between py-3">
+    {/* The slot is where the traveling name lands, and it is the control the
+        landed name becomes. It renders its own text to hold the box and the
+        type size the flyer scales to, and paints that text transparent because
+        the flyer is the glyph a reader sees. In the hero the name is a heading
+        and nothing else, so this only answers once the bar is revealed and the
+        bar's `inert` lifts with it. */}
+    <button
+      type="button"
+      data-bar-name-slot
+      data-to-top
+      class="text-foreground text-label inline-flex min-h-11 cursor-pointer items-center rounded-sm"
+    >
+      Eric Le
+    </button>
+    {/* The toggle the page renders is the hero's own, moved into the fixed
+        host below once the handoff runs. This slot reserves the space it lands
+        in so the bar's row never reflows when it arrives. */}
+    <span data-bar-toggle-slot class="inline-block size-11" aria-hidden="true"
+    ></span>
+  </div>
+</div>
+
+<style>
+  /* The bar arrives once the reader is into the content, matching the rail's
+     own gate so the two never appear apart. */
+  [data-site-bar] {
+    opacity: 0;
+    pointer-events: none;
+  }
+  [data-site-bar][data-revealed='true'] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-site-bar] {
+      transition: opacity 200ms ease-out;
+    }
+  }
+  /* The slot renders its text so it carries the right box, and hides it so the
+     flyer is the only name on screen. Without motion the flyer never runs, so
+     the slot is what the reader sees. */
+  [data-bar-name-slot] {
+    color: transparent;
+  }
+  /* The flyer is the glyph a reader sees and the slot beneath it is the hit
+     area, so the affordance has to be moved onto the flyer by hand. Without
+     this the name is a control that never reacts to the pointer over it. */
+  [data-hero-flyer][data-hot='true'] {
+    text-decoration: underline;
+    text-underline-offset: 0.12em;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-bar-name-slot] {
+      color: var(--foreground);
+    }
+  }
+</style>
+
+<script>
+  import { initHeroHandoff } from './hero-handoff'
+
+  const bar = document.querySelector<HTMLElement>('[data-site-bar]')
+  const hero = document.querySelector<HTMLElement>('[data-section="header"]')
+
+  // The bar is inert until it arrives, so the name inside it never takes focus
+  // while a reader is still in the hero and the control is not on screen.
+  const setRevealed = (revealed: boolean) => {
+    if (!bar) return
+    if (revealed) {
+      bar.setAttribute('data-revealed', 'true')
+      bar.removeAttribute('inert')
+    } else {
+      bar.removeAttribute('data-revealed')
+      bar.setAttribute('inert', '')
+    }
+  }
+
+  const toTop = bar?.querySelector<HTMLElement>('[data-to-top]')
+  const flyer = document.querySelector<HTMLElement>('[data-hero-flyer]')
+
+  const setHot = (hot: boolean) => {
+    if (!flyer) return
+    if (hot) flyer.setAttribute('data-hot', 'true')
+    else flyer.removeAttribute('data-hot')
+  }
+
+  toTop?.addEventListener('pointerenter', () => setHot(true))
+  toTop?.addEventListener('pointerleave', () => setHot(false))
+  toTop?.addEventListener('focus', () => setHot(true))
+  toTop?.addEventListener('blur', () => setHot(false))
+
+  toTop?.addEventListener('click', () => {
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' })
+  })
+
+  if (bar) {
+    setRevealed(false)
+    if (!hero) {
+      setRevealed(true)
+    } else if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            setRevealed(!entry.isIntersecting)
+          }
+        },
+        { threshold: 0, rootMargin: '-50% 0px 0px 0px' },
+      )
+      observer.observe(hero)
+    } else {
+      setRevealed(true)
+    }
+  }
+
+  initHeroHandoff()
+</script>
