@@ -8,7 +8,10 @@ export const mountConfig = {
   degradedPixelRatio: 1,
   lowEndConcurrency: 4,
   lowEndFps: 30,
-  cursorEase: 0.12,
+  // Per frame, so the pointer term reaches most of its travel in about half a
+  // second rather than an eighth of one. The faster value made the raised hill
+  // dart to the cursor, which reads as reacting rather than responding.
+  cursorEase: 0.045,
   contentPadding: 12,
   perfWindowMs: 2000,
   perfFloorFps: 45,

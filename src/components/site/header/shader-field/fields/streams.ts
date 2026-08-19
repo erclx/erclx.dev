@@ -1,39 +1,59 @@
 import type { FieldFrame, FieldSpec, UniformLocations } from '../field'
-import { columnBlock, noiseBlock, precisionBlock } from './prelude'
+import { columnBlock, noise3Block, noiseBlock, precisionBlock } from './prelude'
 
 export const streamsConfig = {
-  // Cycles of the stream function across the band's width rather than a fixed
-  // wavelength, so a phone meets the same composition a desktop does.
   fieldCyclesAcross: 2.2,
-  // Contours drawn per unit of the stream function. The function runs about
-  // plus or minus 0.7, so this is roughly the line count across the band.
   lineCount: 13,
   lineHalfWidth: 0.85,
   edgeSoftness: 0.6,
-  // The domain travels rather than the lines being advected along themselves,
-  // which is what a contour of a moving field does and costs one addition.
-  driftX: 0.026,
-  driftY: -0.014,
-  // A forward difference over one CSS pixel. The gradient converts a distance
-  // in stream-function units into one in pixels, which is what holds the lines
-  // at an even width where the field steepens.
   gradientStep: 1,
-  // A second slow field rides over the lines so a ribbon brightens and fades as
-  // it travels, rather than every line holding one value for the whole loop.
+
+  /**
+   * Rate along the noise's third axis. Time is an axis of the field rather than
+   * a translation of where it is sampled, so the contours form and dissolve
+   * where they stand instead of being carried past the viewport. A drift vector
+   * is what reads as a current running one way, and this surface carries none.
+   *
+   * The value is a pace rather than a preference. The fastest term on the
+   * surface is the sheen below, whose screen velocity is its drift over its
+   * scale: 0.13px per second here, and the pattern renews over roughly two
+   * minutes. Ambient motion detected without a reference to judge it against
+   * sits near 0.1 to 0.3 degrees per second, which is about 4 to 11px per
+   * second at a desk. Anything in that band pulls the eye without rewarding it,
+   * which is what an earlier ten-times-faster setting did. This runs an order
+   * of magnitude under it, so the band reads as alive rather than as watchable.
+   */
+  evolveRate: 0.0075,
+
   sheenCyclesAcross: 1.1,
-  sheenDriftX: 0.05,
-  sheenDriftY: 0.018,
+  // A slow brightness wash over the contours. Its rate was once set apart from
+  // the field's and ran four times faster, which made it the fastest thing on
+  // the surface and the one a reader actually tracked.
+  sheenDriftX: 0.0011,
+  sheenDriftY: 0.0004,
   sheenDepth: 0.35,
+
   contentPadding: 12,
   contentFeather: 90,
   contentDamp: 0.4,
   contentRevealDamp: 0.7,
-  // The pointer adds a bump to the stream function, so contours bend around it
-  // the way a flow bends around an obstacle. Depth is in stream-function units.
+
+  // The pointer raises a hill in the stream function, and the lighting below
+  // then picks out its flanks, so the surface reads as displaced rather than
+  // recolored under the cursor.
   cursorRadius: 230,
-  cursorDepth: 0.16,
+  bumpDepth: 0.34,
   revealRadius: 230,
   revealTint: 0.85,
+
+  // The gradient runs small in field units per pixel, so the normal needs
+  // scaling before it tilts far enough off vertical to shade anything.
+  reliefScale: 420,
+  heightTint: 0.7,
+  // Up and to the left, tilted out of the plane. A light along an axis makes
+  // every ridge running that way vanish, which reads as a rendering fault.
+  lightDirection: [-0.55, 0.68, 0.48] as const,
+
   // Cream on near-black reads dimmer than near-black on cream at one alpha, so
   // each theme carries its own rather than deriving from the other.
   lightAlpha: 0.62,
@@ -46,7 +66,7 @@ const fragmentSource = `
 ${precisionBlock}
 
 uniform float uPixelRatio;
-uniform vec2 uDrift;
+uniform float uEvolve;
 uniform float uFieldScale;
 uniform float uLineCount;
 uniform float uLineHalfWidth;
@@ -58,7 +78,10 @@ uniform float uSheenDepth;
 uniform vec2 uCursor;
 uniform float uCursorStrength;
 uniform float uCursorRadius;
-uniform float uCursorDepth;
+uniform float uBumpDepth;
+uniform vec3 uLightDirection;
+uniform float uReliefScale;
+uniform float uHeightTint;
 uniform float uRevealRadius;
 uniform float uRevealTint;
 uniform float uRevealAlpha;
@@ -69,23 +92,16 @@ uniform float uContentDamp;
 uniform float uContentRevealDamp;
 
 ${noiseBlock}
+${noise3Block}
 ${columnBlock}
 
-// The pointer raises a smooth bump in the stream function. Contours of a field
-// plus a bump bend around it, so the flow parts at the cursor rather than the
-// lines being pushed sideways by a displacement term.
-float cursorBump(vec2 px) {
-  float d = distance(px, uCursor) / uCursorRadius;
-  return uCursorStrength * uCursorDepth * exp(-d * d);
-}
-
-// Two octaves rather than three. The gradient below costs two more evaluations
-// of this function, so an octave here is three octaves of cost per pixel.
 float streamFunction(vec2 px) {
-  vec2 q = px * uFieldScale + uDrift;
-  float sum = gradientNoise(q) * 0.65;
-  sum += gradientNoise(q * 2.17 + 13.7) * 0.35;
-  return sum + cursorBump(px);
+  vec3 q = vec3(px * uFieldScale, uEvolve);
+  float sum = gradientNoise3(q) * 0.65;
+  sum += gradientNoise3(q * 2.17 + 13.7) * 0.35;
+
+  float r = distance(px, uCursor) / uCursorRadius;
+  return sum + uBumpDepth * uCursorStrength * exp(-r * r);
 }
 
 void main() {
@@ -117,6 +133,17 @@ void main() {
       distancePx
     );
 
+  // The same gradient that evens the line width is the surface normal of the
+  // field read as a height map, so lighting it costs no extra sampling.
+  vec3 normal = normalize(vec3(-gradient * uReliefScale, 1.0));
+  float lambert = clamp(dot(normal, normalize(uLightDirection)), 0.0, 1.0);
+  float relief = 0.35 + 1.25 * lambert;
+
+  // Height read off the field itself, so low ground sits back from high ground
+  // where the lighting happens to run edge-on and states nothing.
+  float height = clamp(psi * 1.4 + 0.5, 0.0, 1.0);
+  float depth = mix(1.0, 0.55 + 0.65 * height, uHeightTint);
+
   float sheen = gradientNoise(px * uSheenScale + uSheenDrift);
   float travel = mix(1.0 - uSheenDepth, 1.0, 0.5 + 0.5 * sheen);
 
@@ -129,19 +156,20 @@ void main() {
   // The resting field and the reveal damp by different amounts. One value for
   // both leaves a lit line dimmer than the ambient field around it, so the
   // reveal disappears exactly where a reader's pointer spends its time.
-  float restAlpha = uAlpha * travel * mix(1.0, uContentDamp, column);
+  float restAlpha =
+    uAlpha * travel * relief * depth * mix(1.0, uContentDamp, column);
   float liftAlpha = uRevealAlpha * mix(1.0, uContentRevealDamp, column);
 
   vec3 tone = mix(uColor, uAccent, reveal * uRevealTint);
   float alpha = mix(restAlpha, liftAlpha, reveal);
 
-  gl_FragColor = vec4(tone, alpha * coverage);
+  gl_FragColor = vec4(tone, clamp(alpha, 0.0, 1.0) * coverage);
 }
 `
 
 const uniformNames = [
   'uPixelRatio',
-  'uDrift',
+  'uEvolve',
   'uFieldScale',
   'uLineCount',
   'uLineHalfWidth',
@@ -153,7 +181,10 @@ const uniformNames = [
   'uCursor',
   'uCursorStrength',
   'uCursorRadius',
-  'uCursorDepth',
+  'uBumpDepth',
+  'uLightDirection',
+  'uReliefScale',
+  'uHeightTint',
   'uRevealRadius',
   'uRevealTint',
   'uRevealAlpha',
@@ -176,14 +207,10 @@ export const streamsField: FieldSpec = {
     uniforms: UniformLocations,
     frame: FieldFrame,
   ): void {
-    const { content } = frame
+    const { content, time } = frame
 
     gl.uniform1f(uniforms.uPixelRatio ?? null, frame.pixelRatio)
-    gl.uniform2f(
-      uniforms.uDrift ?? null,
-      frame.time * streamsConfig.driftX,
-      frame.time * streamsConfig.driftY,
-    )
+    gl.uniform1f(uniforms.uEvolve ?? null, time * streamsConfig.evolveRate)
     gl.uniform1f(
       uniforms.uFieldScale ?? null,
       streamsConfig.fieldCyclesAcross / frame.width,
@@ -194,8 +221,8 @@ export const streamsField: FieldSpec = {
     gl.uniform1f(uniforms.uGradientStep ?? null, streamsConfig.gradientStep)
     gl.uniform2f(
       uniforms.uSheenDrift ?? null,
-      frame.time * streamsConfig.sheenDriftX,
-      frame.time * streamsConfig.sheenDriftY,
+      time * streamsConfig.sheenDriftX,
+      time * streamsConfig.sheenDriftY,
     )
     gl.uniform1f(
       uniforms.uSheenScale ?? null,
@@ -209,7 +236,13 @@ export const streamsField: FieldSpec = {
     )
     gl.uniform1f(uniforms.uCursorStrength ?? null, frame.cursorStrength)
     gl.uniform1f(uniforms.uCursorRadius ?? null, streamsConfig.cursorRadius)
-    gl.uniform1f(uniforms.uCursorDepth ?? null, streamsConfig.cursorDepth)
+    gl.uniform1f(uniforms.uBumpDepth ?? null, streamsConfig.bumpDepth)
+    gl.uniform3f(
+      uniforms.uLightDirection ?? null,
+      ...streamsConfig.lightDirection,
+    )
+    gl.uniform1f(uniforms.uReliefScale ?? null, streamsConfig.reliefScale)
+    gl.uniform1f(uniforms.uHeightTint ?? null, streamsConfig.heightTint)
     gl.uniform1f(uniforms.uRevealRadius ?? null, streamsConfig.revealRadius)
     gl.uniform1f(uniforms.uRevealTint ?? null, streamsConfig.revealTint)
     gl.uniform1f(
