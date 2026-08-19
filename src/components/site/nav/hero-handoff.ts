@@ -1,4 +1,8 @@
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
+// Long enough to cover a slow load and a delayed reveal, short enough that a
+// page which never finishes still gets a placed control rather than an empty
+// slot in the bar.
+const PLACEMENT_WAIT_MS = 3000
 
 // The name in the hero and the name in the bar are one continuous move rather
 // than two elements trading places. A third element does the traveling and the
@@ -41,19 +45,16 @@ export function initHeroHandoff(): void {
     return new DOMRect(box.left - e, box.top - f, box.width, box.height)
   }
 
+  // Both anchors want the position the page holds at scroll 0. The hero's is in
+  // flow, so its own offset plus the current scroll is that position and no
+  // scrolling is needed to read it. The bar is fixed and already reports
+  // viewport coordinates, which is what the paint clamps against.
   const measure = () => {
-    source.style.opacity = ''
-    source.style.pointerEvents = ''
-    flyer.style.visibility = 'hidden'
-
-    const previousScroll = window.scrollY
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
-
     const sourceBox = settledBox(source)
     const targetBox = settledBox(target)
     from = {
       x: sourceBox.left,
-      y: sourceBox.top,
+      y: sourceBox.top + window.scrollY,
       height: sourceBox.height,
       size: parseFloat(getComputedStyle(source).fontSize),
     }
@@ -74,10 +75,6 @@ export function initHeroHandoff(): void {
     // viewport, where the hero is full height on a desktop and 348px on a phone.
     travel = Math.max(1, from.y - landedY)
 
-    window.scrollTo({
-      top: previousScroll,
-      behavior: 'instant' as ScrollBehavior,
-    })
     // Transparent rather than hidden. `visibility: hidden` would take the
     // page's only h1 out of the accessibility tree, leaving the heading with
     // no accessible name while the flyer, which is decoration, carries the
@@ -108,15 +105,12 @@ export function initHeroHandoff(): void {
   const toggleSlot = document.querySelector<HTMLElement>(
     '[data-bar-toggle-slot]',
   )
+  const home = document.querySelector<HTMLElement>('[data-hero-toggle-home]')
   let toggleFrom = { x: 0, y: 0 }
   let toggleTo = { x: 0, y: 0 }
 
   const measureToggle = () => {
-    if (!toggle || !host || !toggleSlot) return
-    const previousScroll = window.scrollY
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
-
-    const home = document.querySelector<HTMLElement>('[data-hero-toggle-home]')
+    if (!toggle || !host || !toggleSlot || !home) return
     // The home slot centres on the row by offsetting half its own height and
     // hangs off the column's right edge, so with the control promoted away it
     // collapses to a point 22px low and 44px right of where the control
@@ -124,17 +118,12 @@ export function initHeroHandoff(): void {
     // source of the hero position, where a reserved size would restate the
     // control's dimensions somewhere they could drift.
     const wasFocused = document.activeElement === toggle
-    if (home && toggle.parentElement !== home) home.appendChild(toggle)
+    if (toggle.parentElement !== home) home.appendChild(toggle)
 
-    const homeBox = settledBox(home ?? toggle)
+    const homeBox = settledBox(home)
     const slotBox = settledBox(toggleSlot)
-    toggleFrom = { x: homeBox.left, y: homeBox.top }
+    toggleFrom = { x: homeBox.left, y: homeBox.top + window.scrollY }
     toggleTo = { x: slotBox.left, y: slotBox.top }
-
-    window.scrollTo({
-      top: previousScroll,
-      behavior: 'instant' as ScrollBehavior,
-    })
 
     if (toggle.parentElement !== host) host.appendChild(toggle)
     // Re-parenting drops focus, and a resize while the reader is on the control
@@ -182,24 +171,44 @@ export function initHeroHandoff(): void {
   // copy placed at the settled position would hang 16px off the row for the
   // length of the reveal. Reduced motion runs no transition, so the transform
   // reads none and that half passes straight through.
+  //
+  // Neither condition is guaranteed to arrive. A stalled subresource holds
+  // readiness open, and the reveal is driven by an observer elsewhere that does
+  // nothing at all without IntersectionObserver, which would leave the row
+  // translated for good. Waiting forever would spin a frame callback for the
+  // life of the page and leave the bar's reserved slot empty, so the wait gives
+  // up and places the control where it can read it.
   const revealing = (toggle ?? source).closest<HTMLElement>('[data-fade]')
+  const waitStartedAt = performance.now()
   const promote = () => {
     const styled = document.readyState === 'complete'
     const resting =
       !revealing || getComputedStyle(revealing).transform === 'none'
-    if (!styled || !resting) {
+    const spent = performance.now() - waitStartedAt > PLACEMENT_WAIT_MS
+    if (!spent && (!styled || !resting)) {
       window.requestAnimationFrame(promote)
       return
     }
     place()
-    // Announced after the first paint rather than after the measurement. The
-    // measurement scrolls the page to read a position and scrolls back, so a
-    // reader of this flag between the two would find a control that has been
-    // measured and not yet placed.
+    // Announced after the first paint rather than after the measurement, so a
+    // reader of this flag never finds a control that has been measured and not
+    // yet placed.
     if (host) host.dataset.ready = 'true'
   }
   promote()
 
+  // A resize arrives per pixel of a window drag, and on a phone the address bar
+  // collapsing fires one mid-scroll. Placement re-parents the control to read
+  // its home, so coalescing to a frame keeps that off the critical path.
+  let placement: number | null = null
+  const schedulePlacement = () => {
+    if (placement !== null) return
+    placement = window.requestAnimationFrame(() => {
+      placement = null
+      place()
+    })
+  }
+
   window.addEventListener('scroll', schedule, { passive: true })
-  window.addEventListener('resize', place)
+  window.addEventListener('resize', schedulePlacement)
 }

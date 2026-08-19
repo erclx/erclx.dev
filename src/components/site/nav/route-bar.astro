@@ -54,23 +54,36 @@ const { here } = Astro.props
 <script>
   const here = document.querySelector<HTMLElement>('[data-route-here]')
   const title = document.querySelector<HTMLElement>('main h1')
+  const bar = document.querySelector<HTMLElement>('header[data-section="header"]')
 
-  if (here && title && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            here.removeAttribute('data-shown')
-          } else {
-            here.setAttribute('data-shown', 'true')
+  if (here && title && bar && 'IntersectionObserver' in window) {
+    // The bar sits over the top of the page, so the title counts as gone once
+    // it passes behind the bar rather than once it clears the viewport. Its own
+    // box states how far that is, where a constant would restate a height the
+    // padding and the control inside it already fix.
+    const watchFromUnderTheBar = () => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              here.removeAttribute('data-shown')
+            } else {
+              here.setAttribute('data-shown', 'true')
+            }
           }
-        }
-      },
-      // The bar sits over the top of the page, so the title counts as gone
-      // once it passes behind the bar rather than once it clears the viewport.
-      { threshold: 0, rootMargin: '-77px 0px 0px 0px' },
-    )
-    observer.observe(title)
+        },
+        {
+          threshold: 0,
+          rootMargin: `-${Math.round(bar.getBoundingClientRect().height)}px 0px 0px 0px`,
+        },
+      )
+      observer.observe(title)
+    }
+
+    // A module script does not wait for stylesheets, so the bar can report an
+    // unstyled height here. Readiness is the guarantee it has its own.
+    if (document.readyState === 'complete') watchFromUnderTheBar()
+    else window.addEventListener('load', watchFromUnderTheBar, { once: true })
   } else if (here) {
     // Without an observer the name is the more useful of the two states, since
     // a reader deep in a route has no other answer to where they are.
