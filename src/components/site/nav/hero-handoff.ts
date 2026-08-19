@@ -25,6 +25,22 @@ export function initHeroHandoff(): void {
   let landedY = 0
   let travel = 1
 
+  // The hero reveals by translating its rows into place over 16px, so a box read
+  // while that runs describes where the row is passing through rather than where
+  // it comes to rest, and a fixed copy placed from it holds that position for
+  // good. The first placement waits the reveal out, which leaves the resize
+  // below as the one caller that can still land mid-reveal. Discounting the
+  // reveal's own offset yields the settled box whenever it is read.
+  const settledBox = (element: HTMLElement): DOMRect => {
+    const box = element.getBoundingClientRect()
+    const revealing = element.closest<HTMLElement>('[data-fade]')
+    if (!revealing) return box
+    const transform = getComputedStyle(revealing).transform
+    if (transform === 'none') return box
+    const { e, f } = new DOMMatrix(transform)
+    return new DOMRect(box.left - e, box.top - f, box.width, box.height)
+  }
+
   const measure = () => {
     source.style.opacity = ''
     source.style.pointerEvents = ''
@@ -33,8 +49,8 @@ export function initHeroHandoff(): void {
     const previousScroll = window.scrollY
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
 
-    const sourceBox = source.getBoundingClientRect()
-    const targetBox = target.getBoundingClientRect()
+    const sourceBox = settledBox(source)
+    const targetBox = settledBox(target)
     from = {
       x: sourceBox.left,
       y: sourceBox.top,
@@ -101,8 +117,17 @@ export function initHeroHandoff(): void {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
 
     const home = document.querySelector<HTMLElement>('[data-hero-toggle-home]')
-    const homeBox = (home ?? toggle).getBoundingClientRect()
-    const slotBox = toggleSlot.getBoundingClientRect()
+    // The home slot centres on the row by offsetting half its own height and
+    // hangs off the column's right edge, so with the control promoted away it
+    // collapses to a point 22px low and 44px right of where the control
+    // belongs. Returning the control for the reading keeps its own box the one
+    // source of the hero position, where a reserved size would restate the
+    // control's dimensions somewhere they could drift.
+    const wasFocused = document.activeElement === toggle
+    if (home && toggle.parentElement !== home) home.appendChild(toggle)
+
+    const homeBox = settledBox(home ?? toggle)
+    const slotBox = settledBox(toggleSlot)
     toggleFrom = { x: homeBox.left, y: homeBox.top }
     toggleTo = { x: slotBox.left, y: slotBox.top }
 
@@ -112,6 +137,9 @@ export function initHeroHandoff(): void {
     })
 
     if (toggle.parentElement !== host) host.appendChild(toggle)
+    // Re-parenting drops focus, and a resize while the reader is on the control
+    // is exactly when that would strand them.
+    if (wasFocused) toggle.focus()
     host.style.visibility = ''
   }
 
@@ -134,14 +162,44 @@ export function initHeroHandoff(): void {
     }
   }
 
-  measureToggle()
-  if (!stillName) measure()
-  paint()
-
-  window.addEventListener('scroll', schedule, { passive: true })
-  window.addEventListener('resize', () => {
+  const place = () => {
     measureToggle()
     if (!stillName) measure()
     paint()
-  })
+  }
+
+  // Promotion waits on two things, and measuring before either would freeze the
+  // control somewhere the page never puts it.
+  //
+  // A module script does not wait for stylesheets the way a parser-blocking one
+  // does, so this can run against an unstyled document. Measured in WebKit
+  // against the built page, that put the control at the body's default 8px
+  // margin, 868px off the row it belongs to, and nothing afterwards corrected
+  // it. Readiness is the guarantee the stylesheet has been applied.
+  //
+  // The hero then reveals by translating its rows into place. Until that rests,
+  // the name and the control are still in the row and ride it, where a fixed
+  // copy placed at the settled position would hang 16px off the row for the
+  // length of the reveal. Reduced motion runs no transition, so the transform
+  // reads none and that half passes straight through.
+  const revealing = (toggle ?? source).closest<HTMLElement>('[data-fade]')
+  const promote = () => {
+    const styled = document.readyState === 'complete'
+    const resting =
+      !revealing || getComputedStyle(revealing).transform === 'none'
+    if (!styled || !resting) {
+      window.requestAnimationFrame(promote)
+      return
+    }
+    place()
+    // Announced after the first paint rather than after the measurement. The
+    // measurement scrolls the page to read a position and scrolls back, so a
+    // reader of this flag between the two would find a control that has been
+    // measured and not yet placed.
+    if (host) host.dataset.ready = 'true'
+  }
+  promote()
+
+  window.addEventListener('scroll', schedule, { passive: true })
+  window.addEventListener('resize', place)
 }
