@@ -95,11 +95,15 @@ body.surface-case-study > header[data-section='header'] {
 }
 
 /* A shared deep link scrolls its section to the top of the viewport, where the
-   sticky bar now covers whatever the section's own padding does not clear. From
-   md the padding is 5rem and clears it. Below md it is 4rem against a 77px bar,
-   which put 13px of the heading behind the bar at 390 wide. The offset makes up
-   the shortfall rather than restating the bar's height, so a change to either
-   the bar or the section padding stays correct. */
+   sticky bar covers whatever the section's own padding does not clear. From md
+   that padding is 5rem and clears it. Below md it is 4rem against a 77px bar,
+   which left 13px of the heading behind it at 390 wide.
+
+   Only the bar half of this offset derives. The 4rem restates the padding
+   utility the sections carry, which no rule here can read, so moving that
+   utility moves the heading and leaves this value where it was. The test named
+   `a heading reached by a deep link clears the sticky bar on a phone` is what
+   reports that, and it asserts clearance rather than a pixel count. */
 @media (width < 48rem) {
   body.surface-case-study main section[id] {
     scroll-margin-top: calc(var(--sticky-bar-height) - 4rem);

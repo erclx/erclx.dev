@@ -193,6 +193,11 @@ test('a heading reached by a deep link clears the sticky bar on a phone', async 
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/diction#fix')
   await page.waitForLoadState('load')
+  // The fragment is applied a second time on purpose. The first scroll lands
+  // before the media above the section finishes arriving, which then pushes the
+  // section down by around 436px at this width. That overshoot is a separate
+  // defect and is not what this test measures, so the second application takes
+  // it out of the reading rather than leaving it to mask the bar overlap.
   await page.evaluate(() => {
     window.location.hash = ''
     window.location.hash = '#fix'
