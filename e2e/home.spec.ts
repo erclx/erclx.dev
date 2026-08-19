@@ -115,6 +115,48 @@ test('the about surface sits between the header and the experience timeline', as
   expect(order.indexOf('about')).toBeLessThan(order.indexOf('experience'))
 })
 
+test('the about flight waits off the page until its section arrives', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.waitForTimeout(300)
+
+  const parked = await page.evaluate(() => {
+    const craft = document.querySelector('.about-flight-craft')
+    const track = document.querySelector('.about-flight-track')
+    if (!craft || !track) return null
+    const c = craft.getBoundingClientRect()
+    const t = track.getBoundingClientRect()
+    return {
+      // Outside the clipping box, and the box clips. Either alone proves
+      // nothing: the aircraft parks off the curve's start rather than off the
+      // page, so being elsewhere on the page is not being invisible.
+      outside:
+        c.right <= t.left ||
+        c.left >= t.right ||
+        c.bottom <= t.top ||
+        c.top >= t.bottom,
+      clips: getComputedStyle(track).overflow,
+      // A figure that begins outside its column must not lengthen the
+      // document, which is what that clipping is also there to prevent.
+      overflow: document.documentElement.scrollWidth - window.innerWidth,
+    }
+  })
+
+  expect(parked?.outside).toBe(true)
+  expect(parked?.clips).toBe('hidden')
+  expect(parked?.overflow).toBeLessThanOrEqual(0)
+})
+
+test('the about flight renders nothing when motion is not wanted', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+
+  await expect(page.locator('.about-flight')).toBeHidden()
+})
+
 test('the header portrait loads its image', async ({ page }) => {
   await page.goto('/')
 
