@@ -16,7 +16,12 @@ export interface Variant {
   readonly title: string
   /** CSS applied to the page. Empty renders the surface as it ships. */
   readonly css?: string
-  /** Runs after the CSS lands, for a variant that needs the DOM changed. */
+  /**
+   * Runs in the page after the CSS lands, for a variant that needs the DOM
+   * changed. It is serialized across the browser boundary, so it reaches
+   * nothing from the surrounding scope however much its type suggests it can.
+   * Everything it needs has to be written inside it.
+   */
   readonly apply?: () => void
 }
 
@@ -31,6 +36,7 @@ export interface VariantRun {
   readonly outDir: string
   readonly themes?: readonly Theme[]
   readonly width?: number
+  /** Applies to both a still and a recording, which take the same frame. */
   readonly height?: number
   /** Milliseconds to wait after the surface is scrolled into view. */
   readonly settle?: number
@@ -51,6 +57,9 @@ export interface VariantRun {
 }
 
 const BAR = '[data-site-bar] { display: none !important }'
+
+// The only two roots this harness writes into, both gitignored.
+const SCRATCH_ROOTS = ['.claude/review', '.claude/.tmp'] as const
 
 const prepare = async (page: Page, run: VariantRun, theme: Theme) => {
   await page.addInitScript((t) => localStorage.setItem('theme', t), theme)
@@ -97,7 +106,7 @@ const record = async (
   outDir: string,
 ) => {
   const dir = path.join(outDir, 'video', `${variant.id}--${theme}`)
-  const size = { width: run.width ?? 1280, height: run.height ?? 620 }
+  const size = { width: run.width ?? 1280, height: run.height ?? 900 }
   const context = await browser.newContext({
     viewport: size,
     recordVideo: { dir, size },
@@ -187,7 +196,27 @@ const compose = async (
 export async function captureVariants(run: VariantRun): Promise<string[]> {
   const themes = run.themes ?? (['light', 'dark'] as const)
   const rawDir = path.join(run.outDir, 'raw')
-  await rm(run.outDir, { recursive: true, force: true })
+
+  // The output directory is wiped before every run, so a mistyped path is a
+  // recursive delete of whatever it names. Every caller writes into gitignored
+  // scratch, and refusing anything else costs a comparison. `force` stays off
+  // for the same reason: it would swallow the error that reports the typo.
+  const resolved = path.resolve(run.outDir)
+  const allowed = SCRATCH_ROOTS.map((dir) => path.resolve(dir))
+  if (
+    !allowed.some(
+      (root) => resolved === root || resolved.startsWith(root + path.sep),
+    )
+  ) {
+    throw new Error(
+      `refusing to wipe ${resolved}: outDir must sit under ${SCRATCH_ROOTS.join(' or ')}`,
+    )
+  }
+  await rm(resolved, { recursive: true }).catch(
+    (error: NodeJS.ErrnoException) => {
+      if (error.code !== 'ENOENT') throw error
+    },
+  )
   await mkdir(rawDir, { recursive: true })
 
   const browser = await chromium.launch()

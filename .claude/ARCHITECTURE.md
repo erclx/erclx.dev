@@ -126,9 +126,11 @@ Prose runs 672px at 1280 and 832px at 1920, and the body scales with it from 17p
 
 The pair moves together because the column cannot widen alone. Widening a column while the body stays put lengthens the line, which is the failure the trap below records reaching production once. The route holds 61.1ch at 768 and 1280 and 59.4ch at 1920, so the measure stays flat while the page fills out, which is what the pair buys.
 
-The character figures this entry carried until 2026-08-19 were wrong, and the method that produced them is the part worth keeping. It read 86 characters against a comfortable ceiling and put the landing page outside a band the route held at 73 to 76. Re-measured, the route holds 61.1ch and the landing page 65.5ch at 768 and 69.8ch from 1280 up, so both sit inside the 45 to 75ch band for continuous prose and the gap between them is 8.7ch rather than a surface failing a threshold. No landing-page work follows from it, and the outcome that had been queued against it closed without a change.
+Both surfaces run about 90 characters to the line. Counted on the breaks the browser actually made, the route body averages 89 and the landing page 92, so the two agree within three characters and the gap an earlier draft of this entry described does not exist. What does hold is that 90 is past the comfortable ceiling near 75, on both surfaces rather than one. The route's pair keeps that count flat across the range rather than bringing it down, which is what the pair is for and is not the same as settling the measure.
 
-Measure in `ch`, meaning the column width over the advance of `0` in the face that renders it. Two other instruments were run first and both mislead. Dividing the column by an advance averaged over an alphabet including capitals reports 70 to 75 for a surface truly at 69.8ch, because capitals are wider than the mix prose carries. Counting the characters on each line the browser actually broke is exact but text-dependent: the landing and route bodies both peak at 92 characters on their own prose while sitting 8.7ch apart, so it cannot compare two surfaces carrying different words. Only the `ch` reading is both exact and comparable.
+Two figures reached this entry before that one and neither survives. `86 characters against 73 to 76` came from dividing a column by an advance averaged over an alphabet including capitals, which are wider than the mix prose carries, so the divisor runs large and the count low. `65.5 to 69.8ch inside a 45 to 75 band` came from reading the right instrument against the wrong band: the band counts characters, and one `ch` is the advance of a zero. Measured here, running prose fits 1.32 characters per ch on the landing page and 1.46 on the route, so a column of 69.8ch carries 92 characters rather than 70.
+
+Count characters on real line breaks when the question is whether a surface sits inside the band, since that is the band's own unit. Read `ch` when the question is whether two columns are the same width, since it is text-independent where a character count is not. Neither reading answers the other's question, and an outcome was closed on one answering the other.
 
 The scoping mechanism is a `surface` prop on the layout that stamps a class on `body`, so the tokens reach the five project routes and nothing else. That indirection exists because of the trap below.
 
@@ -136,7 +138,7 @@ The scoping mechanism is a `surface` prop on the layout that stamps a class on `
 
 The prose and figure clamps carry different slopes, so their ratio drifts from 1.333 at 1280 to 1.462 at 1920. That is deliberate rather than an oversight. A constant 1.4 ratio would make the figure 941px at 1024, leaving 17px of gutter each side, where the drifting pair keeps the figure safe at the narrow end and generous at the wide one. Do not replace the two clamps with one ratio without re-checking 1024.
 
-Measured at 858d967 on 2026-08-19.
+Measured at 101faed on 2026-08-19.
 
 ### A promoted control is measured against the settled page
 

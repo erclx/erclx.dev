@@ -349,6 +349,22 @@ const FLIGHT_PATH = 'M -70 8 C 190 12 430 26 690 41'
     }
   }
 
+  /* The landed state, reached without the approach. A reader whose arrival
+     puts the band under the bar gets the figure where it comes to rest rather
+     than nothing at all, which is what the flight would have left behind
+     anyway. The values are the last keyframe of each animation above. */
+  .about-flight[data-flight='settled'] .about-flight-craft {
+    offset-distance: 100%;
+  }
+
+  .about-flight[data-flight='settled'] .about-flight-trail {
+    stroke-dasharray: 94 100;
+  }
+
+  .about-flight[data-flight='settled'] .about-flight-window {
+    transform: translateX(690px);
+  }
+
   /* Nothing renders at all under a reduced-motion preference, which leaves the
      surface as the prose-only section it is specified to be. The figure
      carries no information, so there is nothing to substitute for it. */
@@ -364,30 +380,48 @@ const FLIGHT_PATH = 'M -70 8 C 190 12 430 26 690 41'
   const section = document.querySelector<HTMLElement>('[data-section="about"]')
 
   // The band sits near the section's top edge, and a reader arriving from the
-  // rail lands with that edge pinned under the sticky bar, which would run the
-  // approach behind it. Read against the bar's own height rather than a figure
-  // repeating it, so the two cannot drift apart.
+  // rail lands with that edge pinned under the sticky bar.
   const bar = document.querySelector<HTMLElement>('[data-site-bar]')
-  const clearance = () => (bar?.getBoundingClientRect().height ?? 0) + 8
 
-  if (band && section && 'IntersectionObserver' in window) {
-    // A threshold rather than any intersection at all: a section touching the
-    // viewport by a pixel has not arrived, and the approach would run out of
-    // sight. The character in the closing ask uses the same gate.
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          // Arriving from below clears the bar on its own. A jump does not, and
-          // the observer cannot tell them apart by ratio, so the section's own
-          // top edge is what separates the two.
-          if (entry.boundingClientRect.top < clearance()) continue
-          band.dataset.flight = 'true'
-          observer.unobserve(entry.target)
-        }
-      },
-      { threshold: 0.35 },
-    )
-    observer.observe(section)
+  if (band && section) {
+    // The surface reaches one of two end states and never a third. It flies
+    // when the band is in clear air, and it is simply there, already landed,
+    // when it is not. An earlier gate declined the second case and left the
+    // figure unrendered: a reader arriving from the rail lands with the band
+    // under the bar, and scrolling on only carries the band further up and
+    // out, so the approach it was waiting for could never come.
+    const arrived = () => {
+      const box = section.getBoundingClientRect()
+      if (box.height === 0) return false
+      const shown =
+        Math.min(box.bottom, window.innerHeight) - Math.max(box.top, 0)
+      return shown / box.height >= 0.35
+    }
+
+    // Read against the bar's own box rather than a figure repeating it, so the
+    // two cannot drift apart.
+    const inClearAir = () =>
+      band.getBoundingClientRect().top >=
+      (bar?.getBoundingClientRect().bottom ?? 0)
+
+    let frame: number | null = null
+    const stop = () => {
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+    }
+    const check = () => {
+      frame = null
+      if (!arrived()) return
+      band.dataset.flight = inClearAir() ? 'true' : 'settled'
+      stop()
+    }
+    function schedule() {
+      if (frame !== null) return
+      frame = window.requestAnimationFrame(check)
+    }
+
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    check()
   }
 </script>

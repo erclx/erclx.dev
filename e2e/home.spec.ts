@@ -148,6 +148,34 @@ test('the about flight waits off the page until its section arrives', async ({
   expect(parked?.overflow).toBeLessThanOrEqual(0)
 })
 
+test('the about figure is there for a reader who arrives from the rail', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/')
+  // A rail jump pins the section's top under the sticky bar, so the approach
+  // cannot run in clear air. Scrolling on only carries the band further up and
+  // out, so waiting for clear air means waiting forever.
+  await page.evaluate(() => document.querySelector('#about')?.scrollIntoView())
+  await page.waitForTimeout(600)
+
+  const state = await page.evaluate(() => {
+    const band = document.querySelector<HTMLElement>('.about-flight')
+    const craft = document.querySelector('.about-flight-craft')
+    const track = document.querySelector('.about-flight-track')
+    if (!band || !craft || !track) return null
+    const c = craft.getBoundingClientRect()
+    const t = track.getBoundingClientRect()
+    return {
+      flight: band.dataset.flight ?? 'unset',
+      painted: c.right > t.left && c.left < t.right && c.bottom > t.top,
+    }
+  })
+
+  expect(state?.flight).toBe('settled')
+  expect(state?.painted).toBe(true)
+})
+
 test('the about flight renders nothing when motion is not wanted', async ({
   page,
 }) => {

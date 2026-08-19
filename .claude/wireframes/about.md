@@ -37,6 +37,7 @@ Most summers I travel, lately London, Copenhagen, Prague, and Hanoi.
 
 - The section runs at the page measure that every landing section holds, and nothing on it breaks out. The figure rides a band at that same measure, so it comes to rest at the column's right edge rather than the viewport's.
 - The prose is what the position asks for: a reader arriving from a full-height header wants a sentence rather than another visual event. The figure clears that by being an event that ends, leaving the surface prose before it and prose after it.
+- The surface reaches the same end state by either route. A reader scrolling in watches the approach, and a reader arriving from the rail, whose section pins under the sticky bar, finds the figure already at rest. Neither meets an empty band.
 - The heading reads `About me` rather than `About`, and the rail label matches it word for word. A rail label states the heading it points at rather than the anchor id behind it.
 - The two halves stay separate paragraphs with no connective claim between them. Drafts that bridged the origin to the hobbies with an authored characterization read as shoehorned, and drafts stating each fact on its own read as choppy. The shipped shape takes neither.
 

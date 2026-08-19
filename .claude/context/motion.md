@@ -57,7 +57,8 @@ Two surfaces carry a small figure: a character rising into the closing ask, and 
 - A figure arrives and stays. Both surfaces reveal on an `IntersectionObserver` at a threshold rather than at any intersection, run once, and never replay, so nothing on the page loops except the availability pulse.
 - Take the fill from the upstream artwork the accent derives from rather than sampling a rendered figure, so a second mark reads as the same language rather than as a near miss of the first.
 - Every figure carries `aria-hidden` and no accessible name, and renders nothing at all under `prefers-reduced-motion: reduce`. A figure carrying information would fail that test, which is another way of stating the first rule.
-- A figure near a section's top edge collides with the sticky bar when a reader arrives from the rail, since the section pins under it. Gate the reveal on the section's own top edge against the bar's measured height.
+- A figure near a section's top edge collides with the sticky bar when a reader arrives from the rail, since the section pins under it. Give that reader the figure at rest rather than declining to render it, and keep the approach for an arrival with clear air under the bar.
+- Read both conditions on demand rather than taking them from an observer callback. An observer reports a threshold being crossed, so a reader who arrives already past it never crosses it again: the gate declines once and no further callback arrives however far they scroll. Scrolling on from a pinned section carries the band further up and out, so the clear air it waits for cannot come.
 
 ## Flight mechanics
 
