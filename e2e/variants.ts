@@ -17,6 +17,12 @@ export interface Variant {
   /** CSS applied to the page. Empty renders the surface as it ships. */
   readonly css?: string
   /**
+   * Query string appended to the run's url, for a surface that picks what it
+   * renders at load time. CSS and `apply` both land after that choice is made,
+   * so neither can reach one.
+   */
+  readonly search?: string
+  /**
    * Runs in the page after the CSS lands, for a variant that needs the DOM
    * changed. It is serialized across the browser boundary, so it reaches
    * nothing from the surrounding scope however much its type suggests it can.
@@ -61,9 +67,16 @@ const BAR = '[data-site-bar] { display: none !important }'
 // The only two roots this harness writes into, both gitignored.
 const SCRATCH_ROOTS = ['.claude/review', '.claude/.tmp'] as const
 
-const prepare = async (page: Page, run: VariantRun, theme: Theme) => {
+const prepare = async (
+  page: Page,
+  run: VariantRun,
+  variant: Variant,
+  theme: Theme,
+) => {
   await page.addInitScript((t) => localStorage.setItem('theme', t), theme)
-  await page.goto(run.url, { waitUntil: 'networkidle' })
+  await page.goto(new URL(variant.search ?? '', run.url).href, {
+    waitUntil: 'networkidle',
+  })
   await page.evaluate(
     (t) => document.documentElement.classList.toggle('dark', t === 'dark'),
     theme,
@@ -83,7 +96,7 @@ const shoot = async (
     reducedMotion: run.reducedMotion ?? 'reduce',
   })
   const page = await context.newPage()
-  await prepare(page, run, theme)
+  await prepare(page, run, variant, theme)
   await page.locator(run.target).scrollIntoViewIfNeeded()
   await page.waitForTimeout(run.settle ?? 600)
 
@@ -112,7 +125,7 @@ const record = async (
     recordVideo: { dir, size },
   })
   const page = await context.newPage()
-  await prepare(page, run, theme)
+  await prepare(page, run, variant, theme)
   if (variant.css) await page.addStyleTag({ content: variant.css })
   if (!run.keepSiteBar) await page.addStyleTag({ content: BAR })
   if (variant.apply) await page.evaluate(variant.apply)
