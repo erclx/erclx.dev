@@ -17,10 +17,20 @@ const links = [
     stage it is. It stops short of the full screen a wider viewport gets,
     because a phone reader would otherwise scroll a whole screen before meeting
     anything. The unit is `svh` rather than `vh`: a collapsing address bar grows
-    `vh` mid-scroll, which would overflow the band it is meant to bound. */}
+    `vh` mid-scroll, which would overflow the band it is meant to bound.
+
+    From md the band splits its free space two parts above the column to three
+    below rather than evenly, so the name sits where a reader's eye rests
+    instead of on the halfway line. Centring held the column at 52% of the
+    viewport and drifted further down as the screen grew taller, because fixed
+    paddings distribute the surplus evenly and a taller screen has more of it.
+    A ratio is invariant to that: the name holds 37% at 1280x800 and 38% at
+    1920x1080 where centring ran 43% and 44%. Below md the column already sits
+    at 26% inside a band that is 70svh rather than the full screen, so the
+    ratio would push it off the top of its own band. */}
 <header
   data-section="header"
-  class="bg-secondary relative flex min-h-[70svh] items-center overflow-hidden rounded-b-3xl px-6 pt-20 pb-16 md:min-h-screen md:pt-32 md:pb-20"
+  class="bg-secondary relative flex min-h-[70svh] items-center overflow-hidden rounded-b-3xl px-6 pt-20 pb-16 md:grid md:min-h-screen md:grid-rows-[2fr_auto_3fr] md:pt-32 md:pb-20"
 >
   <canvas
     data-flow-field
@@ -48,7 +58,10 @@ const links = [
   <div data-hero-toggle-home class="absolute top-6 right-6 md:top-10 md:right-10">
     <ThemeToggle />
   </div>
-  <div data-header-column class="relative mx-auto w-full max-w-3xl">
+  <div
+    data-header-column
+    class="relative mx-auto w-full max-w-3xl md:row-start-2"
+  >
     <div>
       <div>
         <div data-fade style="--fade-delay: 150ms">
