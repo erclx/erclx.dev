@@ -74,7 +74,12 @@ export function initHeroHandoff(onArrive?: (arrived: boolean) => void): void {
     // there. Reading it rather than declaring it keeps the pair correct at any
     // viewport, where the hero is full height on a desktop and 348px on a phone.
     travel = Math.max(1, from.y - landedY)
+  }
 
+  // The name's distance is read even when the name does not fly, because the
+  // toggle runs on it too and the bar's gate reads it. Only the takeover below
+  // belongs to the flying case.
+  const takeOverName = () => {
     // Transparent rather than hidden. `visibility: hidden` would take the
     // page's only h1 out of the accessibility tree, leaving the heading with
     // no accessible name while the flyer, which is decoration, carries the
@@ -98,11 +103,12 @@ export function initHeroHandoff(onArrive?: (arrived: boolean) => void): void {
     // opens the bar around a transparent name and an empty toggle slot while
     // both controls are still down in the hero.
     if (!placed) return
-    const distances = []
-    if (toggle && host) distances.push(Math.max(1, toggleFrom.y - toggleTo.y))
-    if (!stillName) distances.push(travel)
-    if (distances.length === 0) return
-    const landing = window.scrollY >= Math.min(...distances)
+    // One distance now, because both controls run on it and land together.
+    // The bar has to be behind whichever arrives first, and an earlier gate
+    // for the toggle would open it hundreds of pixels before the name lands,
+    // where a separate one for each left the toggle in the bar's slot over
+    // page content with no bar behind it.
+    const landing = window.scrollY >= travel
     if (landing === arrived) return
     arrived = landing
     onArrive(landing)
@@ -157,12 +163,23 @@ export function initHeroHandoff(onArrive?: (arrived: boolean) => void): void {
     host.style.visibility = ''
   }
 
+  // Both controls run on the name's distance, so they arrive together and the
+  // bar opens under them in the same moment. The toggle's own travel is the
+  // wrong clock for it: its corner sits 28px above the bar's slot and hundreds
+  // to the right, because the corner aligns to the viewport and the bar to the
+  // content column, so keying the crossing to that 28px sent it across the
+  // page inside a thumb's worth of scroll.
+  //
+  // Its position is interpolated rather than ridden. Riding the scroll the way
+  // the name does would put it at the slot after those same 28px, which is the
+  // dart again by another route.
   const paintToggle = () => {
     if (!toggle || !host) return
-    const distance = Math.max(1, toggleFrom.y - toggleTo.y)
-    const progress = Math.min(1, Math.max(0, window.scrollY / distance))
+    const progress = Math.min(1, Math.max(0, window.scrollY / travel))
     const x = toggleFrom.x + (toggleTo.x - toggleFrom.x) * progress
-    const y = Math.max(toggleTo.y, toggleFrom.y - window.scrollY)
+    // `toggleFrom.y` is a document position, and at rest it is also the
+    // viewport position the corner sits at.
+    const y = toggleFrom.y + (toggleTo.y - toggleFrom.y) * progress
     host.style.transform = `translate3d(${x}px, ${y}px, 0)`
   }
 
@@ -178,7 +195,8 @@ export function initHeroHandoff(onArrive?: (arrived: boolean) => void): void {
 
   const place = () => {
     measureToggle()
-    if (!stillName) measure()
+    measure()
+    if (!stillName) takeOverName()
     placed = true
     paint()
   }

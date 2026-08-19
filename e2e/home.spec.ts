@@ -140,30 +140,39 @@ test('the header portrait stays inside the content column', async ({
   expect(overflow).toBeLessThanOrEqual(0)
 })
 
-test('the theme toggle centres on the hero line it shares a row with', async ({
+test('the theme toggle rests clear of the portrait it would otherwise sit on', async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('/')
   // The toggle is positioned from a measurement taken after load, so the
   // assertion waits for that rather than racing it.
   await page.waitForSelector('[data-toggle-host][data-ready]')
 
-  const offset = await page.evaluate(() => {
-    const line = document
-      .querySelector('[data-hero-line]')
-      ?.getBoundingClientRect()
+  const overlap = await page.evaluate(() => {
     // The toggle is promoted out of the header into a fixed host so one
     // control serves the hero and the bar, so it is found by its own hook
     // rather than by where it happens to sit.
     const toggle = document
       .querySelector('[data-theme-toggle]')
       ?.getBoundingClientRect()
-    if (!line || !toggle) return Number.NaN
-    const lineCenter = (line.top + line.bottom) / 2
-    return Math.abs((toggle.top + toggle.bottom) / 2 - lineCenter)
+    const portrait = document
+      .querySelector('[data-portrait]')
+      ?.getBoundingClientRect()
+    if (!toggle || !portrait) return Number.NaN
+    const across =
+      Math.min(toggle.right, portrait.right) -
+      Math.max(toggle.left, portrait.left)
+    const down =
+      Math.min(toggle.bottom, portrait.bottom) -
+      Math.max(toggle.top, portrait.top)
+    return Math.max(0, across) * Math.max(0, down)
   })
 
-  expect(offset).toBeLessThanOrEqual(2)
+  // The portrait floats flush to the column's right edge for 160px from the
+  // heading's top, so every row under the name has its right side taken. A
+  // toggle placed on one of those rows renders on top of the photograph.
+  expect(overlap).toBe(0)
 })
 
 // Short enough that the hero does not fill half of it, which is the case a
@@ -210,8 +219,13 @@ test('the bar stays shut while the controls are still unplaced', async ({
   await page.goto('/', { waitUntil: 'commit' })
   await page.waitForTimeout(250)
 
+  // Short of the nearest landing, which is the toggle's. Its home is the
+  // header's corner, tens of pixels above the bar's slot, so a scroll chosen
+  // against the name's travel would sit past a real landing and assert the
+  // bar shut when it is meant to be open. Anything above the unplaced default
+  // of 1 still catches a placement guard that stops running.
   await page.evaluate(() =>
-    window.scrollTo({ top: 60, behavior: 'instant' as ScrollBehavior }),
+    window.scrollTo({ top: 20, behavior: 'instant' as ScrollBehavior }),
   )
 
   await expect(page.locator('[data-site-bar]')).not.toHaveAttribute(
@@ -227,11 +241,11 @@ test('the bar is behind the controls by the time they land in it', async ({
   await page.goto('/')
   await page.waitForSelector('[data-toggle-host][data-ready]')
 
-  // The scroll where the toggle has reached the top of the viewport. Landing
-  // ahead of the bar left both controls over page content with nothing behind
-  // them, which the two gates above and below this band never covered.
+  // Past the name's travel, which is the one distance both controls key to.
+  // Landing ahead of the bar left both controls over page content with nothing
+  // behind them, which the two gates above and below this band never covered.
   await page.evaluate(() =>
-    window.scrollTo({ top: 320, behavior: 'instant' as ScrollBehavior }),
+    window.scrollTo({ top: 420, behavior: 'instant' as ScrollBehavior }),
   )
 
   // The position is painted on the next frame, so the landing is polled rather
