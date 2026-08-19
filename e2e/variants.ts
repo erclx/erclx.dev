@@ -35,6 +35,13 @@ export interface VariantRun {
   /** Milliseconds to wait after the surface is scrolled into view. */
   readonly settle?: number
   /**
+   * Stills default to `reduce`, which stops a capture landing mid-reveal. A
+   * surface gated on that preference renders nothing under it, so a comparison
+   * of one captures blank sheets with nothing saying why. Pass
+   * `no-preference` for those.
+   */
+  readonly reducedMotion?: 'no-preference' | 'reduce'
+  /**
    * The sticky bar covers a surface pinned to the top of the viewport, which
    * hides the very thing being judged. Hidden by default.
    */
@@ -64,7 +71,7 @@ const shoot = async (
   const context = await browser.newContext({
     viewport: { width: run.width ?? 1280, height: run.height ?? 900 },
     deviceScaleFactor: 2,
-    reducedMotion: 'reduce',
+    reducedMotion: run.reducedMotion ?? 'reduce',
   })
   const page = await context.newPage()
   await prepare(page, run, theme)
