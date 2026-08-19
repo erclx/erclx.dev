@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
-import flowFieldFallback from './flow-field/fallback.svg?raw'
+import shaderFieldFallback from './shader-field/fallback.svg?raw'
 import portrait from '@/assets/header/portrait.jpg'
 
 const links = [
@@ -32,16 +32,22 @@ const links = [
   data-section="header"
   class="bg-secondary relative flex min-h-[70svh] items-center overflow-hidden rounded-b-3xl px-6 pt-20 pb-16 md:grid md:min-h-screen md:grid-rows-[2fr_auto_3fr] md:pt-32 md:pb-20"
 >
+  {/* The canvas renders under reduced motion too, holding a single drawn frame
+      rather than hiding for an authored stand-in. One surface then answers both
+      preferences and neither can drift from the other. */}
   <canvas
-    data-flow-field
+    data-shader-field
     aria-hidden="true"
-    class="pointer-events-none absolute inset-0 size-full motion-reduce:hidden"
+    class="pointer-events-none absolute inset-0 size-full"
   ></canvas>
+  {/* Reached only where WebGL is missing or its context is lost, which the
+      mount reveals by hand. A band with nothing behind it reads as a broken
+      page rather than a quiet one. */}
   <div
-    data-flow-field-fallback
+    data-shader-field-fallback
     aria-hidden="true"
-    class="text-foreground pointer-events-none absolute inset-0 hidden size-full motion-reduce:block [&>svg]:size-full"
-    set:html={flowFieldFallback}
+    class="text-foreground pointer-events-none absolute inset-0 hidden size-full [&>svg]:size-full"
+    set:html={shaderFieldFallback}
   >
   </div>
   {/* The toggle sits in the header's own corner. Its old home was the greeting
@@ -58,8 +64,12 @@ const links = [
   <div data-hero-toggle-home class="absolute top-6 right-6 md:top-10 md:right-10">
     <ThemeToggle />
   </div>
+  {/* The shader reads this box and damps its field inside it, so the surface
+      never competes with the name. The column rather than the heading, since
+      the links sit at the bottom of it and take the least contrast. */}
   <div
     data-header-column
+    data-shader-content
     class="relative mx-auto w-full max-w-3xl md:row-start-2"
   >
     <div>
@@ -130,7 +140,7 @@ const links = [
 </header>
 
 <script>
-  import { initFlowField } from './flow-field'
+  import { initShaderField } from './shader-field'
 
-  initFlowField()
+  initShaderField()
 </script>
