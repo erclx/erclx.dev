@@ -197,6 +197,34 @@ test('the bar arrives once the reader has scrolled past the hero', async ({
   )
 })
 
+test('the one promoted toggle still cycles the theme', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForSelector('[data-toggle-host][data-ready]')
+  const mode = () =>
+    page.evaluate(() => document.documentElement.dataset.themeMode)
+
+  const before = await mode()
+  await page.locator('[data-theme-toggle]').click()
+
+  expect(await mode()).not.toBe(before)
+})
+
+test('the name in the bar returns the reader to the top', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForSelector('[data-toggle-host][data-ready]')
+  await page.evaluate(() =>
+    window.scrollTo({ top: 2000, behavior: 'instant' as ScrollBehavior }),
+  )
+  await expect(page.locator('[data-site-bar]')).toHaveAttribute(
+    'data-revealed',
+    'true',
+  )
+
+  await page.locator('[data-to-top]').click()
+
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+})
+
 test('the availability status sits in the closing ask rather than the header', async ({
   page,
 }) => {

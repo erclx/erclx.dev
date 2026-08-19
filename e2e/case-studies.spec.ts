@@ -185,6 +185,32 @@ test('each case study also carries a way home in the top bar', async ({
   await expect(page).toHaveURL('/')
 })
 
+test('the route name stays out of the bar while its own title is on screen', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  await expect(page.locator('[data-route-here]')).not.toHaveAttribute(
+    'data-shown',
+    'true',
+  )
+})
+
+test('the route name joins the bar once its title scrolls behind it', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  await page.evaluate(() =>
+    window.scrollTo({ top: 1200, behavior: 'instant' as ScrollBehavior }),
+  )
+
+  await expect(page.locator('[data-route-here]')).toHaveAttribute(
+    'data-shown',
+    'true',
+  )
+})
+
 test('returning from a case study restores where the visitor left', async ({
   page,
 }) => {
