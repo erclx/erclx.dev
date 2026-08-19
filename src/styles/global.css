@@ -94,6 +94,18 @@ body.surface-case-study > header[data-section='header'] {
   backdrop-filter: blur(12px);
 }
 
+/* A shared deep link scrolls its section to the top of the viewport, where the
+   sticky bar now covers whatever the section's own padding does not clear. From
+   md the padding is 5rem and clears it. Below md it is 4rem against a 77px bar,
+   which put 13px of the heading behind the bar at 390 wide. The offset makes up
+   the shortfall rather than restating the bar's height, so a change to either
+   the bar or the section padding stays correct. */
+@media (width < 48rem) {
+  body.surface-case-study main section[id] {
+    scroll-margin-top: calc(var(--sticky-bar-height) - 4rem);
+  }
+}
+
 /* A case-study route scales its measure and its body together with the
    viewport, so a wide screen carries a page rather than a narrow column inside
    an empty one. The pair moves as one because widening the column alone pushes
@@ -101,6 +113,9 @@ body.surface-case-study > header[data-section='header'] {
    1280 and below, and stops growing past 1920. Line heights turn unitless here
    so they track a body size that is no longer one number. */
 .surface-case-study {
+  /* The bar's own height, as the parts that make it: its padding on both edges,
+     the tap target it holds, and the rule under it. */
+  --sticky-bar-height: calc(2 * 1rem + 2.75rem + 1px);
   --prose-column: clamp(42rem, 25vw + 22rem, 52rem);
   --figure-column: clamp(56rem, 50vw + 16rem, 76rem);
   --body-size: clamp(1.0625rem, 0.78125vw + 0.4375rem, 1.375rem);

@@ -185,6 +185,33 @@ test('each case study also carries a way home in the top bar', async ({
   await expect(page).toHaveURL('/')
 })
 
+test('a heading reached by a deep link clears the sticky bar on a phone', async ({
+  page,
+}) => {
+  // From md the section's own padding clears the bar. Below md it does not, and
+  // this is the width where a shared link is opened.
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/diction#fix')
+  await page.waitForLoadState('load')
+  await page.evaluate(() => {
+    window.location.hash = ''
+    window.location.hash = '#fix'
+  })
+
+  const clearance = await page.evaluate(() => {
+    const bar = document
+      .querySelector('header[data-section="header"]')
+      ?.getBoundingClientRect()
+    const heading = document
+      .querySelector('#fix h2, #fix h3')
+      ?.getBoundingClientRect()
+    if (!bar || !heading) return Number.NaN
+    return heading.top - bar.height
+  })
+
+  expect(clearance).toBeGreaterThanOrEqual(0)
+})
+
 test('the route name stays out of the bar while its own title is on screen', async ({
   page,
 }) => {

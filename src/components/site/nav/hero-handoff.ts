@@ -89,8 +89,15 @@ export function initHeroHandoff(onArrive?: (arrived: boolean) => void): void {
   // name's alone. The toggle starts higher in the hero and therefore lands
   // first, and under reduced motion the name does not travel at all.
   let arrived = false
+  let placed = false
   const reportArrival = () => {
     if (!onArrive) return
+    // Nothing has been measured until placement runs, and the scroll listener
+    // attaches while that wait is still open. Reporting from those defaults
+    // puts the landing distance at 1, so any scroll at all reads as landed and
+    // opens the bar around a transparent name and an empty toggle slot while
+    // both controls are still down in the hero.
+    if (!placed) return
     const distances = []
     if (toggle && host) distances.push(Math.max(1, toggleFrom.y - toggleTo.y))
     if (!stillName) distances.push(travel)
@@ -172,6 +179,7 @@ export function initHeroHandoff(onArrive?: (arrived: boolean) => void): void {
   const place = () => {
     measureToggle()
     if (!stillName) measure()
+    placed = true
     paint()
   }
 

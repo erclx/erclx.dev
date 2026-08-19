@@ -197,6 +197,29 @@ test('the bar arrives once the reader has scrolled past the hero', async ({
   )
 })
 
+test('the bar stays shut while the controls are still unplaced', async ({
+  page,
+}) => {
+  // Holding a subresource keeps the placement wait open, which is the window a
+  // reader can scroll through. Nothing has been measured yet there, so the
+  // landing distance defaults to 1 and any scroll would read as landed.
+  await page.route('**/*.webp', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+    await route.continue()
+  })
+  await page.goto('/', { waitUntil: 'commit' })
+  await page.waitForTimeout(250)
+
+  await page.evaluate(() =>
+    window.scrollTo({ top: 60, behavior: 'instant' as ScrollBehavior }),
+  )
+
+  await expect(page.locator('[data-site-bar]')).not.toHaveAttribute(
+    'data-revealed',
+    'true',
+  )
+})
+
 test('the bar is behind the controls by the time they land in it', async ({
   page,
 }) => {
