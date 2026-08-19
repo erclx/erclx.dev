@@ -144,13 +144,19 @@ test('the theme toggle centres on the hero line it shares a row with', async ({
   page,
 }) => {
   await page.goto('/')
+  // The toggle is positioned from a measurement taken after load, so the
+  // assertion waits for that rather than racing it.
+  await page.waitForSelector('[data-toggle-host][data-ready]')
 
   const offset = await page.evaluate(() => {
     const line = document
       .querySelector('[data-hero-line]')
       ?.getBoundingClientRect()
+    // The toggle is promoted out of the header into a fixed host so one
+    // control serves the hero and the bar, so it is found by its own hook
+    // rather than by where it happens to sit.
     const toggle = document
-      .querySelector('header button')
+      .querySelector('[data-theme-toggle]')
       ?.getBoundingClientRect()
     if (!line || !toggle) return Number.NaN
     const lineCenter = (line.top + line.bottom) / 2
@@ -158,6 +164,120 @@ test('the theme toggle centres on the hero line it shares a row with', async ({
   })
 
   expect(offset).toBeLessThanOrEqual(2)
+})
+
+// Short enough that the hero does not fill half of it, which is the case a
+// viewport-keyed gate cleared without being scrolled.
+const SHORT_HERO_VIEWPORT = { width: 390, height: 844 }
+
+test('the bar stays out of reach while the hero still carries the name', async ({
+  page,
+}) => {
+  await page.setViewportSize(SHORT_HERO_VIEWPORT)
+  await page.goto('/')
+  await page.waitForSelector('[data-toggle-host][data-ready]')
+
+  await expect(page.locator('[data-site-bar]')).toHaveAttribute('inert', '')
+})
+
+test('the bar arrives once the reader has scrolled past the hero', async ({
+  page,
+}) => {
+  await page.setViewportSize(SHORT_HERO_VIEWPORT)
+  await page.goto('/')
+  await page.waitForSelector('[data-toggle-host][data-ready]')
+
+  await page.evaluate(() =>
+    window.scrollTo({ top: 2000, behavior: 'instant' as ScrollBehavior }),
+  )
+
+  await expect(page.locator('[data-site-bar]')).toHaveAttribute(
+    'data-revealed',
+    'true',
+  )
+})
+
+test('the bar stays shut while the controls are still unplaced', async ({
+  page,
+}) => {
+  // Holding a subresource keeps the placement wait open, which is the window a
+  // reader can scroll through. Nothing has been measured yet there, so the
+  // landing distance defaults to 1 and any scroll would read as landed.
+  await page.route('**/*.webp', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+    await route.continue()
+  })
+  await page.goto('/', { waitUntil: 'commit' })
+  await page.waitForTimeout(250)
+
+  await page.evaluate(() =>
+    window.scrollTo({ top: 60, behavior: 'instant' as ScrollBehavior }),
+  )
+
+  await expect(page.locator('[data-site-bar]')).not.toHaveAttribute(
+    'data-revealed',
+    'true',
+  )
+})
+
+test('the bar is behind the controls by the time they land in it', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/')
+  await page.waitForSelector('[data-toggle-host][data-ready]')
+
+  // The scroll where the toggle has reached the top of the viewport. Landing
+  // ahead of the bar left both controls over page content with nothing behind
+  // them, which the two gates above and below this band never covered.
+  await page.evaluate(() =>
+    window.scrollTo({ top: 320, behavior: 'instant' as ScrollBehavior }),
+  )
+
+  // The position is painted on the next frame, so the landing is polled rather
+  // than read straight after the scroll.
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          document.querySelector('[data-theme-toggle]')?.getBoundingClientRect()
+            .top ?? Number.NaN,
+      ),
+    )
+    .toBeLessThan(40)
+
+  await expect(page.locator('[data-site-bar]')).toHaveAttribute(
+    'data-revealed',
+    'true',
+  )
+})
+
+test('the one promoted toggle still cycles the theme', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForSelector('[data-toggle-host][data-ready]')
+  const mode = () =>
+    page.evaluate(() => document.documentElement.dataset.themeMode)
+
+  const before = await mode()
+  await page.locator('[data-theme-toggle]').click()
+
+  expect(await mode()).not.toBe(before)
+})
+
+test('the name in the bar returns the reader to the top', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForSelector('[data-toggle-host][data-ready]')
+  await page.evaluate(() =>
+    window.scrollTo({ top: 2000, behavior: 'instant' as ScrollBehavior }),
+  )
+  await expect(page.locator('[data-site-bar]')).toHaveAttribute(
+    'data-revealed',
+    'true',
+  )
+
+  await page.locator('[data-to-top]').click()
+
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
 })
 
 test('the availability status sits in the closing ask rather than the header', async ({

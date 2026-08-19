@@ -3,6 +3,8 @@ import '@/styles/global.css'
 import frauncesUrl from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url'
 import interUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url'
 
+import SiteBar from '@/components/site/nav/site-bar.astro'
+
 interface Props {
   title: string
   description: string
@@ -12,6 +14,7 @@ interface Props {
 }
 
 const { title, description, surface } = Astro.props
+const isRoute = surface === 'case-study'
 ---
 
 <html lang="en">
@@ -59,6 +62,10 @@ const { title, description, surface } = Astro.props
       surface && `surface-${surface}`,
     ]}
   >
+    {/* A route already renders a top bar of its own, which the stylesheet
+        makes sticky. Only the landing page needs one mounted, so the two never
+        stack. */}
+    {!isRoute && <SiteBar />}
     <slot />
   </body>
 </html>

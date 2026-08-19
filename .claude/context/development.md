@@ -69,6 +69,14 @@ Keep `bun run dev` running in the background during landing-page sessions so cha
 
 For the capture model and its output path, see `.claude/ARCHITECTURE.md` § Screenshots capture per-section on the landing page and whole on a case study. For when to reach for Playwright MCP over a static capture, see § Playwright MCP for interactive verification in the same file.
 
+## Reproduce a suite failure against the suite's own target
+
+The Playwright config's `webServer` runs `bun run build` and serves the result with `astro preview`, so the suite exercises the built output rather than the dev server. A probe written to reproduce a suite failure has to point at that preview, not at `bun run dev`.
+
+The two differ in ways that decide whether a defect appears at all. The dev server delivers styles through the Vite client, where the built page links a stylesheet, so any timing that depends on when CSS applies exists only in the build. A startup-measurement defect chased on 2026-08-19 reproduced on every run against the preview and never once against dev, and several probe cycles were spent on the wrong target before that was noticed.
+
+Start the preview on the same band the config uses, `4250` plus the worktree offset, and pass its address to the probe.
+
 ## Shell scripts
 
 All `.sh` files live under `scripts/`. Do not place shell scripts outside `scripts/`.

@@ -80,6 +80,36 @@
   }
 }
 
+/* A route's own top bar is the sticky one rather than a second control above
+   it, so a reader deep in a long route always has a way home. The landing page
+   has no such bar and mounts one instead. */
+body.surface-case-study > header[data-section='header'] {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  /* Near-opaque rather than lightly tinted. Prose passing under a bar much
+     below this reads through it as ghost text, which looks like a rendering
+     fault rather than a translucent surface. */
+  background-color: color-mix(in oklab, var(--background) 96%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+/* A shared deep link scrolls its section to the top of the viewport, where the
+   sticky bar covers whatever the section's own padding does not clear. From md
+   that padding is 5rem and clears it. Below md it is 4rem against a 77px bar,
+   which left 13px of the heading behind it at 390 wide.
+
+   Only the bar half of this offset derives. The 4rem restates the padding
+   utility the sections carry, which no rule here can read, so moving that
+   utility moves the heading and leaves this value where it was. The test named
+   `a heading reached by a deep link clears the sticky bar on a phone` is what
+   reports that, and it asserts clearance rather than a pixel count. */
+@media (width < 48rem) {
+  body.surface-case-study main section[id] {
+    scroll-margin-top: calc(var(--sticky-bar-height) - 4rem);
+  }
+}
+
 /* A case-study route scales its measure and its body together with the
    viewport, so a wide screen carries a page rather than a narrow column inside
    an empty one. The pair moves as one because widening the column alone pushes
@@ -87,6 +117,9 @@
    1280 and below, and stops growing past 1920. Line heights turn unitless here
    so they track a body size that is no longer one number. */
 .surface-case-study {
+  /* The bar's own height, as the parts that make it: its padding on both edges,
+     the tap target it holds, and the rule under it. */
+  --sticky-bar-height: calc(2 * 1rem + 2.75rem + 1px);
   --prose-column: clamp(42rem, 25vw + 22rem, 52rem);
   --figure-column: clamp(56rem, 50vw + 16rem, 76rem);
   --body-size: clamp(1.0625rem, 0.78125vw + 0.4375rem, 1.375rem);

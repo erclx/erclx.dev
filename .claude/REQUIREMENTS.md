@@ -28,6 +28,13 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 The header lost the role, the headline, and the location on 2026-08-17. The claim and its elaboration moved to experience, because the elaboration opens on a pronoun standing for the claim and splitting the two left that pronoun without an antecedent on either surface. The location moved to the closing ask, where the rows already state it as a filter. The availability signal moved with it.
 
+## Navigation
+
+- A visitor can reach the top of the site from anywhere on it, at any viewport. The section rail is hidden below 1280px and states position rather than offering reach, so it does not satisfy this on its own
+- A reader arriving on a project route from a shared link has a way back that does not require scrolling to the end of the page
+- The way back is one control per surface. A route carrying both a bar link and a trailing link reads as two exits from a page that needs one
+- Navigation chrome holds one column across every surface, so it does not resize as a reader moves between the landing page and a route
+
 ## Project cards
 
 - A visitor sees one card per shipped artifact rather than the fixed roster the MVP named, so a newly shipped project earns a card without a scope change

@@ -185,6 +185,64 @@ test('each case study also carries a way home in the top bar', async ({
   await expect(page).toHaveURL('/')
 })
 
+test('a heading reached by a deep link clears the sticky bar on a phone', async ({
+  page,
+}) => {
+  // From md the section's own padding clears the bar. Below md it does not, and
+  // this is the width where a shared link is opened.
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/diction#fix')
+  await page.waitForLoadState('load')
+  // The fragment is applied a second time on purpose. The first scroll lands
+  // before the media above the section finishes arriving, which then pushes the
+  // section down by around 436px at this width. That overshoot is a separate
+  // defect and is not what this test measures, so the second application takes
+  // it out of the reading rather than leaving it to mask the bar overlap.
+  await page.evaluate(() => {
+    window.location.hash = ''
+    window.location.hash = '#fix'
+  })
+
+  const clearance = await page.evaluate(() => {
+    const bar = document
+      .querySelector('header[data-section="header"]')
+      ?.getBoundingClientRect()
+    const heading = document
+      .querySelector('#fix h2, #fix h3')
+      ?.getBoundingClientRect()
+    if (!bar || !heading) return Number.NaN
+    return heading.top - bar.height
+  })
+
+  expect(clearance).toBeGreaterThanOrEqual(0)
+})
+
+test('the route name stays out of the bar while its own title is on screen', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  await expect(page.locator('[data-route-here]')).not.toHaveAttribute(
+    'data-shown',
+    'true',
+  )
+})
+
+test('the route name joins the bar once its title scrolls behind it', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  await page.evaluate(() =>
+    window.scrollTo({ top: 1200, behavior: 'instant' as ScrollBehavior }),
+  )
+
+  await expect(page.locator('[data-route-here]')).toHaveAttribute(
+    'data-shown',
+    'true',
+  )
+})
+
 test('returning from a case study restores where the visitor left', async ({
   page,
 }) => {
@@ -211,22 +269,31 @@ test('a case study opened directly still links home', async ({ page }) => {
   await expect(page).toHaveURL('/')
 })
 
-for (const route of CASE_STUDY_ROUTES) {
-  test(`the top bar on ${route} sits at the same measure as the prose`, async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1280, height: 900 })
+test('the navigation bar holds one measure across every surface', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  const widths: number[] = []
+
+  await page.goto('/')
+  widths.push(
+    (await page.locator('[data-site-bar] > div').boundingBox())?.width ?? 0,
+  )
+
+  for (const route of CASE_STUDY_ROUTES) {
     await page.goto(route)
+    widths.push(
+      (await page.locator('header[data-section="header"] > div').boundingBox())
+        ?.width ?? 0,
+    )
+  }
 
-    const bar = await page.locator('header > div').boundingBox()
-    const column = await page
-      .locator('main section > div')
-      .first()
-      .boundingBox()
-
-    expect(Math.abs((bar?.width ?? 0) - (column?.width ?? 0))).toBeLessThan(2)
-  })
-}
+  // The bar is the one element that persists across a navigation, so it holds
+  // its shape rather than tracking the prose beneath it, which is fluid on a
+  // route and varies per section on the landing page.
+  expect(Math.min(...widths)).toBeGreaterThan(0)
+  expect(Math.max(...widths) - Math.min(...widths)).toBeLessThan(2)
+})
 
 test('a figure plate holds a light ground in the dark theme', async ({
   page,

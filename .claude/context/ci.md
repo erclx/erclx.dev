@@ -37,6 +37,14 @@ For the deploy mechanism, custom domain wiring, and secrets, see `.claude/contex
 
 The workflow installs Node 22 via `actions/setup-node` before Bun. cspell v10 and several dev tools require Node ≥22.18. Bun does not satisfy this requirement on its own because it ships its own runtime, not a system Node.
 
+## The e2e job runs one engine of three
+
+`test:e2e` passes `--project=chromium`, while `playwright.config.ts` defines chromium, firefox, and webkit. A defect present only in Firefox or WebKit therefore passes every check and ships.
+
+This is not theoretical. A full three-engine run on 2026-08-19 reported four failures against a green chromium run, one of which had already shipped in an earlier pull request. Two were production defects in the hero handoff that chromium could not reproduce at all.
+
+Read a lone Firefox or WebKit failure as a candidate defect rather than as a flake, and run all three locally before a pull request touching client-side layout or media. Widening the job is queued rather than done.
+
 ## Running CI locally
 
 `bun run check` runs the static and unit asserts plus auto-formats first. `bun run check:full` runs verify plus `test:e2e`. If CI fails on format, run `bun run check` locally and commit the diff.

@@ -52,6 +52,12 @@ A fourth group sits above the light palette. `--light-card`, `--light-muted-fore
 - Modules that react to theme changes observe the `class` attribute on `documentElement` via `MutationObserver`. The flow field uses this pattern in `flow-field/index.ts`.
 - CSS reads tokens like `--foreground` and `--background` from the active variant. Inline scripts that need the resolved value must use `getComputedStyle(documentElement).getPropertyValue(...)`.
 
+## Exactly one toggle exists per page
+
+The toggle script binds with a singular `querySelector`, which is correct because the page renders one toggle and only one. The landing page renders it in the hero, and the hero handoff re-parents that same element into a fixed host so one control answers in the hero and in the sticky bar. A project route renders its own inside the route bar, and no site bar mounts there.
+
+Adding a second toggle to the markup does not produce two working controls. The script binds whichever comes first in the document and the other is inert, which is what happened when the bar first rendered one of its own: the hero's toggle went dead and reported the same mode on every click. The bar reserves an empty slot for the promoted control instead.
+
 ## Gotchas
 
 - `prefers-color-scheme` alone never switches the theme. shadcn keys dark off a class, not a media query.

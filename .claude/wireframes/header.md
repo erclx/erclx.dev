@@ -44,7 +44,8 @@ The emptiness is deliberate. The band is a stage held open for an authored real-
 
 ## Behavior
 
-- The greeting and the theme toggle share one row, with the toggle out of that row's flow so its tap height cannot displace the line it centres on. The toggle stays inside the header column rather than fixed to the viewport.
+- The greeting and the theme toggle share one row, with the toggle out of that row's flow so its tap height cannot displace the line it centres on. The toggle renders here and is the page's only one, but it does not stay here: the handoff moves it into a host fixed to the viewport and paints it onto this row, so the same control answers in the hero and in the bar. What sits in this column is the empty slot it was measured from.
+- The name and the toggle both leave this surface as the reader scrolls, carried into the sticky bar. See `.claude/wireframes/site-bar.md` for what they land in and `.claude/context/theming.md` for why exactly one toggle exists.
 - The portrait floats to the top right inside the headline itself, so its top edge is the headline's own top at every width rather than a sum of the elements above it. It stays inside the content column rather than sitting in the margin beside it, so the band reads as centred, and it floats rather than taking a column of its own, so only the headline's first lines run short instead of every line losing the same width.
 - The toggle aligns to the greeting's cap height rather than to its line box, because the empty descender space still counts toward a line box's middle.
 - Contact links wrap to a new row when the viewport cannot hold all three on one line. Links are same-tab.
