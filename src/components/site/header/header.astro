@@ -30,7 +30,7 @@ const links = [
     ratio would push it off the top of its own band. */}
 <header
   data-section="header"
-  class="bg-secondary relative flex min-h-[70svh] items-center overflow-hidden rounded-b-3xl px-6 pt-20 pb-16 md:grid md:min-h-screen md:grid-rows-[2fr_auto_3fr] md:pt-32 md:pb-20"
+  class="bg-secondary relative flex min-h-[70svh] items-center overflow-hidden px-6 pt-20 pb-16 md:grid md:min-h-screen md:grid-rows-[2fr_auto_3fr] md:pt-32 md:pb-20"
 >
   {/* The canvas renders under reduced motion too, holding a single drawn frame
       rather than hiding for an authored stand-in. One surface then answers both
@@ -48,6 +48,21 @@ const links = [
     aria-hidden="true"
     class="text-foreground pointer-events-none absolute inset-0 hidden size-full [&>svg]:size-full"
     set:html={shaderFieldFallback}
+  >
+  </div>
+  {/* The band's ground fades into the page's rather than stopping on an edge.
+      The hero is a lighter plate than the page in both themes, so a rounded
+      corner against a flat section read as a card laid on a different
+      document. Fading the plate out removes it where softening its corner
+      only made the same edge rounder. The contour field thins with it, since
+      the canvas paints under this.
+
+      Shorter below md, where the band holds 70svh rather than the screen and a
+      desktop-sized fade would take two fifths of it. */}
+  <div
+    data-hero-fade
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-40 md:h-60"
   >
   </div>
   {/* The toggle sits in the header's own corner. Its old home was the greeting
@@ -138,6 +153,12 @@ const links = [
     </div>
   </div>
 </header>
+
+<style>
+  [data-hero-fade] {
+    background: linear-gradient(to bottom, transparent, var(--background));
+  }
+</style>
 
 <script>
   import { initShaderField } from './shader-field'

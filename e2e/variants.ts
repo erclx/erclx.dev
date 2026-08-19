@@ -36,8 +36,19 @@ export type Theme = 'light' | 'dark'
 export interface VariantRun {
   /** Where the dev server is serving. */
   readonly url: string
-  /** The element each capture is clipped to. */
+  /** The element each capture is clipped to, or scrolled to under `viewport`. */
   readonly target: string
+  /**
+   * `viewport` shoots the visible frame rather than the target's own box, which
+   * is what a decision about the join between two surfaces needs: clipping to
+   * either one of them removes the thing being judged.
+   */
+  readonly clip?: 'target' | 'viewport'
+  /**
+   * Pixels to scroll back after the target is brought into view, so a surface
+   * above it stays in frame. Only meaningful under `clip: 'viewport'`.
+   */
+  readonly scrollOffset?: number
   readonly variants: readonly Variant[]
   readonly outDir: string
   readonly themes?: readonly Theme[]
@@ -103,10 +114,20 @@ const shoot = async (
   if (variant.css) await page.addStyleTag({ content: variant.css })
   if (!run.keepSiteBar) await page.addStyleTag({ content: BAR })
   if (variant.apply) await page.evaluate(variant.apply)
+
+  // After the variant's own styles land, since a treatment that changes a
+  // surface's height moves where the join sits.
+  if (run.clip === 'viewport' && run.scrollOffset) {
+    await page.evaluate(
+      (offset) => window.scrollBy(0, -offset),
+      run.scrollOffset,
+    )
+  }
   await page.waitForTimeout(250)
 
   const file = path.join(rawDir, `${variant.id}--${theme}.png`)
-  await page.locator(run.target).screenshot({ path: file })
+  if (run.clip === 'viewport') await page.screenshot({ path: file })
+  else await page.locator(run.target).screenshot({ path: file })
   await context.close()
   return file
 }
