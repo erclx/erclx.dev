@@ -30,7 +30,7 @@ const criteria = [
 <section
   id="looking-for"
   data-section="looking-for"
-  class="px-6 pt-16 pb-24 md:pt-20 md:pb-32"
+  class="px-6 pt-10 pb-20"
 >
   <div class="mx-auto max-w-3xl">
     <h2
@@ -54,7 +54,7 @@ const criteria = [
       Open to work
     </p>
 
-    <div class="looking-stage relative mt-10 lg:mt-14">
+    <div class="looking-stage relative mt-7">
       <div
         class="looking-peek absolute top-0 right-0 z-0 w-24 sm:right-8 md:right-14 md:w-28"
         aria-hidden="true"
@@ -150,15 +150,18 @@ const criteria = [
       </div>
 
       <div
-        class="looking-rows border-border/60 bg-background relative z-10 border-t pt-8"
+        class="looking-rows border-border/60 bg-background relative z-10 border-t pt-6"
       >
-        <dl class="grid gap-y-3">
+        {/* A rule per row rather than a gap between them. The rows gave up
+            their size step to item 7 above, and the track a reader follows
+            down the section is what replaces it. */}
+        <dl class="grid gap-y-0">
           {
             criteria.map((item, idx) => (
               <div
                 data-fade
                 style={`--fade-delay: ${150 + idx * 100}ms`}
-                class="group -ml-4 grid items-baseline gap-x-6 border-l-2 border-transparent py-1 pl-4 hover:border-accent sm:grid-cols-[13rem_1fr]"
+                class="group border-b-border/70 hover:border-l-accent -ml-4 grid items-baseline gap-x-6 border-b border-l-2 border-l-transparent py-3.5 pl-4 last:border-b-0 sm:grid-cols-[13rem_1fr]"
               >
                 <dt class="text-muted-foreground group-hover:text-foreground text-label">
                   {item.label}
