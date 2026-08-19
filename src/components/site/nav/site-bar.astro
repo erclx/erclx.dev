@@ -134,13 +134,19 @@
     if (!hero) {
       setRevealed(true)
     } else if ('IntersectionObserver' in window) {
+      // The gate is half the hero rather than half the viewport. Measured at
+      // 390x844, a hero shorter than half the viewport clears a viewport-keyed
+      // margin without being scrolled at all, which put the bar on screen
+      // carrying the name while the reader was still looking at the hero
+      // carrying it. Reading the ratio keys the same moment to the hero's own
+      // height, so it holds at any viewport and needs nothing measured.
       const observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            setRevealed(!entry.isIntersecting)
+            setRevealed(entry.intersectionRatio < 0.5)
           }
         },
-        { threshold: 0, rootMargin: '-50% 0px 0px 0px' },
+        { threshold: [0, 0.5] },
       )
       observer.observe(hero)
     } else {

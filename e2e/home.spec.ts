@@ -144,6 +144,9 @@ test('the theme toggle centres on the hero line it shares a row with', async ({
   page,
 }) => {
   await page.goto('/')
+  // The toggle is positioned from a measurement taken after load, so the
+  // assertion waits for that rather than racing it.
+  await page.waitForSelector('[data-toggle-host][data-ready]')
 
   const offset = await page.evaluate(() => {
     const line = document
@@ -161,6 +164,37 @@ test('the theme toggle centres on the hero line it shares a row with', async ({
   })
 
   expect(offset).toBeLessThanOrEqual(2)
+})
+
+// Short enough that the hero does not fill half of it, which is the case a
+// viewport-keyed gate cleared without being scrolled.
+const SHORT_HERO_VIEWPORT = { width: 390, height: 844 }
+
+test('the bar stays out of reach while the hero still carries the name', async ({
+  page,
+}) => {
+  await page.setViewportSize(SHORT_HERO_VIEWPORT)
+  await page.goto('/')
+  await page.waitForSelector('[data-toggle-host][data-ready]')
+
+  await expect(page.locator('[data-site-bar]')).toHaveAttribute('inert', '')
+})
+
+test('the bar arrives once the reader has scrolled past the hero', async ({
+  page,
+}) => {
+  await page.setViewportSize(SHORT_HERO_VIEWPORT)
+  await page.goto('/')
+  await page.waitForSelector('[data-toggle-host][data-ready]')
+
+  await page.evaluate(() =>
+    window.scrollTo({ top: 2000, behavior: 'instant' as ScrollBehavior }),
+  )
+
+  await expect(page.locator('[data-site-bar]')).toHaveAttribute(
+    'data-revealed',
+    'true',
+  )
 })
 
 test('the availability status sits in the closing ask rather than the header', async ({
