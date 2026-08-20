@@ -109,13 +109,19 @@ const cardId = name.toLowerCase()
         but it could not simply be deleted: the full-card link below is hidden
         from assistive technology and held out of the tab order, so that label
         was the only route in for anyone without a pointer. Naming the card is
-        the job a heading and a link both do, so one element does both. */}
+        the job a heading and a link both do, so one element does both.
+
+        The link is padded to the tap minimum the rest of the page holds,
+        which the heading's own 34px line box does not reach. The padding is
+        vertical only and the element stays inline, so it grows the hit area
+        without contributing to the line box and the card's height is
+        unchanged. */}
     <h3 class="font-display text-heading text-foreground">
       {
         caseStudyHref ? (
           <a
             href={caseStudyHref}
-            class="relative z-10 underline-offset-4 hover:underline"
+            class="relative z-10 inline py-[0.3125rem] underline-offset-4 hover:underline"
           >
             {name}
           </a>

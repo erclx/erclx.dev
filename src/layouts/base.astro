@@ -5,6 +5,7 @@ import interUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.w
 
 import PageGround from '@/components/site/page-ground/page-ground.astro'
 import SiteBar from '@/components/site/nav/site-bar.astro'
+import ContactDock from '@/components/site/contact-dock/contact-dock.astro'
 
 interface Props {
   title: string
@@ -68,6 +69,18 @@ const isRoute = surface === 'case-study'
         stack. */}
     <PageGround />
     {!isRoute && <SiteBar />}
+    {/* Every surface carries it, where the landing page rendered it alone
+        until 2026-08-20. A route is the longest read on the site and the one
+        a shared link lands on, which is the arrival that skips the landing
+        page and every contact link on it.
+
+        A route reveals it at once. Its gate watches the header for the hero
+        to scroll past, and a route's header is the sticky bar, which never
+        leaves the viewport: measured across a full scroll of a route, the
+        intersection ratio reads 1 and only 1, so the control would never
+        arrive at all. The rail already answers the same problem the same way
+        on the same surfaces. */}
+    <ContactDock instant={isRoute} />
     <slot />
   </body>
 </html>

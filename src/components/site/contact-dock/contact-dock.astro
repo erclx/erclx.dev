@@ -1,6 +1,14 @@
 ---
 import { getLinkTargetAttributes } from '@/lib/links'
 
+interface Props {
+  // A surface with no hero has nothing for the arrival gate to watch, so it
+  // renders reachable and attaches no observer. Mirrors the section rail.
+  instant?: boolean
+}
+
+const { instant = false } = Astro.props
+
 // The three the hero opens with, plus the one destination that was reachable
 // only after a full scroll. The resume is the highest-intent link on the page
 // and it sat last on it, while three contact links floated the whole way.
@@ -63,7 +71,9 @@ const links = [
     destinations that are not on screen and gets no focus ring to follow. */}
 <div
   data-contact-dock
-  inert
+  data-instant={instant ? 'true' : undefined}
+  data-revealed={instant ? 'true' : undefined}
+  inert={!instant}
   class="fixed right-6 bottom-6 z-30 flex flex-col-reverse items-end gap-2"
 >
   {/* Expands the stack where a pointer is not available. It carries the
@@ -156,10 +166,18 @@ const links = [
     opacity: 1;
     pointer-events: auto;
   }
-  [data-contact-dock][data-near-footer='true'] {
-    opacity: 0;
-    pointer-events: none;
-  }
+  /* The dock does not stand down over the footer. It did until 2026-08-20,
+     on the stated grounds that the footer repeats its destinations, and the
+     footer carries the resume alone: measured on both surfaces, the landing
+     footer holds one link and a route's holds the way home. Hiding the dock
+     there removed three of its four destinations at the moment a reader has
+     finished reading, on a page whose job is hiring.
+
+     The cost is that the two margins no longer arrive and leave together,
+     since the rail still stands down over the footer. That pairing is worth
+     less than the reach: the rail states position and there is no section
+     under the footer to state, where the dock offers reach and the end of the
+     page is where reaching matters. */
 
   /* The stack is what collapses, never the links themselves, so the set stays
      in the tab order at every size and a keyboard never meets a hidden set.
@@ -225,22 +243,17 @@ const links = [
   const toggle = dock?.querySelector<HTMLElement>('[data-dock-toggle]')
 
   if (dock) {
-    // Reach and inertness are one state. The two gates below each own half of
-    // it, so both write through here rather than each toggling the attribute
-    // it happens to know about and leaving the other half stale.
+    // Reach and inertness are one state, written through one function so the
+    // two halves cannot drift.
     let pastHero = false
-    let atFooter = false
     const syncReach = () => {
-      const reachable = pastHero && !atFooter
-      if (reachable) {
+      if (pastHero) {
         dock.setAttribute('data-revealed', 'true')
         dock.removeAttribute('inert')
       } else {
         dock.removeAttribute('data-revealed')
         dock.setAttribute('inert', '')
       }
-      if (atFooter) dock.setAttribute('data-near-footer', 'true')
-      else dock.removeAttribute('data-near-footer')
     }
 
     toggle?.addEventListener('click', (event) => {
@@ -291,49 +304,29 @@ const links = [
       toggle?.setAttribute('aria-expanded', 'false')
     })
 
-    if ('IntersectionObserver' in window) {
-      const hero = document.querySelector<HTMLElement>(
-        '[data-section="header"]',
-      )
-      if (hero) {
-        // Half the hero rather than half the viewport, matching the bar. A hero
-        // shorter than the viewport clears a viewport-keyed margin without
-        // being scrolled at all.
-        new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              pastHero = entry.intersectionRatio < 0.5
-              syncReach()
-            }
-          },
-          { threshold: [0, 0.5] },
-        ).observe(hero)
-      } else {
-        pastHero = true
-        syncReach()
-      }
+    // A surface rendering the dock reachable has no arrival to wait for and
+    // attaches nothing. Its header is a sticky bar that never leaves the
+    // viewport, so the gate below would hold the control closed for the whole
+    // page.
+    const isInstant = dock.dataset.instant === 'true'
+    const hero = document.querySelector<HTMLElement>('[data-section="header"]')
 
-      const footer = document.querySelector<HTMLElement>(
-        '[data-section="footer"]',
-      )
-      if (footer) {
-        // The footer carries the same destinations, so the dock stands down
-        // rather than repeating them beside themselves.
-        //
-        // No root margin. Shrinking the root to its top half never fires at
-        // all: the footer sits in the lower part of the last screen by
-        // definition, so a gate that only watches the upper half watches a
-        // region the footer never reaches.
-        new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              atFooter = entry.isIntersecting
-              syncReach()
-            }
-          },
-          { threshold: 0 },
-        ).observe(footer)
-      }
+    if (isInstant) {
+      pastHero = true
+      syncReach()
+    } else if ('IntersectionObserver' in window && hero) {
+      // Half the hero rather than half the viewport, matching the bar. A hero
+      // shorter than the viewport clears a viewport-keyed margin without
+      // being scrolled at all.
+      new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            pastHero = entry.intersectionRatio < 0.5
+            syncReach()
+          }
+        },
+        { threshold: [0, 0.5] },
+      ).observe(hero)
     } else {
       pastHero = true
       syncReach()
