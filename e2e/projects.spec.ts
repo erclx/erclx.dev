@@ -114,17 +114,13 @@ test('two cards sharing a row share a lower edge', async ({ page }) => {
   // spends it before the transition begins. Waiting for the transform to rest
   // needs no budget and cannot go stale against a change to either duration.
   await cards.first().scrollIntoViewIfNeeded()
-  // The pair this compares, rather than every card. The three below the fold
-  // never reveal from this scroll position, so waiting on all five waits out
-  // the poll's own budget and then reads the same mid-transition box.
-  const pair = cards.nth(0).or(cards.nth(1))
-  await expect
-    .poll(() =>
-      pair.evaluateAll((nodes) =>
-        nodes.every((node) => getComputedStyle(node).transform === 'none'),
-      ),
-    )
-    .toBe(true)
+  // One assertion per card of the compared pair, rather than one over the set.
+  // The three cards below the fold never reveal from this scroll position, so a
+  // wait covering all five spends its own budget and reads the same
+  // mid-transition box. Asserting per card also names which one failed, and
+  // cannot pass on an empty match the way a predicate over a set does.
+  await expect(cards.nth(0)).toHaveCSS('transform', 'none')
+  await expect(cards.nth(1)).toHaveCSS('transform', 'none')
 
   const left = await cards.first().boundingBox()
   const right = await cards.nth(1).boundingBox()

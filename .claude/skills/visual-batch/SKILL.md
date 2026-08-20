@@ -121,6 +121,7 @@ Page copy is canonical upstream at `career/assets/portfolio/` and is read across
 - On the ship signal, cut one branch per batch in the order they were committed, each targeting the branch before it, and open a pull request for each with `git-pr`. Use `git-stage` to split a batch that holds more than one concern into focused commits inside its own branch.
 - Rebase the stack from the bottom as each merges, rather than opening the next only when the last lands. The batches were built in order and already depend on each other in that order, so the whole stack is open and reviewable at once.
 - A run that opens one pull request for many batches has failed this phase whatever the diff looks like. Two runs ended at 25 and 30 commits in one review, which is the outcome every rule above exists to prevent.
+- These rules were written from the second of those runs and shipped inside it, so the branch carrying them is the case they describe. The operator refused a retro split there: the sweep and the out-of-order fix had already welded the batches, two reviews had passed the branch clean, and seven new heads would have thrown that away to reshape work nobody disputed. Read that as the cost of finding this late rather than as the rule being optional, since the same refusal is what the rules above make unnecessary next time.
 
 ## Voice
 
