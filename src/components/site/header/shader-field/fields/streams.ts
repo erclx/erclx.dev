@@ -109,6 +109,7 @@ uniform float uBumpDepth;
 // Position and age per live click. WebGL1 needs the loop bound to be a
 // constant, so the count is fixed here and the mount displaces the oldest.
 uniform vec3 uRipples[RIPPLE_SLOTS];
+uniform float uRippleActive;
 uniform float uRippleSpeed;
 uniform float uRippleWidth;
 uniform float uRippleFreq;
@@ -148,19 +149,27 @@ float streamFunction(vec2 px) {
   // envelope confines the disturbance to a band, so the field ahead of and
   // behind the front is untouched. Age fades the whole packet. Distance
   // spreads its energy the way a ring on water loses height as it widens.
-  for (int i = 0; i < RIPPLE_SLOTS; i++) {
-    vec3 rip = uRipples[i];
-    // A masked term rather than a branch, since an empty slot has to cost the
-    // same as a full one for every fragment on the surface.
-    float alive = step(0.0, rip.z);
-    float d = distance(px, rip.xy);
-    float band = d - rip.z * uRippleSpeed;
-    float envelope = exp(-(band * band) / (uRippleWidth * uRippleWidth));
-    float decay = exp(-rip.z * uRippleDecay);
-    float spread = uRippleSpread / (uRippleSpread + d);
-    sum +=
-      uRippleDepth * alive * envelope * decay * spread *
-      sin(band * uRippleFreq);
+  //
+  // The whole block is skipped while nothing is in flight, which is the
+  // surface's resting state and almost all of its life. One uniform decides
+  // it, so every fragment takes the same side and the branch stays coherent.
+  // Without it a resting page paid four exponential and four sine terms per
+  // sample, at three samples per fragment, for a term summing to zero.
+  if (uRippleActive > 0.5) {
+    for (int i = 0; i < RIPPLE_SLOTS; i++) {
+      vec3 rip = uRipples[i];
+      // A masked term rather than a branch, since inside the block an empty
+      // slot has to cost what a full one costs for every fragment.
+      float alive = step(0.0, rip.z);
+      float d = distance(px, rip.xy);
+      float band = d - rip.z * uRippleSpeed;
+      float envelope = exp(-(band * band) / (uRippleWidth * uRippleWidth));
+      float decay = exp(-rip.z * uRippleDecay);
+      float spread = uRippleSpread / (uRippleSpread + d);
+      sum +=
+        uRippleDepth * alive * envelope * decay * spread *
+        sin(band * uRippleFreq);
+    }
   }
 
   return sum;
@@ -245,6 +254,7 @@ const uniformNames = [
   'uCursorRadius',
   'uBumpDepth',
   'uRipples[0]',
+  'uRippleActive',
   'uRippleSpeed',
   'uRippleWidth',
   'uRippleFreq',
@@ -322,6 +332,10 @@ export const streamsField: FieldSpec = {
       ripples[i * 3 + 2] = live?.age ?? -1
     }
     gl.uniform3fv(uniforms['uRipples[0]'] ?? null, ripples)
+    gl.uniform1f(
+      uniforms.uRippleActive ?? null,
+      frame.ripples.length > 0 ? 1 : 0,
+    )
     gl.uniform1f(uniforms.uRippleSpeed ?? null, streamsConfig.rippleSpeed)
     gl.uniform1f(uniforms.uRippleWidth ?? null, streamsConfig.rippleWidth)
     gl.uniform1f(uniforms.uRippleFreq ?? null, streamsConfig.rippleFreq)
