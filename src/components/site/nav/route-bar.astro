@@ -18,7 +18,10 @@ const { here } = Astro.props
   {/* No rule under the bar, matching the landing page's. The blur behind it is
       what separates the chrome from the prose passing under it, and a line as
       well as a blur states the same boundary twice. */}
-  <div class="mx-auto flex max-w-3xl items-center justify-between py-4">
+  <div
+    data-bar-row
+    class="mx-auto flex max-w-3xl items-center justify-between py-4"
+  >
     <a
       href="/"
       data-way-home

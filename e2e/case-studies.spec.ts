@@ -276,15 +276,12 @@ test('the navigation bar holds one measure across every surface', async ({
   const widths: number[] = []
 
   await page.goto('/')
-  widths.push(
-    (await page.locator('[data-site-bar] > div').boundingBox())?.width ?? 0,
-  )
+  widths.push((await page.locator('[data-bar-row]').boundingBox())?.width ?? 0)
 
   for (const route of CASE_STUDY_ROUTES) {
     await page.goto(route)
     widths.push(
-      (await page.locator('header[data-section="header"] > div').boundingBox())
-        ?.width ?? 0,
+      (await page.locator('[data-bar-row]').boundingBox())?.width ?? 0,
     )
   }
 
