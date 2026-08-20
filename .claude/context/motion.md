@@ -29,8 +29,12 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 ## Experience timeline
 
 - One timeline row is highlighted at a time. JS owns the active row via `[data-active]`. The first row carries `[data-default-active]` so the no-JS path renders with row one highlighted. The script removes that attribute at init.
-- Hovering a row transfers the highlight. On `pointerleave` of the stage wrapper the highlight walks back row by row to the first row. Step delays follow a quadratic ease-out from 40ms to 160ms so the highlight reads as a ball settling, not a constant march.
+- Hovering a row transfers the highlight. On `pointerleave` of the stage wrapper the highlight walks back row by row to the first row.
+- The walk lingers on the row a reader chose and gathers pace as it returns, at step delays running 160ms down to 83ms across five steps. It depicts letting go of a row rather than traveling to another, so the moment worth holding is the leaving. The reverse shipped until 2026-08-20 and rushed exactly that, then eased into a row nobody had asked about. Judged live at four paces against an even cadence, the reverse, and a curve slow at both ends.
 - The active row's dot fills with the accent and takes a soft ring, transitioning at 150ms ease-out alongside the row's color shift.
+- The row also lifts onto the site's glow, drawn behind it and inset outward, so the list carries no plate at rest. It is keyed to the row the list marks rather than to the pointer, which is what lets the plate travel with the dot through the walk. On `:hover` alone it stayed on the row the pointer left and faded there while the dot moved on, lighting two rows by two different means: measured 160ms after leaving, the dot sat two rows from a plate still at 0.66.
+- The stage carries an engagement flag so the plate leaves once the walk settles. Keying the plate to the marked row alone would put a permanent one under the first row, which is highlighted from first paint.
+- The plate leaves over the site's shared 520ms while the walk steps faster than that, so several rows are lit at once on the way back and the glow cascades up the list. That is the reason the slow steps fall first: the trail is thickest at the start, and a longer first step gives each plate more of its own fade to clear in.
 - The SVG career graph beside the list is gone, and with it the node-to-row hover pairing and the edge-draw stagger it carried. The dots now sit in the row gutter on a single rail, so a row and its dot are one element to hover and there are two fewer moving parts. A session reading this entry for the fan animation is reading a removed feature.
 
 ## Footer signature wipe

@@ -252,6 +252,10 @@ The palette has no headroom below its muted token, and that is a constraint on e
 
 Two measurement errors produced confident wrong answers on this branch and both are cheap to repeat. A patch sampled at the corner of a bounding box misses a round control and reads the page behind it, which reported the dock's ground repair as no change at all. A color carrying alpha read as opaque reports a color nobody sees, which is what hid the 2.53:1 until the composite was done properly.
 
+Adding the glow to a surface that already answers a pointer is where the sweep costs something. The experience timeline had a highlight that walks back to its resting beat when a reader leaves, and a plate keyed to `:hover` stayed on the row they left and faded there while the highlight walked away, lighting two rows by two different means at once. A treatment joining a component with existing behavior keys to whatever that behavior already marks, rather than to the pointer.
+
+That coupling then decides an easing. The plate leaves more slowly than the walk steps, so several rows carry one at once on the way back, and the trail is thickest at the start. The walk therefore lingers on the row a reader chose and gathers pace as it returns, which both gives each plate more of its fade to clear in and puts the held moment on the leaving. The reverse shipped first and rushed exactly the moment worth holding.
+
 Read the sweep as one decision rather than as eight component edits. The operator's own framing is the reason it is recorded this way: a treatment settled on one component and not the others is how the site arrived at three answers, and the inventory at `e2e/inventory.ts` exists so the next such question is measured across the site before anything is changed. It reads pseudo elements and descendants as well as the element itself, because a first pass that read only the element reported the timeline chips and the card halo as controls that do nothing.
 
 Verified at c5f17e4 on 2026-08-20, at 1280x800, 1440x900, and 390x844.

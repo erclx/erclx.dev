@@ -70,7 +70,10 @@ The list opened on `Newest first.` in Fraunces italic at label size until 2026-0
 - Every dot sits exactly on its own row, which a fixed figure could never do once rows started running to different heights.
 - A span carries months rather than a year alone, because a year read as twelve months of work where the record held six.
 - One row is highlighted at a time as the "current state" anchor. The first row is highlighted by default. Hovering another row transfers the highlight to it. On leaving the list the highlight walks back row by row to the first row.
+- The walk lingers on the row the reader chose and gathers pace as it returns, because what it shows is a row being let go of rather than another being traveled to.
 - The highlighted dot fills with the warm accent and carries a soft ring, so one warm point marks where the reader is on a timeline that is otherwise muted. The rail marker in `section-nav.md` states position the same way and takes the same color.
+- The highlighted row also lifts onto a plate, which the closing ask and the project cards already carry, so the record answers a pointer the way the rest of the page does. The plate covers the span, the gutter and the beat together, since the three are one row. The rail runs behind it rather than across it.
+- The plate travels with the highlight through the walk, and several rows carry one at once on the way back because a plate leaves more slowly than the walk steps. Nothing is plated once the walk settles, including the row highlighted by default.
 - The framing line sits above the timeline rather than below it, and states the reading order rather than a thought about the path. `each entry made the next one possible` closed the list until 2026-08-19 and came out on the operator's call: an aphorism about a career makes a claim no record can check, which is the register that reads as machine-written. A line describing the list is the page's to write and a line speaking for the person is not.
 
 ## Employer marks
