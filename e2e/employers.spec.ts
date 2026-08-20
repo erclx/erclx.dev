@@ -95,3 +95,19 @@ test('the hovered name is hidden from assistive technology', async ({
     await expect(names.nth(index)).toHaveAttribute('aria-hidden', 'true')
   }
 })
+
+test('pointing at a mark names it on a pointer device', async ({ page }) => {
+  await page.goto('/')
+
+  const mark = page.locator('[data-employers] li').first()
+  const name = mark.locator('[data-employer-name]')
+  await expect(name).toHaveCSS('opacity', '0')
+
+  // The label is suppressed on a coarse pointer, where it is unreachable and
+  // costs a page that scrolls sideways. Keying that on hover alone hid it on
+  // any engine reporting no hover capability, which is every desktop engine
+  // that answers the query conservatively.
+  await mark.hover()
+
+  await expect(name).toHaveCSS('opacity', '1')
+})

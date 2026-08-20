@@ -210,3 +210,58 @@ test('the toggle reports expanded once focus opens the stack', async ({
 
   await expect(toggle).toHaveAttribute('aria-expanded', 'true')
 })
+
+test('a keyboard activation of the toggle keeps its place', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await scrollPastHero(page)
+  await expect(page.locator(DOCK)).toHaveAttribute('data-revealed', 'true')
+
+  const toggle = page.locator(DOCK).getByRole('button', { name: 'Contact' })
+  await toggle.focus()
+  await page.keyboard.press('Enter')
+  await page.keyboard.press('Enter')
+
+  // Collapsing by pointer releases the control, since `:focus-within` would
+  // otherwise hold the set open under the tap that just closed it. A keyboard
+  // reader keeps focus instead, because dropping them on `body` restarts their
+  // next tab at the top of the document.
+  const stillOnToggle = await page
+    .locator(DOCK)
+    .evaluate((dock: HTMLElement) => dock.contains(document.activeElement))
+
+  expect(stillOnToggle).toBe(true)
+})
+
+test.describe('the toggle on a touch device', () => {
+  test.skip(
+    ({ browserName }) => browserName === 'firefox',
+    'isMobile emulation is unsupported in firefox',
+  )
+  test.use({ hasTouch: true, isMobile: true })
+
+  test('a second tap closes what the first opened', async ({ page }) => {
+    await page.goto('/')
+    await scrollPastHero(page)
+    await expect(page.locator(DOCK)).toHaveAttribute('data-revealed', 'true')
+
+    const dock = page.locator(DOCK)
+    const toggle = dock.getByRole('button', { name: 'Contact' })
+    const links = dock.locator('[data-dock-links]')
+
+    await toggle.tap()
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    await expect(links).toHaveCSS('pointer-events', 'auto')
+
+    // Three things held the set open against this tap. The touch pointer is
+    // destroyed on lift, so `pointerleave` cleared the flag before the click
+    // could read it and the control could only ever open. The control kept
+    // focus, and `:hover` stays stuck on the last thing a finger touched.
+    await toggle.tap()
+
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    await expect(links).toHaveCSS('pointer-events', 'none')
+    await expect(links).toHaveCSS('opacity', '0')
+  })
+})

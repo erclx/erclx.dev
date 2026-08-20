@@ -169,12 +169,27 @@ const links = [
     transform: translateY(8px);
     pointer-events: none;
   }
-  [data-contact-dock]:hover [data-dock-links],
   [data-contact-dock]:focus-within [data-dock-links],
   [data-contact-dock][data-open='true'] [data-dock-links] {
     opacity: 1;
     transform: none;
     pointer-events: auto;
+  }
+
+  /* Everywhere except a true touch device. Touch leaves `:hover` stuck on the
+     last thing tapped, so the tap that collapses the set held it open through
+     this rule after the flag had been cleared and focus released.
+
+     Excluding touch rather than requiring hover, because Playwright's Firefox
+     answers `(hover: hover)` and `(pointer: fine)` both false and would lose
+     the hover path entirely. A coarse pointer is the one capability only a real
+     touch device reports, so it is what this can safely key on. */
+  @media not all and (pointer: coarse) {
+    [data-contact-dock]:hover [data-dock-links] {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
   }
 
   /* The name answers the one destination a reader is pointing at rather than
@@ -225,17 +240,34 @@ const links = [
       else dock.removeAttribute('data-near-footer')
     }
 
-    toggle?.addEventListener('click', () => {
-      const open = dock.dataset.open === 'true'
-      if (open) delete dock.dataset.open
-      else dock.dataset.open = 'true'
-      toggle.setAttribute('aria-expanded', String(!open))
+    toggle?.addEventListener('click', (event) => {
+      const wasOpen = dock.dataset.open === 'true'
+      if (wasOpen) {
+        delete dock.dataset.open
+        // Unsetting the flag is not enough to close it. The control that just
+        // collapsed the set still holds focus, and `:focus-within` keeps the
+        // stack visible and clickable, so the set has to be released as well.
+        // A keyboard activation reports no pointer detail and keeps its place,
+        // since blurring there drops the reader at the top of the document on
+        // their next tab and the set stays open under them either way.
+        if ((event as PointerEvent).detail > 0) toggle.blur()
+      } else {
+        dock.dataset.open = 'true'
+      }
+      toggle.setAttribute(
+        'aria-expanded',
+        String(!wasOpen || dock.contains(document.activeElement)),
+      )
     })
 
     // A pointer leaving closes what a tap opened, so the dock does not sit
     // open behind a reader who has moved on. Focus still inside keeps the set
     // open through `:focus-within`, so the state it reports stays true.
-    dock.addEventListener('pointerleave', () => {
+    dock.addEventListener('pointerleave', (event) => {
+      // A mouse only. A touch pointer is destroyed once the finger lifts, which
+      // fires this before the click that reads the state, so a tap cleared the
+      // flag it was about to toggle and the control could only ever open.
+      if ((event as PointerEvent).pointerType !== 'mouse') return
       delete dock.dataset.open
       if (dock.contains(document.activeElement)) return
       toggle?.setAttribute('aria-expanded', 'false')

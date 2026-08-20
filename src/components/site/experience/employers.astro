@@ -102,8 +102,12 @@ const marks = [
     max-width: min(14rem, 55vw);
   }
   /* A touch device has no pointer to ask with, so the label is unreachable
-     there and only its box would ship. */
-  @media (hover: none) {
+     there and only its box would ship.
+
+     Paired with a coarse pointer rather than keyed on hover alone. Playwright's
+     Firefox answers `(hover: none)` true on the desktop, so the bare query hid
+     the label on an engine that can hover perfectly well. */
+  @media (hover: none) and (pointer: coarse) {
     [data-employer-name] {
       display: none;
     }
