@@ -128,3 +128,43 @@ test('the heading, links, and toggle stay reachable over the surface', async ({
   // a link reaches the link and not the surface behind it.
   await expect(page.locator(CANVAS)).toHaveCSS('pointer-events', 'none')
 })
+
+test('a lost context reveals the fallback and a restore hides it', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.waitForTimeout(SETTLE_MS)
+
+  const fallback = page.locator('[data-shader-field-fallback]')
+  await expect(fallback).toBeHidden()
+
+  // The extension drives the same events the browser fires when it drops a
+  // context. This is the one path to the fallback that no setup failure
+  // reaches, and it is where a band with nothing drawn behind it comes from.
+  //
+  // The handle is kept rather than looked up twice. A lost context returns null
+  // from `getExtension`, so fetching it again to restore reaches nothing and
+  // the surface stays down.
+  const lost = await page.locator(CANVAS).evaluate((canvas) => {
+    const gl = (canvas as HTMLCanvasElement).getContext('webgl')
+    const ext = gl?.getExtension('WEBGL_lose_context')
+    if (!ext) return false
+    Object.assign(window, { __loseContext: ext })
+    ext.loseContext()
+    return true
+  })
+
+  test.skip(!lost, 'engine does not expose WEBGL_lose_context')
+
+  await expect(fallback).toBeVisible()
+  await expect(page.locator(CANVAS)).toBeHidden()
+
+  await page.evaluate(() => {
+    ;(
+      window as unknown as { __loseContext: WEBGL_lose_context }
+    ).__loseContext.restoreContext()
+  })
+
+  await expect(fallback).toBeHidden()
+  await expect(page.locator(CANVAS)).toBeVisible()
+})

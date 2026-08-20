@@ -34,7 +34,7 @@ The pointer raises a bump in the stream function, so contours bend around it the
 
 - Authored rather than installed. `.claude/DESIGN.md` § Personality rejects the shortcut rather than the medium, and states what separates the two.
 - Reduced motion draws one frame and runs no loop, rather than hiding for an authored stand-in. One surface answers both preferences and neither can drift from the other. Measured at zero scheduled animation frames over 1500ms against 120 with motion allowed.
-- The inlined SVG fallback is reached only where WebGL is missing or its context is lost. A band with nothing behind it reads as a broken page rather than a quiet one.
+- The inlined SVG fallback is reached where WebGL is missing, where the program fails to build, and where the context is lost. A band with nothing behind it reads as a broken page rather than a quiet one. A restore that rebuilds the renderer hides it again, so a context the browser drops and returns leaves no trace.
 - The page ground runs the same field with `animate: false` and a lower alpha, rather than a second drawing. Nothing can drift because there is only one.
 - The page ground is fixed rather than scrolling, so it costs one viewport of fill however long the page runs.
 
@@ -44,6 +44,7 @@ The pointer raises a bump in the stream function, so contours bend around it the
 - The reading column the ground damps inside is a different width per surface. It reads `--prose-column` on a route and a fixed column on the landing page, so the strip and the prose are one width by construction rather than by a copied number.
 - Astro scopes both halves of a descendant selector. A rule keyed on the surface class, which sits on `body`, matches nothing unless that half is `:global()`. The tell was a ground column holding 768 while the prose ran 672 to 832 beneath it.
 - Fill rate governs the cost rather than processor speed. The degrade path drops resolution where a particle field would shed particles.
+- The frame guard's floor is a fraction of the rate the throttle targets rather than a fixed count. A device reporting four cores or fewer is throttled to 30fps, so its frames measure 30fps by construction, and a constant floor of 45 marked every one of them a failure. That degraded the surface inside the first two-second window whatever the device could draw, and set the flag that stops all further sampling for the life of the page. The effect was invisible, because the low-end ceiling and the degraded ceiling are both a pixel ratio of 1, so nothing about the picture changed and only the guard was lost.
 - Two instruments for judging the motion returned figures that moved with nothing. A mean absolute difference over a sparse field is dominated by its empty pixels, and a correlation over thin lines collapses as soon as they sit one pixel off each other. Neither settled anything the eye did not settle faster.
 
 ## Hidden contracts

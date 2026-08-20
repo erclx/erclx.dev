@@ -191,3 +191,22 @@ test('the toggle reports the state it puts the stack in', async ({ page }) => {
   await expect(toggle).toHaveAttribute('aria-expanded', 'true')
   await expect(page.locator(DOCK)).toHaveAttribute('data-open', 'true')
 })
+
+test('the toggle reports expanded once focus opens the stack', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await scrollPastHero(page)
+  await expect(page.locator(DOCK)).toHaveAttribute('data-revealed', 'true')
+
+  const dock = page.locator(DOCK)
+  const toggle = dock.getByRole('button', { name: 'Contact' })
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+
+  // The stylesheet opens the stack on `:focus-within`, so a reader arriving by
+  // keyboard has four reachable destinations. The control has to say so rather
+  // than reporting the state only a click reaches.
+  await dock.getByRole('link', { name: 'GitHub' }).focus()
+
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+})

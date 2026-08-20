@@ -13,7 +13,11 @@ export const mountConfig = {
   cursorEase: 0.045,
   contentPadding: 12,
   perfWindowMs: 2000,
-  perfFloorFps: 45,
+  // A fraction of whatever rate the throttle targets rather than a fixed count.
+  // Held at 45 against a 30fps throttle it marked every frame a failure, since
+  // the throttle itself holds elapsed near 33.3ms, so a device reporting four
+  // cores degraded inside its first window whatever it could actually draw.
+  perfFloorRatio: 0.75,
 } as const
 
 const fallbackRgb: Rgb = [0.102, 0.094, 0.082]
@@ -127,6 +131,16 @@ function revealFallback(
 ): void {
   canvas.style.display = 'none'
   if (fallback) fallback.style.display = 'block'
+}
+
+// Clearing the inline values rather than assigning them, so the canvas returns
+// to its own display and the fallback to the class that hides it.
+function hideFallback(
+  canvas: HTMLCanvasElement,
+  fallback: HTMLElement | null,
+): void {
+  canvas.style.display = ''
+  if (fallback) fallback.style.display = ''
 }
 
 export interface MountOptions {
@@ -270,8 +284,8 @@ export function mountShaderField(
     if (now - perfWindowStart < mountConfig.perfWindowMs) return
 
     const total = frameSamples.reduce((sum, value) => sum + value, 0)
-    if (1000 / (total / frameSamples.length) < mountConfig.perfFloorFps)
-      degrade()
+    const floorFps = (1000 / targetFrameMs) * mountConfig.perfFloorRatio
+    if (1000 / (total / frameSamples.length) < floorFps) degrade()
     frameSamples.length = 0
     perfWindowStart = now
   }
@@ -296,6 +310,10 @@ export function mountShaderField(
     if (rafId || contextLost) return
     lastFrameTime = performance.now()
     perfWindowStart = lastFrameTime
+    // The window restarts, so the samples in it do too. Frames measured before
+    // a hidden tab would otherwise average into the first window after it
+    // returns, where the gap across the hidden stretch is not a slow frame.
+    frameSamples.length = 0
     rafId = requestAnimationFrame(tick)
   }
 
@@ -331,15 +349,29 @@ export function mountShaderField(
     if (resizeRaf) return
     resizeRaf = requestAnimationFrame(() => {
       resizeRaf = 0
+      // The backing store follows the display the canvas is on. A zoom, or a
+      // drag onto a screen of a different density, fires this and nothing else,
+      // so a ratio read once at mount renders for the density the page loaded
+      // with. A degraded surface holds its reduced ratio rather than climbing
+      // back to a ceiling the frame guard already rejected.
+      const ceiling = degraded
+        ? mountConfig.degradedPixelRatio
+        : ceilingPixelRatio
+      pixelRatio = Math.min(window.devicePixelRatio || 1, ceiling)
       resize()
       if (!animate) draw()
     })
   }
 
+  // A lost context leaves the canvas holding whatever it last drew, which is
+  // nothing once the browser clears it, so the band renders empty until a
+  // restore that is never guaranteed to arrive. The fallback is what stands in
+  // for the surface meanwhile.
   function handleContextLost(event: Event): void {
     event.preventDefault()
     contextLost = true
     stop()
+    revealFallback(canvas, fallback)
   }
 
   function handleContextRestored(): void {
@@ -349,6 +381,7 @@ export function mountShaderField(
       revealFallback(canvas, fallback)
       return
     }
+    hideFallback(canvas, fallback)
     resize()
     if (animate) start()
     else draw()
