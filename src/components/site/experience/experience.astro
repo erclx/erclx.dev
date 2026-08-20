@@ -264,19 +264,42 @@ const artifacts = [
     padding: 0.2rem 0.75rem;
     color: var(--muted-foreground);
   }
-  .experience-chip-hit:hover .experience-chip {
+  /* A chip has its own bounds, so it takes the glow the project cards carry
+     rather than the border-and-color answer it shared with the rail until
+     that rail gained a ground of its own. */
+  .experience-chip-hit:hover .experience-chip,
+  .experience-chip-hit:focus-visible .experience-chip {
     border-color: var(--accent);
     color: var(--foreground);
+    background: var(--glow-fill);
+    box-shadow: var(--glow-shadow);
   }
   @media (prefers-reduced-motion: no-preference) {
     .experience-row,
-    .experience-marker,
-    .experience-chip {
+    .experience-marker {
       transition:
         color 150ms ease-out,
         background-color 150ms ease-out,
         border-color 150ms ease-out,
         box-shadow 200ms ease-out;
+    }
+    /* The chip leaves on the site's shared glow timing rather than its own,
+       so a pointer crossing the row of chips trails the same way it does
+       crossing the project grid. */
+    .experience-chip {
+      transition:
+        color 150ms ease-out,
+        border-color 150ms ease-out,
+        background-color var(--glow-out) ease-out,
+        box-shadow var(--glow-out) ease-out;
+    }
+    .experience-chip-hit:hover .experience-chip,
+    .experience-chip-hit:focus-visible .experience-chip {
+      transition:
+        color 150ms ease-out,
+        border-color 150ms ease-out,
+        background-color var(--glow-in) ease-out,
+        box-shadow var(--glow-in) ease-out;
     }
   }
 </style>

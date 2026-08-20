@@ -110,6 +110,28 @@ body.surface-case-study > header[data-section='header'] {
   --floating-shadow:
     0 1px 2px rgb(from var(--foreground) r g b / 0.04),
     0 8px 24px rgb(from var(--foreground) r g b / 0.08);
+
+  /* What a control does when a pointer lands on it. Measured across the site
+     on 2026-08-20: 87 interactive elements answered three different ways and
+     not one of them glowed, because the only glow that existed sat on the
+     project card, which is neither a link nor a button.
+
+     That card is where these values come from, so the sweep matches the one
+     treatment already authored rather than inventing a second beside it.
+
+     Two tiers, split on whether the thing has its own box. A control with
+     bounds takes this. A link sitting inline in a paragraph keeps its
+     underline, because a ground behind a word reads as a highlighter and
+     fights the sentence it is inside. */
+  --glow-fill: color-mix(in oklab, var(--card) 60%, transparent);
+  --glow-shadow: 0 0 1.25rem 0
+    color-mix(in oklab, var(--foreground) 7%, transparent);
+  /* Asymmetric on purpose. Arriving is immediate, because a control answering
+     late reads as broken, and leaving takes four times as long, so a pointer
+     crossing a row of controls trails a glow rather than snapping off at every
+     gap between them. */
+  --glow-in: 130ms;
+  --glow-out: 520ms;
 }
 
 /* One ground for both bars. The landing page and a route each render this
@@ -151,6 +173,32 @@ body.surface-case-study > header[data-section='header'] {
   backdrop-filter: var(--floating-blur);
   border: 1px solid var(--border);
   box-shadow: var(--floating-shadow);
+}
+
+/* The dock already states its bounds at rest, so pointing at one of its
+   controls has to say something the resting ground does not. It gains the
+   glow's shadow on top of the elevation it carries, rather than swapping one
+   for the other, which would make the control appear to drop as it lit. */
+[data-dock-surface]:hover,
+[data-dock-surface]:focus-visible {
+  border-color: var(--accent);
+  box-shadow: var(--floating-shadow), var(--glow-shadow);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-dock-surface] {
+    transition:
+      color 150ms ease-out,
+      border-color 150ms ease-out,
+      box-shadow var(--glow-out) ease-out;
+  }
+  [data-dock-surface]:hover,
+  [data-dock-surface]:focus-visible {
+    transition:
+      color 150ms ease-out,
+      border-color 150ms ease-out,
+      box-shadow var(--glow-in) ease-out;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {

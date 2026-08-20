@@ -7,7 +7,7 @@
   data-theme-toggle
   aria-label="Cycle theme"
   title="Cycle theme"
-  class="theme-toggle text-muted-foreground hover:text-foreground inline-flex size-11 cursor-pointer items-center justify-center rounded-md transition-colors"
+  class="theme-toggle text-muted-foreground hover:text-foreground inline-flex size-11 cursor-pointer items-center justify-center rounded-full"
 >
   <svg
     data-theme-icon="light"
@@ -67,6 +67,35 @@
 </button>
 
 <style is:global>
+  /* The control travels between the hero's corner and the sticky bar, so it
+     sits over two different grounds and belongs to neither. The glow is what
+     gives it bounds under a pointer without drawing any at rest, which is what
+     the rest of the page does.
+
+     Global rather than scoped: this component renders once and is moved into a
+     fixed host by the hero handoff, and a scoped rule keyed on the button
+     survives that move while one keyed on an ancestor would not. */
+  .theme-toggle:hover,
+  .theme-toggle:focus-visible {
+    background: var(--glow-fill);
+    box-shadow: var(--glow-shadow);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .theme-toggle {
+      transition:
+        color 150ms ease-out,
+        background-color var(--glow-out) ease-out,
+        box-shadow var(--glow-out) ease-out;
+    }
+    .theme-toggle:hover,
+    .theme-toggle:focus-visible {
+      transition:
+        color 150ms ease-out,
+        background-color var(--glow-in) ease-out,
+        box-shadow var(--glow-in) ease-out;
+    }
+  }
+
   [data-theme-icon] {
     display: none;
   }

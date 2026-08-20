@@ -172,7 +172,7 @@ const criteria = [
               <div
                 data-fade
                 style={`--fade-delay: ${150 + idx * 100}ms`}
-                class="group hover:border-l-accent -ml-4 grid items-baseline gap-x-6 border-l-2 border-l-transparent py-3 pl-4 sm:grid-cols-[13rem_1fr]"
+                class="looking-row group hover:border-l-accent -ml-4 grid items-baseline gap-x-6 border-l-2 border-l-transparent py-3 pl-4 sm:grid-cols-[13rem_1fr]"
               >
                 {/* The key steps back rather than the answer stepping forward.
                     The answers used to render at foreground, which measured
@@ -209,9 +209,36 @@ const criteria = [
   .looking-key {
     color: color-mix(in oklab, var(--muted-foreground) 65%, transparent);
   }
+
+  /* A row is a box a pointer lands on, so it takes the glow every other
+     bounded control carries. It is drawn behind the pair and inset outward,
+     the way the project card's is, so the rows stay ruleless at rest. */
+  .looking-row {
+    position: relative;
+    isolation: isolate;
+  }
+  .looking-row::after {
+    content: '';
+    position: absolute;
+    inset: -0.25rem -1rem;
+    border-radius: 0.75rem;
+    z-index: -1;
+    opacity: 0;
+    background: var(--glow-fill);
+    box-shadow: var(--glow-shadow);
+  }
+  .looking-row:hover::after {
+    opacity: 1;
+  }
   @media (prefers-reduced-motion: no-preference) {
     .looking-key {
       transition: color 150ms ease-out;
+    }
+    .looking-row::after {
+      transition: opacity var(--glow-out) ease-out;
+    }
+    .looking-row:hover::after {
+      transition: opacity var(--glow-in) ease-out;
     }
   }
 
