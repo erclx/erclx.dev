@@ -290,6 +290,22 @@ Three of the defects that came out with it were older than the work, and one of 
 
 Verified at 1024x700, 1280x800, 1440x900, and 1600x1200.
 
+### A dev-only component serves candidate treatments the operator drives
+
+Some decisions cannot be settled from a capture or a recording, because both are passive and the question is how a thing feels to cause: a pace read while scrolling, a gesture, whether a control is where a hand expects it. Those are served live from the running page, behind one query parameter, with a switcher for moving between arms.
+
+`src/components/dev/scenarios.astro` owns the shape. Five decisions on one branch were served that way with a hand-written parameter, switcher, and removal each, none resembling the last, which is what earned a component rather than a habit.
+
+It renders nothing in a production build, because the whole component is behind `import.meta.env.DEV` rather than gating itself at runtime, and nothing in development either until the page is asked for an arm by name. Verified: a built `dist/` carries no trace of the switcher, and a dev page loaded without the parameter renders none of it.
+
+An arm carries CSS where the decision is a treatment. Where it is a value the page reads at runtime, a pace or a shader uniform, the arm carries none and the module holding that value reads the active id off `documentElement.dataset`. That split is what lets one component serve a stylesheet decision and a shader decision without knowing about either.
+
+Two things about it are not obvious and both cost a debugging pass. Inside an Astro expression a script's children are parsed the way JSX children are, so every brace in the source reads as an interpolation and the body ships as an unevaluated literal with nothing reporting it. The source is held as a string and written with `set:html` for that reason. The switcher also sits bottom left rather than bottom centre, which is where Astro's dev toolbar sits and where it swallows every click aimed at whatever is underneath it.
+
+**It is unreferenced today, and that is the expected state.** It is scaffolding a visual decision reaches for and removes again, so a branch with no open visual decision holds no call site. Read it the way the React entry above should be read: a session auditing the tree for unused files finds it and should leave it alone.
+
+Verified at 1280x900.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
