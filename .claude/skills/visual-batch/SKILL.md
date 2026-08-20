@@ -10,9 +10,8 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 
 ## Guards
 
-- Stop when the request names no surface and no visual outcome. A change with nothing to look at needs no batch and no loop.
-- Stop before implementing anything the operator has not agreed to in the batch table. The dump is the request and the table is the plan.
-- Stop and ask rather than choosing when two treatments are both defensible and the difference is a matter of taste. Prototyping is the answer, not a judgment call taken silently.
+- If the request names no surface and no visual outcome, stop: `❌ Nothing to look at. This is not a visual run.`
+- If a batch is not in the agreed table, stop: `❌ Batch not in the agreed plan. Put the table up before implementing.`
 
 ## Phase 1: plan the batches
 
@@ -33,7 +32,7 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 1. Implement the batch.
 2. Classify the decision before capturing, per `## Choosing a capture` below. Reaching for the default capture is what produces evidence about the wrong thing.
 3. Capture, then look at what came back.
-4. Hand back the localhost URL and one or two lines naming what is worth the operator's eye. Name what you are unsure about rather than summarizing what you built.
+4. Hand off per that same rule, then stop. The operator judges before anything else happens.
 5. Take the correction, change the code, capture again. Repeat until they say it is right.
 6. Move to the next batch. Do not commit between iterations or between batches.
 
@@ -49,7 +48,8 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 
 - A decision about size, weight, color, spacing, or arrangement is static. Compose the candidates into one sheet.
 - A decision about how something moves is motion. Record it, per that rule's `video: true`, rather than shooting stills of a moving surface.
-- A decision needing the operator to drive it, such as a hover response, a scroll-linked position, or anything where timing is theirs to control, is interactive. Serve the candidates as live query-parameter variants and hand back the URLs, since a recording is passive and answers a question they did not ask.
+- A decision needing the operator to drive it, such as a hover response, a scroll-linked position, or anything where timing is theirs to control, is interactive. Serve the candidates as live query-parameter variants, since a recording is passive and answers a question they did not ask.
+- Prototype rather than deciding when two treatments are both defensible and the difference is taste. A call taken silently there is the operator's to make.
 - Remove the arms that lose in the same batch that picks the winner. A variant left behind a flag is a second design nobody maintains.
 
 ## The copy cycle

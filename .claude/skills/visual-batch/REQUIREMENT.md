@@ -23,7 +23,6 @@ Without this skill, a session working on a visual surface:
 - Decide the pull request boundary during planning, from the file sets the batches touch, and state it in the batch table.
 - Classify a decision as static, motion, or interactive before capturing, and take the matching option from the capture rule.
 - Render and look at every visual change before reporting on it, and prefer a measurement whenever the claim is about a number.
-- Hand back a localhost URL with one or two lines naming what needs the operator's eye, then stop.
 - Run the four-step copy cycle before changing any rendered text, and report the upstream edit in the same message as the component edit.
 - Hold the tree uncommitted across every iteration and every batch in the run.
 - Mark the recommended option in its own label when escalating a choice.
@@ -36,9 +35,7 @@ Without this skill, a session working on a visual surface:
 
 ## Guards
 
-- No surface and no visual outcome in the request: `❌ Nothing to look at. This is not a visual run.`
-- A batch not in the agreed table: stop and put the table before implementing.
-- Two defensible treatments and a difference of taste: prototype and ask rather than choosing.
+The refusal strings sit in the body, since the runtime loads that file and ignores this one. Two conditions stop a run: a request naming no surface and no visual outcome, and a batch the operator has not agreed to.
 
 ## Out of scope
 
