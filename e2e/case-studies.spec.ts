@@ -4,7 +4,9 @@ import { contrastRatio, paintedColor, relativeLuminance } from './colors'
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 
 const FIGURE_SELECTOR = 'main figure img'
-const DICTION_FIGURE_COUNT = 6
+// Six charts plus the still the route opens on, added 2026-08-20 so the route
+// does not begin in prose where every other one begins with a figure.
+const DICTION_FIGURE_COUNT = 7
 const CASE_STUDY_ROUTES = [
   '/aitk',
   '/jobtriage',
@@ -214,7 +216,14 @@ test('a heading reached by a deep link clears the sticky bar on a phone', async 
     return heading.top - bar.height
   })
 
-  expect(clearance).toBeGreaterThanOrEqual(0)
+  // The bar's height and the section's scroll margin are derived from the same
+  // parts, so the design lands the heading at exactly zero clearance. Any image
+  // above the anchor renders at a fractional height and carries that fraction
+  // into every offset below it, which makes an exact-fit assertion fail by less
+  // than a pixel while nothing is occluded. The tolerance is one pixel because
+  // that is the largest error sub-pixel layout can introduce; a real overlap
+  // would be the bar's whole height.
+  expect(clearance).toBeGreaterThan(-1)
 })
 
 test('the route name stays out of the bar while its own title is on screen', async ({
@@ -297,7 +306,7 @@ test('a figure plate holds a light ground in the dark theme', async ({
 }) => {
   await page.emulateMedia({ colorScheme: 'dark' })
   await page.goto('/diction')
-  const plate = page.locator('main figure:has(img)').first()
+  const plate = page.locator('main .figure-plate').first()
 
   const plateColor = await paintedColor(plate, 'backgroundColor')
   const pageColor = await paintedColor(page.locator('body'), 'backgroundColor')
@@ -311,7 +320,7 @@ test('a figure caption stays readable on the plate in the dark theme', async ({
 }) => {
   await page.emulateMedia({ colorScheme: 'dark' })
   await page.goto('/diction')
-  const plate = page.locator('main figure:has(img)').first()
+  const plate = page.locator('main .figure-plate').first()
 
   const plateColor = await paintedColor(plate, 'backgroundColor')
   const captionColor = await paintedColor(plate.locator('figcaption'), 'color')
@@ -324,7 +333,7 @@ test('a focused figure keeps its ring legible on the plate in the dark theme', a
 }) => {
   await page.emulateMedia({ colorScheme: 'dark' })
   await page.goto('/diction')
-  const plate = page.locator('main figure:has(img)').first()
+  const plate = page.locator('main .figure-plate').first()
   const trigger = plate.locator('[data-figure-zoom]')
   await trigger.focus()
 
@@ -363,7 +372,7 @@ test('a figure plate tracks the light palette rather than a copy of it', async (
   await page.emulateMedia({ colorScheme: 'dark' })
   await page.goto('/diction')
 
-  const plate = page.locator('main figure:has(img)').first()
+  const plate = page.locator('main .figure-plate').first()
   const source = await page.evaluate(() => {
     const root = getComputedStyle(document.documentElement)
     return {
