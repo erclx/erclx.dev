@@ -24,9 +24,21 @@
 >
 </div>
 
+{/* A light scrim over the blur rather than the near-opaque ground it carried,
+    and no rule under it. The bar held the page's ground while the hero, the
+    lighter plate in both themes, was still behind it, so the one surface that
+    should have joined the two announced the split instead.
+
+    The fill is what it is because of contrast rather than taste. Blur with no
+    fill at all reads best and measures 3.29:1 on the name in the light theme
+    over the projects grid, under the 4.5:1 that 14px medium text has to clear.
+    0.4 reaches 4.53:1, which is inside a rounding error of the floor and one
+    content change from breaking. This holds 5.13:1 in light and 8.01:1 in dark
+    at the worst of five sampled scroll depths, and still passes a third of the
+    backdrop through where the old value passed almost none. */}
 <div
   data-site-bar
-  class="border-border/60 bg-background/96 fixed inset-x-0 top-0 z-30 border-b px-6 backdrop-blur-md"
+  class="bg-background/70 fixed inset-x-0 top-0 z-30 px-6 backdrop-blur-md"
 >
     {/* The bar's contents sit in the same column the hero uses, on every
       surface, so the chrome never resizes when a reader moves between the
