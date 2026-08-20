@@ -25,6 +25,7 @@ frontmatter
 gsub
 highp
 iconify
+inpainting
 intfloat
 jsdom
 jsxSingleQuote

@@ -40,6 +40,13 @@ const history: HistoryEntry[] = [
     ],
   },
   {
+    span: 'jun to aug 2023',
+    head: 'ten weeks at bac ha software, hanoi',
+    details: [
+      'Reproduced published GAN architectures in TensorFlow for image inpainting, pre-trained them on GPU, and presented the results to the company.',
+    ],
+  },
+  {
     span: 'sep 2022 to jun 2024',
     head: 'msc in complex adaptive systems, chalmers',
     details: [
@@ -126,21 +133,16 @@ const artifacts = [
               data-default-active={entry.current ? 'true' : undefined}
               aria-current={entry.current ? 'step' : undefined}
               style={`--fade-delay: ${500 + idx * 100}ms`}
-              class="experience-row text-body grid grid-cols-[3.25rem_1fr] items-start"
+              class="experience-row text-body grid grid-cols-[1fr] items-start md:grid-cols-[11.5rem_3.25rem_1fr]"
             >
+              <p class="experience-date tabular-nums">{entry.span}</p>
               <span class="experience-gutter" aria-hidden="true">
                 <span class="experience-marker-line">
                   <span class="experience-marker"></span>
                 </span>
               </span>
               <div>
-                <p class="experience-head">
-                  <span class="tabular-nums">{entry.span}</span>
-                  <span class="px-1" aria-hidden="true">
-                    ·
-                  </span>
-                  {entry.head}
-                </p>
+                <p class="experience-head">{entry.head}</p>
                 {entry.details.map((detail) => (
                   <p class="experience-detail text-label mt-2 font-sans">{detail}</p>
                 ))}
@@ -210,6 +212,19 @@ const artifacts = [
     height: var(--experience-beat-gap);
     width: 1px;
     background: linear-gradient(to bottom, var(--border), transparent);
+  }
+  .experience-date {
+    color: var(--muted-foreground);
+  }
+  /* Below md the row is one column, so the date leads its own block rather
+     than sitting in a gutter the layout no longer has. */
+  @media (max-width: 767px) {
+    .experience-date {
+      margin-bottom: 0.25rem;
+    }
+    .experience-gutter {
+      display: none;
+    }
   }
   .experience-detail {
     color: var(--muted-foreground);
