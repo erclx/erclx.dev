@@ -57,8 +57,13 @@ const links = [
     stack grows up out of it. Rendered in order it put the resting mark at the
     top of a group that is anchored to the bottom, so the one thing a reader
     sees at rest moved every time the stack opened. */}
+{/* Inert until it arrives, matching the sticky bar. The dock is invisible and
+    takes no pointer until it is revealed, but its four links stay in the tab
+    order regardless, so without this a keyboard reader tabs through four
+    destinations that are not on screen and gets no focus ring to follow. */}
 <div
   data-contact-dock
+  inert
   class="fixed right-6 bottom-6 z-30 flex flex-col-reverse items-end gap-2"
 >
   {/* Expands the stack where a pointer is not available. It carries the
@@ -202,6 +207,24 @@ const links = [
   const toggle = dock?.querySelector<HTMLElement>('[data-dock-toggle]')
 
   if (dock) {
+    // Reach and inertness are one state. The two gates below each own half of
+    // it, so both write through here rather than each toggling the attribute
+    // it happens to know about and leaving the other half stale.
+    let pastHero = false
+    let atFooter = false
+    const syncReach = () => {
+      const reachable = pastHero && !atFooter
+      if (reachable) {
+        dock.setAttribute('data-revealed', 'true')
+        dock.removeAttribute('inert')
+      } else {
+        dock.removeAttribute('data-revealed')
+        dock.setAttribute('inert', '')
+      }
+      if (atFooter) dock.setAttribute('data-near-footer', 'true')
+      else dock.removeAttribute('data-near-footer')
+    }
+
     toggle?.addEventListener('click', () => {
       const open = dock.dataset.open === 'true'
       if (open) delete dock.dataset.open
@@ -227,17 +250,15 @@ const links = [
         new IntersectionObserver(
           (entries) => {
             for (const entry of entries) {
-              if (entry.intersectionRatio < 0.5) {
-                dock.setAttribute('data-revealed', 'true')
-              } else {
-                dock.removeAttribute('data-revealed')
-              }
+              pastHero = entry.intersectionRatio < 0.5
+              syncReach()
             }
           },
           { threshold: [0, 0.5] },
         ).observe(hero)
       } else {
-        dock.setAttribute('data-revealed', 'true')
+        pastHero = true
+        syncReach()
       }
 
       const footer = document.querySelector<HTMLElement>(
@@ -254,18 +275,16 @@ const links = [
         new IntersectionObserver(
           (entries) => {
             for (const entry of entries) {
-              if (entry.isIntersecting) {
-                dock.setAttribute('data-near-footer', 'true')
-              } else {
-                dock.removeAttribute('data-near-footer')
-              }
+              atFooter = entry.isIntersecting
+              syncReach()
             }
           },
           { threshold: 0 },
         ).observe(footer)
       }
     } else {
-      dock.setAttribute('data-revealed', 'true')
+      pastHero = true
+      syncReach()
     }
   }
 </script>

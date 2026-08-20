@@ -42,6 +42,43 @@ test('the dock stands down over the footer, which carries the same links', async
   await expect(page.locator(DOCK)).toHaveAttribute('data-near-footer', 'true')
 })
 
+test('no dock destination takes focus before the dock is revealed', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.waitForTimeout(SETTLE_MS)
+
+  // Collapsed only hides the stack. The dock itself is invisible until it
+  // arrives, so without inert a keyboard reader tabs through four destinations
+  // that are not on screen and has no focus ring to follow.
+  const landed = await page.locator(DOCK).evaluate((dock: HTMLElement) => {
+    const link = dock.querySelector('a')
+    link?.focus()
+    return document.activeElement === link
+  })
+
+  expect(landed).toBe(false)
+})
+
+test('every contact destination takes focus once the dock is revealed', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await scrollPastHero(page)
+  // The gate is what makes the links reachable, so the test waits on it rather
+  // than on the scroll settling. Under a loaded machine the observer can fire
+  // after the settle, which read as a focus defect and was a slow callback.
+  await expect(page.locator(DOCK)).toHaveAttribute('data-revealed', 'true')
+
+  const landed = await page.locator(DOCK).evaluate((dock: HTMLElement) => {
+    const link = dock.querySelector('a')
+    link?.focus()
+    return document.activeElement === link
+  })
+
+  expect(landed).toBe(true)
+})
+
 test('every contact destination stays in the tab order while collapsed', async ({
   page,
 }) => {
