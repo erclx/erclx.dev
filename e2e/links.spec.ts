@@ -83,13 +83,17 @@ for (const route of ROUTES) {
   })
 }
 
-test('the mail handoff stays in the current tab', async ({ page }) => {
+test('every mail handoff stays in the current tab', async ({ page }) => {
   await page.goto('/')
 
-  await expect(page.locator('a[href^="mailto:"]')).not.toHaveAttribute(
-    'target',
-    '_blank',
-  )
+  // The page carries the address in more than one place, so this asserts the
+  // rule across every one rather than against whichever came first.
+  const targets = await page
+    .locator('a[href^="mailto:"]')
+    .evaluateAll((links) => links.map((link) => link.getAttribute('target')))
+
+  expect(targets.length).toBeGreaterThan(0)
+  expect(targets.filter((target) => target === '_blank')).toEqual([])
 })
 
 test('the resume link keeps the new-tab pairing it already had', async ({
