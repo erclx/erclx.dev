@@ -1,6 +1,5 @@
 ---
 import ProjectCard from './project-card.astro'
-import { isOutbound } from '@/lib/links'
 import aitkPoster from '@/assets/projects/aitk.png'
 import jobtriagePoster from '@/assets/projects/jobtriage.png'
 import stackrPoster from '@/assets/projects/stackr.png'
@@ -10,9 +9,14 @@ import jobtriageVideo from '@/assets/videos/jobtriage.mp4?url'
 import stackrVideo from '@/assets/videos/stackr.mp4?url'
 import caretVideo from '@/assets/videos/caret.mp4?url'
 
+// Each card names the route it owns as its own field. It used to be derived by
+// picking the one internal href out of the links list, which stopped working
+// the moment the route stopped being a link in it. The links are now what they
+// say they are: where the artifact itself lives.
 const projects = [
   {
     name: 'aitk',
+    route: '/aitk',
     description:
       'CLI that installs one set of agent rules, skills, and standards into every project and keeps them in step. Installs from npm as @erclx/aitk and as a Claude Code plugin.',
     poster: aitkPoster,
@@ -20,13 +24,13 @@ const projects = [
       'aitk — terminal transcript of the install command running in a project',
     mediaPosition: 'left top',
     links: [
-      { label: 'Project', href: '/aitk' },
       { label: 'GitHub', href: 'https://github.com/erclx/aitk' },
       { label: 'npm', href: 'https://www.npmjs.com/package/@erclx/aitk' },
     ],
   },
   {
     name: 'Jobtriage',
+    route: '/jobtriage',
     description:
       'Live agent that triages Swedish job ads against a profile. Reachable at jobtriage.erclx.dev without a key, and the case study carries the retrieval numbers.',
     poster: jobtriagePoster,
@@ -35,12 +39,12 @@ const projects = [
       'Jobtriage, chat interface with retrieved ad cards on a React Flow canvas',
     links: [
       { label: 'Live demo', href: 'https://jobtriage.erclx.dev' },
-      { label: 'Project', href: '/jobtriage' },
       { label: 'GitHub', href: 'https://github.com/erclx/jobtriage' },
     ],
   },
   {
     name: 'Stackr',
+    route: '/stackr',
     description:
       'VS Code extension that stages files across a workspace into one block of LLM context. Installed from the VS Code Marketplace and Open VSX.',
     poster: stackrPoster,
@@ -48,7 +52,6 @@ const projects = [
     mediaAlt: 'Stackr — VS Code panel showing staged files and a context preview',
     mediaPosition: 'left top',
     links: [
-      { label: 'Project', href: '/stackr' },
       {
         label: 'VS Code Marketplace',
         href: 'https://marketplace.visualstudio.com/items?itemName=erclx.ai-context-stacker',
@@ -62,13 +65,13 @@ const projects = [
   },
   {
     name: 'Caret',
+    route: '/caret',
     description:
       'Chrome extension that saves prompts and drops them into Claude, Gemini, and ChatGPT from the chat input. Live on the Chrome Web Store.',
     poster: caretPoster,
     videoSrc: caretVideo,
     mediaAlt: 'Caret — chat input showing a trigger-character palette of saved prompts',
     links: [
-      { label: 'Project', href: '/caret' },
       {
         label: 'Chrome Web Store',
         href: 'https://chromewebstore.google.com/detail/caret/bpmdbibldelkpncegllkeegdpblgehgk',
@@ -78,6 +81,7 @@ const projects = [
   },
   {
     name: 'diction',
+    route: '/diction',
     description:
       'Pronunciation trainer that scores each sound against what a native speaker actually sounds like, and reports how often it is wrong. Runs offline with nothing leaving the machine.',
     poster: dictionPoster,
@@ -85,16 +89,14 @@ const projects = [
       'diction — a scored passage reading, with the word thought flagged and the th correction shown',
     mediaPosition: 'left top',
     links: [
-      { label: 'Project', href: '/diction' },
       { label: 'GitHub', href: 'https://github.com/erclx/diction' },
     ],
   },
 ]
 
-// A card's only internal link is the case study it owns. Every other link
-// leaves the site for the artifact itself.
-const findCaseStudyHref = (links: { href: string }[]): string | undefined =>
-  links.find((link) => !isOutbound(link.href))?.href
+// The route each card owns, held as its own field rather than found among the
+// links. It was derived by picking the one internal href out of that list,
+// which stopped working the moment the route stopped being a link in it.
 ---
 
 <section id="projects" data-section="projects" class="page-inset py-16 md:py-20">
@@ -143,7 +145,7 @@ const findCaseStudyHref = (links: { href: string }[]): string | undefined =>
                 mediaAlt={project.mediaAlt}
                 mediaPosition={project.mediaPosition}
                 links={project.links}
-                caseStudyHref={findCaseStudyHref(project.links)}
+                caseStudyHref={project.route}
                 index={index}
                 isWide={isWide}
               />

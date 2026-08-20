@@ -172,16 +172,23 @@ const criteria = [
               <div
                 data-fade
                 style={`--fade-delay: ${150 + idx * 100}ms`}
-                class="group hover:border-l-accent -ml-4 grid items-baseline gap-x-6 border-l-2 border-l-transparent py-3 pl-4 sm:grid-cols-[13rem_1fr]"
+                class="looking-row group -ml-4 grid items-baseline gap-x-6 border-l-2 border-l-transparent py-3 pl-4 sm:grid-cols-[13rem_1fr]"
               >
-                <dt class="text-muted-foreground group-hover:text-foreground text-label">
-                  {item.label}
-                </dt>
-                {/* The value takes the label's size and the leading color, so
-                    the two columns hold one step and color alone separates the
-                    key from the answer. This is the pairing the experience
-                    beats already run, inverted here until 2026-08-19. */}
-                <dd class="text-foreground text-label">{item.value}</dd>
+                {/* The key steps back rather than the answer stepping forward.
+                    The answers used to render at foreground, which measured
+                    3.35x the contrast of every paragraph on the page in light
+                    and made the closing section the heaviest reading on it.
+
+                    Dropping them alone was tried and does not work: color is
+                    the only thing separating the two columns, so with both at
+                    prose weight the rows stop scanning as pairs. A third step
+                    on the key is what buys the answer its way down. */}
+                <dt class="looking-key text-label">{item.label}</dt>
+                {/* The answer sits at the weight the page reads at, and lifts
+                    to foreground under a pointer. */}
+                <dd class="text-muted-foreground group-hover:text-foreground text-label">
+                  {item.value}
+                </dd>
               </div>
             ))
           }
@@ -192,6 +199,74 @@ const criteria = [
 </section>
 
 <style>
+  /* The key separates from the answer by weight rather than by lightness.
+     Lightness has no room here: the muted token is already 4.82:1 in light,
+     so a step below it fails the 4.5:1 floor for text at any value visible
+     enough to do the job. A 65% mix was shipped and measured 2.53:1.
+
+     Both columns therefore sit on the muted token and the key drops a weight
+     step, which the 13rem column between them does most of the work of. */
+  .looking-key {
+    color: var(--muted-foreground);
+    font-weight: 400;
+  }
+
+  /* A row is a box a pointer lands on, so it takes the glow every other
+     bounded control carries. It is drawn behind the pair and inset outward,
+     the way the project card's is, so the rows stay ruleless at rest. */
+  .looking-row {
+    position: relative;
+    isolation: isolate;
+  }
+  .looking-row::after {
+    content: '';
+    position: absolute;
+    inset: -0.25rem -1rem;
+    border-radius: 0.75rem;
+    z-index: -1;
+    opacity: 0;
+    background: var(--glow-fill);
+    box-shadow: var(--glow-shadow);
+  }
+  .looking-row:hover::after {
+    opacity: 1;
+  }
+
+  /* The accent edge is drawn here rather than as the row's own left border.
+     A negative z-index child paints above its parent's background and border
+     and below its content, so the glow above reached the border box and laid
+     its 60% white over the edge: the accent should paint near rgb(165,70,28)
+     and measured rgb(219,181,164) once the glow arrived. The edge appeared at
+     full strength on the first frame and washed out as the glow faded in.
+
+     The transparent border stays on the row, because it is what holds the
+     2px the layout is built around. This only takes over what it draws. */
+  /* Offset by its own width, because an absolutely positioned child resolves
+     against the padding box and the border it replaces sits outside that. At
+     `left: 0` the edge drew 2px inboard of where it had always been. */
+  .looking-row::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 -2px;
+    width: 2px;
+    z-index: 0;
+    background: transparent;
+  }
+  .looking-row:hover::before {
+    background: var(--accent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .looking-key {
+      transition: color 150ms ease-out;
+    }
+    .looking-row::after {
+      transition: opacity var(--glow-out) ease-out;
+    }
+    .looking-row:hover::after {
+      transition: opacity var(--glow-in) ease-out;
+    }
+  }
+
   /* The slot rests on the label's baseline and stands one cap height tall, so
      the dot inside it centres on the capitals rather than on the line box. The
      descender space under the baseline is empty and still counts toward a line

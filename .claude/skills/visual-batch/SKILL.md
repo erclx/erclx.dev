@@ -15,7 +15,7 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 
 ## Phase 1: plan the batches
 
-1. Read the dump and group it into batches. One batch is one surface or one coherent change across surfaces.
+1. Read the dump and group it into batches. One batch is one surface or one coherent change across surfaces. Group by the decision rather than by the component when several items turn out to be one question asked about different surfaces, per `## Sweeping` below.
 2. Name the files each batch touches, before sequencing, because the file sets decide the next step.
 3. Mark each batch dependent or independent by comparing those file sets. A batch sharing no file and no token with another is independent and ships on its own branch.
 4. File one task per batch through `claude-tasks`, carrying the outcomes the operator will judge rather than the implementation.
@@ -25,6 +25,9 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 ### Rules
 
 - Declare the pull request boundary here, never at ship time. A dependency chain cannot be split once built, so the choice exists only while the batches are still a plan.
+- One batch is one pull request. The run accumulates on a single branch and the batches stack in commit order, and at ship time each batch becomes its own pull request targeting the one before it. A dependent batch is a reason to stack rather than a reason to merge two batches into one review.
+- Say so in the table. The pull request column carries one entry per batch and names what each targets, so a run that plans to open five says five before the first line is written.
+- Sequence a sweep last. A batch that deliberately rewrites files earlier batches touched is coherent as the final one and forces every batch after it into one review anywhere else. One run put its interaction sweep in the middle, where it rewrote four components three earlier batches had settled, and the branch could not be separated after that.
 - Independent batches earn separate branches even when they arrive in one dump. A run measured at 68 files and 2951 insertions carried three batches touching disjoint files that all landed in one review surface, because nothing drew the boundary.
 
 ## Phase 2: the loop, once per batch
@@ -34,13 +37,20 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 3. Capture, then look at what came back.
 4. Hand off per that same rule, then stop. The operator judges before anything else happens.
 5. Take the correction, change the code, capture again. Repeat until they say it is right.
-6. Move to the next batch. Do not commit between iterations or between batches.
+6. Commit the batch once they have judged it, then move to the next. Never commit between iterations of one batch.
 
 ### Rules
 
 - Never report a visual result you have not looked at. A claim about appearance with no capture behind it is a guess.
 - A capture proves appearance. A measurement proves a relationship. Reach for the second whenever the claim is about a number, such as a contrast ratio, a column width, a tap target, or a document that scrolls sideways.
+- Capture the state the change is about. A treatment that only exists under a pointer is not shown by a capture taken at rest, and a batch verified against numbers alone has proved its treatments uniform without showing anyone what any of them looks like. Uniform and right are different claims.
 - Read the harness options before capturing rather than accepting its defaults. Its default suppresses motion, which is correct for layout and wrong for anything that moves.
+- Measure a color change against the contrast floor before committing it, not after someone asks. A palette has less headroom than it looks: a muted token sitting at 4.82:1 has nowhere below it, so a step down fails at any value visible enough to do the job, and a treatment that reads fine in a capture can be a text failure.
+- Composite alpha before reading a color. A `color-mix` toward transparent resolves to channels plus an alpha, and reading those channels as opaque reports a color nobody sees.
+- Sample inside the shape. A patch taken at the corner of a bounding box misses a round control entirely and reads the page behind it, which is how a ground repair measured as no change at all.
+- Ask whether a reader would see the thing, not only whether it has the right shape. A relationship that holds off screen is not evidence: a panel reported a healthy 1517 by 639 for as long as it sat 1868px above the viewport, and every check that read its size passed.
+- Take a baseline the same way before calling a failure a regression. A suite run narrow against a branch run whole compares two different loads, and a load-dependent failure then reads as new work breaking something.
+- Re-verify the whole path when a fix uncovers a second defect, rather than the fix alone. One defect masks another whenever the first suppresses the conditions the second needs, so repairing either exposes its pair, and a run that ships after the first ships both.
 
 ## Choosing a capture
 
@@ -51,6 +61,40 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 - A decision needing the operator to drive it, such as a hover response, a scroll-linked position, or anything where timing is theirs to control, is interactive. Serve the candidates as live query-parameter variants, since a recording is passive and answers a question they did not ask.
 - Prototype rather than deciding when two treatments are both defensible and the difference is taste. A call taken silently there is the operator's to make.
 - Remove the arms that lose in the same batch that picks the winner. A variant left behind a flag is a second design nobody maintains.
+
+## Sweeping
+
+A dump names the components an operator happened to be looking at. Read past them to the question underneath, because several items are routinely one question asked about different surfaces, and answering them one component at a time is what produced the divergence being reported.
+
+- Inventory the whole site before changing one instance of anything. `e2e/inventory.ts` walks every page and groups every control by what its treatment actually does, which is the reading a per-component look cannot give.
+- Judge the answer against every surface it reaches, then change them together. A treatment settled on one component and not its siblings is a new divergence, filed under a fix.
+- Declare the rule that decides membership rather than the treatment alone. `does it have its own box` is a test the next session can apply to a component nobody has built yet, where a list of eight components answers only for those eight.
+- Put the shared values in one declaration and have every component resolve them. Two components holding equal copies are already drifting, and nothing reports it.
+- Measure the sweep afterwards with the same instrument that found the problem. The count of distinct treatments is the outcome, and it either fell or it did not.
+
+An instrument reading only the element itself will report a treatment written on a child or a pseudo-element as no treatment at all, which reads as a dead control and is a fabricated defect. Read the subtree and both pseudo-elements.
+
+## Serving a live variant
+
+An interactive decision is one the operator has to drive: how a gesture feels to cause, how a pace reads while scrolling, whether a control is where a hand expects it. A recording answers how a thing looks and cannot answer any of those, so the candidates are served live and the operator drives them.
+
+`src/components/dev/scenarios.astro` is the harness and already does this. Import it into the page under decision and pass `param` and `arms`, plus `mountInto` when the decision sits inside a modal. It reads the parameter, applies the active arm, and renders the switcher.
+
+1. Write the arms: an id, a label naming what the arm costs, and the CSS when the decision is a treatment. Use `0` for what ships, so the baseline is an arm.
+2. Where the decision is a value the page reads at runtime rather than a stylesheet, leave the arm's CSS out and have the module holding that value read the active id off `document.documentElement.dataset[param]`.
+3. Mount the component on the page and hand over the links.
+4. Stop. The operator drives the arms and picks.
+5. Delete the arms and the call site in the same change that applies the pick. The component stays: it is scaffolding a decision reaches for and puts back, so a branch with no open visual decision holds no call site.
+
+### Rules
+
+- Do not hand-roll the parameter and the switcher. That was the shape before the harness existed, five times in one run with no two alike, and rebuilding it is what the component was written to stop.
+- The harness renders nothing on a bare page and nothing in a production build, since it sits behind `import.meta.env.DEV`. Prove the first with a check counting the switcher's own elements on the page with no parameter.
+- Put the switcher where the decision is visible. A control inside a modal belongs in the modal, since a fixed element outside it sits under the backdrop.
+- Send the composed sheet as well as the links. The sheet is what the operator scans to pick two arms worth driving, and driving is what settles between them.
+- Keep the arms in the source rather than in a scratch script when the decision is a constant the page reads at runtime. A scratch script that rewrites a file between captures cannot be driven by a person.
+- Say what each arm costs in the handoff, not only what it is. An arm with no stated cost is not an option.
+- Never leave the seam behind a flag. A variant nobody removed is a second design nobody maintains, and the parameter is a surface a reader can reach.
 
 ## The copy cycle
 
@@ -68,9 +112,16 @@ Page copy is canonical upstream at `career/assets/portfolio/` and is read across
 
 ## Holding the diff
 
-- Hold the tree uncommitted across every iteration and across every batch in the run. The operator is judging rendered output, and a commit between iterations is noise in a history they read later.
+- Hold the tree uncommitted across every iteration within a batch. The operator is judging rendered output, and a commit between iterations is noise in a history they read later.
+- Commit at a batch boundary once the operator has judged it, rather than holding the whole run. A run spanning many batches otherwise carries hours of unsaved work, and the boundary is where the batch's own outcomes settle anyway.
+- Run `claude-docs` at that same boundary. Per commit is too often, since outcomes close per batch and not per commit, and at the end of the run is too late: the architecture entries then get written from a summary rather than from the measurements that produced them, which is how a record loses the failed attempts and the numbers that decided it.
+- Fold batches into one record entry where they are one story. Three batches that together gave the page one elevation language read as three unrelated styling changes when written up separately.
+- Keep one batch's commits contiguous. A later fix to an earlier batch goes on that batch's own commits, not on the end of the branch, since a batch interrupted by another cannot be lifted onto its own branch afterward. One run landed a fix to its ripple batch after the next batch's two commits and lost the split with that one commit.
 - Root `CLAUDE.md` § Shipping owns when a commit and a push are allowed. Follow it rather than a copy, and do not infer a shipping rule from this file.
-- On the ship signal, split with `git-stage`, refresh the record with `claude-docs`, and open the pull request with `git-pr`.
+- On the ship signal, cut one branch per batch in the order they were committed, each targeting the branch before it, and open a pull request for each with `git-pr`. Use `git-stage` to split a batch that holds more than one concern into focused commits inside its own branch.
+- Rebase the stack from the bottom as each merges, rather than opening the next only when the last lands. The batches were built in order and already depend on each other in that order, so the whole stack is open and reviewable at once.
+- A run that opens one pull request for many batches has failed this phase whatever the diff looks like. Two runs ended at 25 and 30 commits in one review, which is the outcome every rule above exists to prevent.
+- These rules were written from the second of those runs and shipped inside it, so the branch carrying them is the case they describe. The operator refused a retro split there: the sweep and the out-of-order fix had already welded the batches, two reviews had passed the branch clean, and seven new heads would have thrown that away to reshape work nobody disputed. Read that as the cost of finding this late rather than as the rule being optional, since the same refusal is what the rules above make unnecessary next time.
 
 ## Voice
 
@@ -82,6 +133,7 @@ Cite these rather than restating them. A step reimplemented here rots against th
 
 - `claude-worktree` enters the worktree this runs in
 - `claude-tasks` writes and archives the task files phase 1 produces
+- `e2e/inventory.ts` reads every control on every page and groups them by treatment, which is what `## Sweeping` is measured with
 - `claude-docs` refreshes the record at ship
 - `git-stage`, `git-pr`, and `git-followup` carry the commits and the pull request
 - `claude-review` and `claude-address-review` run the review pass

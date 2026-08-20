@@ -46,6 +46,29 @@ export const streamsConfig = {
   revealRadius: 230,
   revealTint: 0.85,
 
+  /**
+   * A click drops a disturbance into the stream function and it travels out
+   * from where it landed. It is added to the same value the pointer's hill is
+   * added to, before contours are extracted, which is what makes the field go
+   * on evolving underneath it and recover on its own once it has passed.
+   * Nothing restores anything.
+   */
+  rippleSpeed: 520,
+  rippleWidth: 130,
+  rippleFreq: 0.026,
+  /**
+   * How far a disturbance pushes the stream function, which decides how many
+   * contour levels one lobe crosses and therefore how many rings a reader
+   * counts. At `lineCount` 13 this draws about nine.
+   *
+   * It was judged against 0.50, 0.26, and a narrower arm at 0.30, all served
+   * live so the choice was driven rather than watched. 0.50 crosses thirteen
+   * levels and reads as the surface breaking up rather than reacting.
+   */
+  rippleDepth: 0.36,
+  rippleDecay: 0.85,
+  rippleSpread: 420,
+
   // The gradient runs small in field units per pixel, so the normal needs
   // scaling before it tilts far enough off vertical to shade anything.
   reliefScale: 420,
@@ -62,7 +85,11 @@ export const streamsConfig = {
   darkRevealAlpha: 0.95,
 } as const
 
+/** How many clicks can be in flight at once. The oldest is displaced. */
+export const RIPPLE_SLOTS = 4
+
 const fragmentSource = `
+#define RIPPLE_SLOTS ${RIPPLE_SLOTS}
 ${precisionBlock}
 
 uniform float uPixelRatio;
@@ -79,6 +106,16 @@ uniform vec2 uCursor;
 uniform float uCursorStrength;
 uniform float uCursorRadius;
 uniform float uBumpDepth;
+// Position and age per live click. WebGL1 needs the loop bound to be a
+// constant, so the count is fixed here and the mount displaces the oldest.
+uniform vec3 uRipples[RIPPLE_SLOTS];
+uniform float uRippleActive;
+uniform float uRippleSpeed;
+uniform float uRippleWidth;
+uniform float uRippleFreq;
+uniform float uRippleDepth;
+uniform float uRippleDecay;
+uniform float uRippleSpread;
 uniform vec3 uLightDirection;
 uniform float uReliefScale;
 uniform float uHeightTint;
@@ -101,7 +138,41 @@ float streamFunction(vec2 px) {
   sum += gradientNoise3(q * 2.17 + 13.7) * 0.35;
 
   float r = distance(px, uCursor) / uCursorRadius;
-  return sum + uBumpDepth * uCursorStrength * exp(-r * r);
+  sum += uBumpDepth * uCursorStrength * exp(-r * r);
+
+  // Each live click contributes a wave packet: an oscillation held inside a
+  // traveling envelope. The envelope's centre is the wavefront, so at the
+  // moment of the click it sits on the click and reads as the drop, and it
+  // moves outward from there.
+  //
+  // Three terms take it back to nothing without anything restoring it. The
+  // envelope confines the disturbance to a band, so the field ahead of and
+  // behind the front is untouched. Age fades the whole packet. Distance
+  // spreads its energy the way a ring on water loses height as it widens.
+  //
+  // The whole block is skipped while nothing is in flight, which is the
+  // surface's resting state and almost all of its life. One uniform decides
+  // it, so every fragment takes the same side and the branch stays coherent.
+  // Without it a resting page paid four exponential and four sine terms per
+  // sample, at three samples per fragment, for a term summing to zero.
+  if (uRippleActive > 0.5) {
+    for (int i = 0; i < RIPPLE_SLOTS; i++) {
+      vec3 rip = uRipples[i];
+      // A masked term rather than a branch, since inside the block an empty
+      // slot has to cost what a full one costs for every fragment.
+      float alive = step(0.0, rip.z);
+      float d = distance(px, rip.xy);
+      float band = d - rip.z * uRippleSpeed;
+      float envelope = exp(-(band * band) / (uRippleWidth * uRippleWidth));
+      float decay = exp(-rip.z * uRippleDecay);
+      float spread = uRippleSpread / (uRippleSpread + d);
+      sum +=
+        uRippleDepth * alive * envelope * decay * spread *
+        sin(band * uRippleFreq);
+    }
+  }
+
+  return sum;
 }
 
 void main() {
@@ -182,6 +253,14 @@ const uniformNames = [
   'uCursorStrength',
   'uCursorRadius',
   'uBumpDepth',
+  'uRipples[0]',
+  'uRippleActive',
+  'uRippleSpeed',
+  'uRippleWidth',
+  'uRippleFreq',
+  'uRippleDepth',
+  'uRippleDecay',
+  'uRippleSpread',
   'uLightDirection',
   'uReliefScale',
   'uHeightTint',
@@ -237,6 +316,32 @@ export const streamsField: FieldSpec = {
     gl.uniform1f(uniforms.uCursorStrength ?? null, frame.cursorStrength)
     gl.uniform1f(uniforms.uCursorRadius ?? null, streamsConfig.cursorRadius)
     gl.uniform1f(uniforms.uBumpDepth ?? null, streamsConfig.bumpDepth)
+
+    // One flat buffer covering every slot, written from the location of the
+    // array's first element. A slot the mount is not using carries a negative
+    // age, which the shader reads as empty.
+    const ripples = new Float32Array(RIPPLE_SLOTS * 3)
+    for (let i = 0; i < RIPPLE_SLOTS; i++) {
+      const live = frame.ripples[i]
+      ripples[i * 3] = live?.x ?? 0
+      // Flipped into the fragment's own space, where the origin is the bottom
+      // left rather than the top. The cursor above takes the same correction,
+      // and a ripple written without it starts its wave at the click's mirror
+      // image about the horizontal midline.
+      ripples[i * 3 + 1] = frame.height - (live?.y ?? 0)
+      ripples[i * 3 + 2] = live?.age ?? -1
+    }
+    gl.uniform3fv(uniforms['uRipples[0]'] ?? null, ripples)
+    gl.uniform1f(
+      uniforms.uRippleActive ?? null,
+      frame.ripples.length > 0 ? 1 : 0,
+    )
+    gl.uniform1f(uniforms.uRippleSpeed ?? null, streamsConfig.rippleSpeed)
+    gl.uniform1f(uniforms.uRippleWidth ?? null, streamsConfig.rippleWidth)
+    gl.uniform1f(uniforms.uRippleFreq ?? null, streamsConfig.rippleFreq)
+    gl.uniform1f(uniforms.uRippleDepth ?? null, streamsConfig.rippleDepth)
+    gl.uniform1f(uniforms.uRippleDecay ?? null, streamsConfig.rippleDecay)
+    gl.uniform1f(uniforms.uRippleSpread ?? null, streamsConfig.rippleSpread)
     gl.uniform3f(
       uniforms.uLightDirection ?? null,
       ...streamsConfig.lightDirection,

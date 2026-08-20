@@ -46,7 +46,22 @@ const scores = [
 const figureClass =
   'figure-breakout figure-plate bg-card mt-10 rounded-lg p-6 md:p-10'
 const wideImageClass = 'w-full rounded-md'
-const tallImageClass = 'mx-auto max-h-[32rem] w-auto rounded-md'
+
+/* A portrait chart takes a plate sized to itself rather than the column step a
+   wide one breaks out to. The two were one plate until 2026-08-20, and a 0.70
+   aspect cannot fill a width chosen for charts running 2.4 and wider: measured
+   at 1280 the image used 40% of its plate, and at 1920 it used 29%, because
+   the plate scaled with the viewport while the image was pinned at a flat
+   32rem that read neither the plate nor the screen.
+
+   Both halves move here. The plate follows its content, and the image takes a
+   ceiling that scales, so the pair holds 86% fill at 1280 and at 1920 where it
+   held 40% and 29%. The height ceiling is a viewport fraction rather than a
+   length, since what bounds a tall figure is the screen it has to fit inside. */
+const tallFigureClass =
+  'figure-plate bg-card mx-auto mt-10 w-fit rounded-lg p-6 md:p-10'
+const tallImageClass =
+  'mx-auto max-h-[min(46rem,78vh)] w-auto rounded-md'
 const captionClass = 'text-muted-foreground font-mono text-label mt-4'
 const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 ---
@@ -189,7 +204,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           to minutes.
         </p>
 
-        <figure data-fade data-visible="true" style="--fade-delay: 350ms" class={figureClass}>
+        <figure data-fade data-visible="true" style="--fade-delay: 350ms" class={tallFigureClass}>
           <button type="button" data-figure-zoom class={zoomTriggerClass}>
             <Image
               src={baselines}
@@ -245,7 +260,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           travels with the sound.
         </p>
 
-        <figure data-fade data-visible="true" style="--fade-delay: 250ms" class={figureClass}>
+        <figure data-fade data-visible="true" style="--fade-delay: 250ms" class={tallFigureClass}>
           <button type="button" data-figure-zoom class={zoomTriggerClass}>
             <Image
               src={separation}

@@ -107,9 +107,20 @@ test('two cards sharing a row share a lower edge', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.goto('/')
   const cards = page.locator('#projects article')
-  // The cards reveal on a stagger, so an early read catches one mid-transition.
+  // The cards reveal on a stagger, so an early read catches one mid-transition
+  // and measures the residue of its own travel rather than the layout. The
+  // reveal runs 700ms behind a delay reaching 400ms, so a fixed wait races the
+  // observer that starts it: at 1200ms the margin is 100ms and a slower machine
+  // spends it before the transition begins. Waiting for the transform to rest
+  // needs no budget and cannot go stale against a change to either duration.
   await cards.first().scrollIntoViewIfNeeded()
-  await page.waitForTimeout(1200)
+  // One assertion per card of the compared pair, rather than one over the set.
+  // The three cards below the fold never reveal from this scroll position, so a
+  // wait covering all five spends its own budget and reads the same
+  // mid-transition box. Asserting per card also names which one failed, and
+  // cannot pass on an empty match the way a predicate over a set does.
+  await expect(cards.nth(0)).toHaveCSS('transform', 'none')
+  await expect(cards.nth(1)).toHaveCSS('transform', 'none')
 
   const left = await cards.first().boundingBox()
   const right = await cards.nth(1).boundingBox()

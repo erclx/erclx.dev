@@ -3,12 +3,24 @@ const DIALOG_SELECTOR = '[data-figure-dialog]'
 const DIALOG_IMAGE_SELECTOR = '[data-figure-dialog-image]'
 const DIALOG_CAPTION_SELECTOR = '[data-figure-dialog-caption]'
 const CLOSE_SELECTOR = '[data-figure-close]'
+const SCROLL_SELECTOR = '[data-figure-scroll]'
+const PREV_SELECTOR = '[data-figure-prev]'
+const NEXT_SELECTOR = '[data-figure-next]'
+const POSITION_SELECTOR = '[data-figure-position]'
 
 /**
- * Opens a raster figure into the page's single `<dialog>`. The native modal
- * carries focus trapping, the backdrop, and Escape-to-close, and returns focus
- * to the trigger on close. It does not stop the page behind from scrolling,
- * which is what `lockPageScroll` covers.
+ * Opens a route's raster figures into the page's single `<dialog>` as a
+ * sequence. The native modal carries focus trapping, the backdrop, and
+ * Escape-to-close, and returns focus to the trigger on close. It does not stop
+ * the page behind from scrolling, which is what `lockPageScroll` covers.
+ *
+ * A reader moves between figures without closing, because a route's argument
+ * runs across its figures in order and comparing two otherwise means closing
+ * and reopening. An opened figure arrives fitted, which is what makes it
+ * readable at a glance and never scrolls, and a second click magnifies it to
+ * its own pixels. The fitted state is the default deliberately: opening at
+ * full size puts a portrait chart two to three screens tall and forces a
+ * scroll to read one figure.
  */
 export function initFigureZoom(): void {
   if (typeof window === 'undefined') return
@@ -18,28 +30,112 @@ export function initFigureZoom(): void {
 
   const image = dialog.querySelector<HTMLImageElement>(DIALOG_IMAGE_SELECTOR)
   const caption = dialog.querySelector<HTMLElement>(DIALOG_CAPTION_SELECTOR)
+  const scroller = dialog.querySelector<HTMLElement>(SCROLL_SELECTOR)
+  const previous = dialog.querySelector<HTMLButtonElement>(PREV_SELECTOR)
+  const next = dialog.querySelector<HTMLButtonElement>(NEXT_SELECTOR)
+  const position = dialog.querySelector<HTMLElement>(POSITION_SELECTOR)
   if (!image) return
 
-  const triggers = document.querySelectorAll<HTMLElement>(TRIGGER_SELECTOR)
-  for (const trigger of triggers) {
-    trigger.addEventListener('click', () => {
-      const source = trigger.querySelector('img')
-      if (!source) return
+  const triggers = Array.from(
+    document.querySelectorAll<HTMLElement>(TRIGGER_SELECTOR),
+  )
+  if (triggers.length === 0) return
+  if (triggers.length === 1) dialog.setAttribute('data-single', '')
 
-      image.src = source.currentSrc || source.src
-      image.alt = source.alt
-      if (caption) {
-        const figcaption = trigger
-          .closest('figure')
-          ?.querySelector('figcaption')
-        caption.textContent = figcaption?.textContent?.trim() ?? ''
-      }
+  let index = 0
+  let openedAt = 0
+
+  const setMagnified = (on: boolean): void => {
+    dialog.toggleAttribute('data-magnified', on)
+    if (!on && scroller) {
+      scroller.scrollTop = 0
+      scroller.scrollLeft = 0
+    }
+  }
+
+  /** Shows the figure at `at`, always fitted, whether opened or stepped to. */
+  const show = (at: number): void => {
+    index = at
+    const source = triggers[index]?.querySelector('img')
+    if (!source) return
+
+    image.src = source.currentSrc || source.src
+    image.alt = source.alt
+
+    if (caption) {
+      const figcaption = triggers[index]
+        ?.closest('figure')
+        ?.querySelector('figcaption')
+      caption.textContent = figcaption?.textContent?.trim() ?? ''
+    }
+    if (position) position.textContent = `${index + 1} / ${triggers.length}`
+    // The ends stop rather than wrap. A sequence that wraps gives a reader no
+    // signal that they have seen everything.
+    if (previous) previous.disabled = index === 0
+    if (next) next.disabled = index === triggers.length - 1
+
+    setMagnified(false)
+  }
+
+  const step = (by: number): void => {
+    const at = index + by
+    if (at < 0 || at >= triggers.length) return
+    show(at)
+  }
+
+  for (const [at, trigger] of triggers.entries()) {
+    trigger.addEventListener('click', () => {
+      openedAt = at
+      show(at)
       lockPageScroll()
       dialog.showModal()
     })
   }
 
-  dialog.addEventListener('close', releasePageScroll)
+  /**
+   * The magnified width comes from the opened picture rather than from the one
+   * on the page, and is written once that picture has its pixels.
+   *
+   * Reading it off the inline figure looks equivalent and is not. Figures
+   * further down a route load lazily, so a reader stepping to one they have
+   * not scrolled past reads a natural width of 0, and the magnified picture
+   * collapses to nothing: measured on the sixth figure of the pronunciation
+   * route, reached by stepping, where a click at the picture's own coordinates
+   * landed on the panel behind it.
+   */
+  const writeNaturalWidth = (): void => {
+    if (!image.naturalWidth) return
+    image.style.setProperty('--figure-natural-width', `${image.naturalWidth}px`)
+  }
+  image.addEventListener('load', writeNaturalWidth)
+
+  // The opened figure is the control for its own second state, which is where
+  // a reader's pointer already is.
+  image.addEventListener('click', () => {
+    writeNaturalWidth()
+    setMagnified(!dialog.hasAttribute('data-magnified'))
+  })
+
+  previous?.addEventListener('click', () => step(-1))
+  next?.addEventListener('click', () => step(1))
+
+  // Escape is the dialog's own. The arrows are what this adds, and they are
+  // ignored while magnified, where the same keys pan the picture instead.
+  dialog.addEventListener('keydown', (event) => {
+    if (dialog.hasAttribute('data-magnified')) return
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault()
+      step(-1)
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      step(1)
+    }
+  })
+
+  dialog.addEventListener('close', () => {
+    setMagnified(false)
+    releasePageScroll(index === openedAt ? null : triggers[index])
+  })
 
   dialog.addEventListener('click', (event) => {
     if (event.target === dialog) dialog.close()
@@ -51,17 +147,41 @@ export function initFigureZoom(): void {
 }
 
 /**
+ * Where the reader was when the figure opened. Hiding the body's overflow
+ * takes the document's scroll to zero, because that overflow propagates to the
+ * viewport when the scrolling element is the root, so releasing it alone drops
+ * the reader at the top of the page. Measured on the pronunciation route at
+ * 1440x900: opening a figure 6177px down and closing it landed at 0.
+ */
+let lockedScrollY = 0
+
+/**
  * Holds the page still under the open dialog. The scrollbar it removes is
  * replaced by padding of the same width, so the page behind does not jump
  * sideways as the modal opens.
  */
 function lockPageScroll(): void {
+  lockedScrollY = window.scrollY
   const gap = window.innerWidth - document.documentElement.clientWidth
   document.body.style.overflow = 'hidden'
   if (gap > 0) document.body.style.paddingRight = `${gap}px`
 }
 
-function releasePageScroll(): void {
+/**
+ * Returns the reader to the page. A reader who stepped through the sequence is
+ * put beside the figure they ended on rather than the one they opened, since
+ * that is the one they were last reading. `landOn` is null when they never
+ * stepped, and the exact position is restored instead.
+ */
+function releasePageScroll(landOn: HTMLElement | null): void {
   document.body.style.removeProperty('overflow')
   document.body.style.removeProperty('padding-right')
+
+  if (landOn) {
+    landOn.scrollIntoView({ block: 'center', behavior: 'instant' })
+    return
+  }
+  // Instant rather than the page's own behavior, so a reader closing a figure
+  // is put back rather than watching the page travel there.
+  window.scrollTo({ top: lockedScrollY, behavior: 'instant' })
 }

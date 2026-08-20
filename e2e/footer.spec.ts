@@ -6,7 +6,7 @@ test('the footer states how the page was made', async ({ page }) => {
   await page.goto('/')
 
   await expect(page.locator(FOOTER)).toContainText(
-    'built with coding agents, which is also the work',
+    'Built with coding agents, which is also the work',
   )
 })
 

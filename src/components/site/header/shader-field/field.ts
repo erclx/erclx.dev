@@ -9,6 +9,14 @@ export interface ContentBox {
   readonly halfY: number
 }
 
+/** A disturbance a click left behind, traveling outward from where it landed. */
+export interface Ripple {
+  readonly x: number
+  readonly y: number
+  /** Seconds since the click. Negative marks the slot as carrying nothing. */
+  readonly age: number
+}
+
 /** The per-frame state the mount owns and every field reads. */
 export interface FieldFrame {
   readonly time: number
@@ -18,6 +26,11 @@ export interface FieldFrame {
   readonly cursorX: number
   readonly cursorY: number
   readonly cursorStrength: number
+  /**
+   * Always the same length, so the shader's loop bound stays constant and an
+   * empty slot is one carrying a negative age rather than one that is absent.
+   */
+  readonly ripples: readonly Ripple[]
   /** Null where the reading column could not be measured, which lifts damping. */
   readonly content: ContentBox | null
   readonly tone: Rgb

@@ -1,5 +1,9 @@
 import type { ContentBox, FieldSpec, Rgb, UniformLocations } from './field'
 import { vertexSource } from './fields/prelude'
+import { RIPPLE_SLOTS, streamsConfig } from './fields/streams'
+
+/** The amplitude a disturbance is considered retired below. */
+const RIPPLE_RETIREMENT_FRACTION = 1 / 1000
 
 export const mountConfig = {
   maxPixelRatio: 1.5,
@@ -11,6 +15,13 @@ export const mountConfig = {
   // second rather than an eighth of one. The faster value made the raised hill
   // dart to the cursor, which reads as reacting rather than responding.
   cursorEase: 0.045,
+  // Where the field's own decay has taken a disturbance under a thousandth of
+  // its starting amplitude. The decay rate is what sets how long one lasts, so
+  // this reads that rate rather than restating its consequence: a slot held
+  // past the retirement costs every fragment a term contributing nothing, and
+  // one retired early cuts the disturbance off while it is still visible.
+  rippleLifetimeSeconds:
+    Math.log(1 / RIPPLE_RETIREMENT_FRACTION) / streamsConfig.rippleDecay,
   contentPadding: 12,
   perfWindowMs: 2000,
   // A fraction of whatever rate the throttle targets rather than a fixed count.
@@ -207,6 +218,10 @@ export function mountShaderField(
   let cursorY = 0
   let cursorStrength = 0
   let cursorTarget = 0
+  // Ages in seconds, oldest first. A click appends and the oldest is dropped
+  // once the set is full, so a reader clicking repeatedly always gets an
+  // answer and the shader's loop bound never has to change.
+  let ripples: { x: number; y: number; age: number }[] = []
   let degraded = false
   let contextLost = false
   let rafId = 0
@@ -260,6 +275,7 @@ export function mountShaderField(
       cursorX,
       cursorY,
       cursorStrength,
+      ripples,
       content: contentBox,
       tone,
       accent,
@@ -291,8 +307,18 @@ export function mountShaderField(
   }
 
   function advance(elapsed: number): void {
-    time += elapsed / 1000
+    const seconds = elapsed / 1000
+    time += seconds
     cursorStrength += (cursorTarget - cursorStrength) * mountConfig.cursorEase
+
+    // A disturbance is retired once its own decay has taken it under a
+    // thousandth of its starting amplitude, rather than at a duration written
+    // here. The decay rate is what sets how long one lasts, so a retirement
+    // keyed to anything else drifts from it the moment that rate is tuned.
+    for (const ripple of ripples) ripple.age += seconds
+    ripples = ripples.filter(
+      (ripple) => ripple.age < mountConfig.rippleLifetimeSeconds,
+    )
   }
 
   function tick(now: number): void {
@@ -337,6 +363,20 @@ export function mountShaderField(
 
   function handlePointerLeave(): void {
     cursorTarget = 0
+  }
+
+  function handlePointerDown(event: PointerEvent): void {
+    const rect = canvas.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    if (x < 0 || x > rect.width || y < 0 || y > rect.height) return
+    // A click on something a reader meant to operate is not a click on the
+    // field, so a control keeps its own meaning and the surface behind it
+    // stays still.
+    if ((event.target as Element | null)?.closest('a, button, [role="button"]'))
+      return
+    ripples.push({ x, y, age: 0 })
+    if (ripples.length > RIPPLE_SLOTS) ripples.shift()
   }
 
   function handleVisibility(): void {
@@ -408,6 +448,7 @@ export function mountShaderField(
   if (animate) {
     window.addEventListener('pointermove', handlePointerMove)
     window.addEventListener('pointerleave', handlePointerLeave)
+    window.addEventListener('pointerdown', handlePointerDown)
     document.addEventListener('visibilitychange', handleVisibility)
     start()
   } else {
@@ -421,6 +462,7 @@ export function mountShaderField(
     window.removeEventListener('resize', handleResize)
     window.removeEventListener('pointermove', handlePointerMove)
     window.removeEventListener('pointerleave', handlePointerLeave)
+    window.removeEventListener('pointerdown', handlePointerDown)
     document.removeEventListener('visibilitychange', handleVisibility)
     canvas.removeEventListener('webglcontextlost', handleContextLost)
     canvas.removeEventListener('webglcontextrestored', handleContextRestored)

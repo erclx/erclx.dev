@@ -28,14 +28,14 @@ const {
   data-instant={instant ? 'true' : undefined}
   data-revealed={instant ? 'true' : undefined}
   aria-label="Sections"
-  class="section-nav fixed top-1/2 left-6 z-20 hidden -translate-y-1/2 flex-col gap-3 xl:flex"
+  class="section-nav fixed top-1/2 left-6 z-20 hidden -translate-y-1/2 flex-col gap-0.5 xl:flex"
 >
   {
     items.map((item) => (
       <a
         href={`#${item.id}`}
         data-target={item.id}
-        class="section-nav-link text-muted-foreground text-label -ml-3 border-l-2 border-transparent pl-3"
+        class="section-nav-link text-muted-foreground text-label"
       >
         {item.label}
       </a>
@@ -56,21 +56,77 @@ const {
     opacity: 0;
     pointer-events: none;
   }
+  /* Every link holds the pill's box whether or not it is filled, so the rail
+     never changes height as the active item moves down the page. Only one of
+     them is ever painted. */
   .section-nav-link {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    /* Pulled left by its own padding, so a label at rest sits where it sat
+       when this was a bare 2px edge. The active one gives that back below. */
+    margin-left: -0.85rem;
     transition:
       color 150ms ease-out,
-      border-color 150ms ease-out;
+      border-color 150ms ease-out,
+      background-color 150ms ease-out,
+      box-shadow 200ms ease-out,
+      transform 260ms cubic-bezier(0.34, 1.3, 0.64, 1);
   }
-  .section-nav-link:hover {
+  /* A row a reader is pointing at, which is a different claim from the row
+     they are inside. The glow answers the pointer and the ground below
+     answers the scroll position, so the two never say the same thing. */
+  .section-nav-link:hover,
+  .section-nav-link:focus-visible {
     color: var(--foreground);
+    background: var(--glow-fill);
+    box-shadow: var(--glow-shadow);
   }
+  /* The ground the contact dock carries, on the one item that means something
+     by carrying it. The dock uses it as a hit target for icons that have no
+     other bounds; here it states which section the reader is in, so the two
+     margins read as one system and the left one still does the job the right
+     one does not. It replaces a 2px accent edge, which stated the same thing
+     in the same color with less of it. */
   .section-nav-link[data-active='true'] {
     color: var(--foreground);
+    background: var(--floating-fill);
+    backdrop-filter: var(--floating-blur);
     border-color: var(--accent);
+    box-shadow: var(--floating-shadow);
+    /* The one item that steps out of the column. Reading down the page moves
+       this from row to row, and each label leans right and settles back as it
+       is handed on, so the rail states position by moving rather than only by
+       lighting up.
+
+       A transform rather than the margin it visually undoes, because the
+       margin is layout and would shove every label below it on each handover.
+       This moves paint alone, so the four boxes never change. */
+    transform: translateX(0.85rem);
   }
+
+  /* The active row still answers a pointer. It already carries a ground, so
+     the glow stacks on top of it rather than replacing it, which is what the
+     dock does for the same reason: swapping one shadow for the other makes a
+     lit control appear to drop as it lights. */
+  .section-nav-link[data-active='true']:hover,
+  .section-nav-link[data-active='true']:focus-visible {
+    box-shadow: var(--floating-shadow), var(--glow-shadow);
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     .section-nav:not([data-instant]) {
       transition: opacity 300ms ease-out;
+    }
+  }
+  /* The step is the whole gesture, so under this preference it is dropped
+     rather than shortened, and the ground alone carries the active row. */
+  @media (prefers-reduced-motion: reduce) {
+    .section-nav-link {
+      transition: none;
+    }
+    .section-nav-link[data-active='true'] {
+      transform: none;
     }
   }
 </style>

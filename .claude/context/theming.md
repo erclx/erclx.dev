@@ -27,6 +27,13 @@ Values are authored in oklch rather than hex. The lightness channel is perceptua
 
 A fourth group sits above the light palette. `--light-card`, `--light-muted-foreground`, and `--light-ring` are declared in `:root` and deliberately never in `.dark`, so they hold one value under either theme. The light declarations point at them and so does `.dark .figure-plate`, which is what lets a surface pinned to the light palette follow an edit rather than hold a copy of it. Add one only for a token a pinned surface consumes, since a light alias no plate reads is a second name for a value that already has one.
 
+## What the palette cannot do
+
+Two ceilings bound every treatment built on these tokens, and neither is visible from a token name.
+
+- Nothing separates below `--muted-foreground`. It measures 4.82:1 against the light page and 7.80:1 against the dark one, so a value stepped beneath it fails the 4.5:1 floor for text at any lightness visible enough to read as a second layer. A 65% mix of it measures 2.53:1 and shipped once before anyone read it. Separate two text layers by weight, size, or the space between them, and treat lightness as already spent.
+- A fill drawn from `--card` tops out at 1.10:1. The token is pure white against a light page at `oklch(0.968)`, and a floating control reaches 1.09:1 in practice. Further separation comes from the edge or the shadow, and the themes disagree about which carries it: light gets its separation from the shadow while the edge barely registers at 1.06:1, and dark gets it from the edge at 1.19:1 while the shadow is invisible. A treatment answering one theme answers neither.
+
 ## Decisions
 
 - shadcn keys dark off `@custom-variant dark (&:is(.dark *))`. `prefers-color-scheme` alone never switches the theme. The first-paint script bridges the system preference into the class.

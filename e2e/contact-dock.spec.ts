@@ -30,7 +30,7 @@ test('the dock arrives once the reader has scrolled past the hero', async ({
   await expect(page.locator(DOCK)).toHaveAttribute('data-revealed', 'true')
 })
 
-test('the dock stands down over the footer, which carries the same links', async ({
+test('the dock holds to the end of the page, where the footer carries one of its four links', async ({
   page,
 }) => {
   await page.goto('/')
@@ -39,7 +39,15 @@ test('the dock stands down over the footer, which carries the same links', async
   )
   await page.waitForTimeout(SETTLE_MS)
 
-  await expect(page.locator(DOCK)).toHaveAttribute('data-near-footer', 'true')
+  // It stood down here until 2026-08-20, on the reading that the footer
+  // repeats what it carries. The footer carries the resume alone, so standing
+  // down removed three destinations at the moment a reader has finished
+  // reading. The assertion below is what stops that being reintroduced.
+  await expect(page.locator(DOCK)).toHaveAttribute('data-revealed', 'true')
+  await expect(page.locator(DOCK)).not.toHaveAttribute('data-near-footer')
+
+  const footerLinks = await page.locator('footer a').count()
+  expect(footerLinks).toBeLessThan(await page.locator(`${DOCK} a`).count())
 })
 
 test('no dock destination takes focus before the dock is revealed', async ({

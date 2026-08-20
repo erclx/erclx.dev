@@ -186,15 +186,25 @@ The medium was not the problem the first attempt solved. `.claude/DESIGN.md` rej
 
 The still copy mounts from the layout, so it reaches the project routes as well as the landing page. It damps inside the reading measure, tracking `--prose-column` rather than a fixed strip, because a route scales its column and a landing section does not. See `.claude/context/page-ground.md` for the measured cost, which is 16.16:1 to 15.74:1 on body text.
 
+A click disturbs it, and the disturbance is added to the stream function rather than to the drawn output. That one placement is what makes the field keep evolving underneath the wave, bend where it crosses, and recover with nothing restoring it, so the behavior falls out of where the term sits rather than being written. Painting a ring over the surface would have needed all three coded and none of them would have interacted with the field at all.
+
+Its depth was settled by serving four tunings live and letting the operator drive them, rather than by comparing recordings. A recording answers what a gesture looks like, and the open question was what it feels like to cause. The parameter and the switcher that served them were removed with the pick.
+
+Depth is not a free parameter. It sets how far the stream function is pushed and therefore how many contour levels one lobe crosses, so the rings a reader counts are about depth times `lineCount`. The first build at 0.5 drew thirteen and read as the surface breaking up rather than reacting.
+
 Three tuning defects are recorded in that entry rather than here, because each is a fact about the field rather than a decision. The one worth carrying up is that two separate motion instruments read the field as still while it moved, and the operator's eye was right against both. A metric that reports no difference across presets that visibly differ is measuring the wrong quantity, and the fix came from finding a sheen drifting at 58px/s over a field at 15px/s rather than from raising any rate.
 
 Measured at 502da58 on 2026-08-20, at 1280x800 and 390x844 across chromium, firefox, and webkit.
 
 ### Contact travels with the reader, in the margin opposite the rail
 
-The hero opens with three destinations and the footer closes with them. Between the two, for the length of the page, a reader who wanted one had to pick an end. A dock in the right margin carries them plus the resume, arriving on the same half-hero gate the sticky bar uses and standing down over the footer.
+The hero opens with three destinations and nothing else on the page carried them. A dock in the right margin carries them plus the resume, arriving on the same half-hero gate the sticky bar uses and holding to the bottom of the page.
 
-It sits opposite the section rail so the two margins read as a pair. The rail states position and the dock offers reach, which is the split `.claude/REQUIREMENTS.md` § Navigation already draws.
+An earlier draft of this entry said the footer closed with those three, and the dock stood down over the footer on that basis. The footer carries the resume alone, measured on 2026-08-20, so the gate removed three destinations and replaced one at the end of a page whose job is hiring. Both halves are corrected: the claim above, and the gate that rested on it.
+
+It sits opposite the section rail so the two margins read as a pair. The rail states position and the dock offers reach, which is the split `.claude/REQUIREMENTS.md` § Navigation already draws. That split is also why the pair breaks at the footer: the rail stands down there because no section remains to state, and the dock holds because reach is what a reader wants at the end.
+
+The dock mounts from the layout, so all six surfaces carry it. A route is the longest read on the site and the one a shared link lands on, which is the arrival that skips the landing page and every contact link on it. A route also reveals it at once rather than gating: the gate watches the header for a hero to scroll past, and a route's header is its sticky bar, whose intersection ratio reads 1 for the whole page. A layout mount alone would therefore have shipped a control that never arrived on five surfaces of six.
 
 The resume is in the dock and stays in the footer, which is the one duplicated destination and is deliberate. It is the highest-intent link on a page whose job is hiring, and it previously existed once, as the last thing on the page.
 
@@ -225,6 +235,80 @@ The shape contracts and the row inside it does not. The hero flies its name and 
 The contrast figure that nearly settled this measured the wrong thing. Sampling a fixed strip of the bar read 3.66:1 and moved to 3.70:1 under a near-opaque scrim, because the bar's contents sit in a centred column and the glyph a reader sees is painted by a separate element, so the reading was the ground against itself. A contrast number that barely moves when the ground is replaced is measuring something other than text.
 
 Measured at 502da58 on 2026-08-20, at 320, 375, 425, 768, 1280, 1600, 1920, and 2560.
+
+### Two token sets carry elevation and response, and every control reads them
+
+The decision above put one ground under two bars. The dock was built after that repair and never received it, so it drew its ground from the background token and measured 1.02:1 against the page behind it, which is the page laid on the page a second time. Both sets of values now sit in `:root` and every floating control and every interactive one resolves them from there.
+
+The elevation set has a ceiling and it is worth knowing before reaching for it. In light the elevated surface token is pure white against a page at `oklch(0.968)`, so 1.10:1 is the most a fill can ever separate by, and the dock reaches 1.09:1. Anything further has to come from the edge or the shadow. The two themes want different levers for that: in light the shadow does the work and the edge barely registers at 1.06:1, and in dark the shadow is invisible against a dark page while the edge reads at 1.19:1. A treatment answering only one theme was rejected for that reason.
+
+The response set answers a question the site had never asked in one place. Measured across all six pages, 87 interactive elements answered a pointer three ways, 39 with an underline, 30 with a border and a color, and 18 with nothing, and not one of them glowed. The only glow that existed sat on the project card, which is neither a link nor a button, so no inventory of controls would ever have found it.
+
+Two tiers now, and the test is whether the thing has its own box. A control with bounds takes the card's glow, and a link sitting inline in a paragraph keeps its underline, because a ground behind a word reads as a highlighter and fights the sentence around it. That test is what keeps the hero's three contact links unchanged, and it is what excludes the footer signature: the signature is `aria-hidden` decoration, and a hover response on it would promise a click that does nothing.
+
+The card is the source rather than one more surface to match, so its four values moved out of it unchanged and it now reads them back. Where a control already carries a ground at rest, the dock and the active rail row, the glow stacks on top rather than replacing it. Swapping one shadow for the other makes a lit control appear to drop as it lights.
+
+The palette has no headroom below its muted token, and that is a constraint on every future treatment rather than a fact about one section. Muted measures 4.82:1 in light, so a third step lightened beneath it fails the 4.5:1 floor for text at any value visible enough to do a job. The closing ask shipped exactly that on this branch, at a 65% mix measuring 2.53:1, and it was found by measuring for an unrelated question days later. Separate two text layers by weight, size, or the space between them, and read lightness as already spent.
+
+Two measurement errors produced confident wrong answers on this branch and both are cheap to repeat. A patch sampled at the corner of a bounding box misses a round control and reads the page behind it, which reported the dock's ground repair as no change at all. A color carrying alpha read as opaque reports a color nobody sees, which is what hid the 2.53:1 until the composite was done properly.
+
+Adding the glow to a surface that already answers a pointer is where the sweep costs something. The experience timeline had a highlight that walks back to its resting beat when a reader leaves, and a plate keyed to `:hover` stayed on the row they left and faded there while the highlight walked away, lighting two rows by two different means at once. A treatment joining a component with existing behavior keys to whatever that behavior already marks, rather than to the pointer.
+
+That coupling then decides an easing. The plate leaves more slowly than the walk steps, so several rows carry one at once on the way back, and the trail is thickest at the start. The walk therefore lingers on the row a reader chose and gathers pace as it returns, which both gives each plate more of its fade to clear in and puts the held moment on the leaving. The reverse shipped first and rushed exactly the moment worth holding.
+
+Read the sweep as one decision rather than as eight component edits. The operator's own framing is the reason it is recorded this way: a treatment settled on one component and not the others is how the site arrived at three answers, and the inventory at `e2e/inventory.ts` exists so the next such question is measured across the site before anything is changed. It reads pseudo elements and descendants as well as the element itself, because a first pass that read only the element reported the timeline chips and the card halo as controls that do nothing.
+
+Verified at c5f17e4 on 2026-08-20, at 1280x800, 1440x900, and 390x844.
+
+### The rail states position by moving, and a control that scrolls owns the URL it leaves
+
+The section rail carried four labels and lit one. It now gives the active row the dock's ground, so the two margins read as one system, and steps that row out of the column so reading down the page hands the ground from label to label.
+
+Giving all four the ground was built and rejected. Four grounded labels stop reading as a position indicator and start reading as a navigation menu, and they make the rail heavier than the control it sits opposite. On one row the ground carries information instead.
+
+The step is a transform rather than the margin it visually undoes, because the margin is layout and would shove every label below it on each handover. Every row holds the pill's box whether or not it is painted, so the rail never reflows: measured across all four states, one left edge and one height throughout. Sampled through a handover, the outgoing and incoming rows cross at +90ms and the easing overshoots before settling, which is what makes it a lean rather than a slide. The step is the whole gesture, so a reduced-motion reader loses it entirely and the ground alone carries the row.
+
+Peripheral vision is what decided it. The rail sits in the margin beside the column a reader is reading, and movement is what peripheral vision detects where color is not. The lean against ambient motion over long-form prose does not reach this: it was about continuous effects layered over content, and this fires four times across a 7274px page, at boundaries where a reader's attention is already moving.
+
+The bar's home control is a button that scrolls rather than a link that navigates, so nothing cleared the fragment a timeline chip had left behind. A reader who clicked a project chip and then the bar name arrived at the top with the URL still naming the card they came from, which a copied link, a reload, or a bookmark then acted on. It replaces the entry rather than pushing one, so a reader does not press back twice to leave a control that only ever scrolled them.
+
+The same pass made a card's name its route link. The label saying `Project` repeated what the whole card already does, and deleting it was not enough on its own: the full-card link is `aria-hidden` at `tabindex="-1"`, so that label was the only route in without a pointer and three of five cards carried no other internal link. The route also moved to a field of its own, since it had been found by picking the one internal href out of the links list, which stops working the moment the route stops being a link in it.
+
+Verified at c5f17e4 on 2026-08-20, at 1280x800 and 1440x900.
+
+### A figure is sized against its own shape, and a defect can be held up by another
+
+A plate sized by the column step is a plate a portrait figure cannot fill. At a 0.70 aspect against a width chosen for charts running 2.4 and wider, the image used 40% of its plate at 1280 and 29% at 1920, because the plate scaled with the viewport while the image was pinned to a flat length that read neither it nor the screen. A portrait plate now follows its content and the image takes a ceiling that scales, which holds 86% fill at both widths.
+
+That is the general shape rather than a fact about one route. Two literals sized against different things drift apart as soon as anything around them moves, and neither one is wrong on its own.
+
+Fixing it exposed the next defect, which is the part worth carrying. A bigger inline figure meant opening one showed it smaller, at 0.88x, so the click a reader makes to see more showed them less. That is now a sequence with a magnifier: fitted on arrival, and a second click to the figure's own pixels, which is the first size at which a portrait chart's axis labels can be read.
+
+Three of the defects that came out with it were older than the work, and one of those was held up by another. The panel had been positioned relatively, which overrides the fixed position a user agent gives a modal dialog, so it rendered at minus the scroll position and a reader deep in a route opened onto nothing. It stayed invisible because the page lock also reset the scroll to zero, which put an in-flow panel at the top of the viewport by accident. Repairing the scroll reset is what revealed it.
+
+**Read that as the general case rather than as bad luck.** A defect can be masked by a second one, so repairing either exposes the other, and a session that fixes one and ships without re-looking ships the pair. What made it survive was a verification reading sizes and positions and never asking whether the thing was on screen: the panel measured a healthy 1517x639 for as long as it sat 1868px above the viewport. Assert that a surface is where a reader would see it, not only that it has the right shape.
+
+Verified at 1024x700, 1280x800, 1440x900, and 1600x1200.
+
+### A dev-only component serves candidate treatments the operator drives
+
+Some decisions cannot be settled from a capture or a recording, because both are passive and the question is how a thing feels to cause: a pace read while scrolling, a gesture, whether a control is where a hand expects it. Those are served live from the running page, behind one query parameter, with a switcher for moving between arms.
+
+`src/components/dev/scenarios.astro` owns the shape. Five decisions on one branch were served that way with a hand-written parameter, switcher, and removal each, none resembling the last, which is what earned a component rather than a habit.
+
+It renders nothing in a production build, because the whole component is behind `import.meta.env.DEV` rather than gating itself at runtime, and nothing in development either until the page is asked for an arm by name. Verified: a built `dist/` carries no trace of the switcher, and a dev page loaded without the parameter renders none of it.
+
+An arm carries CSS where the decision is a treatment. Where it is a value the page reads at runtime, a pace or a shader uniform, the arm carries none and the module holding that value reads the active id off `documentElement.dataset`. That split is what lets one component serve a stylesheet decision and a shader decision without knowing about either.
+
+Two things about it are not obvious and both cost a debugging pass. Inside an Astro expression a script's children are parsed the way JSX children are, so every brace in the source reads as an interpolation and the body ships as an unevaluated literal with nothing reporting it. The source is held as a string and written with `set:html` for that reason. The switcher also sits bottom left rather than bottom centre, which is where Astro's dev toolbar sits and where it swallows every click aimed at whatever is underneath it.
+
+**It is unreferenced today, and that is the expected state.** It is scaffolding a visual decision reaches for and removes again, so a branch with no open visual decision holds no call site. Read it the way the React entry above should be read: a session auditing the tree for unused files finds it and should leave it alone.
+
+What makes it reachable rather than merely present is the `visual-batch` skill naming it, which is the half that shipped late. The skill described the workflow as steps to build by hand and named no component, so a session following it rebuilt the switcher and met the problem the component closes. An unreferenced component is only safe while something tells a session it exists, and for one commit nothing did.
+
+Its teardown is the arms and the call site rather than the seam. Deleting the parameter and the switcher with the pick is what a hand-rolled seam needs, and applying that to the harness deletes the harness.
+
+Verified at 1280x900.
 
 ## Risks / open questions
 
