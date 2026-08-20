@@ -1,6 +1,9 @@
 import type { ContentBox, FieldSpec, Rgb, UniformLocations } from './field'
 import { vertexSource } from './fields/prelude'
-import { RIPPLE_SLOTS } from './fields/streams'
+import { RIPPLE_SLOTS, streamsConfig } from './fields/streams'
+
+/** The amplitude a disturbance is considered retired below. */
+const RIPPLE_RETIREMENT_FRACTION = 1 / 1000
 
 export const mountConfig = {
   maxPixelRatio: 1.5,
@@ -13,10 +16,12 @@ export const mountConfig = {
   // dart to the cursor, which reads as reacting rather than responding.
   cursorEase: 0.045,
   // Where the field's own decay has taken a disturbance under a thousandth of
-  // its starting amplitude, computed from the decay rate the field carries
-  // rather than chosen. At 0.85 per second that is 8.1s, and a slot held past
-  // it costs every fragment on the surface a term contributing nothing.
-  rippleLifetimeSeconds: 8.2,
+  // its starting amplitude. The decay rate is what sets how long one lasts, so
+  // this reads that rate rather than restating its consequence: a slot held
+  // past the retirement costs every fragment a term contributing nothing, and
+  // one retired early cuts the disturbance off while it is still visible.
+  rippleLifetimeSeconds:
+    Math.log(1 / RIPPLE_RETIREMENT_FRACTION) / streamsConfig.rippleDecay,
   contentPadding: 12,
   perfWindowMs: 2000,
   // A fraction of whatever rate the throttle targets rather than a fixed count.

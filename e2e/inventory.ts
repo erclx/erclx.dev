@@ -1,3 +1,5 @@
+import { execFileSync } from 'node:child_process'
+
 import { chromium, type Page } from '@playwright/test'
 
 // Walks every page and reports what each interactive element does when a
@@ -11,7 +13,22 @@ import { chromium, type Page } from '@playwright/test'
 // Run: bun e2e/inventory.ts
 // Filter: INVENTORY_FILTER=projects,footer bun e2e/inventory.ts
 
-const BASE = process.env.INVENTORY_BASE_URL ?? 'http://localhost:4350'
+// The dev server's port is the base plus a per-worktree offset, so a literal
+// here only resolves in the tree it was written in. `worktree-port.sh` is the
+// one place that math lives and every other entry point already reads it.
+const DEV_PORT_BASE = 4321
+
+function devServerUrl(): string {
+  const port = execFileSync('bash', [
+    'scripts/worktree-port.sh',
+    `${DEV_PORT_BASE}`,
+  ])
+    .toString()
+    .trim()
+  return `http://localhost:${port}`
+}
+
+const BASE = process.env.INVENTORY_BASE_URL ?? devServerUrl()
 const FILTER = process.env.INVENTORY_FILTER?.split(',').map((t) => t.trim())
 
 const ROUTES = ['/', '/aitk', '/jobtriage', '/stackr', '/caret', '/diction']

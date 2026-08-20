@@ -75,17 +75,18 @@ An instrument reading only the element itself will report a treatment written on
 
 An interactive decision is one the operator has to drive: how a gesture feels to cause, how a pace reads while scrolling, whether a control is where a hand expects it. A recording answers how a thing looks and cannot answer any of those, so the candidates are served live and the operator drives them.
 
-The shape is the same every time and is worth building the same way.
+`src/components/dev/scenarios.astro` is the harness and already does this. Import it into the page under decision and pass `param` and `arms`, plus `mountInto` when the decision sits inside a modal. It reads the parameter, applies the active arm, and renders the switcher.
 
-1. Read one query parameter and resolve it to an arm, defaulting to what ships when the parameter is absent or unknown.
-2. Apply that arm at the one place the decision lives: a stylesheet for a treatment, a constant for a pace, a uniform for a field.
-3. Render a switcher listing every arm, marking the current one, and carrying the parameter through so the operator moves between arms without editing a URL.
-4. Hand over the links and stop.
-5. Delete the parameter, the arms, and the switcher in the same change that applies the pick.
+1. Write the arms: an id, a label naming what the arm costs, and the CSS when the decision is a treatment. Use `0` for what ships, so the baseline is an arm.
+2. Where the decision is a value the page reads at runtime rather than a stylesheet, leave the arm's CSS out and have the module holding that value read the active id off `document.documentElement.dataset[param]`.
+3. Mount the component on the page and hand over the links.
+4. Stop. The operator drives the arms and picks.
+5. Delete the arms and the call site in the same change that applies the pick. The component stays: it is scaffolding a decision reaches for and puts back, so a branch with no open visual decision holds no call site.
 
 ### Rules
 
-- Gate every part of it on the parameter, so a page asked for nothing renders exactly what ships. Prove that with a check counting the switcher's own elements on the bare page.
+- Do not hand-roll the parameter and the switcher. That was the shape before the harness existed, five times in one run with no two alike, and rebuilding it is what the component was written to stop.
+- The harness renders nothing on a bare page and nothing in a production build, since it sits behind `import.meta.env.DEV`. Prove the first with a check counting the switcher's own elements on the page with no parameter.
 - Put the switcher where the decision is visible. A control inside a modal belongs in the modal, since a fixed element outside it sits under the backdrop.
 - Send the composed sheet as well as the links. The sheet is what the operator scans to pick two arms worth driving, and driving is what settles between them.
 - Keep the arms in the source rather than in a scratch script when the decision is a constant the page reads at runtime. A scratch script that rewrites a file between captures cannot be driven by a person.

@@ -304,6 +304,10 @@ Two things about it are not obvious and both cost a debugging pass. Inside an As
 
 **It is unreferenced today, and that is the expected state.** It is scaffolding a visual decision reaches for and removes again, so a branch with no open visual decision holds no call site. Read it the way the React entry above should be read: a session auditing the tree for unused files finds it and should leave it alone.
 
+What makes it reachable rather than merely present is the `visual-batch` skill naming it, which is the half that shipped late. The skill described the workflow as steps to build by hand and named no component, so a session following it rebuilt the switcher and met the problem the component closes. An unreferenced component is only safe while something tells a session it exists, and for one commit nothing did.
+
+Its teardown is the arms and the call site rather than the seam. Deleting the parameter and the switcher with the pick is what a hand-rolled seam needs, and applying that to the harness deletes the harness.
+
 Verified at 1280x900.
 
 ## Risks / open questions
