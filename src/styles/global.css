@@ -99,6 +99,9 @@ body.surface-case-study > header[data-section='header'] {
    earns its place against prose, where it destroys the letterforms that would
    otherwise read through. */
 [data-bar-ground] {
+  /* How far the shape reaches past the row inside it, so the name and the
+     toggle never sit against its edge. */
+  --bar-shape-padding: 1.25rem;
   position: absolute;
   inset: 0;
   background: rgb(from var(--card) r g b / 0.88);
@@ -113,7 +116,11 @@ body.surface-case-study > header[data-section='header'] {
    where an object floating over content is read as above it by those two
    things. */
 [data-condensed='true'] [data-bar-ground] {
-  inset: 0.5rem max(1rem, calc((100% - 52rem) / 2));
+  inset: 0.5rem
+    max(
+      calc(var(--page-inset) - var(--bar-shape-padding)),
+      calc((100% - 52rem) / 2)
+    );
   border-radius: 999px;
   border-color: var(--border);
   box-shadow:
@@ -174,7 +181,7 @@ body.surface-case-study > header[data-section='header'] {
    320px and 3.1 percent at 768. A clamp grows it with the viewport and stops
    once the column is capping itself. */
 @utility page-inset {
-  padding-inline: clamp(1.5rem, 5vw, 3rem);
+  padding-inline: var(--page-inset);
 }
 
 @utility prose-column {
@@ -192,6 +199,10 @@ body.surface-case-study > header[data-section='header'] {
 }
 
 :root {
+  /* The inset every full-bleed surface holds, as a value other rules can
+     read. The sticky bar's shape sits a fixed distance outside it, and it
+     was guessing at a number this owns. */
+  --page-inset: clamp(1.5rem, 5vw, 3rem);
   /* The measure a case-study route sets its prose to, and the wider step a
      figure takes when it breaks past that prose. The breakout overhang is
      arithmetic over the pair rather than a measured constant, so moving either
