@@ -555,3 +555,27 @@ test('the looking-for section states experience rather than a level band', async
 
   await expect(page.locator('#looking-for')).toContainText('two years in')
 })
+
+// 375 and 390 are the two commonest phone widths, and both regressed when a
+// decorative hover label shipped on one line: it reached 62px and 47px past the
+// viewport while invisible, which scrolls the whole page sideways.
+for (const width of [320, 375, 390, 768]) {
+  test(`the page does not scroll sideways at ${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 })
+    await page.goto('/')
+
+    // Every revealed element counts toward the document width, so the reveal is
+    // settled first rather than measuring a page still cascading in.
+    await page.evaluate(() => {
+      document.querySelectorAll('[data-fade]').forEach((el) => {
+        ;(el as HTMLElement).dataset.visible = 'true'
+      })
+    })
+
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    )
+
+    expect(overflow).toBeLessThanOrEqual(0)
+  })
+}

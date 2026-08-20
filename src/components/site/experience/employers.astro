@@ -81,7 +81,7 @@ const marks = [
           <span
             data-employer-name
             aria-hidden="true"
-            class="text-label text-muted-foreground pointer-events-none absolute top-full left-0 mt-2 whitespace-nowrap"
+            class="text-label text-muted-foreground pointer-events-none absolute top-full left-0 mt-2"
           >
             {mark.name}
           </span>
@@ -92,8 +92,21 @@ const marks = [
 </div>
 
 <style>
+  /* The label sits absolute at its mark's left edge, so the rightmost mark
+     carries the longest name furthest right. Held on one line it reached 62px
+     past a 375 viewport and 47px past a 390 one, which scrolls the whole page
+     sideways on a phone while the label itself is invisible. It wraps inside a
+     box narrower than the column instead. */
   [data-employer-name] {
     opacity: 0;
+    max-width: min(14rem, 55vw);
+  }
+  /* A touch device has no pointer to ask with, so the label is unreachable
+     there and only its box would ship. */
+  @media (hover: none) {
+    [data-employer-name] {
+      display: none;
+    }
   }
   [data-employers] li:hover [data-employer-name] {
     opacity: 1;
