@@ -105,7 +105,11 @@ const findCaseStudyHref = (links: { href: string }[]): string | undefined =>
     >
       Projects
     </h2>
-    <div class="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2">
+    {/* The gutter carries the separation the plate used to. It also has to
+        clear the halo a hover raises: at a 24px gutter the halo's own box
+        reached the neighboring card exactly, and its shadow crossed about
+        36px into it, so pointing at one card lit the one beside it. */}
+    <div class="mt-10 grid gap-12 lg:mt-14 lg:grid-cols-2">
       {
         projects.map((project, index) => {
           const numeral = String(index + 1).padStart(2, '0')
