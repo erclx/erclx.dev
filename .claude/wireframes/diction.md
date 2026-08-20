@@ -26,7 +26,7 @@ Reached from the diction project card on the landing page. Carries six measured 
 │                                                          │
 │   data                                                   │
 │   ┌────────────────────────────────────────────────┐     │
-│   │        ┌──────────────────┐                    │     │  ← tall figure, capped and centred
+│   │        ┌──────────────────┐                    │     │  ← tall figure on a plate sized to it
 │   │        │                  │                    │     │
 │   │        └──────────────────┘                    │     │
 │   │ every sound sits somewhere different           │     │  ← caption under the image
@@ -70,9 +70,11 @@ The section-nav rail sits in the left margin from `xl`, tracking the five sectio
 
 ## Figures
 
-Two widths, decided by the source rather than by the section. A portrait figure is capped in height and centred so the column is not handed to one image, and a landscape figure fills the column width. Each carries a caption naming what it shows, and the alt text states the finding rather than the file.
+Two shapes, decided by the source rather than by the section. A landscape figure breaks out past the prose and fills that wider column. A portrait figure takes a plate sized to itself, since a tall chart cannot fill a width chosen for wide ones and a wide plate under a narrow chart is mostly empty. Each carries a caption naming what it shows, and the alt text states the finding rather than the file.
 
-Both widths render far below the source resolution in the column, so every chart opens on click. A landscape chart fills the width of the panel. A portrait chart is bounded by the height of the screen instead, which is what keeps it from opening taller than the viewport and forcing a scroll to read one figure. Either way the whole chart is on screen at once. See `.claude/context/case-study-figures.md` for the mechanism.
+Both shapes render far below the source resolution in the column, so every chart opens on click, and the six open as one sequence rather than six separate views. A reader steps between them without closing, since the argument on this page runs across the charts in order and comparing two otherwise means going back to the page.
+
+An opened chart arrives whole, bounded by the width of the panel or the height of the screen so it never scrolls. A second click magnifies it to its own pixels and the panel becomes a pan, which is the first size at which a portrait chart is readable: fitting one buys almost nothing over its size in the column, where magnifying it reaches three times that. See `.claude/context/case-study-figures.md` for the mechanism.
 
 Every chart is drawn on a light ground, so the panel behind one stays light in both themes and the figure reads as a framed card the page holds rather than a bright rectangle cut through it. Its caption and its focus ring darken to match, so both stay readable on that panel. The dark theme is what this is for, and the light theme renders as it did before.
 

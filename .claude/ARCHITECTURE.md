@@ -276,6 +276,20 @@ The same pass made a card's name its route link. The label saying `Project` repe
 
 Verified at c5f17e4 on 2026-08-20, at 1280x800 and 1440x900.
 
+### A figure is sized against its own shape, and a defect can be held up by another
+
+A plate sized by the column step is a plate a portrait figure cannot fill. At a 0.70 aspect against a width chosen for charts running 2.4 and wider, the image used 40% of its plate at 1280 and 29% at 1920, because the plate scaled with the viewport while the image was pinned to a flat length that read neither it nor the screen. A portrait plate now follows its content and the image takes a ceiling that scales, which holds 86% fill at both widths.
+
+That is the general shape rather than a fact about one route. Two literals sized against different things drift apart as soon as anything around them moves, and neither one is wrong on its own.
+
+Fixing it exposed the next defect, which is the part worth carrying. A bigger inline figure meant opening one showed it smaller, at 0.88x, so the click a reader makes to see more showed them less. That is now a sequence with a magnifier: fitted on arrival, and a second click to the figure's own pixels, which is the first size at which a portrait chart's axis labels can be read.
+
+Three of the defects that came out with it were older than the work, and one of those was held up by another. The panel had been positioned relatively, which overrides the fixed position a user agent gives a modal dialog, so it rendered at minus the scroll position and a reader deep in a route opened onto nothing. It stayed invisible because the page lock also reset the scroll to zero, which put an in-flow panel at the top of the viewport by accident. Repairing the scroll reset is what revealed it.
+
+**Read that as the general case rather than as bad luck.** A defect can be masked by a second one, so repairing either exposes the other, and a session that fixes one and ships without re-looking ships the pair. What made it survive was a verification reading sizes and positions and never asking whether the thing was on screen: the panel measured a healthy 1517x639 for as long as it sat 1868px above the viewport. Assert that a surface is where a reader would see it, not only that it has the right shape.
+
+Verified at 1024x700, 1280x800, 1440x900, and 1600x1200.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
