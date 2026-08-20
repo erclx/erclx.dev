@@ -98,24 +98,39 @@
     pointer-events: auto;
   }
 
-  /* The fill and the blur were settled together against contrast and ghosting
-     and they move here unchanged: 0.85 over 24px holds 5.02:1 in light and
-     8.16:1 in dark, and destroys the letterforms of prose passing under it. */
+  /* The elevated surface token rather than the page's own. A ground taken from
+     the background is the page's color laid on the page: measured over flat
+     ground past the hero, the bar and what sat behind it separated by 1.002:1
+     in light and 1.003:1 in dark, which is to say not at all, and only the text
+     inside it said a bar was there. The blur cannot rescue that, since blurring
+     a flat field returns the same flat field.
+
+     The blur still earns its place against prose, where it destroys the
+     letterforms that would otherwise read through. */
   [data-bar-ground] {
     position: absolute;
     inset: 0;
-    background: rgb(from var(--background) r g b / 0.85);
+    background: rgb(from var(--card) r g b / 0.88);
     backdrop-filter: blur(24px);
     border-radius: 0;
+    border: 1px solid transparent;
   }
 
   /* Contracted to a shape wider than the row it sits under, so the row's own
-     slots never move and the pill has air around the name and the toggle. The
+     slots never move and the shape has air around the name and the toggle. The
      side inset floors at 1rem, so a viewport narrower than the shape gets a
-     detached bar rather than one hanging off both edges. */
+     detached bar rather than one hanging off both edges.
+
+     An edge and a shadow only once it detaches. A full-bleed bar meeting the
+     viewport on three sides has no outline to draw, where an object floating
+     over content is read as above it by exactly those two things. */
   [data-site-bar][data-condensed='true'] [data-bar-ground] {
     inset: 0.5rem max(1rem, calc((100% - 52rem) / 2));
     border-radius: 999px;
+    border-color: var(--border);
+    box-shadow:
+      0 1px 2px rgb(from var(--foreground) r g b / 0.04),
+      0 8px 24px rgb(from var(--foreground) r g b / 0.08);
   }
 
   @media (prefers-reduced-motion: no-preference) {
