@@ -14,7 +14,9 @@ Without this skill, a session working on a visual surface:
 - Describes two design options in prose and asks the operator to choose. The operator decides by looking, so a described option is not an option and the answer that comes back is arbitrary.
 - Commits between iterations of a visual tuning pass, leaving a history of intermediate states the operator never approved.
 - Edits rendered page copy and stops there. The canonical source is in another repository, so no branch carries the second edit and no check compares the two, which silently reintroduces the drift the split exists to close.
-- Sequences a dump into batches without recording where one pull request should end, so a dependency chain forms across every batch and the whole run lands in one review surface. Measured once at 68 files and 2951 insertions, of which three batches touched disjoint files and could have shipped separately.
+- Sequences a dump into batches without recording where one pull request should end, so a dependency chain forms across every batch and the whole run lands in one review surface. Measured once at 68 files and 2951 insertions, of which three batches touched disjoint files and could have shipped separately, and twice more at 25 and 30 commits in one review.
+- Treats a dependency between batches as a reason to merge them into one review rather than to stack them. The batches are built in order and depend on each other in that order, which is what a stack of pull requests expresses, so the dependency argues for stacking and a session reads it as arguing against splitting.
+- Loses the ability to split partway through the run rather than at ship time, by putting a sweep across earlier batches in the middle or by landing a fix to one batch after the next batch's commits. Neither is visible as a mistake when it happens, and both are unrecoverable without rewriting history.
 - Leaves the batches undocumented, so the run exists only in a conversation and nothing survives it.
 - Builds the scaffold for a live variant from scratch every time one is needed, rather than reaching for the harness that serves it. Measured across one run that served five separate decisions that way, each with its own parameter, its own switcher, and its own removal, none of which resembled the last. `src/components/dev/scenarios.astro` closed the missing shape, so what remains is a session not knowing to reach for it, which a body naming the component is what fixes.
 - Calls a failure a regression without taking the baseline the same way. Measured on a three-engine run that reported seven failures against a baseline taken over twenty tests rather than four hundred and fifty, which would have filed three pre-existing failures as new.
@@ -24,6 +26,7 @@ Without this skill, a session working on a visual surface:
 
 - Group a dump into batches and file one task per batch before implementing any of them.
 - Decide the pull request boundary during planning, from the file sets the batches touch, and state it in the batch table.
+- Open one pull request per batch, stacked in commit order with each targeting the one before it, and keep each batch's commits contiguous so that split stays available until ship time.
 - Classify a decision as static, motion, or interactive before capturing, and take the matching option from the capture rule.
 - Render and look at every visual change before reporting on it, and prefer a measurement whenever the claim is about a number.
 - Run the four-step copy cycle before changing any rendered text, and report the upstream edit in the same message as the component edit.

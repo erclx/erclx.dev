@@ -25,6 +25,9 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 ### Rules
 
 - Declare the pull request boundary here, never at ship time. A dependency chain cannot be split once built, so the choice exists only while the batches are still a plan.
+- One batch is one pull request. The run accumulates on a single branch and the batches stack in commit order, and at ship time each batch becomes its own pull request targeting the one before it. A dependent batch is a reason to stack rather than a reason to merge two batches into one review.
+- Say so in the table. The pull request column carries one entry per batch and names what each targets, so a run that plans to open five says five before the first line is written.
+- Sequence a sweep last. A batch that deliberately rewrites files earlier batches touched is coherent as the final one and forces every batch after it into one review anywhere else. One run put its interaction sweep in the middle, where it rewrote four components three earlier batches had settled, and the branch could not be separated after that.
 - Independent batches earn separate branches even when they arrive in one dump. A run measured at 68 files and 2951 insertions carried three batches touching disjoint files that all landed in one review surface, because nothing drew the boundary.
 
 ## Phase 2: the loop, once per batch
@@ -113,8 +116,11 @@ Page copy is canonical upstream at `career/assets/portfolio/` and is read across
 - Commit at a batch boundary once the operator has judged it, rather than holding the whole run. A run spanning many batches otherwise carries hours of unsaved work, and the boundary is where the batch's own outcomes settle anyway.
 - Run `claude-docs` at that same boundary. Per commit is too often, since outcomes close per batch and not per commit, and at the end of the run is too late: the architecture entries then get written from a summary rather than from the measurements that produced them, which is how a record loses the failed attempts and the numbers that decided it.
 - Fold batches into one record entry where they are one story. Three batches that together gave the page one elevation language read as three unrelated styling changes when written up separately.
+- Keep one batch's commits contiguous. A later fix to an earlier batch goes on that batch's own commits, not on the end of the branch, since a batch interrupted by another cannot be lifted onto its own branch afterward. One run landed a fix to its ripple batch after the next batch's two commits and lost the split with that one commit.
 - Root `CLAUDE.md` § Shipping owns when a commit and a push are allowed. Follow it rather than a copy, and do not infer a shipping rule from this file.
-- On the ship signal, split with `git-stage`, refresh the record with `claude-docs`, and open the pull request with `git-pr`.
+- On the ship signal, cut one branch per batch in the order they were committed, each targeting the branch before it, and open a pull request for each with `git-pr`. Use `git-stage` to split a batch that holds more than one concern into focused commits inside its own branch.
+- Rebase the stack from the bottom as each merges, rather than opening the next only when the last lands. The batches were built in order and already depend on each other in that order, so the whole stack is open and reviewable at once.
+- A run that opens one pull request for many batches has failed this phase whatever the diff looks like. Two runs ended at 25 and 30 commits in one review, which is the outcome every rule above exists to prevent.
 
 ## Voice
 

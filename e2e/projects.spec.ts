@@ -107,9 +107,24 @@ test('two cards sharing a row share a lower edge', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.goto('/')
   const cards = page.locator('#projects article')
-  // The cards reveal on a stagger, so an early read catches one mid-transition.
+  // The cards reveal on a stagger, so an early read catches one mid-transition
+  // and measures the residue of its own travel rather than the layout. The
+  // reveal runs 700ms behind a delay reaching 400ms, so a fixed wait races the
+  // observer that starts it: at 1200ms the margin is 100ms and a slower machine
+  // spends it before the transition begins. Waiting for the transform to rest
+  // needs no budget and cannot go stale against a change to either duration.
   await cards.first().scrollIntoViewIfNeeded()
-  await page.waitForTimeout(1200)
+  // The pair this compares, rather than every card. The three below the fold
+  // never reveal from this scroll position, so waiting on all five waits out
+  // the poll's own budget and then reads the same mid-transition box.
+  const pair = cards.nth(0).or(cards.nth(1))
+  await expect
+    .poll(() =>
+      pair.evaluateAll((nodes) =>
+        nodes.every((node) => getComputedStyle(node).transform === 'none'),
+      ),
+    )
+    .toBe(true)
 
   const left = await cards.first().boundingBox()
   const right = await cards.nth(1).boundingBox()
