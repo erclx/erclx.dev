@@ -28,7 +28,7 @@ test('the header states no claim, leaving the stage to the concept layer', async
   await page.goto('/')
   const header = page.locator('header')
 
-  await expect(header).toContainText('this is my corner of the internet')
+  await expect(header).toContainText('Welcome to my corner of the internet')
   await expect(header).not.toContainText('the layer between a language model')
   await expect(header).not.toContainText('In practice that means agents')
 })
