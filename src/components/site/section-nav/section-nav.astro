@@ -57,14 +57,16 @@ const {
     pointer-events: none;
   }
   /* Every link holds the pill's box whether or not it is filled, so the rail
-     does not shift as the active item moves down the page. Only one of them is
-     ever painted, and the negative margin keeps the labels where they sat when
-     the box was a 2px edge. */
+     does not shift as the active item moves down the page and no label moves
+     when it becomes the active one. Only one of them is ever painted.
+
+     The box starts at the rail's own left edge rather than hanging left of it,
+     so the pill sits inside the margin the labels already occupy instead of
+     reaching further out into the page. */
   .section-nav-link {
     border: 1px solid transparent;
     border-radius: 999px;
     padding: 0.35rem 0.85rem;
-    margin-left: -0.85rem;
     transition:
       color 150ms ease-out,
       border-color 150ms ease-out,
