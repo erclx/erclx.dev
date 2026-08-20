@@ -161,10 +161,23 @@ const cardId = name.toLowerCase()
        gutter, so two neighbors never light together. */
     box-shadow: 0 0 1.25rem 0
       color-mix(in oklab, var(--foreground) 7%, transparent);
-    transition: opacity 150ms ease-out;
   }
   [data-media-host]:hover::after,
   [data-media-host]:focus-within::after {
     opacity: 1;
+  }
+
+  /* Asymmetric on purpose. Arriving is immediate, because a control answering
+     late reads as broken, and leaving takes four times as long, so crossing
+     the grid trails a glow behind the pointer rather than snapping off at
+     every gutter. The two rules are what make one transition do both. */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-media-host]::after {
+      transition: opacity 520ms ease-out;
+    }
+    [data-media-host]:hover::after,
+    [data-media-host]:focus-within::after {
+      transition: opacity 130ms ease-out;
+    }
   }
 </style>
