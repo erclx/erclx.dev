@@ -104,8 +104,25 @@ const cardId = name.toLowerCase()
       on the page ground indents from nothing, so it would have started right
       of every other reading edge in the section. */}
   <div class:list={['pt-6 md:pt-8', isWide && 'lg:flex-1 lg:self-center lg:pt-0 lg:pl-10']}>
+    {/* The name is the way into the route. A label saying so sat in the row
+        below until 2026-08-20 and repeated what the whole card already does,
+        but it could not simply be deleted: the full-card link below is hidden
+        from assistive technology and held out of the tab order, so that label
+        was the only route in for anyone without a pointer. Naming the card is
+        the job a heading and a link both do, so one element does both. */}
     <h3 class="font-display text-heading text-foreground">
-      {name}
+      {
+        caseStudyHref ? (
+          <a
+            href={caseStudyHref}
+            class="relative z-10 underline-offset-4 hover:underline"
+          >
+            {name}
+          </a>
+        ) : (
+          name
+        )
+      }
     </h3>
     <p class="text-muted-foreground text-body mt-4">
       {description}
