@@ -26,7 +26,7 @@ Clicking a rail link sets the clicked section active immediately and suppresses 
 ## Reveal and footer gates
 
 - The rail starts hidden and fades in once the hero is roughly half-scrolled past. An `IntersectionObserver` on the hero element with `rootMargin: '-50% 0px 0px 0px'` toggles `data-revealed`. Bidirectional: scrolling back into the hero hides the rail again.
-- A second `IntersectionObserver` on `<footer data-section="footer">` with `rootMargin: '0px 0px -50% 0px'` toggles `data-near-footer` so the rail fades out only once the footer crosses into the upper half of the viewport. A more eager margin hid the rail while looking-for was still the dominant reading surface, since looking-for sits flush with the footer.
+- A second `IntersectionObserver` on `<footer data-section="footer">` toggles `data-near-footer` so the rail fades out once the footer enters the viewport. It carries no root margin. A margin capping the root at its top half never fires, since the footer sits in the lower part of the last screen by definition, so the rail held full opacity over the beat it is meant to stand down for. Measured at 1440x900 scrolled to the end: the footer spanned 622 to 900 against a capped root ending at 450.
 
 ## instant prop
 

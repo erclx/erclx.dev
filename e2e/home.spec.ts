@@ -2,7 +2,10 @@ import { expect, test } from '@playwright/test'
 
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 
-const EXPERIENCE_ENTRY_COUNT = 5
+// One per beat. The three counts below read the same number on purpose, so a
+// beat that renders a head with no marker, or a marker with no row, is caught
+// rather than passing as a smaller list.
+const EXPERIENCE_ENTRY_COUNT = 6
 const PORTRAIT_SELECTOR = 'header [data-portrait]'
 // The reveal script fits whatever arrives together into one 400ms window, so a
 // surviving authored delay is the regression this bound catches.
@@ -452,6 +455,31 @@ test('the experience rail marks every entry', async ({ page }) => {
   )
 })
 
+test('every beat states its span in its own column', async ({ page }) => {
+  await page.goto('/')
+
+  await expect(page.locator('#experience .experience-date')).toHaveCount(
+    EXPERIENCE_ENTRY_COUNT,
+  )
+  // The span left the head sentence, so a head restating it would put the
+  // date on the row twice.
+  await expect(
+    page.locator('#experience .experience-head').first(),
+  ).not.toContainText('2026')
+})
+
+test('the internship the record carries is on the timeline', async ({
+  page,
+}) => {
+  await page.goto('/')
+  const beat = page.locator('#experience ol > li', {
+    hasText: 'bac ha software',
+  })
+
+  await expect(beat).toHaveCount(1)
+  await expect(beat.locator('.experience-date')).toContainText('2023')
+})
+
 test('the experience chips name the cards below them', async ({ page }) => {
   await page.goto('/')
 
@@ -527,3 +555,27 @@ test('the looking-for section states experience rather than a level band', async
 
   await expect(page.locator('#looking-for')).toContainText('two years in')
 })
+
+// 375 and 390 are the two commonest phone widths, and both regressed when a
+// decorative hover label shipped on one line: it reached 62px and 47px past the
+// viewport while invisible, which scrolls the whole page sideways.
+for (const width of [320, 375, 390, 768]) {
+  test(`the page does not scroll sideways at ${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 })
+    await page.goto('/')
+
+    // Every revealed element counts toward the document width, so the reveal is
+    // settled first rather than measuring a page still cascading in.
+    await page.evaluate(() => {
+      document.querySelectorAll('[data-fade]').forEach((el) => {
+        ;(el as HTMLElement).dataset.visible = 'true'
+      })
+    })
+
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    )
+
+    expect(overflow).toBeLessThanOrEqual(0)
+  })
+}

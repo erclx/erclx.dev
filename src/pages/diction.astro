@@ -5,6 +5,7 @@ import RouteBar from '@/components/site/nav/route-bar.astro'
 import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import FigureDialog from '@/components/site/figures/figure-dialog.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
+import dictionPoster from '@/assets/projects/diction.png'
 import baselines from '@/assets/projects/diction-baselines.png'
 import separation from '@/assets/projects/diction-separation.png'
 import thresholds from '@/assets/projects/diction-thresholds.png'
@@ -60,7 +61,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
   <RouteBar here="diction" />
 
   <main>
-    <section class="px-6 pt-16 pb-12 md:pt-20 md:pb-16">
+    <section class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
         <p data-fade data-visible="true" class="text-muted-foreground text-label tracking-wide uppercase">
           Project
@@ -106,10 +107,33 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
             ))
           }
         </ul>
+        {/* The one route that opened straight into prose. Every other route
+            carries a figure in its first section, three of them a clip and one
+            a still, so this one read as the unfinished one rather than the
+            deliberate one.
+
+            It is the still the card already uses rather than a new asset, and
+            it is a picture rather than a media host, because there is no clip
+            of this project to host. Eager, since it is the first thing under
+            the fold on arrival and a lazy load would leave the slot empty for
+            the moment a reader is looking straight at it. */}
+        <figure
+          data-fade
+          data-visible="true"
+          style="--fade-delay: 450ms"
+          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+        >
+          <Image
+            src={dictionPoster}
+            alt="The diction trainer scoring a spoken passage, each sound marked against what a native speaker actually sounds like"
+            class="block h-auto w-full"
+            loading="eager"
+          />
+        </figure>
       </div>
     </section>
 
-    <section id="problem" class="px-6 py-16 md:py-20">
+    <section id="problem" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           problem
@@ -138,7 +162,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
       </div>
     </section>
 
-    <section id="data" class="px-6 py-16 md:py-20">
+    <section id="data" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           data
@@ -205,7 +229,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
       </div>
     </section>
 
-    <section id="fix" class="px-6 py-16 md:py-20">
+    <section id="fix" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           fix
@@ -273,7 +297,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
       </div>
     </section>
 
-    <section id="holdout" class="px-6 py-16 md:py-20">
+    <section id="holdout" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           holdout
@@ -310,7 +334,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
       </div>
     </section>
 
-    <section id="beyond" class="px-6 py-16 md:py-20">
+    <section id="beyond" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           beyond
@@ -464,9 +488,9 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 
   <footer
     data-section="footer"
-    class="border-border/60 px-6 py-10 md:py-12"
+    class="border-border/60 page-inset py-10 md:py-12"
   >
-    <div class="border-border/60 mx-auto prose-column border-t pt-10">
+    <div class="mx-auto prose-column pt-14">
       <a
         href="/"
         data-way-home

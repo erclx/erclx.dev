@@ -1,0 +1,339 @@
+---
+import { getLinkTargetAttributes } from '@/lib/links'
+
+// The three the hero opens with, plus the one destination that was reachable
+// only after a full scroll. The resume is the highest-intent link on the page
+// and it sat last on it, while three contact links floated the whole way.
+//
+// It renders nearest the resting mark rather than furthest from it, so the
+// shortest travel from the control belongs to the destination most readers
+// came for.
+const links = [
+  {
+    label: 'GitHub',
+    href: 'https://github.com/erclx',
+    paths: [
+      'M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4',
+      'M9 18c-4.51 2-5-2-7-2',
+    ],
+  },
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/erclx',
+    paths: [
+      'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z',
+      'M2 9h4v12H2z',
+      'M4 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4z',
+    ],
+  },
+  {
+    label: 'me@erclx.dev',
+    href: 'mailto:me@erclx.dev',
+    paths: [
+      'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z',
+      'm22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7',
+    ],
+  },
+  {
+    label: 'Résumé',
+    href: '/resume.pdf',
+    // The one internal destination the link rule exempts, because a reader
+    // browses it for a while and comes back rather than navigating away.
+    newTab: true,
+    paths: [
+      'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z',
+      'M14 2v5h5',
+      'M9 13h6',
+      'M9 17h4',
+    ],
+  },
+]
+---
+
+{/* Bottom right, mirroring the section rail on the left, so the two read as a
+    pair of margin controls rather than as one control and one ornament.
+
+    Reversed, so the control that stays put sits nearest the corner and the
+    stack grows up out of it. Rendered in order it put the resting mark at the
+    top of a group that is anchored to the bottom, so the one thing a reader
+    sees at rest moved every time the stack opened. */}
+{/* Inert until it arrives, matching the sticky bar. The dock is invisible and
+    takes no pointer until it is revealed, but its four links stay in the tab
+    order regardless, so without this a keyboard reader tabs through four
+    destinations that are not on screen and gets no focus ring to follow. */}
+<div
+  data-contact-dock
+  inert
+  class="fixed right-6 bottom-6 z-30 flex flex-col-reverse items-end gap-2"
+>
+  {/* Expands the stack where a pointer is not available. It carries the
+      expanded state rather than the links carrying it, so a keyboard reaches
+      the links through ordinary focus and never through this. */}
+  <button
+    type="button"
+    data-dock-toggle
+    aria-expanded="false"
+    aria-controls="contact-dock-links"
+    class="border-border/60 bg-background/85 text-muted-foreground hover:text-foreground inline-flex size-11 items-center justify-center rounded-full border backdrop-blur-xl"
+  >
+    <span class="sr-only">Contact</span>
+    {/* An at sign rather than an envelope. The envelope is one of the three
+        destinations below, so the control that opens the set was drawn as one
+        member of it. */}
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="size-5"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path>
+    </svg>
+  </button>
+
+  <ul id="contact-dock-links" data-dock-links class="flex flex-col items-end gap-2">
+    {
+      links.map((link) => (
+        <li class="relative flex items-center justify-end">
+          {/* The name a pointer asks for, since the stack is icons alone. It
+              sits to the left because the dock is pinned to the right edge and
+              a label on the other side would run off the viewport.
+
+              Hidden from assistive technology: the link already carries this
+              string as its accessible name, so exposing it twice would have a
+              screen reader read every destination in the set twice over. */}
+          <span
+            data-dock-name
+            aria-hidden="true"
+            class="border-border/60 bg-background/85 text-label text-muted-foreground pointer-events-none absolute right-full mr-2 rounded-full border px-3 py-1 whitespace-nowrap backdrop-blur-xl"
+          >
+            {link.label}
+          </span>
+          <a
+            href={link.href}
+            {...(link.newTab
+              ? { target: '_blank', rel: 'noopener' }
+              : getLinkTargetAttributes(link.href))}
+            aria-label={link.label}
+            class="border-border/60 bg-background/85 text-muted-foreground hover:text-foreground inline-flex size-11 items-center justify-center rounded-full border backdrop-blur-xl"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-5"
+              aria-hidden="true"
+            >
+              {link.paths.map((path) => (
+                <path d={path} />
+              ))}
+            </svg>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  /* The dock arrives with the rail and leaves with it, so the margins never
+     carry one control without the other. */
+  [data-contact-dock] {
+    opacity: 0;
+    pointer-events: none;
+  }
+  [data-contact-dock][data-revealed='true'] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  [data-contact-dock][data-near-footer='true'] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* The stack is what collapses, never the links themselves, so the set stays
+     in the tab order at every size and a keyboard never meets a hidden set.
+
+     Moved and faded but never scaled. A collapsed link keeps its box in the
+     tab order, and scaling shrank that box below the phone tap minimum: the
+     set measured 43px square mid-transition against a 44px floor. */
+  [data-contact-dock] [data-dock-links] {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+  }
+  [data-contact-dock]:focus-within [data-dock-links],
+  [data-contact-dock][data-open='true'] [data-dock-links] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  /* Everywhere except a true touch device. Touch leaves `:hover` stuck on the
+     last thing tapped, so the tap that collapses the set held it open through
+     this rule after the flag had been cleared and focus released.
+
+     Excluding touch rather than requiring hover, because Playwright's Firefox
+     answers `(hover: hover)` and `(pointer: fine)` both false and would lose
+     the hover path entirely. A coarse pointer is the one capability only a real
+     touch device reports, so it is what this can safely key on. */
+  @media not all and (pointer: coarse) {
+    [data-contact-dock]:hover [data-dock-links] {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+  }
+
+  /* The name answers the one destination a reader is pointing at rather than
+     every destination at once, which is what a stack of four labels would be. */
+  [data-dock-name] {
+    opacity: 0;
+  }
+  [data-dock-links] li:hover [data-dock-name],
+  [data-dock-links] li:focus-within [data-dock-name] {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-contact-dock] {
+      transition: opacity 300ms ease-out;
+    }
+    [data-dock-links] {
+      transition:
+        opacity 200ms ease-out,
+        transform 200ms ease-out;
+    }
+    [data-dock-name] {
+      transition: opacity 150ms ease-out;
+    }
+  }
+</style>
+
+<script>
+  const dock = document.querySelector<HTMLElement>('[data-contact-dock]')
+  const toggle = dock?.querySelector<HTMLElement>('[data-dock-toggle]')
+
+  if (dock) {
+    // Reach and inertness are one state. The two gates below each own half of
+    // it, so both write through here rather than each toggling the attribute
+    // it happens to know about and leaving the other half stale.
+    let pastHero = false
+    let atFooter = false
+    const syncReach = () => {
+      const reachable = pastHero && !atFooter
+      if (reachable) {
+        dock.setAttribute('data-revealed', 'true')
+        dock.removeAttribute('inert')
+      } else {
+        dock.removeAttribute('data-revealed')
+        dock.setAttribute('inert', '')
+      }
+      if (atFooter) dock.setAttribute('data-near-footer', 'true')
+      else dock.removeAttribute('data-near-footer')
+    }
+
+    toggle?.addEventListener('click', (event) => {
+      const wasOpen = dock.dataset.open === 'true'
+      if (wasOpen) {
+        delete dock.dataset.open
+        // Unsetting the flag is not enough to close it. The control that just
+        // collapsed the set still holds focus, and `:focus-within` keeps the
+        // stack visible and clickable, so the set has to be released as well.
+        // A keyboard activation reports no pointer detail and keeps its place,
+        // since blurring there drops the reader at the top of the document on
+        // their next tab and the set stays open under them either way.
+        if ((event as PointerEvent).detail > 0) toggle.blur()
+      } else {
+        dock.dataset.open = 'true'
+      }
+      toggle.setAttribute(
+        'aria-expanded',
+        String(!wasOpen || dock.contains(document.activeElement)),
+      )
+    })
+
+    // A pointer leaving closes what a tap opened, so the dock does not sit
+    // open behind a reader who has moved on. Focus still inside keeps the set
+    // open through `:focus-within`, so the state it reports stays true.
+    dock.addEventListener('pointerleave', (event) => {
+      // A mouse only. A touch pointer is destroyed once the finger lifts, which
+      // fires this before the click that reads the state, so a tap cleared the
+      // flag it was about to toggle and the control could only ever open.
+      if ((event as PointerEvent).pointerType !== 'mouse') return
+      delete dock.dataset.open
+      if (dock.contains(document.activeElement)) return
+      toggle?.setAttribute('aria-expanded', 'false')
+    })
+
+    // The set opens on focus as well as on a click, so the control reports the
+    // state the reader is in rather than only the one a click put them in.
+    // Focus anywhere inside opens it, the toggle included, because
+    // `:focus-within` is what the stylesheet keys the stack to.
+    dock.addEventListener('focusin', () => {
+      toggle?.setAttribute('aria-expanded', 'true')
+    })
+
+    dock.addEventListener('focusout', (event) => {
+      const next = (event as FocusEvent).relatedTarget
+      if (next instanceof Node && dock.contains(next)) return
+      if (dock.dataset.open === 'true') return
+      toggle?.setAttribute('aria-expanded', 'false')
+    })
+
+    if ('IntersectionObserver' in window) {
+      const hero = document.querySelector<HTMLElement>(
+        '[data-section="header"]',
+      )
+      if (hero) {
+        // Half the hero rather than half the viewport, matching the bar. A hero
+        // shorter than the viewport clears a viewport-keyed margin without
+        // being scrolled at all.
+        new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              pastHero = entry.intersectionRatio < 0.5
+              syncReach()
+            }
+          },
+          { threshold: [0, 0.5] },
+        ).observe(hero)
+      } else {
+        pastHero = true
+        syncReach()
+      }
+
+      const footer = document.querySelector<HTMLElement>(
+        '[data-section="footer"]',
+      )
+      if (footer) {
+        // The footer carries the same destinations, so the dock stands down
+        // rather than repeating them beside themselves.
+        //
+        // No root margin. Shrinking the root to its top half never fires at
+        // all: the footer sits in the lower part of the last screen by
+        // definition, so a gate that only watches the upper half watches a
+        // region the footer never reaches.
+        new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              atFooter = entry.isIntersecting
+              syncReach()
+            }
+          },
+          { threshold: 0 },
+        ).observe(footer)
+      }
+    } else {
+      pastHero = true
+      syncReach()
+    }
+  }
+</script>

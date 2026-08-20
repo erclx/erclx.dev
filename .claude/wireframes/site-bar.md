@@ -12,10 +12,14 @@ This is the surface that closes the navigation hole the rail could not. The rail
 ## Landing page, revealed (≥768px)
 
 ```plaintext
-┌─[fixed, full width, near-opaque over blurred content]───────┐
-│   Eric Le                                           [☾]     │  ← name returns to top,
-└─────────────────────────────────────────────────────────────┘    toggle arrived from hero
+┌─[viewport]──────────────────────────────────────────────────┐
+│      ╭─[ground: elevated surface, blurred, detached]──╮     │
+│      │  Eric Le                                 [☾]   │     │  ← name returns to top,
+│      ╰──────────────────────────────────────────────╯       │    toggle arrived from hero
+└─────────────────────────────────────────────────────────────┘
 ```
+
+The ground starts at the full width with square corners and contracts to a rounded shape as the reader scrolls. The row inside it does not move.
 
 ## Landing page, over the hero
 
@@ -31,8 +35,10 @@ This is the surface that closes the navigation hole the rail could not. The rail
 ## Project route
 
 ```plaintext
-┌─[sticky, scrolls with the page then holds]──────────────────┐
-│   Eric Le              diction                      [☾]     │  ← way home, route name, toggle
+┌─[viewport]──────────────────────────────────────────────────┐
+│      ╭─[same ground, same column]───────────────────╮       │
+│      │  Eric Le          diction              [☾]   │       │  ← way home, route name, toggle
+│      ╰──────────────────────────────────────────────╯       │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -43,8 +49,18 @@ The route name is absent while the route's own title is still on screen and fade
 - The bar holds the same column as the hero on every surface, so the chrome never resizes as a reader moves between the landing page and a route. That also lands the name where it started horizontally, so the travel reads as vertical.
 - The name is a control rather than a label. It returns the reader to the top, smoothly unless reduced motion is set. Hovering or focusing it underlines the name.
 - The bar is `inert` until it is revealed, so nothing inside it takes focus while it is off screen.
-- The bar sits near-opaque over a blur. Prose passing under a lighter bar reads through it as ghost text, which looks like a rendering fault rather than a translucent surface.
 - A route's own bar is the sticky one rather than a second bar above it, so a reader deep in a long route always has a way home without stacking two bars.
+
+## The ground
+
+Both bars draw one shared ground rather than a copy per surface. A reader crossing between the landing page and a route meets the same shape at the same height.
+
+- The ground is the elevated surface token rather than the page background. Drawn from the background it measured 1.002:1 against what sat behind it, so only the text inside said a bar was there. Blurring a flat field returns the same flat field.
+- The shape is detached from the viewport edge, carries an edge and a shadow, and holds no rule under it.
+- It is lightly translucent over a wide blur. Prose passing under a lighter bar reads through it as letterforms, which a wider blur destroys while the backdrop still reads as a wash. Widening it further averages the dark gaps between project cards into the ground and darkens it under near-black text.
+- It contracts on scroll and the row inside holds its position. Everything the hero flies into that row is placed at a measured position, so the shape is the one thing free to move.
+
+See `.claude/ARCHITECTURE.md` § One ground for two bars, and the shape moves while the row does not for the measured values behind each of these.
 
 ## The handoff
 

@@ -1,0 +1,83 @@
+---
+---
+
+{/* The hero's own surface stops at the hero, and every section under it shared
+    one flat ground, so the page read as two documents joined rather than one.
+    This carries the same drawing under the whole page at a fraction of the
+    weight, which is what makes the opener part of the page instead of a lid
+    on it.
+
+    It runs the hero's shader rather than an authored copy of it, held to a
+    single frame. A second drawing would have to be kept matched to the first
+    by hand, and nothing would report it when it drifted.
+
+    Still rather than moving, and that is the point rather than a saving.
+    Ambient motion behind a name is a different proposition to ambient motion
+    under prose a reader is reading, and the hero's own pace was already taken
+    down an order of magnitude for being too much to sit with.
+
+    Fixed rather than scrolling, so it costs one viewport of fill however long
+    the page runs, and the ground stays put while the content travels over it. */}
+<div
+  data-page-ground
+  aria-hidden="true"
+  class="pointer-events-none fixed inset-0 -z-10"
+>
+  <canvas data-page-ground-field class="size-full"></canvas>
+  {/* Every section holds the same centred measure, so the column a reader
+      reads down is one strip rather than a box per section. The field damps
+      inside it the way the hero's does behind its own heading, which keeps
+      contours off the prose while leaving them at full weight in the margins
+      where the ground is doing its job. It draws nothing itself and exists
+      only to be measured.
+
+      Positioned rather than in flow, since a second full-height child stacks
+      under the canvas instead of over it and is measured entirely off-screen,
+      which damps nothing and reports nothing. */}
+  <div data-page-ground-column class="absolute inset-0 mx-auto" aria-hidden="true">
+  </div>
+</div>
+
+<style>
+  /* The strip the field damps inside is the measure a reader reads down, and
+     the two surfaces do not share one. The landing page holds a fixed column
+     at every width. A route scales its measure with the viewport, so a fixed
+     strip here would leave the widest part of the widest column undamped,
+     which is exactly where the most prose sits. Reading the same token the
+     route's own text reads keeps the two the same width by construction. */
+  [data-page-ground-column] {
+    max-width: 48rem;
+  }
+  /* Global, because the surface class sits on `body` and Astro scopes both
+     halves of a descendant selector, so a scoped rule would look for a body
+     carrying this component's own scope attribute and match nothing. */
+  :global(.surface-case-study) [data-page-ground-column] {
+    max-width: var(--prose-column);
+  }
+</style>
+
+<script>
+  import { streamsField } from '@/components/site/header/shader-field/fields/streams'
+  import { mountShaderField } from '@/components/site/header/shader-field/mount'
+
+  // Under the hero's own weight, but not by as much as it looks. The field's
+  // alpha is the ceiling of a value that coverage, relief, and height all
+  // multiply down, so 0.4 of it measured a peak of 38 against the hero's 239
+  // and read as nothing at all.
+  const GROUND_ALPHA_SCALE = 0.85
+
+  const canvas = document.querySelector<HTMLCanvasElement>(
+    '[data-page-ground-field]',
+  )
+
+  const column = document.querySelector<HTMLElement>(
+    '[data-page-ground-column]',
+  )
+
+  if (canvas) {
+    mountShaderField(canvas, null, column, streamsField, {
+      animate: false,
+      alphaScale: GROUND_ALPHA_SCALE,
+    })
+  }
+</script>

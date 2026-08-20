@@ -1,19 +1,24 @@
 ---
 title: Footer
-description: Bottom of the page. Carries a downloadable résumé link plus a copyright line
+description: Bottom of the page. Carries a downloadable résumé link plus a colophon and the last deploy date
 ---
 
 # Footer
 
-Appears at the bottom of the page. Carries a downloadable résumé link plus a copyright line. Contact links live in the header so the footer does not duplicate them. Separated from the projects section by a hairline `border-t`.
+Appears at the bottom of the page. Carries a downloadable résumé link plus a colophon and the date of the last deploy. Contact links live in the header and in the dock, so the footer does not duplicate them.
+
+Nothing rules across the top. Space before it and the signature opening it are what mark the footer, which is what a reader was using anyway.
 
 ## Desktop (≥768px)
 
 ```plaintext
 ┌──────────────────────────────────────────────────────────┐
-│   ─────────────────────────────────────────────────────  │  ← border-t
+│                                                          │  ← space alone, no rule
+│              (handwritten signature)                     │
 │                                                          │
-│   Résumé              Gothenburg, Sweden · 2026          │
+│   📎 Résumé      Designed and built with coding agents,  │
+│                  which is also the work.                 │
+│                  Updated August 2026                     │
 │                                                          │
 └──────────────────────────────────────────────────────────┘
 ```
@@ -22,19 +27,31 @@ Appears at the bottom of the page. Carries a downloadable résumé link plus a c
 
 ```plaintext
 ┌──────────────────────────────────┐
-│   ──────────────────────────     │
 │                                  │
-│   Résumé                         │
-│   Gothenburg, Sweden · 2026      │
+│      (handwritten signature)     │
+│                                  │
+│   📎 Résumé                      │
+│   Designed and built with        │
+│   coding agents, which is        │
+│   also the work.                 │
+│   Updated August 2026            │
 │                                  │
 └──────────────────────────────────┘
 ```
 
 ## Behavior
 
-- The signature anchors the top of the footer content. Below it, the Résumé link and colophon line render in a row: Résumé on the left, `Gothenburg, Sweden · 2026` on the right. Stacks to a column under `md` with the link above the colophon.
+- The signature anchors the top of the footer content. Below it, the Résumé link and the colophon block render in a row: Résumé on the left, colophon right-aligned. Stacks to a column under `md` with the link above the colophon.
 - The Résumé link opens in a new tab so the landing page stays in the originating tab while the PDF reads in another. A small paperclip icon precedes the word `Résumé`, slightly rotated and muted, signalling "attached document" rather than a generic link.
-- The year derives from the current build time. The colophon carries the city plus the year in place of a copyright line.
+- The colophon states how the page was made. The page claims its author builds the layer between a language model and the job it has to do, and stating that the page itself was built that way demonstrates the claim on the one artifact the reader is already inside rather than asserting it a second time.
+- The date is taken at build time and names a month rather than a year alone, so it states the last deploy. Within the current year a bare year carries almost no information, which is the ambiguity it replaced.
+- The city left this line rather than moving. The closing ask above already states it as a filter, so the footer was repeating it beside a year that read as a copyright with its symbol missing.
+
+## Why no rule
+
+A rule here sat under five row separators in the closing ask and read as a stack rather than as a division. It also ran wider than the rows above it, 1152px against 1024, because the footer breaks out to a wider measure than that section holds.
+
+`.claude/DESIGN.md` § Borders carries the tests deciding whether a line stays anywhere on the page.
 
 ## Masthead
 

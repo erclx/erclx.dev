@@ -87,11 +87,53 @@ body.surface-case-study > header[data-section='header'] {
   position: sticky;
   top: 0;
   z-index: 30;
-  /* Near-opaque rather than lightly tinted. Prose passing under a bar much
-     below this reads through it as ghost text, which looks like a rendering
-     fault rather than a translucent surface. */
-  background-color: color-mix(in oklab, var(--background) 96%, transparent);
-  backdrop-filter: blur(12px);
+}
+
+/* One ground for both bars. The landing page and a route each render this
+   element, so the treatment cannot drift between the two surfaces a reader
+   crosses.
+
+   The elevated surface token rather than the page's own: a ground taken from
+   the background is the page's color laid on the page, which measured 1.002:1
+   against what sat behind it and was invisible as an object. The blur still
+   earns its place against prose, where it destroys the letterforms that would
+   otherwise read through. */
+[data-bar-ground] {
+  /* How far the shape reaches past the row inside it, so the name and the
+     toggle never sit against its edge. */
+  --bar-shape-padding: 1.25rem;
+  position: absolute;
+  inset: 0;
+  background: rgb(from var(--card) r g b / 0.88);
+  backdrop-filter: blur(24px);
+  border-radius: 0;
+  border: 1px solid transparent;
+}
+
+/* Contracted to a shape wider than the row it sits under, so the row's own
+   contents never move. An edge and a shadow only once it detaches: a
+   full-bleed bar meeting the viewport on three sides has no outline to draw,
+   where an object floating over content is read as above it by those two
+   things. */
+[data-condensed='true'] [data-bar-ground] {
+  inset: 0.5rem
+    max(
+      calc(var(--page-inset) - var(--bar-shape-padding)),
+      calc((100% - 52rem) / 2)
+    );
+  border-radius: 999px;
+  border-color: var(--border);
+  box-shadow:
+    0 1px 2px rgb(from var(--foreground) r g b / 0.04),
+    0 8px 24px rgb(from var(--foreground) r g b / 0.08);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-bar-ground] {
+    transition:
+      inset 320ms ease,
+      border-radius 320ms ease;
+  }
 }
 
 /* A shared deep link scrolls its section to the top of the viewport, where the
@@ -117,9 +159,11 @@ body.surface-case-study > header[data-section='header'] {
    1280 and below, and stops growing past 1920. Line heights turn unitless here
    so they track a body size that is no longer one number. */
 .surface-case-study {
-  /* The bar's own height, as the parts that make it: its padding on both edges,
-     the tap target it holds, and the rule under it. */
-  --sticky-bar-height: calc(2 * 1rem + 2.75rem + 1px);
+  /* The bar's own height, as the parts that make it: its padding on both edges
+     and the tap target it holds. The rule that used to close it is gone, so
+     the pixel it contributed goes with it rather than being carried as a
+     constant nothing sets. */
+  --sticky-bar-height: calc(2 * 1rem + 2.75rem);
   --prose-column: clamp(42rem, 25vw + 22rem, 52rem);
   --figure-column: clamp(56rem, 50vw + 16rem, 76rem);
   --body-size: clamp(1.0625rem, 0.78125vw + 0.4375rem, 1.375rem);
@@ -130,6 +174,16 @@ body.surface-case-study > header[data-section='header'] {
 
 /* The measure every case-study route sets its prose to. One source, so the
    breakout below derives its overhang from the same value the prose reads. */
+/* The inset every full-bleed surface holds. It was a constant 24px at every
+   width, and below the breakpoint where the reading column takes over its own
+   margins that constant is the only margin the page has, so the text ran
+   closer to the edge the wider the viewport got: 7.5 percent of the width at
+   320px and 3.1 percent at 768. A clamp grows it with the viewport and stops
+   once the column is capping itself. */
+@utility page-inset {
+  padding-inline: var(--page-inset);
+}
+
 @utility prose-column {
   max-width: var(--prose-column);
 }
@@ -145,6 +199,10 @@ body.surface-case-study > header[data-section='header'] {
 }
 
 :root {
+  /* The inset every full-bleed surface holds, as a value other rules can
+     read. The sticky bar's shape sits a fixed distance outside it, and it
+     was guessing at a number this owns. */
+  --page-inset: clamp(1.5rem, 5vw, 3rem);
   /* The measure a case-study route sets its prose to, and the wider step a
      figure takes when it breaks past that prose. The breakout overhang is
      arithmetic over the pair rather than a measured constant, so moving either

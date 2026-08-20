@@ -49,7 +49,7 @@ A fourth group sits above the light palette. `--light-card`, `--light-muted-fore
 - `.dark` is the only theme class. Any future variant such as sepia or high-contrast needs both a new class and a new `@custom-variant` in `global.css`.
 - A shadcn component added later reaches for `bg-accent` and `hover:bg-accent` expecting a near-neutral hover surface, and gets warm rust. Point those utilities at `bg-secondary` when installing one, since the token's meaning here is deliberate rather than a value nobody got around to moving.
 - A token declared in `:root` that `.dark` also declares is theme-varying. One `.dark` leaves alone is theme-fixed, which the `--light-*` group relies on. Adding a `.dark` declaration for one of those silently unpins every surface reading it.
-- Modules that react to theme changes observe the `class` attribute on `documentElement` via `MutationObserver`. The flow field uses this pattern in `flow-field/index.ts`.
+- Modules that react to theme changes observe the `class` attribute on `documentElement` via `MutationObserver`. The shader field uses this pattern in `shader-field/mount.ts`, where the observer also redraws under the still path, since nothing else would. See `.claude/context/shader-field.md`.
 - CSS reads tokens like `--foreground` and `--background` from the active variant. Inline scripts that need the resolved value must use `getComputedStyle(documentElement).getPropertyValue(...)`.
 
 ## Exactly one toggle exists per page

@@ -17,6 +17,12 @@ export interface Variant {
   /** CSS applied to the page. Empty renders the surface as it ships. */
   readonly css?: string
   /**
+   * Query string appended to the run's url, for a surface that picks what it
+   * renders at load time. CSS and `apply` both land after that choice is made,
+   * so neither can reach one.
+   */
+  readonly search?: string
+  /**
    * Runs in the page after the CSS lands, for a variant that needs the DOM
    * changed. It is serialized across the browser boundary, so it reaches
    * nothing from the surrounding scope however much its type suggests it can.
@@ -30,8 +36,19 @@ export type Theme = 'light' | 'dark'
 export interface VariantRun {
   /** Where the dev server is serving. */
   readonly url: string
-  /** The element each capture is clipped to. */
+  /** The element each capture is clipped to, or scrolled to under `viewport`. */
   readonly target: string
+  /**
+   * `viewport` shoots the visible frame rather than the target's own box, which
+   * is what a decision about the join between two surfaces needs: clipping to
+   * either one of them removes the thing being judged.
+   */
+  readonly clip?: 'target' | 'viewport'
+  /**
+   * Pixels to scroll back after the target is brought into view, so a surface
+   * above it stays in frame. Only meaningful under `clip: 'viewport'`.
+   */
+  readonly scrollOffset?: number
   readonly variants: readonly Variant[]
   readonly outDir: string
   readonly themes?: readonly Theme[]
@@ -61,9 +78,16 @@ const BAR = '[data-site-bar] { display: none !important }'
 // The only two roots this harness writes into, both gitignored.
 const SCRATCH_ROOTS = ['.claude/review', '.claude/.tmp'] as const
 
-const prepare = async (page: Page, run: VariantRun, theme: Theme) => {
+const prepare = async (
+  page: Page,
+  run: VariantRun,
+  variant: Variant,
+  theme: Theme,
+) => {
   await page.addInitScript((t) => localStorage.setItem('theme', t), theme)
-  await page.goto(run.url, { waitUntil: 'networkidle' })
+  await page.goto(new URL(variant.search ?? '', run.url).href, {
+    waitUntil: 'networkidle',
+  })
   await page.evaluate(
     (t) => document.documentElement.classList.toggle('dark', t === 'dark'),
     theme,
@@ -83,17 +107,27 @@ const shoot = async (
     reducedMotion: run.reducedMotion ?? 'reduce',
   })
   const page = await context.newPage()
-  await prepare(page, run, theme)
+  await prepare(page, run, variant, theme)
   await page.locator(run.target).scrollIntoViewIfNeeded()
   await page.waitForTimeout(run.settle ?? 600)
 
   if (variant.css) await page.addStyleTag({ content: variant.css })
   if (!run.keepSiteBar) await page.addStyleTag({ content: BAR })
   if (variant.apply) await page.evaluate(variant.apply)
+
+  // After the variant's own styles land, since a treatment that changes a
+  // surface's height moves where the join sits.
+  if (run.clip === 'viewport' && run.scrollOffset) {
+    await page.evaluate(
+      (offset) => window.scrollBy(0, -offset),
+      run.scrollOffset,
+    )
+  }
   await page.waitForTimeout(250)
 
   const file = path.join(rawDir, `${variant.id}--${theme}.png`)
-  await page.locator(run.target).screenshot({ path: file })
+  if (run.clip === 'viewport') await page.screenshot({ path: file })
+  else await page.locator(run.target).screenshot({ path: file })
   await context.close()
   return file
 }
@@ -112,7 +146,7 @@ const record = async (
     recordVideo: { dir, size },
   })
   const page = await context.newPage()
-  await prepare(page, run, theme)
+  await prepare(page, run, variant, theme)
   if (variant.css) await page.addStyleTag({ content: variant.css })
   if (!run.keepSiteBar) await page.addStyleTag({ content: BAR })
   if (variant.apply) await page.evaluate(variant.apply)

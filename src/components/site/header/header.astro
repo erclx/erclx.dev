@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
-import flowFieldFallback from './flow-field/fallback.svg?raw'
+import shaderFieldFallback from './shader-field/fallback.svg?raw'
 import portrait from '@/assets/header/portrait.jpg'
 
 const links = [
@@ -17,21 +17,52 @@ const links = [
     stage it is. It stops short of the full screen a wider viewport gets,
     because a phone reader would otherwise scroll a whole screen before meeting
     anything. The unit is `svh` rather than `vh`: a collapsing address bar grows
-    `vh` mid-scroll, which would overflow the band it is meant to bound. */}
+    `vh` mid-scroll, which would overflow the band it is meant to bound.
+
+    From md the band splits its free space two parts above the column to three
+    below rather than evenly, so the name sits where a reader's eye rests
+    instead of on the halfway line. Centring held the column at 52% of the
+    viewport and drifted further down as the screen grew taller, because fixed
+    paddings distribute the surplus evenly and a taller screen has more of it.
+    A ratio is invariant to that: the name holds 37% at 1280x800 and 38% at
+    1920x1080 where centring ran 43% and 44%. Below md the column already sits
+    at 26% inside a band that is 70svh rather than the full screen, so the
+    ratio would push it off the top of its own band. */}
 <header
   data-section="header"
-  class="bg-secondary relative flex min-h-[70svh] items-center overflow-hidden rounded-b-3xl px-6 pt-20 pb-16 md:min-h-screen md:pt-32 md:pb-20"
+  class="bg-secondary relative flex min-h-[70svh] items-center overflow-hidden page-inset pt-20 pb-16 md:grid md:min-h-screen md:grid-rows-[2fr_auto_3fr] md:pt-32 md:pb-20"
 >
+  {/* The canvas renders under reduced motion too, holding a single drawn frame
+      rather than hiding for an authored stand-in. One surface then answers both
+      preferences and neither can drift from the other. */}
   <canvas
-    data-flow-field
+    data-shader-field
     aria-hidden="true"
-    class="pointer-events-none absolute inset-0 size-full motion-reduce:hidden"
+    class="pointer-events-none absolute inset-0 size-full"
   ></canvas>
+  {/* Reached only where WebGL is missing or its context is lost, which the
+      mount reveals by hand. A band with nothing behind it reads as a broken
+      page rather than a quiet one. */}
   <div
-    data-flow-field-fallback
+    data-shader-field-fallback
     aria-hidden="true"
-    class="text-foreground pointer-events-none absolute inset-0 hidden size-full motion-reduce:block [&>svg]:size-full"
-    set:html={flowFieldFallback}
+    class="text-foreground pointer-events-none absolute inset-0 hidden size-full [&>svg]:size-full"
+    set:html={shaderFieldFallback}
+  >
+  </div>
+  {/* The band's ground fades into the page's rather than stopping on an edge.
+      The hero is a lighter plate than the page in both themes, so a rounded
+      corner against a flat section read as a card laid on a different
+      document. Fading the plate out removes it where softening its corner
+      only made the same edge rounder. The contour field thins with it, since
+      the canvas paints under this.
+
+      Shorter below md, where the band holds 70svh rather than the screen and a
+      desktop-sized fade would take two fifths of it. */}
+  <div
+    data-hero-fade
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-40 md:h-60"
   >
   </div>
   {/* The toggle sits in the header's own corner. Its old home was the greeting
@@ -48,7 +79,14 @@ const links = [
   <div data-hero-toggle-home class="absolute top-6 right-6 md:top-10 md:right-10">
     <ThemeToggle />
   </div>
-  <div data-header-column class="relative mx-auto w-full max-w-3xl">
+  {/* The shader reads this box and damps its field inside it, so the surface
+      never competes with the name. The column rather than the heading, since
+      the links sit at the bottom of it and take the least contrast. */}
+  <div
+    data-header-column
+    data-shader-content
+    class="relative mx-auto w-full max-w-3xl md:row-start-2"
+  >
     <div>
       <div>
         <div data-fade style="--fade-delay: 150ms">
@@ -116,8 +154,38 @@ const links = [
   </div>
 </header>
 
-<script>
-  import { initFlowField } from './flow-field'
+<style>
+  /* Stops follow smoothstep rather than a straight ramp, so the fade's slope
+     reaches zero at both ends instead of stopping dead.
 
-  initFlowField()
+     A linear ramp meeting a flat field carries no step in value at all: the
+     join measures a luminance gap of 0.00. What it carries is a break in
+     slope, falling about 7 units per 100px and then holding exactly 0, and the
+     eye reports an edge at a slope break whether or not a value break is
+     there. Easing removes the break rather than lengthening the ramp, which
+     would only move the same edge further up the band. */
+  [data-hero-fade] {
+    background: linear-gradient(
+      to bottom,
+      rgb(from var(--background) r g b / 0) 0%,
+      rgb(from var(--background) r g b / 0.003) 3.125%,
+      rgb(from var(--background) r g b / 0.011) 6.25%,
+      rgb(from var(--background) r g b / 0.04) 12.5%,
+      rgb(from var(--background) r g b / 0.16) 25%,
+      rgb(from var(--background) r g b / 0.32) 37.5%,
+      rgb(from var(--background) r g b / 0.5) 50%,
+      rgb(from var(--background) r g b / 0.68) 62.5%,
+      rgb(from var(--background) r g b / 0.84) 75%,
+      rgb(from var(--background) r g b / 0.96) 87.5%,
+      rgb(from var(--background) r g b / 0.989) 93.75%,
+      rgb(from var(--background) r g b / 0.997) 96.875%,
+      var(--background) 100%
+    );
+  }
+</style>
+
+<script>
+  import { initShaderField } from './shader-field'
+
+  initShaderField()
 </script>

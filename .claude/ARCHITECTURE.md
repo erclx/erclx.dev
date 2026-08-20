@@ -124,6 +124,8 @@ The heading says landing page because the case-study routes take the opposite tr
 
 Prose runs 672px at 1280 and 832px at 1920, and the body scales with it from 17px to 22px. Both are clamps that hold today's values at 1280 and below and stop growing past 1920. Figures overhang the prose symmetrically, reaching 896px and 1216px at those widths, which takes the widest viewport from 35% content to 63%.
 
+A route carries two prose steps rather than the one this entry described until 2026-08-20. The lede scales alongside the body and runs 21px to 26px across the same range, so a route's largest prose sits 53% above the landing page's flat 17px at 1920 where the body sits 29% above it. Both surfaces match exactly at 1280 and diverge only above it. The pair is deliberate and stays, and the operator confirmed it rather than capping the ceiling, since capping the body without capping the column lengthens the line the pair exists to hold flat. What was missing was the record, not the reasoning.
+
 The pair moves together because the column cannot widen alone. Widening a column while the body stays put lengthens the line, which is the failure the trap below records reaching production once. The route holds 61.1ch at 768 and 1280 and 59.4ch at 1920, so the measure stays flat while the page fills out, which is what the pair buys.
 
 Both surfaces run about 90 characters to the line. Counted on the breaks the browser actually made, the route body averages 89 and the landing page 92, so the two agree within three characters and the gap an earlier draft of this entry described does not exist. What does hold is that 90 is past the comfortable ceiling near 75, on both surfaces rather than one. The route's pair keeps that count flat across the range rather than bringing it down, which is what the pair is for and is not the same as settling the measure.
@@ -138,7 +140,7 @@ The scoping mechanism is a `surface` prop on the layout that stamps a class on `
 
 The prose and figure clamps carry different slopes, so their ratio drifts from 1.333 at 1280 to 1.462 at 1920. That is deliberate rather than an oversight. A constant 1.4 ratio would make the figure 941px at 1024, leaving 17px of gutter each side, where the drifting pair keeps the figure safe at the narrow end and generous at the wide one. Do not replace the two clamps with one ratio without re-checking 1024.
 
-Measured at 101faed on 2026-08-19.
+Measured at 502da58 on 2026-08-20.
 
 ### A promoted control is measured against the settled page
 
@@ -173,6 +175,56 @@ Verified at 1280x800 and 390x844 across chromium, firefox, and webkit at f10cfb7
 The e2e job runs `--project=chromium` alone while the Playwright config defines three. A full three-engine run of the same suite on 2026-08-19 reported four failures against a green chromium run, one of which had already shipped in an earlier pull request. Two of the four were the production defects the decision above records, and neither reproduced in chromium at all.
 
 Read a lone WebKit or Firefox failure as a candidate defect rather than as a flake. Widening the job is queued rather than done, so until it is, a local three-engine run before a pull request is the only thing that sees them.
+
+### The header signature is an authored shader, and the same drawing runs under the whole page
+
+The header drew a particle flow field on a 2D canvas. It is now a fragment shader rendering contours of a 3D noise stream function, lit by the gradient of its own line width. `.claude/context/shader-field.md` carries the mount lifecycle and the uniform contract.
+
+Two things drove the replacement and neither is that the old one was broken. The particle field cost a per-frame simulation to draw a texture with no relief, and the page needed a visual language it could carry past the hero, which a field of moving points cannot be quieted into. A shader gives both: the relief comes free from a value the contour pass already computes, and the whole surface can be held to one frame at a fraction of its weight.
+
+The medium was not the problem the first attempt solved. `.claude/DESIGN.md` rejected shader work outright until this branch, on the reading that a shader is a preset. What is actually rejected is the shortcut, and an authored field with its own stream function and its own lighting is not one. The standard now says so.
+
+The still copy mounts from the layout, so it reaches the project routes as well as the landing page. It damps inside the reading measure, tracking `--prose-column` rather than a fixed strip, because a route scales its column and a landing section does not. See `.claude/context/page-ground.md` for the measured cost, which is 16.16:1 to 15.74:1 on body text.
+
+Three tuning defects are recorded in that entry rather than here, because each is a fact about the field rather than a decision. The one worth carrying up is that two separate motion instruments read the field as still while it moved, and the operator's eye was right against both. A metric that reports no difference across presets that visibly differ is measuring the wrong quantity, and the fix came from finding a sheen drifting at 58px/s over a field at 15px/s rather than from raising any rate.
+
+Measured at 502da58 on 2026-08-20, at 1280x800 and 390x844 across chromium, firefox, and webkit.
+
+### Contact travels with the reader, in the margin opposite the rail
+
+The hero opens with three destinations and the footer closes with them. Between the two, for the length of the page, a reader who wanted one had to pick an end. A dock in the right margin carries them plus the resume, arriving on the same half-hero gate the sticky bar uses and standing down over the footer.
+
+It sits opposite the section rail so the two margins read as a pair. The rail states position and the dock offers reach, which is the split `.claude/REQUIREMENTS.md` § Navigation already draws.
+
+The resume is in the dock and stays in the footer, which is the one duplicated destination and is deliberate. It is the highest-intent link on a page whose job is hiring, and it previously existed once, as the last thing on the page.
+
+`.claude/context/contact-dock.md` carries the tap-target and pointer-events gotchas. Copying the rail also copied a footer gate that had never fired, since it watched a root capped to the top half of the viewport for an element that sits at the bottom of the last screen. Both controls were fixed on the one reading, which is the argument for building the second control from the first rather than beside it.
+
+### A line is drawn where it divides, and a bound is revealed rather than drawn
+
+The page carried an outline on every project card, a rounded plate under the hero band, a rule under the sticky bar, one over the footer, and one per row in the closing ask. All but the last came out, because none of them divided anything a reader compares. They stated where surfaces ended, which whitespace and a fading ground already state.
+
+Removing an outline removes the only thing saying where a card ends, so a pointer lands on nothing. What replaces it is a shape lit under the pointer alone, inset outward from the content and drawn behind it, so the grid stays borderless at rest. That shape has to fit the gutter: at a 24px gutter its own box met the neighboring card exactly and its shadow crossed 36px into it, so pointing at one card lit the one beside it. The gutter is 48px and the shape reaches 44px.
+
+It leaves slower than it arrives, 520ms out against 130ms in. A reader moving between two cards sees the one behind them still lit, which reads as a trail rather than as a lag.
+
+Two lines stay and neither is an exception left behind. The closing ask keeps the rule above its criteria because a character is occluded by it, which makes it a ledge a drawing rests on. The timeline keeps its rail because it is the one element stating the beats are a sequence, and the active-row highlight attaches to its dots.
+
+`.claude/DESIGN.md` § Borders carries the three tests a line has to pass to stay. Measured at 502da58 on 2026-08-20, at 1280, 1024, and 390.
+
+### One ground for two bars, and the shape moves while the row does not
+
+The landing bar and a route's bar diverged the moment the first was rebuilt, so a reader crossing between them met a thinned ground with no rule on one side and a near-opaque ground under a hard line on the other. Both now render one shared ground rule rather than a copy per component.
+
+The ground has to separate from the page, which a ground taken from the page cannot do. Drawn from the background token it measured 1.002:1 against what sat behind it in light and 1.003:1 in dark, which is to say the page laid on the page, and only the text inside it said a bar was there. Blur cannot rescue that, since blurring a flat field returns the same flat field. It takes the elevated surface token, and the detached shape carries an edge and a shadow.
+
+Two values pull against each other and were settled together. Prose passing under a lightly tinted bar reads through it as letterforms, which is what a near-opaque ground used to answer, and a wider blur answers it instead by destroying the letterforms while the backdrop still reads as a wash. Widening it further is not free: at 40px the radius averages in the dark gaps between project cards, which darkens the ground under near-black text and drops the light theme to 4.35:1. The pair sits at 0.85 over 24px, holding 5.02:1 in light and 8.16:1 in dark on the landing page and 4.83:1 and 8.30:1 on the densest route.
+
+The shape contracts and the row inside it does not. The hero flies its name and its theme toggle into that row's slots at measured positions, and the three defects the decision above records all came from measuring against a bar that had not settled. Measured at 1280, the name slot holds left 256 and top 12 in both states while the ground goes from 1280 wide with square corners to 832 with a full radius. What moves is the one thing nothing is measured against.
+
+The contrast figure that nearly settled this measured the wrong thing. Sampling a fixed strip of the bar read 3.66:1 and moved to 3.70:1 under a near-opaque scrim, because the bar's contents sit in a centred column and the glyph a reader sees is painted by a separate element, so the reading was the ground against itself. A contrast number that barely moves when the ground is replaced is measuring something other than text.
+
+Measured at 502da58 on 2026-08-20, at 320, 375, 425, 768, 1280, 1600, 1920, and 2560.
 
 ## Risks / open questions
 

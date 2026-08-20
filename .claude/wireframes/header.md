@@ -53,6 +53,6 @@ The emptiness is deliberate. The band is a stage held open for an authored real-
 - The toggle aligns to the greeting's cap height rather than to its line box, because the empty descender space still counts toward a line box's middle.
 - Contact links wrap to a new row when the viewport cannot hold all three on one line. Links are same-tab.
 
-## Flow field signature
+## Shader field signature
 
-A particle canvas renders behind the header band as the page's visual signature. See `.claude/context/flow-field.md` for the mount lifecycle, perf budget, and reduced-motion fallback contract.
+An authored WebGL surface renders behind the header band as the page's visual signature, and the same drawing continues under the whole page at a fraction of its weight. It replaced a particle canvas on 2026-08-20. See `.claude/context/shader-field.md` for the mount lifecycle, the uniform contract, and the reduced-motion still, and `.claude/context/page-ground.md` for the layer under the page.

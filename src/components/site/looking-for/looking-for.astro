@@ -30,7 +30,7 @@ const criteria = [
 <section
   id="looking-for"
   data-section="looking-for"
-  class="px-6 pt-10 pb-20"
+  class="page-inset pt-10 pb-20"
 >
   <div class="mx-auto max-w-3xl">
     <h2
@@ -152,16 +152,27 @@ const criteria = [
       <div
         class="looking-rows border-border/60 bg-background relative z-10 border-t pt-6"
       >
-        {/* A rule per row rather than a gap between them. The rows gave up
-            their size step to item 7 above, and the track a reader follows
-            down the section is what replaces it. */}
-        <dl class="grid gap-y-0">
+        {/* A gap per row rather than a rule between them. The rules made this
+            the last surface on the page reading as a table, on a page whose
+            hero seam, bar, cards and footer all stopped drawing lines. Space
+            separates the rows now and the pairing still scans, which is the
+            only job this list has.
+
+            The rule above the rows stays, and it is not an exception left by
+            accident. The character peeks over that edge, so it is the ledge a
+            drawing sits on rather than table chrome, and removing it leaves
+            the character with nothing to hide behind.
+
+            Each row keeps its vertical padding. The left border that lights on
+            hover is an affordance rather than a division, and it needs a row
+            tall enough to draw against. */}
+        <dl class="grid gap-y-2">
           {
             criteria.map((item, idx) => (
               <div
                 data-fade
                 style={`--fade-delay: ${150 + idx * 100}ms`}
-                class="group border-b-border/70 hover:border-l-accent -ml-4 grid items-baseline gap-x-6 border-b border-l-2 border-l-transparent py-3.5 pl-4 last:border-b-0 sm:grid-cols-[13rem_1fr]"
+                class="group hover:border-l-accent -ml-4 grid items-baseline gap-x-6 border-l-2 border-l-transparent py-3 pl-4 sm:grid-cols-[13rem_1fr]"
               >
                 <dt class="text-muted-foreground group-hover:text-foreground text-label">
                   {item.label}

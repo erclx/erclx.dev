@@ -1,4 +1,6 @@
 ---
+import Employers from '@/components/site/experience/employers.astro'
+
 const intro = [
   'In practice that means agents, and the developer tools around them. Some of that was paid work, eighteen months of it at Volvo Technology, and the rest is tools I have built to make working with AI easier.',
   'I spend most of my working day with coding agents, and the tooling I build comes out of that. When the same rules kept drifting out of sync across my projects, that became a CLI. When staging files for a prompt got tedious, that became an extension.',
@@ -38,6 +40,13 @@ const history: HistoryEntry[] = [
     ],
   },
   {
+    span: 'jun to aug 2023',
+    head: 'ten weeks at bac ha software, hanoi',
+    details: [
+      'Reproduced published GAN architectures in TensorFlow for image inpainting, pre-trained them on GPU, and presented the results to the company.',
+    ],
+  },
+  {
     span: 'sep 2022 to jun 2024',
     head: 'msc in complex adaptive systems, chalmers',
     details: [
@@ -65,7 +74,7 @@ const artifacts = [
 ]
 ---
 
-<section id="experience" data-section="experience" class="px-6 py-16 md:py-20">
+<section id="experience" data-section="experience" class="page-inset py-16 md:py-20">
   <div class="mx-auto max-w-3xl">
     <h2
       data-fade
@@ -101,19 +110,15 @@ const artifacts = [
       }
     </div>
 
-    {/* The one thing the list cannot state for itself: the beats run newest
-        first and a reader arriving from prose assumes the reverse. It says
-        nothing about the person, which is what keeps it out of the register
-        that made the line under this list read as written by a machine. */}
-    <p
-      data-fade
-      style="--fade-delay: 400ms"
-      class="font-display text-label text-muted-foreground mt-10 max-w-xl italic lg:mt-14"
-    >
-      Newest first.
-    </p>
+    <Employers />
 
-    <div class="experience-stage mt-6">
+    {/* The list opened on `Newest first.` until the spans moved into a column
+        of their own. That line existed because the dates were buried inside the
+        head sentences, so the order was not visible; a reader now meets 2026
+        against jun to dec 2025 against jan 2024 down one edge, and the list
+        states its own order. A line explaining what the reader can already see
+        is the one kind of caption worth deleting. */}
+    <div class="experience-stage mt-10 lg:mt-14">
       <ol class="experience-list flex flex-col">
         {
           history.map((entry, idx) => (
@@ -122,21 +127,16 @@ const artifacts = [
               data-default-active={entry.current ? 'true' : undefined}
               aria-current={entry.current ? 'step' : undefined}
               style={`--fade-delay: ${500 + idx * 100}ms`}
-              class="experience-row text-body grid grid-cols-[3.25rem_1fr] items-start"
+              class="experience-row text-body grid grid-cols-[1fr] items-start md:grid-cols-[11.5rem_3.25rem_1fr]"
             >
+              <p class="experience-date tabular-nums">{entry.span}</p>
               <span class="experience-gutter" aria-hidden="true">
                 <span class="experience-marker-line">
                   <span class="experience-marker"></span>
                 </span>
               </span>
               <div>
-                <p class="experience-head">
-                  <span class="tabular-nums">{entry.span}</span>
-                  <span class="px-1" aria-hidden="true">
-                    ·
-                  </span>
-                  {entry.head}
-                </p>
+                <p class="experience-head">{entry.head}</p>
                 {entry.details.map((detail) => (
                   <p class="experience-detail text-label mt-2 font-sans">{detail}</p>
                 ))}
@@ -206,6 +206,19 @@ const artifacts = [
     height: var(--experience-beat-gap);
     width: 1px;
     background: linear-gradient(to bottom, var(--border), transparent);
+  }
+  .experience-date {
+    color: var(--muted-foreground);
+  }
+  /* Below md the row is one column, so the date leads its own block rather
+     than sitting in a gutter the layout no longer has. */
+  @media (max-width: 767px) {
+    .experience-date {
+      margin-bottom: 0.25rem;
+    }
+    .experience-gutter {
+      display: none;
+    }
   }
   .experience-detail {
     color: var(--muted-foreground);

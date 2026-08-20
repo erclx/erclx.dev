@@ -14,9 +14,18 @@ const { here } = Astro.props
     scroll rather than the first 77px. Its column matches the one the landing
     page's bar uses, so the chrome holds its shape across a navigation even
     though the prose under it is a different width. */}
-<header data-section="header" class="px-6">
+<header data-section="header" class="relative page-inset">
+  {/* The same ground the landing bar renders, so a reader crossing between the
+      two meets one bar. It contracts here on the reader's own scroll, which is
+      the state a route can actually show: this bar sits at the top of the page
+      from load, where the landing bar only arrives once the hero has gone. */}
+  <div data-bar-ground aria-hidden="true"></div>
+  {/* No rule under the bar, matching the landing page's. The blur behind it is
+      what separates the chrome from the prose passing under it, and a line as
+      well as a blur states the same boundary twice. */}
   <div
-    class="border-border/60 mx-auto flex max-w-3xl items-center justify-between border-b py-4"
+    data-bar-row
+    class="relative mx-auto flex max-w-3xl items-center justify-between py-4"
   >
     <a
       href="/"
@@ -52,6 +61,37 @@ const { here } = Astro.props
 </style>
 
 <script>
+  // The bar spans the width at the top of the route and contracts once the
+  // reader is into the prose. A route shows both states, where the landing
+  // page only ever arrives already scrolled.
+  const CONDENSE_AFTER_PX = 240
+
+  const routeBar = document.querySelector<HTMLElement>(
+    'header[data-section="header"]',
+  )
+  if (routeBar) {
+    let pending = false
+    const readScroll = () => {
+      pending = false
+      if (window.scrollY > CONDENSE_AFTER_PX) {
+        routeBar.setAttribute('data-condensed', 'true')
+      } else {
+        routeBar.removeAttribute('data-condensed')
+      }
+    }
+    // Coalesced to a frame, since scroll fires per pixel of a drag.
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (pending) return
+        pending = true
+        requestAnimationFrame(readScroll)
+      },
+      { passive: true },
+    )
+    readScroll()
+  }
+
   const here = document.querySelector<HTMLElement>('[data-route-here]')
   const title = document.querySelector<HTMLElement>('main h1')
   const bar = document.querySelector<HTMLElement>('header[data-section="header"]')

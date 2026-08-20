@@ -1,0 +1,134 @@
+---
+import bhsoftMark from '@/assets/experience/bhsoft.webp'
+import chalmersMark from '@/assets/experience/chalmers.svg?raw'
+import volvoRoundel from '@/assets/experience/volvo-roundel.svg?raw'
+
+// The employer mark is the iron mark rather than the bare wordmark, because
+// the roundel is what a reader recognizes. It carries its own name as text
+// inside the circle, so it has to render tall enough for that text to read,
+// which is why it is not sized to match the wordmark beside it.
+//
+// The university mark is a wordmark because that is the identity they now
+// carry: the crest was replaced, and their own emblem file is a 337KB drawing
+// of a wreath and a compass that resolves into nothing under about 80px.
+//
+// The third is a raster, because that is all its owner publishes: their site
+// serves a 111 by 68 image and the vectors on it belong to their clients. It
+// is drawn as a mask filled with the current color rather than placed as a
+// picture, so it carries the one tone the other two carry instead of bringing
+// a green and an orange the page has no room for. Rendering it under its own
+// height keeps it sharp.
+// Ordered by start date, newest first, which is the order the timeline
+// directly below reads in. It also puts the two employers before the
+// university, and leaves the long wordmark last rather than between two
+// compact marks.
+const marks = [
+  // 48px, because the name inside the circle spans 2.2 of the mark's 24 units
+  // and renders about 4.4px tall here, which is where a bold wordmark stops
+  // resolving. 40px puts it at 3.7px and the name closes into the ring.
+  { name: 'Volvo Group', svg: volvoRoundel, className: 'h-12 w-12' },
+  {
+    name: 'Bac Ha Software',
+    mask: bhsoftMark.src,
+    className: 'h-8',
+    // Its own proportion, so the mask is never stretched to a box that is not
+    // the shape of the drawing inside it.
+    aspect: bhsoftMark.width / bhsoftMark.height,
+  },
+  {
+    name: 'Chalmers University of Technology',
+    svg: chalmersMark,
+    className: 'h-4 w-auto',
+  },
+]
+---
+
+{/* The section states two degrees and a job in text alone, so recognition
+    arrives only after a line has been read. The marks carry it in a glance.
+
+    They sit between the prose and the timeline rather than on the beats
+    themselves. Only some beats would carry a mark, and a list where some rows
+    are illustrated and others are not reads as a ranking between them rather
+    than as a record. */}
+<div data-employers class="mt-10 lg:mt-14" data-fade style="--fade-delay: 350ms">
+  <p class="text-label text-muted-foreground">Where that happened</p>
+  <ul class="mt-4 flex flex-wrap items-center gap-x-10 gap-y-6">
+    {
+      marks.map((mark) => (
+        <li class="relative">
+          {/* One tone that inherits the surrounding text color, so a single
+              file serves both themes and none of them carries a brand palette
+              that would collide with the page's own. */}
+          {mark.svg ? (
+            <span
+              class={`text-muted-foreground block ${mark.className} [&>svg]:block [&>svg]:h-full [&>svg]:w-auto`}
+              role="img"
+              aria-label={mark.name}
+              set:html={mark.svg}
+            />
+          ) : (
+            <span
+              class={`text-muted-foreground block ${mark.className}`}
+              role="img"
+              aria-label={mark.name}
+              style={`aspect-ratio: ${mark.aspect}; background-color: currentColor; mask: url(${mark.mask}) no-repeat center / contain; -webkit-mask: url(${mark.mask}) no-repeat center / contain`}
+            />
+          )}
+          {/* The name a pointer asks for. It is decoration rather than a second
+              label, because the mark above already carries the accessible name
+              and a reader on a keyboard never reaches this: the marks are not
+              controls and nothing here is operable. */}
+          <span
+            data-employer-name
+            aria-hidden="true"
+            class="text-label text-muted-foreground pointer-events-none absolute top-full left-0 mt-2"
+          >
+            {mark.name}
+          </span>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  /* The label sits absolute at its mark's left edge, so the rightmost mark
+     carries the longest name furthest right. Held on one line it reached 62px
+     past a 375 viewport and 47px past a 390 one, which scrolls the whole page
+     sideways on a phone while the label itself is invisible. It wraps inside a
+     box narrower than the column instead. */
+  [data-employer-name] {
+    opacity: 0;
+    max-width: min(14rem, 55vw);
+  }
+  /* A touch device has no pointer to ask with, so the label is unreachable
+     there and only its box would ship.
+
+     Paired with a coarse pointer rather than keyed on hover alone. Playwright's
+     Firefox answers `(hover: none)` true on the desktop, so the bare query hid
+     the label on an engine that can hover perfectly well. */
+  @media (hover: none) and (pointer: coarse) {
+    [data-employer-name] {
+      display: none;
+    }
+  }
+  [data-employers] li:hover [data-employer-name] {
+    opacity: 1;
+  }
+  /* The mark lifts with its name so the pair reads as one response rather than
+     as a label arriving over something inert. */
+  [data-employers] li span[role='img'] {
+    color: var(--muted-foreground);
+  }
+  [data-employers] li:hover span[role='img'] {
+    color: var(--foreground);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-employer-name],
+    [data-employers] li span[role='img'] {
+      transition:
+        opacity 150ms ease-out,
+        color 150ms ease-out;
+    }
+  }
+</style>

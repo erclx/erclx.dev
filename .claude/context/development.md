@@ -77,6 +77,10 @@ The two differ in ways that decide whether a defect appears at all. The dev serv
 
 Start the preview on the same band the config uses, `4250` plus the worktree offset, and pass its address to the probe.
 
+Write the probe into `e2e/` and delete it when the question is answered. Playwright's `testDir` is that folder, so a spec anywhere else is reported as no tests found, and the scratch location `CLAUDE.md` directs temporary files to is worse than useless here: vitest globs `.claude/.tmp/`, so a Playwright spec parked there is collected by `bun run test:run` and fails the whole `check` on a `test.use()` call outside a Playwright runner. The two rules contradict each other on this one file type and the test folder is the side that works.
+
+A suite failure reproduced under the full run and not alone is contention rather than a defect. Re-run the failing spec files on their own engine before classifying one, since the full three-engine run loads the machine enough that image-loading assertions time out while passing in isolation.
+
 ## Shell scripts
 
 All `.sh` files live under `scripts/`. Do not place shell scripts outside `scripts/`.

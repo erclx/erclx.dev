@@ -1,11 +1,13 @@
 ---
 title: Projects
-description: Below the experience timeline. Shipped tools as cards, one column on narrow viewports and two from lg.
+description: Below the experience timeline. Shipped tools as unboxed cards, one column on narrow viewports and two from lg.
 ---
 
 # Projects
 
 Appears below the experience timeline, with about and experience between it and the header. Lists shipped tools as cards, one per shipped project, each linking to the route that project owns. The heading stands alone, with no line counting the cards under it.
+
+A card carries no outline. Its still, its heading, and its link row sit on the page ground, and the gutter between two cards is what separates them. The dotted frames below mark where a card's bounds fall and are not drawn on the page.
 
 ## Narrow and mobile
 
@@ -13,23 +15,23 @@ Appears below the experience timeline, with about and experience between it and 
 ┌──────────────────────────────────────────────────────────┐
 │   Projects                                               │  ← serif heading, aligned with the grid
 │                                                          │
-│   ┌──────────────────────────────────────────────────┐   │
-│   │ ┌──────────────────────────────────────────────┐ │   │  ← media slot, still with optional hover video
-│   │ └──────────────────────────────────────────────┘ │   │
-│   │                                                  │   │
-│   │ aitk                                             │   │  ← display heading
-│   │                                                  │   │
-│   │ CLI that installs one set of agent rules,        │   │  ← description body
-│   │ skills, and standards into every project ...     │   │
-│   │                                                  │   │
-│   │ Project   GitHub   npm                           │   │  ← link row, wraps when needed
-│   └──────────────────────────────────────────────────┘   │
+│   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐    │
+│     ┌──────────────────────────────────────────────┐     │  ← media slot, still with optional hover video
+│     └──────────────────────────────────────────────┘     │
 │                                                          │
-│   ┌──────────────────────────────────────────────────┐   │
-│   │ Jobtriage                                        │   │
-│   │ ...                                              │   │
-│   │ Live demo   Project   GitHub                     │   │
-│   └──────────────────────────────────────────────────┘   │
+│     aitk                                                 │  ← display heading
+│                                                          │
+│     CLI that installs one set of agent rules,            │  ← description body
+│     skills, and standards into every project ...         │
+│                                                          │
+│     Project   GitHub   npm                               │  ← link row, wraps when needed
+│   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘    │
+│                                                          │
+│   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐    │
+│     Jobtriage                                            │
+│     ...                                                  │
+│     Live demo   Project   GitHub                         │
+│   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘    │
 │                                                          │
 │   (Stackr, Caret, diction follow in the same shape)      │
 │                                                          │
@@ -42,19 +44,19 @@ Appears below the experience timeline, with about and experience between it and 
 ┌────────────────────────────────────────────────────────────────────┐
 │   Projects                                                         │
 │                                                                    │
-│  01 ┌─────────────────────────┐   ┌─────────────────────────┐ 02   │  ← numerals hang into the outer margin
-│     │ aitk                    │   │ Jobtriage               │      │
-│     └─────────────────────────┘   └─────────────────────────┘      │
+│  01 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐ 02       │  ← numerals hang into the outer margin
+│       aitk                        Jobtriage                        │
+│     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘          │
+│                                 ↑                                  │
+│  03 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐   │ 48px gutter, halo reaches 44px   │
+│       Stackr                      Caret                       04   │
+│     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘          │
 │                                                                    │
-│  03 ┌─────────────────────────┐   ┌─────────────────────────┐ 04   │
-│     │ Stackr                  │   │ Caret                   │      │
-│     └─────────────────────────┘   └─────────────────────────┘      │
-│                                                                    │
-│  05 ┌───────────────────────────────────────────────────────┐      │  ← trailing card closes the section across both columns
-│     │ ┌──────────────────────┐  diction                     │      │  ← still on one half, text on the other
-│     │ │        still         │  Pronunciation trainer ...    │      │
-│     │ └──────────────────────┘  Project   GitHub             │      │
-│     └───────────────────────────────────────────────────────┘      │
+│  05 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐          │  ← trailing card closes the section across both columns
+│       ┌──────────────────────┐  diction                            │  ← still on one half, text on the other
+│       │        still         │  Pronunciation trainer ...          │
+│       └──────────────────────┘  Project   GitHub                   │
+│     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘          │
 │                                                                    │
 └────────────────────────────────────────────────────────────────────┘
 ```
@@ -69,6 +71,16 @@ Appears below the experience timeline, with about and experience between it and 
 - A link leaving the site opens in a new tab. The `Project` link stays in the current one.
 - An odd card count would leave the trailing card alone beside an empty half from `lg`, so that card runs the full width instead and turns the remainder into a deliberate closer. It lays its still beside its text rather than above it, which keeps its height in the range the cards above it sit in. The four cards above are untouched and the grid keeps two columns.
 - Cards in a row share a lower edge. A card whose text runs short holds the row's height rather than closing early.
+
+## Card bounds
+
+Pointing at a card lights a soft shape behind it, inset outward from the content and drawn under it, which is the only thing stating where the card ends. Nothing is drawn at rest.
+
+The shape reaches 44px past the content into a 48px gutter. A shape wider than the gutter meets its neighbor, so pointing at one card lights the one beside it.
+
+It leaves slower than it arrives. The reader moving from one card to the next sees the one behind them still lit, which reads as a trail rather than as a lag.
+
+`.claude/DESIGN.md` § Borders carries the tests deciding whether a line stays anywhere on the page.
 
 ## Card media
 
