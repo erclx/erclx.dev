@@ -28,14 +28,14 @@ const {
   data-instant={instant ? 'true' : undefined}
   data-revealed={instant ? 'true' : undefined}
   aria-label="Sections"
-  class="section-nav fixed top-1/2 left-6 z-20 hidden -translate-y-1/2 flex-col gap-3 xl:flex"
+  class="section-nav fixed top-1/2 left-6 z-20 hidden -translate-y-1/2 flex-col gap-0.5 xl:flex"
 >
   {
     items.map((item) => (
       <a
         href={`#${item.id}`}
         data-target={item.id}
-        class="section-nav-link text-muted-foreground text-label -ml-3 border-l-2 border-transparent pl-3"
+        class="section-nav-link text-muted-foreground text-label"
       >
         {item.label}
       </a>
@@ -56,17 +56,36 @@ const {
     opacity: 0;
     pointer-events: none;
   }
+  /* Every link holds the pill's box whether or not it is filled, so the rail
+     does not shift as the active item moves down the page. Only one of them is
+     ever painted, and the negative margin keeps the labels where they sat when
+     the box was a 2px edge. */
   .section-nav-link {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    margin-left: -0.85rem;
     transition:
       color 150ms ease-out,
-      border-color 150ms ease-out;
+      border-color 150ms ease-out,
+      background-color 150ms ease-out,
+      box-shadow 200ms ease-out;
   }
   .section-nav-link:hover {
     color: var(--foreground);
   }
+  /* The ground the contact dock carries, on the one item that means something
+     by carrying it. The dock uses it as a hit target for icons that have no
+     other bounds; here it states which section the reader is in, so the two
+     margins read as one system and the left one still does the job the right
+     one does not. It replaces a 2px accent edge, which stated the same thing
+     in the same color with less of it. */
   .section-nav-link[data-active='true'] {
     color: var(--foreground);
+    background: var(--floating-fill);
+    backdrop-filter: var(--floating-blur);
     border-color: var(--accent);
+    box-shadow: var(--floating-shadow);
   }
   @media (prefers-reduced-motion: no-preference) {
     .section-nav:not([data-instant]) {
