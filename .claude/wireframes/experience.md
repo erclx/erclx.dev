@@ -48,7 +48,7 @@ I spend most of my working day with coding agents...
        ← rail fades out below the oldest dot
 ```
 
-The list opens on `Newest first.` in Fraunces italic at label size, which is the one thing the beats cannot state for themselves: they run 2026 backwards and a reader arriving from prose assumes the reverse.
+The list opened on `Newest first.` in Fraunces italic at label size until 2026-08-20. It was there because the spans sat inside the head sentences, separated by a middle dot, so the ordering was not visible without reading each row. The spans now hold a column of their own and a reader meets 2026 against jun to dec 2025 against jan 2024 down one edge, so the list states its own order and the line restated what was already on screen.
 
 ## Behavior
 

@@ -12,6 +12,28 @@ test('the experience section names where the work happened', async ({
   await expect(
     strip.getByRole('img', { name: 'Chalmers University of Technology' }),
   ).toHaveCount(1)
+  await expect(strip.getByRole('img', { name: 'Bac Ha Software' })).toHaveCount(
+    1,
+  )
+})
+
+test('the marks read in the order the timeline below them does', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const order = await page
+    .locator('[data-employers] li span[role="img"]')
+    .evaluateAll((marks) =>
+      marks.map((mark) => mark.getAttribute('aria-label') ?? ''),
+    )
+
+  // Newest start first, which puts the two employers before the university.
+  expect(order).toEqual([
+    'Volvo Group',
+    'Bac Ha Software',
+    'Chalmers University of Technology',
+  ])
 })
 
 test('the marks sit between the prose and the record', async ({ page }) => {
@@ -68,8 +90,8 @@ test('the hovered name is hidden from assistive technology', async ({
   // The mark already carries the accessible name, so the visible label would
   // otherwise be read a second time.
   const names = page.locator('[data-employer-name]')
-  await expect(names).toHaveCount(2)
-  for (let index = 0; index < 2; index += 1) {
+  await expect(names).toHaveCount(3)
+  for (let index = 0; index < 3; index += 1) {
     await expect(names.nth(index)).toHaveAttribute('aria-hidden', 'true')
   }
 })
