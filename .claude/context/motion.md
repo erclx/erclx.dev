@@ -20,7 +20,8 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 
 ## Availability pulse
 
-- The status dot in the closing ask holds full opacity while a pseudo-element halo scales from its own size to 2.6 and fades, on a 2400ms loop with no end. It is the only always-on animation on the page, and it exists because a pulse states that availability is live now rather than printed.
+- The status dot in the closing ask holds full opacity while a pseudo-element halo scales from its own size to 2.6 and fades, on a 2400ms loop with no end. It is the only always-on animation among the page's content, and it exists because a pulse states that availability is live now rather than printed.
+- The header's shader field also runs without end, and the two do not compete. The field is a ground rather than an element, it carries no edge to track, and it moves at 0.13px per second against a halo completing a cycle every 2400ms. The still copy of that field under the rest of the page does not move at all. See `.claude/context/shader-field.md` and `.claude/context/page-ground.md`.
 - The halo is a pseudo-element rather than the dot itself, so the pulse never changes the dot’s box and nothing in the status row reflows against it.
 - Under a reduced-motion preference the pseudo-element is not generated at all, so the halo has no presence in the layout and the dot keeps its static ring.
 - Only this dot pulses. The experience section's active marker states a position rather than a state, it already animates on hover and on the walk back, and a second heartbeat would compete with the first for the same attention.
@@ -54,7 +55,7 @@ Two surfaces carry a small figure: a character rising into the closing ask, and 
 - A section earns a figure only when its own copy names the thing the figure draws. The aircraft qualifies because the paragraph arrives from Vietnam in its first sentence and leaves most summers in its last, so flight is what both ends share. A figure chosen for a section that reads as bare is decoration, and the section reads as bare for some other reason.
 - Reject the figure that answers part of the copy. A map of Sweden was measured against the same paragraph and drops Vietnam, which is the clause it opens on, so it illustrates the middle sentence and contradicts the first.
 - One figure per surface, and no surface takes a second. A figure competing with the header portrait is what `.claude/wireframes/about.md` bars, and a moving figure clears that bar by arriving rather than by sitting there from the first paint.
-- A figure arrives and stays. Both surfaces reveal on an `IntersectionObserver` at a threshold rather than at any intersection, run once, and never replay, so nothing on the page loops except the availability pulse.
+- A figure arrives and stays. Both surfaces reveal on an `IntersectionObserver` at a threshold rather than at any intersection, run once, and never replay, so no figure loops. The availability pulse and the header's ambient field are the only two things that do.
 - Take the fill from the upstream artwork the accent derives from rather than sampling a rendered figure, so a second mark reads as the same language rather than as a near miss of the first.
 - Every figure carries `aria-hidden` and no accessible name, and renders nothing at all under `prefers-reduced-motion: reduce`. A figure carrying information would fail that test, which is another way of stating the first rule.
 - A figure near a section's top edge collides with the sticky bar when a reader arrives from the rail, since the section pins under it. Give that reader the figure at rest rather than declining to render it, and keep the approach for an arrival with clear air under the bar.
