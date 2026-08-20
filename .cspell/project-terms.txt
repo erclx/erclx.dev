@@ -9,15 +9,16 @@ Jobtriage
 Klarna
 laggy
 lede
+letterforms
 logomark
 Montico
 overfitted
 overfitting
 Rekrytering
 reranking
-Résumé
 retarget
 retargeted
+Résumé
 screencasts
 shiba
 Stackr
