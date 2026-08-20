@@ -136,6 +136,16 @@ body.surface-case-study > header[data-section='header'] {
 
 /* The measure every case-study route sets its prose to. One source, so the
    breakout below derives its overhang from the same value the prose reads. */
+/* The inset every full-bleed surface holds. It was a constant 24px at every
+   width, and below the breakpoint where the reading column takes over its own
+   margins that constant is the only margin the page has, so the text ran
+   closer to the edge the wider the viewport got: 7.5 percent of the width at
+   320px and 3.1 percent at 768. A clamp grows it with the viewport and stops
+   once the column is capping itself. */
+@utility page-inset {
+  padding-inline: clamp(1.5rem, 5vw, 3rem);
+}
+
 @utility prose-column {
   max-width: var(--prose-column);
 }
