@@ -1,6 +1,5 @@
 import type { ContentBox, FieldSpec, Rgb, UniformLocations } from './field'
 import { vertexSource } from './fields/prelude'
-import { readAccentToken, resolveAccentTint } from './tint'
 
 export const mountConfig = {
   maxPixelRatio: 1.5,
@@ -171,7 +170,10 @@ export function mountShaderField(
     ? mountConfig.lowEndPixelRatio
     : mountConfig.maxPixelRatio
   const targetFrameMs = lowEnd ? 1000 / mountConfig.lowEndFps : 1000 / 60
-  const accentToken = readAccentToken(resolveAccentTint(window.location.search))
+  // The reserved accent, which the experience timeline's active dot and the
+  // rail's position marker already carry, so one warm accent answers the whole
+  // page. An amber arm was built against it and is removed with its switch.
+  const accentToken = '--accent'
 
   let renderer = createRenderer(gl, field)
   if (!renderer) {

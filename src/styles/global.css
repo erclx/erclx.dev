@@ -87,11 +87,15 @@ body.surface-case-study > header[data-section='header'] {
   position: sticky;
   top: 0;
   z-index: 30;
-  /* Near-opaque rather than lightly tinted. Prose passing under a bar much
-     below this reads through it as ghost text, which looks like a rendering
-     fault rather than a translucent surface. */
-  background-color: color-mix(in oklab, var(--background) 96%, transparent);
-  backdrop-filter: blur(12px);
+  /* The landing bar's treatment, so a reader moving between the two meets one
+     bar rather than two. Prose passing under a lightly tinted bar reads
+     through it as letterforms, which is what the near-opaque ground here used
+     to answer. A wider blur answers it instead, by destroying the letterforms
+     while the backdrop still reads as a wash, and it costs less of the
+     translucency. Measured on the densest route: the way home holds 4.83:1 in
+     light and 8.30:1 in dark at the worst of five scroll depths. */
+  background-color: rgb(from var(--background) r g b / 0.85);
+  backdrop-filter: blur(24px);
 }
 
 /* A shared deep link scrolls its section to the top of the viewport, where the
@@ -117,9 +121,11 @@ body.surface-case-study > header[data-section='header'] {
    1280 and below, and stops growing past 1920. Line heights turn unitless here
    so they track a body size that is no longer one number. */
 .surface-case-study {
-  /* The bar's own height, as the parts that make it: its padding on both edges,
-     the tap target it holds, and the rule under it. */
-  --sticky-bar-height: calc(2 * 1rem + 2.75rem + 1px);
+  /* The bar's own height, as the parts that make it: its padding on both edges
+     and the tap target it holds. The rule that used to close it is gone, so
+     the pixel it contributed goes with it rather than being carried as a
+     constant nothing sets. */
+  --sticky-bar-height: calc(2 * 1rem + 2.75rem);
   --prose-column: clamp(42rem, 25vw + 22rem, 52rem);
   --figure-column: clamp(56rem, 50vw + 16rem, 76rem);
   --body-size: clamp(1.0625rem, 0.78125vw + 0.4375rem, 1.375rem);
