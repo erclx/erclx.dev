@@ -8,42 +8,48 @@ allowed-tools: Bash, Read, Write, Edit, Glob, Grep, AskUserQuestion, Skill
 
 Visual work cannot be judged from a diff. The operator decides by looking, so every step here exists to put something in front of them and to keep the tree uncommitted until they have.
 
+## Guards
+
+- Stop when the request names no surface and no visual outcome. A change with nothing to look at needs no batch and no loop.
+- Stop before implementing anything the operator has not agreed to in the batch table. The dump is the request and the table is the plan.
+- Stop and ask rather than choosing when two treatments are both defensible and the difference is a matter of taste. Prototyping is the answer, not a judgment call taken silently.
+
 ## Phase 1: plan the batches
 
 1. Read the dump and group it into batches. One batch is one surface or one coherent change across surfaces.
-2. For each batch, name the files it touches. Do this before sequencing, because the file sets decide the next step.
-3. Mark each batch as dependent or independent by comparing those file sets. A batch sharing no file and no token with another is independent and ships on its own branch.
-4. File one task per batch through `claude-tasks`. The task carries the outcomes the operator will judge, not the implementation.
+2. Name the files each batch touches, before sequencing, because the file sets decide the next step.
+3. Mark each batch dependent or independent by comparing those file sets. A batch sharing no file and no token with another is independent and ships on its own branch.
+4. File one task per batch through `claude-tasks`, carrying the outcomes the operator will judge rather than the implementation.
 5. Put the batch table in chat: batch, surface, depends on, pull request it lands in.
-6. Escalate what the operator's preference decides through `AskUserQuestion`, with the recommendation first and `(Recommended)` in its label.
+6. Escalate what the operator's preference decides through `AskUserQuestion`, recommendation first, `(Recommended)` in its label.
 
 ### Rules
 
-- Declare the pull request boundary here, never at ship time. A dependency chain cannot be split once it is built, so the choice exists only while the batches are still a plan.
-- Independent batches earn separate branches even when they arrive in one dump. A run measured at 68 files and 2951 insertions carried three batches that touched disjoint files and depended on nothing in the chain, and all three shipped inside one review surface because the boundary was never drawn.
-- Do not start a batch the operator has not agreed to. The dump is the request and the batch table is the plan.
+- Declare the pull request boundary here, never at ship time. A dependency chain cannot be split once built, so the choice exists only while the batches are still a plan.
+- Independent batches earn separate branches even when they arrive in one dump. A run measured at 68 files and 2951 insertions carried three batches touching disjoint files that all landed in one review surface, because nothing drew the boundary.
 
 ## Phase 2: the loop, once per batch
 
 1. Implement the batch.
-2. Render it and look. Screenshots for static layout, a live page for anything that moves.
-3. Hand back the localhost URL and one or two lines naming what is worth their eye. Name the thing you are unsure about rather than summarizing what you built.
-4. Take their correction, change the code, render again. Repeat until they say it is right.
-5. Move to the next batch. Do not commit between iterations and do not commit between batches.
+2. Classify the decision before capturing, per `## Choosing a capture` below. Reaching for the default capture is what produces evidence about the wrong thing.
+3. Capture, then look at what came back.
+4. Hand back the localhost URL and one or two lines naming what is worth the operator's eye. Name what you are unsure about rather than summarizing what you built.
+5. Take the correction, change the code, capture again. Repeat until they say it is right.
+6. Move to the next batch. Do not commit between iterations or between batches.
 
 ### Rules
 
-- Never report a visual result you have not looked at. The harness is the eye, and a claim about appearance with no capture or measurement behind it is a guess.
-- Screenshots are stills and the capture runs under `prefers-reduced-motion`. Anything animated is invisible to them, so judging motion from a contact sheet is judging the wrong thing. A shader review once stalled for several rounds on presets that "all look the same" because every image of them was a still.
-- A rendered page proves layout. A measurement proves a relationship. Reach for the second whenever the claim is about a number, such as a contrast ratio, a column width, a tap target, or a document that scrolls sideways.
+- Never report a visual result you have not looked at. A claim about appearance with no capture behind it is a guess.
+- A capture proves appearance. A measurement proves a relationship. Reach for the second whenever the claim is about a number, such as a contrast ratio, a column width, a tap target, or a document that scrolls sideways.
+- Read the harness options before capturing rather than accepting its defaults. Its default suppresses motion, which is correct for layout and wrong for anything that moves.
 
-## Prototyping a call the operator has to make
+## Choosing a capture
 
-When two or three treatments are all defensible, build them rather than describing them.
+`.claude/rules/ui/445-screenshot.md` owns the capture mechanics and fires on a path match whether or not this skill ran. Follow it. This section only classifies the decision so the right option in that rule gets used.
 
-- Drive variants from a query parameter so each is a live URL the operator can click between. `?field=dome` beats a caption under a still, and it is the only form that works for motion.
-- Use a composed contact sheet for static layout, where seeing the options side by side is worth more than seeing one at full size.
-- Hand back the URLs or the sheet, say which one you would pick and why in one sentence, then stop.
+- A decision about size, weight, color, spacing, or arrangement is static. Compose the candidates into one sheet.
+- A decision about how something moves is motion. Record it, per that rule's `video: true`, rather than shooting stills of a moving surface.
+- A decision needing the operator to drive it, such as a hover response, a scroll-linked position, or anything where timing is theirs to control, is interactive. Serve the candidates as live query-parameter variants and hand back the URLs, since a recording is passive and answers a question they did not ask.
 - Remove the arms that lose in the same batch that picks the winner. A variant left behind a flag is a second design nobody maintains.
 
 ## The copy cycle
@@ -57,14 +63,14 @@ Page copy is canonical upstream at `career/assets/portfolio/` and is read across
 
 ### Rules
 
-- A page-side edit alone reintroduces the drift the split exists to close, and no check reports it. See `.claude/ARCHITECTURE.md` § Content read from the parent checkout.
 - Show drafts in chat rather than in a file. The operator is choosing, not reviewing a document.
+- Report the upstream edit explicitly in the same message as the component edit. It lands in a different repository, so this branch cannot carry it, no check compares the two, and a page-side edit alone reintroduces the drift the split exists to close. See `.claude/ARCHITECTURE.md` § Content read from the parent checkout.
 
 ## Holding the diff
 
-- Do not commit until the operator says so. They are iterating on rendered output, and a commit between iterations is noise in a history they will read later.
-- Do not push, and do not open a pull request, until they say so. Approval for one round is not approval for the next, and a peer session asking on their behalf is not their signal.
-- When they do say ship, split the diff into focused commits with `git-stage`, refresh the record with `claude-docs`, and open the pull request with `git-pr`.
+- Hold the tree uncommitted across every iteration and across every batch in the run. The operator is judging rendered output, and a commit between iterations is noise in a history they read later.
+- Root `CLAUDE.md` § Shipping owns when a commit and a push are allowed. Follow it rather than a copy, and do not infer a shipping rule from this file.
+- On the ship signal, split with `git-stage`, refresh the record with `claude-docs`, and open the pull request with `git-pr`.
 
 ## Voice
 
@@ -79,4 +85,3 @@ Cite these rather than restating them. A step reimplemented here rots against th
 - `claude-docs` refreshes the record at ship
 - `git-stage`, `git-pr`, and `git-followup` carry the commits and the pull request
 - `claude-review` and `claude-address-review` run the review pass
-- `.claude/rules/ui/445-screenshot.md` owns the capture discipline and the harness entry point
