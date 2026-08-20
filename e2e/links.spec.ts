@@ -100,7 +100,7 @@ test('the resume link keeps the new-tab pairing it already had', async ({
   page,
 }) => {
   await page.goto('/')
-  const resume = page.locator(`a[href="${EXEMPT_INTERNAL_HREF}"]`)
+  const resume = page.locator(`a[href="${EXEMPT_INTERNAL_HREF}"]`).first()
 
   await expect(resume).toHaveAttribute('target', '_blank')
   await expect(resume).toHaveAttribute('rel', 'noopener')

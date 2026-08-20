@@ -51,9 +51,40 @@ test('every contact destination stays in the tab order while collapsed', async (
   // The stack collapses visually and the links keep their place in the
   // sequence, so a keyboard never meets a set it cannot reach.
   const dock = page.locator(DOCK)
-  for (const label of ['GitHub', 'LinkedIn', 'me@erclx.dev']) {
+  for (const label of ['GitHub', 'LinkedIn', 'me@erclx.dev', 'Résumé']) {
     await expect(dock.getByRole('link', { name: label })).toHaveCount(1)
   }
+})
+
+test('the résumé sits nearest the resting mark', async ({ page }) => {
+  await page.goto('/')
+  await scrollPastHero(page)
+
+  const dock = page.locator(DOCK)
+  const toggle = dock.getByRole('button', { name: 'Contact' })
+  const resume = dock.getByRole('link', { name: 'Résumé' })
+  const furthest = dock.getByRole('link', { name: 'GitHub' })
+
+  const toggleBox = await toggle.boundingBox()
+  const resumeBox = await resume.boundingBox()
+  const furthestBox = await furthest.boundingBox()
+
+  // Shortest travel from the control belongs to the destination most readers
+  // came for, so the resume sits between the mark and the rest of the set.
+  expect(Math.abs((resumeBox?.y ?? 0) - (toggleBox?.y ?? 0))).toBeLessThan(
+    Math.abs((furthestBox?.y ?? 0) - (toggleBox?.y ?? 0)),
+  )
+})
+
+test('the résumé opens in a new tab from the dock', async ({ page }) => {
+  await page.goto('/')
+  await scrollPastHero(page)
+
+  const resume = page.locator(DOCK).getByRole('link', { name: 'Résumé' })
+
+  await expect(resume).toHaveAttribute('href', '/resume.pdf')
+  await expect(resume).toHaveAttribute('target', '_blank')
+  await expect(resume).toHaveAttribute('rel', 'noopener')
 })
 
 test('the dock names its destinations for a screen reader', async ({
