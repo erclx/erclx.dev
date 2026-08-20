@@ -61,7 +61,7 @@ const cardId = name.toLowerCase()
   data-media-host
   style={`--fade-delay: ${fadeDelay}`}
   class:list={[
-    'scroll-mt-24 group/card relative flex h-full flex-col',
+    'scroll-mt-24 group/card relative isolate flex h-full flex-col',
     isWide && 'lg:flex-row lg:items-stretch',
   ]}
 >
@@ -137,3 +137,31 @@ const cardId = name.toLowerCase()
     )
   }
 </article>
+
+<style>
+  /* Unboxing the card removed the only thing stating where it ended, so a
+     pointer had nothing to land on and no way to read how far the card
+     reached. This gives that back under the pointer alone: the shape is
+     revealed rather than drawn, so the section stays borderless at rest.
+
+     A pseudo-element inset outward rather than padding on the card, so the
+     revealed shape is larger than the content and costs no layout. The card
+     isolates, which keeps this behind its own content rather than behind the
+     section. */
+  [data-media-host]::after {
+    content: '';
+    position: absolute;
+    inset: -1.5rem;
+    border-radius: 1rem;
+    z-index: -1;
+    opacity: 0;
+    background: color-mix(in oklab, var(--card) 60%, transparent);
+    box-shadow: 0 0 2rem 0.25rem
+      color-mix(in oklab, var(--foreground) 6%, transparent);
+    transition: opacity 150ms ease-out;
+  }
+  [data-media-host]:hover::after,
+  [data-media-host]:focus-within::after {
+    opacity: 1;
+  }
+</style>
