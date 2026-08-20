@@ -41,6 +41,19 @@ const fadeDelay = `${index * 200}ms`
 const cardId = name.toLowerCase()
 ---
 
+{/* No plate, no outline, and no rule under the media. The card drew three
+    boxes on a page whose hero ground dissolves, whose bar lost its rule, and
+    which runs one field under every section, so it was the surface still
+    arguing with the rest.
+
+    What remains framed is the still, which is the content. The prose sits on
+    the page ground, so the field runs behind the whole section rather than
+    stopping at five rectangles.
+
+    The tilt moved off this element and onto the media below. Rotating a card
+    with no visible bounds tilts nothing a reader can see, and the pointer
+    target stays the whole card, so the region that answers is unchanged and
+    only the thing with mass moves. */}
 <article
   id={cardId}
   data-fade
@@ -48,7 +61,7 @@ const cardId = name.toLowerCase()
   data-media-host
   style={`--fade-delay: ${fadeDelay}`}
   class:list={[
-    'scroll-mt-24 border-border hover:border-foreground/30 bg-card group/card relative flex h-full flex-col overflow-hidden rounded-lg border transition-colors duration-200 [transform:perspective(900px)_rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))] [transform-style:preserve-3d] [will-change:transform]',
+    'scroll-mt-24 group/card relative flex h-full flex-col',
     isWide && 'lg:flex-row lg:items-stretch',
   ]}
 >
@@ -57,8 +70,8 @@ const cardId = name.toLowerCase()
       <div
         data-media-slot
         class:list={[
-          'bg-muted/40 relative aspect-[11/7] overflow-hidden border-b border-border/60 p-2 sm:p-3',
-          isWide && 'lg:aspect-auto lg:w-1/2 lg:min-h-72 lg:border-r lg:border-b-0',
+          'bg-muted/40 relative aspect-[11/7] overflow-hidden rounded-lg p-2 sm:p-3 [transform:perspective(900px)_rotateX(var(--tilt-x,0deg))_rotateY(var(--tilt-y,0deg))] [transform-style:preserve-3d] [will-change:transform]',
+          isWide && 'lg:aspect-auto lg:w-1/2 lg:min-h-72',
         ]}
       >
         <div class="ring-border/40 relative size-full overflow-hidden rounded-md shadow-sm ring-1 [transform:translate3d(var(--parallax-x,0),var(--parallax-y,0),0)] [will-change:transform]">
@@ -87,7 +100,10 @@ const cardId = name.toLowerCase()
       </div>
     )
   }
-  <div class:list={['p-6 md:p-10', isWide && 'lg:flex-1 lg:self-center']}>
+  {/* The horizontal inset goes with the plate that justified it. Prose sitting
+      on the page ground indents from nothing, so it would have started right
+      of every other reading edge in the section. */}
+  <div class:list={['pt-6 md:pt-8', isWide && 'lg:flex-1 lg:self-center lg:pt-0 lg:pl-10']}>
     <h3 class="font-display text-heading text-foreground">
       {name}
     </h3>
