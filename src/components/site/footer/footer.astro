@@ -12,9 +12,15 @@ const updated = new Date().toLocaleDateString('en-GB', {
 ---
 
 <footer data-section="footer" class="page-inset pb-10 md:pb-16">
-  <div
-    class="border-border mx-auto max-w-3xl border-t pt-10 md:pt-12 lg:max-w-5xl"
-  >
+  {/* No rule across the top. The closing ask above ends on five row
+      separators, and a sixth line under them read as a stack rather than as a
+      division, made worse by this one running wider than the rows it sat
+      under: 1152px against 1024, because the footer breaks out to a wider
+      measure than the section above it.
+
+      What marks the footer instead is the space before it and the signature
+      opening it, which is what a reader was using anyway. */}
+  <div class="mx-auto max-w-3xl pt-16 md:pt-20 lg:max-w-5xl">
     <div
       data-signature
       aria-hidden="true"
