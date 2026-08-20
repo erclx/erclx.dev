@@ -1,7 +1,14 @@
 ---
 import signatureSvg from '@/assets/footer/signature.svg?raw'
 
-const year = new Date().getFullYear()
+// Taken at build time, so it states the last deploy rather than the current
+// date and stays true without anything maintaining it. A month rather than a
+// year alone, because within the current year a bare year carries almost no
+// information, which is the ambiguity this line replaced.
+const updated = new Date().toLocaleDateString('en-GB', {
+  month: 'long',
+  year: 'numeric',
+})
 ---
 
 <footer data-section="footer" class="px-6 pb-10 md:pb-16">
@@ -40,9 +47,18 @@ const year = new Date().getFullYear()
         </svg>
         Résumé
       </a>
-      <p class="text-muted-foreground text-label">
-        Gothenburg, Sweden · {year}
-      </p>
+      {/* The city left this line rather than moving. The closing ask already
+          states it as a filter, which is where the scope doc put it, so the
+          footer was repeating it beside a year that read as a copyright with
+          its symbol missing. */}
+      <div class="text-muted-foreground text-label md:text-right">
+        {/* The page claims its author builds the layer between a language
+            model and the job it has to do. Stating how the page itself was
+            made is that claim demonstrated on the one artifact the reader is
+            already inside, rather than asserted again. */}
+        <p>Designed and built with coding agents, which is also the work.</p>
+        <p class="mt-1">Updated {updated}</p>
+      </div>
     </div>
   </div>
 </footer>
