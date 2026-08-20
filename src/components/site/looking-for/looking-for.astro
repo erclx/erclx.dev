@@ -172,7 +172,7 @@ const criteria = [
               <div
                 data-fade
                 style={`--fade-delay: ${150 + idx * 100}ms`}
-                class="looking-row group hover:border-l-accent -ml-4 grid items-baseline gap-x-6 border-l-2 border-l-transparent py-3 pl-4 sm:grid-cols-[13rem_1fr]"
+                class="looking-row group -ml-4 grid items-baseline gap-x-6 border-l-2 border-l-transparent py-3 pl-4 sm:grid-cols-[13rem_1fr]"
               >
                 {/* The key steps back rather than the answer stepping forward.
                     The answers used to render at foreground, which measured
@@ -183,9 +183,7 @@ const criteria = [
                     the only thing separating the two columns, so with both at
                     prose weight the rows stop scanning as pairs. A third step
                     on the key is what buys the answer its way down. */}
-                <dt class="looking-key text-label group-hover:text-muted-foreground">
-                  {item.label}
-                </dt>
+                <dt class="looking-key text-label">{item.label}</dt>
                 {/* The answer sits at the weight the page reads at, and lifts
                     to foreground under a pointer. */}
                 <dd class="text-muted-foreground group-hover:text-foreground text-label">
@@ -201,13 +199,16 @@ const criteria = [
 </section>
 
 <style>
-  /* The third step the two columns need once the answer sits at prose weight.
-     Mixed toward transparent rather than declared as its own color, so it
-     tracks a palette edit instead of holding a copy that nothing keeps in
-     step, and so it resolves against whichever ground the theme puts behind
-     it. */
+  /* The key separates from the answer by weight rather than by lightness.
+     Lightness has no room here: the muted token is already 4.82:1 in light,
+     so a step below it fails the 4.5:1 floor for text at any value visible
+     enough to do the job. A 65% mix was shipped and measured 2.53:1.
+
+     Both columns therefore sit on the muted token and the key drops a weight
+     step, which the 13rem column between them does most of the work of. */
   .looking-key {
-    color: color-mix(in oklab, var(--muted-foreground) 65%, transparent);
+    color: var(--muted-foreground);
+    font-weight: 400;
   }
 
   /* A row is a box a pointer lands on, so it takes the glow every other
@@ -229,6 +230,30 @@ const criteria = [
   }
   .looking-row:hover::after {
     opacity: 1;
+  }
+
+  /* The accent edge is drawn here rather than as the row's own left border.
+     A negative z-index child paints above its parent's background and border
+     and below its content, so the glow above reached the border box and laid
+     its 60% white over the edge: the accent should paint near rgb(165,70,28)
+     and measured rgb(219,181,164) once the glow arrived. The edge appeared at
+     full strength on the first frame and washed out as the glow faded in.
+
+     The transparent border stays on the row, because it is what holds the
+     2px the layout is built around. This only takes over what it draws. */
+  /* Offset by its own width, because an absolutely positioned child resolves
+     against the padding box and the border it replaces sits outside that. At
+     `left: 0` the edge drew 2px inboard of where it had always been. */
+  .looking-row::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 -2px;
+    width: 2px;
+    z-index: 0;
+    background: transparent;
+  }
+  .looking-row:hover::before {
+    background: var(--accent);
   }
   @media (prefers-reduced-motion: no-preference) {
     .looking-key {
