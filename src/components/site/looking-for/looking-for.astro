@@ -174,14 +174,23 @@ const criteria = [
                 style={`--fade-delay: ${150 + idx * 100}ms`}
                 class="group hover:border-l-accent -ml-4 grid items-baseline gap-x-6 border-l-2 border-l-transparent py-3 pl-4 sm:grid-cols-[13rem_1fr]"
               >
-                <dt class="text-muted-foreground group-hover:text-foreground text-label">
+                {/* The key steps back rather than the answer stepping forward.
+                    The answers used to render at foreground, which measured
+                    3.35x the contrast of every paragraph on the page in light
+                    and made the closing section the heaviest reading on it.
+
+                    Dropping them alone was tried and does not work: color is
+                    the only thing separating the two columns, so with both at
+                    prose weight the rows stop scanning as pairs. A third step
+                    on the key is what buys the answer its way down. */}
+                <dt class="looking-key text-label group-hover:text-muted-foreground">
                   {item.label}
                 </dt>
-                {/* The value takes the label's size and the leading color, so
-                    the two columns hold one step and color alone separates the
-                    key from the answer. This is the pairing the experience
-                    beats already run, inverted here until 2026-08-19. */}
-                <dd class="text-foreground text-label">{item.value}</dd>
+                {/* The answer sits at the weight the page reads at, and lifts
+                    to foreground under a pointer. */}
+                <dd class="text-muted-foreground group-hover:text-foreground text-label">
+                  {item.value}
+                </dd>
               </div>
             ))
           }
@@ -192,6 +201,20 @@ const criteria = [
 </section>
 
 <style>
+  /* The third step the two columns need once the answer sits at prose weight.
+     Mixed toward transparent rather than declared as its own color, so it
+     tracks a palette edit instead of holding a copy that nothing keeps in
+     step, and so it resolves against whichever ground the theme puts behind
+     it. */
+  .looking-key {
+    color: color-mix(in oklab, var(--muted-foreground) 65%, transparent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .looking-key {
+      transition: color 150ms ease-out;
+    }
+  }
+
   /* The slot rests on the label's baseline and stands one cap height tall, so
      the dot inside it centres on the capitals rather than on the line box. The
      descender space under the baseline is empty and still counts toward a line
