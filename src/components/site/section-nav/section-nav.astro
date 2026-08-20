@@ -154,7 +154,11 @@ const {
               }
             }
           },
-          { threshold: 0, rootMargin: '0px 0px -50% 0px' },
+          // No root margin. Shrinking the root to its top half never fires:
+          // the footer sits in the lower part of the last screen by
+          // definition, so the rail stayed at full opacity over the footer
+          // beat its own notes say it stands down for.
+          { threshold: 0 },
         )
         footerObserver.observe(footer)
       }
