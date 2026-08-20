@@ -72,9 +72,10 @@ const links = [
   <button
     type="button"
     data-dock-toggle
+    data-dock-surface
     aria-expanded="false"
     aria-controls="contact-dock-links"
-    class="border-border/60 bg-background/85 text-muted-foreground hover:text-foreground inline-flex size-11 items-center justify-center rounded-full border backdrop-blur-xl"
+    class="text-muted-foreground hover:text-foreground inline-flex size-11 items-center justify-center rounded-full"
   >
     <span class="sr-only">Contact</span>
     {/* An at sign rather than an envelope. The envelope is one of the three
@@ -108,8 +109,9 @@ const links = [
               screen reader read every destination in the set twice over. */}
           <span
             data-dock-name
+            data-dock-surface
             aria-hidden="true"
-            class="border-border/60 bg-background/85 text-label text-muted-foreground pointer-events-none absolute right-full mr-2 rounded-full border px-3 py-1 whitespace-nowrap backdrop-blur-xl"
+            class="text-label text-muted-foreground pointer-events-none absolute right-full mr-2 rounded-full px-3 py-1 whitespace-nowrap"
           >
             {link.label}
           </span>
@@ -119,7 +121,8 @@ const links = [
               ? { target: '_blank', rel: 'noopener' }
               : getLinkTargetAttributes(link.href))}
             aria-label={link.label}
-            class="border-border/60 bg-background/85 text-muted-foreground hover:text-foreground inline-flex size-11 items-center justify-center rounded-full border backdrop-blur-xl"
+            data-dock-surface
+            class="text-muted-foreground hover:text-foreground inline-flex size-11 items-center justify-center rounded-full"
           >
             <svg
               viewBox="0 0 24 24"
