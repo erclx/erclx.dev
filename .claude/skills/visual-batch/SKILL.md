@@ -34,7 +34,7 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 3. Capture, then look at what came back.
 4. Hand off per that same rule, then stop. The operator judges before anything else happens.
 5. Take the correction, change the code, capture again. Repeat until they say it is right.
-6. Move to the next batch. Do not commit between iterations or between batches.
+6. Commit the batch once they have judged it, then move to the next. Never commit between iterations of one batch.
 
 ### Rules
 
@@ -45,6 +45,9 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 - Measure a color change against the contrast floor before committing it, not after someone asks. A palette has less headroom than it looks: a muted token sitting at 4.82:1 has nowhere below it, so a step down fails at any value visible enough to do the job, and a treatment that reads fine in a capture can be a text failure.
 - Composite alpha before reading a color. A `color-mix` toward transparent resolves to channels plus an alpha, and reading those channels as opaque reports a color nobody sees.
 - Sample inside the shape. A patch taken at the corner of a bounding box misses a round control entirely and reads the page behind it, which is how a ground repair measured as no change at all.
+- Ask whether a reader would see the thing, not only whether it has the right shape. A relationship that holds off screen is not evidence: a panel reported a healthy 1517 by 639 for as long as it sat 1868px above the viewport, and every check that read its size passed.
+- Take a baseline the same way before calling a failure a regression. A suite run narrow against a branch run whole compares two different loads, and a load-dependent failure then reads as new work breaking something.
+- Re-verify the whole path when a fix uncovers a second defect, rather than the fix alone. One defect masks another whenever the first suppresses the conditions the second needs, so repairing either exposes its pair, and a run that ships after the first ships both.
 
 ## Choosing a capture
 
@@ -67,6 +70,27 @@ A dump names the components an operator happened to be looking at. Read past the
 - Measure the sweep afterwards with the same instrument that found the problem. The count of distinct treatments is the outcome, and it either fell or it did not.
 
 An instrument reading only the element itself will report a treatment written on a child or a pseudo-element as no treatment at all, which reads as a dead control and is a fabricated defect. Read the subtree and both pseudo-elements.
+
+## Serving a live variant
+
+An interactive decision is one the operator has to drive: how a gesture feels to cause, how a pace reads while scrolling, whether a control is where a hand expects it. A recording answers how a thing looks and cannot answer any of those, so the candidates are served live and the operator drives them.
+
+The shape is the same every time and is worth building the same way.
+
+1. Read one query parameter and resolve it to an arm, defaulting to what ships when the parameter is absent or unknown.
+2. Apply that arm at the one place the decision lives: a stylesheet for a treatment, a constant for a pace, a uniform for a field.
+3. Render a switcher listing every arm, marking the current one, and carrying the parameter through so the operator moves between arms without editing a URL.
+4. Hand over the links and stop.
+5. Delete the parameter, the arms, and the switcher in the same change that applies the pick.
+
+### Rules
+
+- Gate every part of it on the parameter, so a page asked for nothing renders exactly what ships. Prove that with a check counting the switcher's own elements on the bare page.
+- Put the switcher where the decision is visible. A control inside a modal belongs in the modal, since a fixed element outside it sits under the backdrop.
+- Send the composed sheet as well as the links. The sheet is what the operator scans to pick two arms worth driving, and driving is what settles between them.
+- Keep the arms in the source rather than in a scratch script when the decision is a constant the page reads at runtime. A scratch script that rewrites a file between captures cannot be driven by a person.
+- Say what each arm costs in the handoff, not only what it is. An arm with no stated cost is not an option.
+- Never leave the seam behind a flag. A variant nobody removed is a second design nobody maintains, and the parameter is a surface a reader can reach.
 
 ## The copy cycle
 

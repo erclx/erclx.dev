@@ -16,6 +16,9 @@ Without this skill, a session working on a visual surface:
 - Edits rendered page copy and stops there. The canonical source is in another repository, so no branch carries the second edit and no check compares the two, which silently reintroduces the drift the split exists to close.
 - Sequences a dump into batches without recording where one pull request should end, so a dependency chain forms across every batch and the whole run lands in one review surface. Measured once at 68 files and 2951 insertions, of which three batches touched disjoint files and could have shipped separately.
 - Leaves the batches undocumented, so the run exists only in a conversation and nothing survives it.
+- Builds the scaffold for a live variant from scratch every time one is needed, since nothing states its shape. Measured across one run that served five separate decisions that way, each with its own parameter, its own switcher, and its own removal, none of which resembled the last.
+- Calls a failure a regression without taking the baseline the same way. Measured on a three-engine run that reported seven failures against a baseline taken over twenty tests rather than four hundred and fifty, which would have filed three pre-existing failures as new.
+- Verifies a surface by its dimensions and never by whether a reader would see it. Measured on a panel that reported a healthy 1517 by 639 for as long as it sat 1868px above the viewport, which every check passed and no reader could have used.
 
 ## Must
 
@@ -24,8 +27,11 @@ Without this skill, a session working on a visual surface:
 - Classify a decision as static, motion, or interactive before capturing, and take the matching option from the capture rule.
 - Render and look at every visual change before reporting on it, and prefer a measurement whenever the claim is about a number.
 - Run the four-step copy cycle before changing any rendered text, and report the upstream edit in the same message as the component edit.
-- Hold the tree uncommitted across every iteration and every batch in the run.
+- Hold the tree uncommitted across every iteration within a batch, and commit only once the operator has judged that batch.
 - Mark the recommended option in its own label when escalating a choice.
+- Serve an interactive decision as live variants behind one parameter with a switcher, and remove that seam in the change that applies the pick.
+- Take a baseline the same way before calling any failure a regression.
+- Assert that a surface is where a reader would see it, not only that it has the right shape.
 
 ## Must not
 
