@@ -255,7 +255,8 @@ export const streamsField: FieldSpec = {
     gl.uniform3f(uniforms.uAccent ?? null, ...frame.accent)
     gl.uniform1f(
       uniforms.uAlpha ?? null,
-      frame.isDark ? streamsConfig.darkAlpha : streamsConfig.lightAlpha,
+      (frame.isDark ? streamsConfig.darkAlpha : streamsConfig.lightAlpha) *
+        frame.alphaScale,
     )
     gl.uniform2f(
       uniforms.uContentCenter ?? null,

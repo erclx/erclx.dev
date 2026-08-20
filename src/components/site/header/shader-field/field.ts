@@ -23,6 +23,12 @@ export interface FieldFrame {
   readonly tone: Rgb
   readonly accent: Rgb
   readonly isDark: boolean
+  /**
+   * Scales the resting alpha the field would otherwise carry. One surface is
+   * the page's opener and another is the ground under its prose, and the same
+   * drawing has to sit at two weights without becoming two drawings.
+   */
+  readonly alphaScale: number
 }
 
 /**

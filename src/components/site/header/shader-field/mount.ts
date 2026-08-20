@@ -138,6 +138,8 @@ export interface MountOptions {
    * cannot drift from what the shader draws.
    */
   readonly animate: boolean
+  /** Multiplies the field's resting alpha. Defaults to the field's own weight. */
+  readonly alphaScale?: number
 }
 
 export function mountShaderField(
@@ -147,7 +149,7 @@ export function mountShaderField(
   field: FieldSpec,
   options: MountOptions,
 ): () => void {
-  const { animate } = options
+  const { animate, alphaScale = 1 } = options
   const maybeGl = canvas.getContext('webgl', {
     alpha: true,
     antialias: false,
@@ -246,6 +248,7 @@ export function mountShaderField(
       tone,
       accent,
       isDark: dark,
+      alphaScale,
     })
 
     gl.drawArrays(gl.TRIANGLES, 0, 3)
