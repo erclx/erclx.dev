@@ -16,8 +16,8 @@ Nothing rules across the top. Space before it and the signature opening it are w
 │                                                          │  ← space alone, no rule
 │              (handwritten signature)                     │
 │                                                          │
-│   📎 Résumé      Designed and built with coding agents,  │
-│                  which is also the work.                 │
+│   📎 Résumé      Built with coding agents, which is      │
+│                  also the work.                          │
 │                  Updated August 2026                     │
 │                                                          │
 └──────────────────────────────────────────────────────────┘
@@ -31,9 +31,8 @@ Nothing rules across the top. Space before it and the signature opening it are w
 │      (handwritten signature)     │
 │                                  │
 │   📎 Résumé                      │
-│   Designed and built with        │
-│   coding agents, which is        │
-│   also the work.                 │
+│   Built with coding agents,      │
+│   which is also the work.        │
 │   Updated August 2026            │
 │                                  │
 └──────────────────────────────────┘
@@ -44,6 +43,7 @@ Nothing rules across the top. Space before it and the signature opening it are w
 - The signature anchors the top of the footer content. Below it, the Résumé link and the colophon block render in a row: Résumé on the left, colophon right-aligned. Stacks to a column under `md` with the link above the colophon.
 - The Résumé link opens in a new tab so the landing page stays in the originating tab while the PDF reads in another. A small paperclip icon precedes the word `Résumé`, slightly rotated and muted, signalling "attached document" rather than a generic link.
 - The colophon states how the page was made. The page claims its author builds the layer between a language model and the job it has to do, and stating that the page itself was built that way demonstrates the claim on the one artifact the reader is already inside rather than asserting it a second time.
+- It runs nine words. `Designed and` opened it until 2026-08-20 and came out for reading prose-like on a line read in passing, and because the pair invites a reader to weigh two acts that are one act here. The closing turn is the half that cannot go: without it the line thanks a tool, which is the register the point above rules out.
 - The date is taken at build time and names a month rather than a year alone, so it states the last deploy. Within the current year a bare year carries almost no information, which is the ambiguity it replaced.
 - The city left this line rather than moving. The closing ask above already states it as a filter, so the footer was repeating it beside a year that read as a copyright with its symbol missing.
 

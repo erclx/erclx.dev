@@ -21,8 +21,10 @@ I build the layer between a language model and the job it has to do.
   ← the claim, display face, one phrase carrying an annotation underline
 
 In practice that means agents, and the developer tools around them...
+  ...I came to it from engineering physics and complex adaptive
+  systems at Chalmers.
 I spend most of my working day with coding agents...
-  ← two body paragraphs, muted
+  ← two body paragraphs, muted, the first closing on the degrees
 
 Where that happened
   ← label-size eyebrow, muted
@@ -30,21 +32,21 @@ Where that happened
 ( ⬤ VOLVO )    ( BAC HA )    ( CHALMERS )
   ← employer marks, one tone, sized so each reads rather than matching heights
 
- 2026               ●  shipping independently, open to the next thing
-                    │     Each project below answers a problem I ran into.
+ jan 2026 to        ●  shipping independently, open to the next thing
+ present            │     Each project below answers a problem I ran into.
                     │     ( aitk ) ( Jobtriage ) ( Stackr ) ( Caret ) ( diction )
                     │
  jun to dec 2025    ○  working out what to build
                     │     Took the time to learn TypeScript and web application
                     │     development, and to work out where to point AI next.
                     │
- jan 2024 to        ○  eighteen months at volvo technology
+ jan 2024 to        ○  volvo technology, gothenburg
  jun 2025           │     The job was an agent that let engineering teams plot
                     │     and query truck data by asking in plain language.
                     │     It started as my master's thesis and became a
                     │     multi-step SQL pipeline with session memory.
                     │
- jun to aug 2023    ○  ten weeks at bac ha software, hanoi
+ jun to aug 2023    ○  internship at bac ha software, hanoi
                     │     ...
                     │
  sep 2022 to        ○  msc in complex adaptive systems, chalmers
@@ -59,7 +61,7 @@ Where that happened
  ↑ spans in their own column, tabular numerals
 ```
 
-The list opened on `Newest first.` in Fraunces italic at label size until 2026-08-20. It was there because the spans sat inside the head sentences, separated by a middle dot, so the ordering was not visible without reading each row. The spans now hold a column of their own and a reader meets 2026 against jun to dec 2025 against jan 2024 down one edge, so the list states its own order and the line restated what was already on screen.
+The list opened on `Newest first.` in Fraunces italic at label size until 2026-08-20. It was there because the spans sat inside the head sentences, separated by a middle dot, so the ordering was not visible without reading each row. The spans now hold a column of their own and a reader meets jan 2026 against jun to dec 2025 against jan 2024 down one edge, so the list states its own order and the line restated what was already on screen.
 
 ## Behavior
 
@@ -68,7 +70,10 @@ The list opened on `Newest first.` in Fraunces italic at label size until 2026-0
 - Each row is a span in its own column, a dot in the gutter beside it, and a head with a supporting sentence under it. The dot aligns to the head rather than to the block. The spans set in tabular numerals so the column holds one edge down the list.
 - Nothing on this surface takes the monospace face. The heads carried it until 2026-08-17, which made them the largest text in the section and the reason it read louder than its neighbors. Mono now marks literal machine values alone, and no value on this surface is one.
 - Every dot sits exactly on its own row, which a fixed figure could never do once rows started running to different heights.
-- A span carries months rather than a year alone, because a year read as twelve months of work where the record held six.
+- A span carries months rather than a year alone, because a year read as twelve months of work where the record held six. The newest beat holds `jan 2026 to present` for the same reason: a bare `2026` said less than every row under it on a list whose spans carry months.
+- A head names the employer and its city, and states no duration. The span column beside it already carries the length, so a head restating it puts the same fact on one row twice. Both job beats led on a duration until 2026-08-20 and both gave it up together, which is what keeps them reading as a pair.
+- The two job beats name a city and the two degree beats name the university. What a beat leads on is what a reader scanning the column compares, so a beat that drops the pattern reads as a different kind of row rather than as a shorter one.
+- The prose above carries the schooling, and the timeline carries the dates for it. The paragraph closes on the two degrees rather than opening on them, because the section leads on what gets built.
 - One row is highlighted at a time as the "current state" anchor. The first row is highlighted by default. Hovering another row transfers the highlight to it. On leaving the list the highlight walks back row by row to the first row.
 - The walk lingers on the row the reader chose and gathers pace as it returns, because what it shows is a row being let go of rather than another being traveled to.
 - The highlighted dot fills with the warm accent and carries a soft ring, so one warm point marks where the reader is on a timeline that is otherwise muted. The rail marker in `section-nav.md` states position the same way and takes the same color.

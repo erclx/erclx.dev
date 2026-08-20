@@ -23,7 +23,7 @@ The emptiness is deliberate. The band is a stage held open for an authored real-
 │                                                             │    own corner
 │   Eric Le                                     (photo)       │  ← display heading,
 │                                               portrait      │    portrait floats in it
-│   Welcome, this is my corner of the internet.               │  ← greeting, display face
+│   Welcome to my corner of the internet.                     │  ← greeting, display face
 │   GitHub    LinkedIn    me@erclx.dev                        │  ← contact links row
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
@@ -34,7 +34,7 @@ The emptiness is deliberate. The band is a stage held open for an authored real-
 ```plaintext
 ┌─[tinted band]────────────────────┐
 │                                  │
-│   Welcome, this is my     [☾]    │
+│   Welcome to my           [☾]    │
 │   corner of the internet.        │
 │                                  │
 │   Eric Le                (photo) │
