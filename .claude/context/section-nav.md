@@ -28,6 +28,23 @@ Clicking a rail link sets the clicked section active immediately and suppresses 
 - The rail starts hidden and fades in once the hero is roughly half-scrolled past. An `IntersectionObserver` on the hero element with `rootMargin: '-50% 0px 0px 0px'` toggles `data-revealed`. Bidirectional: scrolling back into the hero hides the rail again.
 - A second `IntersectionObserver` on `<footer data-section="footer">` toggles `data-near-footer` so the rail fades out once the footer enters the viewport. It carries no root margin. A margin capping the root at its top half never fires, since the footer sits in the lower part of the last screen by definition, so the rail held full opacity over the beat it is meant to stand down for. Measured at 1440x900 scrolled to the end: the footer spanned 622 to 900 against a capped root ending at 450.
 
+## The active row
+
+The active row carries the contact dock's ground, resolved from the shared values in `src/styles/global.css`, so the two margin controls read as one system. It replaces a 2px accent edge, which stated the same thing in the same color with less of it. See `.claude/context/contact-dock.md` for where those values come from and what their fill can and cannot buy.
+
+Grounding all four rows was built and rejected. Four grounded labels read as a navigation menu rather than as a position indicator, and they make the rail heavier than the control it sits opposite. On one row the ground carries information instead.
+
+The row also steps out of the column, so reading down the page hands the ground from label to label and each one leans right and settles back. Two things keep that from costing anything:
+
+- Every row holds the pill's box whether or not it is painted, so the rail never reflows. Measured across all four states, one left edge and one height throughout.
+- The step is a `transform` rather than the negative margin it visually undoes. The margin is layout and would shove every row below it on each handover, where a transform moves paint alone.
+
+Sampled through one handover at 1440x900, the outgoing and incoming rows cross at +90ms and the easing overshoots past the resting position before settling, which is what makes it a lean rather than a slide.
+
+Under a reduced-motion preference the step is dropped rather than shortened, and the ground alone carries the row. Half a gesture whose whole point is the movement is worse than none.
+
+Pointing at a row is a separate claim from being inside one, so a hover adds the site's glow. On the active row it stacks on top of the ground rather than replacing it, for the reason the dock records.
+
 ## instant prop
 
 When the `instant` prop is set, the rail renders with `data-revealed` already true at server render, a `data-instant` marker disables the opacity-transition CSS, and the hero and footer observers do not attach. Used on every project route, which are otherwise static, so the rail does not fade in alone.

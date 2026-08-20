@@ -24,13 +24,13 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 │     CLI that installs one set of agent rules,            │  ← description body
 │     skills, and standards into every project ...         │
 │                                                          │
-│     Project   GitHub   npm                               │  ← link row, wraps when needed
+│     GitHub   npm                                         │  ← link row, wraps when needed
 │   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘    │
 │                                                          │
 │   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐    │
 │     Jobtriage                                            │
 │     ...                                                  │
-│     Live demo   Project   GitHub                         │
+│     Live demo   GitHub                                   │
 │   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘    │
 │                                                          │
 │   (Stackr, Caret, diction follow in the same shape)      │
@@ -55,7 +55,7 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 │  05 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐          │  ← trailing card closes the section across both columns
 │       ┌──────────────────────┐  diction                            │  ← still on one half, text on the other
 │       │        still         │  Pronunciation trainer ...          │
-│       └──────────────────────┘  Project   GitHub                   │
+│       └──────────────────────┘  GitHub                             │
 │     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘          │
 │                                                                    │
 └────────────────────────────────────────────────────────────────────┘
@@ -64,11 +64,11 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 ## Behavior
 
 - Cards stack in document order. No filtering and no sorting.
-- Every card owns a route and opens it from anywhere on the card, so the whole card is the control its `Project` link advertises.
+- Every card owns a route and opens it from anywhere on the card. The card name is the link that says so, which is also the one a keyboard reaches: the full-card link is hidden from assistive technology and held out of the tab order.
 - The links inside a card keep their own destinations, including on a card that opens as a whole.
 - Card link rows wrap when the viewport cannot hold every link on one line. Wrap is expected at 320px on cards with three or more links.
-- The `Project` link leads the row, ahead of the artifact's own listings, except on a card carrying a live demo. A running instance is the one destination worth reaching before the write-up about it.
-- A link leaving the site opens in a new tab. The `Project` link stays in the current one.
+- The link row holds outbound destinations alone, in the order the artifact is reached in. A row link labelled `Project` led it until 2026-08-20 and repeated what the whole card already does, so the name took the job and the row lost the label.
+- A link leaving the site opens in a new tab. The card name, which stays on the site, opens in the current one.
 - An odd card count would leave the trailing card alone beside an empty half from `lg`, so that card runs the full width instead and turns the remainder into a deliberate closer. It lays its still beside its text rather than above it, which keeps its height in the range the cards above it sit in. The four cards above are untouched and the grid keeps two columns.
 - Cards in a row share a lower edge. A card whose text runs short holds the row's height rather than closing early.
 

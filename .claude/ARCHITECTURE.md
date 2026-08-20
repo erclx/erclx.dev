@@ -226,6 +226,42 @@ The contrast figure that nearly settled this measured the wrong thing. Sampling 
 
 Measured at 502da58 on 2026-08-20, at 320, 375, 425, 768, 1280, 1600, 1920, and 2560.
 
+### Two token sets carry elevation and response, and every control reads them
+
+The decision above put one ground under two bars. The dock was built after that repair and never received it, so it drew its ground from the background token and measured 1.02:1 against the page behind it, which is the page laid on the page a second time. Both sets of values now sit in `:root` and every floating control and every interactive one resolves them from there.
+
+The elevation set has a ceiling and it is worth knowing before reaching for it. In light the elevated surface token is pure white against a page at `oklch(0.968)`, so 1.10:1 is the most a fill can ever separate by, and the dock reaches 1.09:1. Anything further has to come from the edge or the shadow. The two themes want different levers for that: in light the shadow does the work and the edge barely registers at 1.06:1, and in dark the shadow is invisible against a dark page while the edge reads at 1.19:1. A treatment answering only one theme was rejected for that reason.
+
+The response set answers a question the site had never asked in one place. Measured across all six pages, 87 interactive elements answered a pointer three ways, 39 with an underline, 30 with a border and a color, and 18 with nothing, and not one of them glowed. The only glow that existed sat on the project card, which is neither a link nor a button, so no inventory of controls would ever have found it.
+
+Two tiers now, and the test is whether the thing has its own box. A control with bounds takes the card's glow, and a link sitting inline in a paragraph keeps its underline, because a ground behind a word reads as a highlighter and fights the sentence around it. That test is what keeps the hero's three contact links unchanged, and it is what excludes the footer signature: the signature is `aria-hidden` decoration, and a hover response on it would promise a click that does nothing.
+
+The card is the source rather than one more surface to match, so its four values moved out of it unchanged and it now reads them back. Where a control already carries a ground at rest, the dock and the active rail row, the glow stacks on top rather than replacing it. Swapping one shadow for the other makes a lit control appear to drop as it lights.
+
+The palette has no headroom below its muted token, and that is a constraint on every future treatment rather than a fact about one section. Muted measures 4.82:1 in light, so a third step lightened beneath it fails the 4.5:1 floor for text at any value visible enough to do a job. The closing ask shipped exactly that on this branch, at a 65% mix measuring 2.53:1, and it was found by measuring for an unrelated question days later. Separate two text layers by weight, size, or the space between them, and read lightness as already spent.
+
+Two measurement errors produced confident wrong answers on this branch and both are cheap to repeat. A patch sampled at the corner of a bounding box misses a round control and reads the page behind it, which reported the dock's ground repair as no change at all. A color carrying alpha read as opaque reports a color nobody sees, which is what hid the 2.53:1 until the composite was done properly.
+
+Read the sweep as one decision rather than as eight component edits. The operator's own framing is the reason it is recorded this way: a treatment settled on one component and not the others is how the site arrived at three answers, and the inventory at `e2e/inventory.ts` exists so the next such question is measured across the site before anything is changed. It reads pseudo elements and descendants as well as the element itself, because a first pass that read only the element reported the timeline chips and the card halo as controls that do nothing.
+
+Verified at c5f17e4 on 2026-08-20, at 1280x800, 1440x900, and 390x844.
+
+### The rail states position by moving, and a control that scrolls owns the URL it leaves
+
+The section rail carried four labels and lit one. It now gives the active row the dock's ground, so the two margins read as one system, and steps that row out of the column so reading down the page hands the ground from label to label.
+
+Giving all four the ground was built and rejected. Four grounded labels stop reading as a position indicator and start reading as a navigation menu, and they make the rail heavier than the control it sits opposite. On one row the ground carries information instead.
+
+The step is a transform rather than the margin it visually undoes, because the margin is layout and would shove every label below it on each handover. Every row holds the pill's box whether or not it is painted, so the rail never reflows: measured across all four states, one left edge and one height throughout. Sampled through a handover, the outgoing and incoming rows cross at +90ms and the easing overshoots before settling, which is what makes it a lean rather than a slide. The step is the whole gesture, so a reduced-motion reader loses it entirely and the ground alone carries the row.
+
+Peripheral vision is what decided it. The rail sits in the margin beside the column a reader is reading, and movement is what peripheral vision detects where color is not. The lean against ambient motion over long-form prose does not reach this: it was about continuous effects layered over content, and this fires four times across a 7274px page, at boundaries where a reader's attention is already moving.
+
+The bar's home control is a button that scrolls rather than a link that navigates, so nothing cleared the fragment a timeline chip had left behind. A reader who clicked a project chip and then the bar name arrived at the top with the URL still naming the card they came from, which a copied link, a reload, or a bookmark then acted on. It replaces the entry rather than pushing one, so a reader does not press back twice to leave a control that only ever scrolled them.
+
+The same pass made a card's name its route link. The label saying `Project` repeated what the whole card already does, and deleting it was not enough on its own: the full-card link is `aria-hidden` at `tabindex="-1"`, so that label was the only route in without a pointer and three of five cards carried no other internal link. The route also moved to a field of its own, since it had been found by picking the one internal href out of the links list, which stops working the moment the route stops being a link in it.
+
+Verified at c5f17e4 on 2026-08-20, at 1280x800 and 1440x900.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.

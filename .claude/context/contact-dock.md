@@ -13,7 +13,10 @@ It answers the stretch between the hero and the footer, where the destinations t
 
 ## Decisions
 
-- It sits opposite the section rail, so the two margins read as a pair of controls rather than as one control and one ornament.
+- It sits opposite the section rail, so the two margins read as a pair of controls rather than as one control and one ornament. Both now render the same ground, and the rail's arrived second: see `.claude/context/section-nav.md`.
+- Its ground is the elevated surface token rather than the page's own, resolved from the shared values in `src/styles/global.css`. Drawn from the background it measured 1.02:1 against the page behind it, which is the defect the sticky bar had already closed before this control existed. Reading the shared declaration is what stops the two drifting again.
+- The fill is at its ceiling and cannot be pushed further. In light the elevated token is white against a page at `oklch(0.968)`, so 1.10:1 is the most a fill can separate by and this reaches 1.09:1. More separation has to come from the edge or the shadow, and the two themes disagree about which: the shadow carries light, the edge carries dark.
+- Pointing at a control adds the glow's shadow to the elevation it already carries rather than replacing it. Swapping one for the other makes a lit control appear to drop as it lights.
 - It arrives on the same half-hero gate the sticky bar uses, and stands down over the footer, which carries the same destinations.
 - The stack reverses, so the resting mark sits nearest the corner and the set grows up out of it. Rendered in order, the mark sat at the top of a group anchored to the bottom and moved every time the set opened.
 - The resting mark is an at sign rather than an envelope. The envelope is one of the destinations below it, so the control opening the set was drawn as a member of it.
