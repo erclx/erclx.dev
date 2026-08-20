@@ -169,6 +169,41 @@ const artifacts = [
   .experience-row {
     color: var(--muted-foreground);
     padding-bottom: var(--experience-beat-gap);
+    position: relative;
+    isolation: isolate;
+  }
+  /* The beat a pointer is on lifts onto the site's glow, which is what every
+     other bounded surface does and what the closing ask already carries.
+     Drawn behind the row and inset outward, so the list carries no plate at rest.
+     It covers the date and the gutter as well as the text: the three are one
+     beat, and plating two of them separated a date from its own row.
+
+     The rail keeps painting over it. Its line lives on the gutter, which is a
+     descendant of the row, so it sits above a plate held at a negative index
+     and reads as running behind a raised beat rather than as a line drawn
+     across a card. */
+  .experience-row::after {
+    content: '';
+    position: absolute;
+    inset: -0.35rem -1.25rem;
+    border-radius: 0.85rem;
+    z-index: -1;
+    opacity: 0;
+    background: var(--glow-fill);
+    box-shadow: var(--glow-shadow);
+  }
+  /* Keyed to the beat the list currently marks rather than to the pointer, so
+     the plate travels with the dot when the list walks back to its resting
+     beat. On `:hover` alone the plate stayed on the row the pointer left and
+     faded there while the dot moved on, which lit two rows by two different
+     means at once: measured 160ms after leaving, the dot was two beats away
+     from a plate still at 0.66.
+
+     The stage carries the engagement flag, so the plate leaves once the walk
+     settles. Keying it to the active row alone would put a permanent plate
+     under the current beat, which is lit from first paint. */
+  .experience-stage[data-engaged='true'] .experience-row[data-active='true']::after {
+    opacity: 1;
   }
   .experience-row:last-child {
     padding-bottom: 0;
@@ -283,6 +318,14 @@ const artifacts = [
         border-color 150ms ease-out,
         box-shadow 200ms ease-out;
     }
+    /* The site's own pair, so a pointer crossing the beats trails the way it
+       does crossing the project grid and the closing ask. */
+    .experience-row::after {
+      transition: opacity var(--glow-out) ease-out;
+    }
+    .experience-stage[data-engaged='true'] .experience-row[data-active='true']::after {
+      transition: opacity var(--glow-in) ease-out;
+    }
     /* The chip leaves on the site's shared glow timing rather than its own,
        so a pointer crossing the row of chips trails the same way it does
        crossing the project grid. */
@@ -339,19 +382,35 @@ const artifacts = [
     for (const [i, row] of rows.entries()) {
       row.addEventListener('pointerenter', () => {
         cancelWalk()
+        stage.dataset.engaged = 'true'
         setActive(i)
       })
     }
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    const baseDelay = 40
-    const maxDelay = 160
+    // The walk lingers on the beat a reader chose and gathers pace as it
+    // returns to the current one, which is why the first step is the slow one.
+    // It depicts letting go of a beat rather than traveling to another, so the
+    // moment worth holding is the leaving. The reverse shipped first and rushed
+    // exactly that, then eased into a beat nobody had asked about.
+    //
+    // It also thins the trail where the trail is thickest. The plate follows
+    // the marked beat and leaves over its own 520ms, so the slow steps falling
+    // first give each plate room to clear while the most of them are lit.
+    //
+    // Judged against an even cadence, the reverse, and a curve slow at both
+    // ends, all served live at four paces.
+    const firstStepDelay = 160
+    const lastStepDelay = 40
+    const stepDelay = (progress: number): number =>
+      firstStepDelay - progress * progress * (firstStepDelay - lastStepDelay)
 
     stage.addEventListener('pointerleave', () => {
       cancelWalk()
       if (reduce || activeIdx === defaultIdx) {
         setActive(defaultIdx)
+        delete stage.dataset.engaged
         return
       }
       const startDistance = Math.abs(activeIdx - defaultIdx)
@@ -360,12 +419,13 @@ const artifacts = [
 
       const scheduleNext = () => {
         const progress = stepsTaken / startDistance
-        const delay = baseDelay + progress * progress * (maxDelay - baseDelay)
+        const delay = stepDelay(progress)
         walkTimer = window.setTimeout(() => {
           setActive(activeIdx + step)
           stepsTaken += 1
           if (activeIdx === defaultIdx) {
             walkTimer = null
+            delete stage.dataset.engaged
           } else {
             scheduleNext()
           }
