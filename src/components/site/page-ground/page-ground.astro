@@ -34,13 +34,27 @@
       Positioned rather than in flow, since a second full-height child stacks
       under the canvas instead of over it and is measured entirely off-screen,
       which damps nothing and reports nothing. */}
-  <div
-    data-page-ground-column
-    class="absolute inset-0 mx-auto max-w-3xl"
-    aria-hidden="true"
-  >
+  <div data-page-ground-column class="absolute inset-0 mx-auto" aria-hidden="true">
   </div>
 </div>
+
+<style>
+  /* The strip the field damps inside is the measure a reader reads down, and
+     the two surfaces do not share one. The landing page holds a fixed column
+     at every width. A route scales its measure with the viewport, so a fixed
+     strip here would leave the widest part of the widest column undamped,
+     which is exactly where the most prose sits. Reading the same token the
+     route's own text reads keeps the two the same width by construction. */
+  [data-page-ground-column] {
+    max-width: 48rem;
+  }
+  /* Global, because the surface class sits on `body` and Astro scopes both
+     halves of a descendant selector, so a scoped rule would look for a body
+     carrying this component's own scope attribute and match nothing. */
+  :global(.surface-case-study) [data-page-ground-column] {
+    max-width: var(--prose-column);
+  }
+</style>
 
 <script>
   import { streamsField } from '@/components/site/header/shader-field/fields/streams'
