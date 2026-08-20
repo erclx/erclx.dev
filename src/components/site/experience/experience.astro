@@ -1,4 +1,6 @@
 ---
+import Employers from '@/components/site/experience/employers.astro'
+
 const intro = [
   'In practice that means agents, and the developer tools around them. Some of that was paid work, eighteen months of it at Volvo Technology, and the rest is tools I have built to make working with AI easier.',
   'I spend most of my working day with coding agents, and the tooling I build comes out of that. When the same rules kept drifting out of sync across my projects, that became a CLI. When staging files for a prompt got tedious, that became an extension.',
@@ -100,6 +102,8 @@ const artifacts = [
         ))
       }
     </div>
+
+    <Employers />
 
     {/* The one thing the list cannot state for itself: the beats run newest
         first and a reader arriving from prose assumes the reverse. It says

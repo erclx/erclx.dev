@@ -1,0 +1,88 @@
+---
+import chalmersMark from '@/assets/experience/chalmers.svg?raw'
+import volvoRoundel from '@/assets/experience/volvo-roundel.svg?raw'
+
+// The employer mark is the iron mark rather than the bare wordmark, because
+// the roundel is what a reader recognizes. It carries its own name as text
+// inside the circle, so it has to render tall enough for that text to read,
+// which is why it is not sized to match the wordmark beside it.
+//
+// The university mark is a wordmark because that is the identity they now
+// carry: the crest was replaced, and their own emblem file is a 337KB drawing
+// of a wreath and a compass that resolves into nothing under about 80px.
+const marks = [
+  // 48px, because the name inside the circle spans 2.2 of the mark's 24 units
+  // and renders about 4.4px tall here, which is where a bold wordmark stops
+  // resolving. 40px puts it at 3.7px and the name closes into the ring.
+  { name: 'Volvo Group', svg: volvoRoundel, className: 'h-12 w-12' },
+  {
+    name: 'Chalmers University of Technology',
+    svg: chalmersMark,
+    className: 'h-4 w-auto',
+  },
+]
+---
+
+{/* The section states two degrees and a job in text alone, so recognition
+    arrives only after a line has been read. The marks carry it in a glance.
+
+    They sit between the prose and the timeline rather than on the beats
+    themselves. Only three of five beats would carry a mark, and a list where
+    some rows are illustrated and others are not reads as a ranking between
+    them rather than as a record. */}
+<div data-employers class="mt-10 lg:mt-14" data-fade style="--fade-delay: 350ms">
+  <p class="text-label text-muted-foreground">Where that happened</p>
+  <ul class="mt-4 flex flex-wrap items-center gap-x-10 gap-y-6">
+    {
+      marks.map((mark) => (
+        <li class="relative">
+          {/* One tone that inherits the surrounding text color, so a single
+              file serves both themes and neither carries a brand palette that
+              would collide with the page's own. */}
+          <span
+            class={`text-muted-foreground block ${mark.className} [&>svg]:block [&>svg]:h-full [&>svg]:w-auto`}
+            role="img"
+            aria-label={mark.name}
+            set:html={mark.svg}
+          />
+          {/* The name a pointer asks for. It is decoration rather than a second
+              label, because the mark above already carries the accessible name
+              and a reader on a keyboard never reaches this: the marks are not
+              controls and nothing here is operable. */}
+          <span
+            data-employer-name
+            aria-hidden="true"
+            class="text-label text-muted-foreground pointer-events-none absolute top-full left-0 mt-2 whitespace-nowrap"
+          >
+            {mark.name}
+          </span>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  [data-employer-name] {
+    opacity: 0;
+  }
+  [data-employers] li:hover [data-employer-name] {
+    opacity: 1;
+  }
+  /* The mark lifts with its name so the pair reads as one response rather than
+     as a label arriving over something inert. */
+  [data-employers] li span[role='img'] {
+    color: var(--muted-foreground);
+  }
+  [data-employers] li:hover span[role='img'] {
+    color: var(--foreground);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-employer-name],
+    [data-employers] li span[role='img'] {
+      transition:
+        opacity 150ms ease-out,
+        color 150ms ease-out;
+    }
+  }
+</style>
