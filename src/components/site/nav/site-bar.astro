@@ -159,6 +159,19 @@
   toTop?.addEventListener('click', () => {
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     window.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' })
+
+    // The fragment a timeline chip left behind names a project card the reader
+    // is no longer at, and nothing else clears it: this control scrolls rather
+    // than navigates, so the URL kept claiming a position the page had left.
+    // Replaced rather than pushed, because the reader asked to go to the top
+    // and not to add a step they would have to press back through twice.
+    if (window.location.hash) {
+      window.history.replaceState(
+        null,
+        '',
+        window.location.pathname + window.location.search,
+      )
+    }
   })
 
   // Two things open the gate and the earlier one wins. The controls land before
