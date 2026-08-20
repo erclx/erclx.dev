@@ -192,9 +192,13 @@ Measured at 502da58 on 2026-08-20, at 1280x800 and 390x844 across chromium, fire
 
 ### Contact travels with the reader, in the margin opposite the rail
 
-The hero opens with three destinations and the footer closes with them. Between the two, for the length of the page, a reader who wanted one had to pick an end. A dock in the right margin carries them plus the resume, arriving on the same half-hero gate the sticky bar uses and standing down over the footer.
+The hero opens with three destinations and nothing else on the page carried them. A dock in the right margin carries them plus the resume, arriving on the same half-hero gate the sticky bar uses and holding to the bottom of the page.
 
-It sits opposite the section rail so the two margins read as a pair. The rail states position and the dock offers reach, which is the split `.claude/REQUIREMENTS.md` § Navigation already draws.
+An earlier draft of this entry said the footer closed with those three, and the dock stood down over the footer on that basis. The footer carries the resume alone, measured on 2026-08-20, so the gate removed three destinations and replaced one at the end of a page whose job is hiring. Both halves are corrected: the claim above, and the gate that rested on it.
+
+It sits opposite the section rail so the two margins read as a pair. The rail states position and the dock offers reach, which is the split `.claude/REQUIREMENTS.md` § Navigation already draws. That split is also why the pair breaks at the footer: the rail stands down there because no section remains to state, and the dock holds because reach is what a reader wants at the end.
+
+The dock mounts from the layout, so all six surfaces carry it. A route is the longest read on the site and the one a shared link lands on, which is the arrival that skips the landing page and every contact link on it. A route also reveals it at once rather than gating: the gate watches the header for a hero to scroll past, and a route's header is its sticky bar, whose intersection ratio reads 1 for the whole page. A layout mount alone would therefore have shipped a control that never arrived on five surfaces of six.
 
 The resume is in the dock and stays in the footer, which is the one duplicated destination and is deliberate. It is the highest-intent link on a page whose job is hiring, and it previously existed once, as the last thing on the page.
 
