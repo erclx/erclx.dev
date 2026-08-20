@@ -186,6 +186,12 @@ The medium was not the problem the first attempt solved. `.claude/DESIGN.md` rej
 
 The still copy mounts from the layout, so it reaches the project routes as well as the landing page. It damps inside the reading measure, tracking `--prose-column` rather than a fixed strip, because a route scales its column and a landing section does not. See `.claude/context/page-ground.md` for the measured cost, which is 16.16:1 to 15.74:1 on body text.
 
+A click disturbs it, and the disturbance is added to the stream function rather than to the drawn output. That one placement is what makes the field keep evolving underneath the wave, bend where it crosses, and recover with nothing restoring it, so the behavior falls out of where the term sits rather than being written. Painting a ring over the surface would have needed all three coded and none of them would have interacted with the field at all.
+
+Its depth was settled by serving four tunings live and letting the operator drive them, rather than by comparing recordings. A recording answers what a gesture looks like, and the open question was what it feels like to cause. The parameter and the switcher that served them were removed with the pick.
+
+Depth is not a free parameter. It sets how far the stream function is pushed and therefore how many contour levels one lobe crosses, so the rings a reader counts are about depth times `lineCount`. The first build at 0.5 drew thirteen and read as the surface breaking up rather than reacting.
+
 Three tuning defects are recorded in that entry rather than here, because each is a fact about the field rather than a decision. The one worth carrying up is that two separate motion instruments read the field as still while it moved, and the operator's eye was right against both. A metric that reports no difference across presets that visibly differ is measuring the wrong quantity, and the fix came from finding a sheen drifting at 58px/s over a field at 15px/s rather than from raising any rate.
 
 Measured at 502da58 on 2026-08-20, at 1280x800 and 390x844 across chromium, firefox, and webkit.
