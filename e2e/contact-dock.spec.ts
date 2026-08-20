@@ -76,6 +76,46 @@ test('the résumé sits nearest the resting mark', async ({ page }) => {
   )
 })
 
+test('a pointer names one destination rather than the whole set', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await scrollPastHero(page)
+
+  // The dock first, which is what opens the stack. A collapsed stack takes no
+  // pointer events, so an item cannot be reached before the set is open.
+  await page.locator(DOCK).hover()
+  await page.waitForTimeout(300)
+
+  const items = page.locator('[data-dock-links] li')
+  await items.last().hover()
+  await page.waitForTimeout(300)
+
+  const shown = await items.evaluateAll((rows) =>
+    rows.map((row) => {
+      const name = row.querySelector('[data-dock-name]')
+      return name ? getComputedStyle(name).opacity : '0'
+    }),
+  )
+
+  expect(shown.filter((opacity) => opacity === '1')).toHaveLength(1)
+})
+
+test('the dock names are hidden from assistive technology', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await scrollPastHero(page)
+
+  // Each link already carries the string as its accessible name, so exposing
+  // the label too would read every destination in the set twice.
+  const names = page.locator('[data-dock-name]')
+  await expect(names).toHaveCount(4)
+  for (let index = 0; index < 4; index += 1) {
+    await expect(names.nth(index)).toHaveAttribute('aria-hidden', 'true')
+  }
+})
+
 test('the résumé opens in a new tab from the dock', async ({ page }) => {
   await page.goto('/')
   await scrollPastHero(page)

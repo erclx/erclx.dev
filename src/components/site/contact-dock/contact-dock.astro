@@ -93,7 +93,21 @@ const links = [
   <ul id="contact-dock-links" data-dock-links class="flex flex-col items-end gap-2">
     {
       links.map((link) => (
-        <li>
+        <li class="relative flex items-center justify-end">
+          {/* The name a pointer asks for, since the stack is icons alone. It
+              sits to the left because the dock is pinned to the right edge and
+              a label on the other side would run off the viewport.
+
+              Hidden from assistive technology: the link already carries this
+              string as its accessible name, so exposing it twice would have a
+              screen reader read every destination in the set twice over. */}
+          <span
+            data-dock-name
+            aria-hidden="true"
+            class="border-border/60 bg-background/85 text-label text-muted-foreground pointer-events-none absolute right-full mr-2 rounded-full border px-3 py-1 whitespace-nowrap backdrop-blur-xl"
+          >
+            {link.label}
+          </span>
           <a
             href={link.href}
             {...(link.newTab
@@ -158,6 +172,16 @@ const links = [
     pointer-events: auto;
   }
 
+  /* The name answers the one destination a reader is pointing at rather than
+     every destination at once, which is what a stack of four labels would be. */
+  [data-dock-name] {
+    opacity: 0;
+  }
+  [data-dock-links] li:hover [data-dock-name],
+  [data-dock-links] li:focus-within [data-dock-name] {
+    opacity: 1;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     [data-contact-dock] {
       transition: opacity 300ms ease-out;
@@ -166,6 +190,9 @@ const links = [
       transition:
         opacity 200ms ease-out,
         transform 200ms ease-out;
+    }
+    [data-dock-name] {
+      transition: opacity 150ms ease-out;
     }
   }
 </style>
