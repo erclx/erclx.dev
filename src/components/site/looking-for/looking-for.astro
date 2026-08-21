@@ -27,10 +27,31 @@ const criteria = [
 ]
 ---
 
+{/* Opens on the page's own interval and closes tighter than it. Every heading
+    boundary on all six pages holds 160px, which this section arrived 28px
+    short of while carrying `pt-10` where every other section carries the
+    step. That was drift rather than a decision, and `e2e/rhythm.ts` is what
+    found it.
+
+    It reads 172px even so, and the remaining 12 belong to the projects grid
+    rather than to this section: a card's last paragraph sits 12px above where
+    that section's content box ends, where every other section closes flush.
+    Trimming this step to 68px would read 160 and would be a literal here
+    standing in for a value over there, which is the shape
+    `.claude/ARCHITECTURE.md` bans by name. The step matches every sibling
+    instead and one boundary reads seven percent wide.
+
+    The close is the deliberate half. A boundary arriving on a heading has
+    something that stops the eye and says new content, and this one arrives on
+    the signature, which is decoration and hidden from assistive technology, so
+    the same interval read as emptiness. It holds 124px against the 172 it
+    carried before, both read from the last text in this section down to the
+    top of the signature, which is the first thing the footer paints. The 48px
+    between them is this section's own step, `pb-20` against `pb-8`. */}
 <section
   id="looking-for"
   data-section="looking-for"
-  class="page-inset pt-10 pb-20"
+  class="page-inset pt-16 pb-8 md:pt-20"
 >
   <div class="mx-auto max-w-3xl">
     <h2
