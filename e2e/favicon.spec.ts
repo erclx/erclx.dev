@@ -118,6 +118,80 @@ test('draws a tab icon whose detail survives 16 pixels', async ({ page }) => {
   expect(covered.solid).toBeGreaterThan(20)
 })
 
+test('keeps the letter open at 16 pixels', async ({ page }) => {
+  await page.goto('/')
+
+  // The counter is the enclosed space inside the bowl, and it closing is what
+  // turns this mark into a blob with a bar beside it. It is the property the
+  // tail angle was tuned around and the one an ink-coverage reading cannot see:
+  // a filled-in letter has more ink, not less, so coverage rises as the mark
+  // fails. A frame change alone once closed it with every other check passing.
+  const openPixels = await page.evaluate(async () => {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const candidate = new Image()
+      candidate.onload = () => resolve(candidate)
+      candidate.onerror = () => reject(new Error('failed to load /favicon.svg'))
+      candidate.src = '/favicon.svg'
+    })
+    const canvas = document.createElement('canvas')
+    canvas.width = 16
+    canvas.height = 16
+    const context = canvas.getContext('2d', { willReadFrequently: true })
+    if (!context) throw new Error('no 2d context')
+    context.drawImage(image, 0, 0, 16, 16)
+    const { data } = context.getImageData(0, 0, 16, 16)
+
+    const alphaAt = (x: number, y: number) => data[(y * 16 + x) * 4 + 3] ?? 0
+
+    // Every region of empty pixels, and whether it touches the frame's edge.
+    // A region that does not is a hole in the drawing. Named coordinates were
+    // the first attempt and the seed landed on the crossbar, which bisects the
+    // bowl, so the reading was of ink rather than of a counter.
+    const seen = new Set<number>()
+    let largestHole = 0
+
+    for (let startY = 0; startY < 16; startY += 1) {
+      for (let startX = 0; startX < 16; startX += 1) {
+        if (seen.has(startY * 16 + startX)) continue
+        if (alphaAt(startX, startY) > 60) continue
+
+        const queue = [{ x: startX, y: startY }]
+        let size = 0
+        let touchesEdge = false
+
+        while (queue.length) {
+          const point = queue.pop()
+          if (!point) break
+          const key = point.y * 16 + point.x
+          if (seen.has(key)) continue
+          if (point.x < 0 || point.x > 15 || point.y < 0 || point.y > 15) {
+            touchesEdge = true
+            continue
+          }
+          if (alphaAt(point.x, point.y) > 60) continue
+          seen.add(key)
+          size += 1
+          queue.push(
+            { x: point.x + 1, y: point.y },
+            { x: point.x - 1, y: point.y },
+            { x: point.x, y: point.y + 1 },
+            { x: point.x, y: point.y - 1 },
+          )
+        }
+
+        if (!touchesEdge && size > largestHole) largestHole = size
+      }
+    }
+
+    return largestHole
+  })
+
+  // The eye of the e, enclosed by the bowl and the crossbar. It is the first
+  // thing to disappear when the drawing is scaled down inside its frame, and
+  // a mark whose eye has filled reads as a dot rather than a letter.
+  expect(openPixels).toBeGreaterThan(1)
+})
+
 test('swaps its ink with the reader’s color scheme', async ({ page }) => {
   const inkUnder = async (scheme: 'light' | 'dark') => {
     await page.emulateMedia({ colorScheme: scheme })

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="erclx logomark">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 9.5 81 81" role="img" aria-label="erclx logomark">
   <!-- The tab icon. Generated from src/assets/brand/mark.svg, which is the one
        drawing, with the ink resolved here rather than inherited: a favicon has
        no document to take currentColor from.
@@ -11,31 +11,32 @@
        has to read in whichever single color it picks, and it does: measured
        over the dark page it peaks at luminance 239 with 48 of 256 pixels above
        180. -->
+  <!-- Two classes rather than one. A CSS declaration outranks a presentation
+       attribute in SVG, so a single rule carrying `fill` overrode the
+       `fill="none"` on the stroked paths and filled the bowl: the mark shipped
+       as a solid disc with a bar, which reads as more ink rather than less and
+       so passed a coverage check while failing to be a letter at all. -->
   <style>
-    .ink {
+    .stroke {
+      fill: none;
       stroke: #1a1815;
+      stroke-width: 10;
+      stroke-linecap: round;
+    }
+    .solid {
       fill: #1a1815;
+      stroke: none;
     }
     @media (prefers-color-scheme: dark) {
-      .ink {
+      .stroke {
         stroke: #f4efe6;
+      }
+      .solid {
         fill: #f4efe6;
       }
     }
   </style>
-  <path
-    class="ink"
-    d="M 67.5 50 A 25 25 0 1 0 56.84 70.48"
-    fill="none"
-    stroke-width="10"
-    stroke-linecap="round"
-  />
-  <path
-    class="ink"
-    d="M 17.5 50 L 67.5 50"
-    fill="none"
-    stroke-width="10"
-    stroke-linecap="round"
-  />
-  <rect class="ink" x="74.5" y="21" width="13" height="58" rx="1.5" stroke="none" />
+  <path class="stroke" d="M 67.5 50 A 25 25 0 1 0 56.84 70.48" />
+  <path class="stroke" d="M 17.5 50 L 67.5 50" />
+  <rect class="solid" x="74.5" y="21" width="13" height="58" rx="1.5" />
 </svg>

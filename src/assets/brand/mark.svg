@@ -1,4 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="erclx logomark">
+<!-- The box is the drawing's own bounds squared, with three units of padding,
+     rather than a round 100. A square frame with generous margin drops the
+     letter to 60% of the frame height, which at 16px takes a fifth off the
+     stroke and the counter and closes the aperture the tail angle exists to
+     hold open. The aperture was tuned on the drawing and then the frame was
+     changed under it. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 9.5 81 81" role="img" aria-label="erclx logomark">
   <!-- A lowercase e followed by a block cursor. The tail sweeps to 55 degrees
        below horizontal, which is the first angle whose aperture is still an
        aperture at 16 pixels rather than a trapped grey pixel. Stroke 10 against
