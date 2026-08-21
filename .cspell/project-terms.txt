@@ -1,5 +1,8 @@
+autoplays
 backticked
 BHSoft
+blocklist
+blocklists
 borderless
 Borås
 BYOK
