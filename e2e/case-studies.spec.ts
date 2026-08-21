@@ -92,13 +92,6 @@ test('every diction figure loads its image', async ({ page }) => {
     .toBe(DICTION_FIGURE_COUNT)
 })
 
-test('each case study links back to the landing page', async ({ page }) => {
-  await page.goto('/aitk')
-
-  await page.getByRole('link', { name: 'Back to Eric Le' }).click()
-  await expect(page).toHaveURL('/')
-})
-
 test('the project cards link to both case studies', async ({ page }) => {
   await page.goto('/')
 
@@ -169,15 +162,20 @@ test('closing a figure returns focus to the figure that opened it', async ({
   await expect(trigger).toBeFocused()
 })
 
-test('each case study carries one way home at the foot', async ({ page }) => {
+test('each case study carries one way home in the bar and one at the foot', async ({
+  page,
+}) => {
   await page.goto('/diction')
 
-  await expect(page.getByRole('link', { name: 'Back to Eric Le' })).toHaveCount(
-    1,
-  )
+  // One persistent and one closing, rather than two of the same. The bar
+  // answers at any scroll position and the foot answers when the read is over,
+  // so a third would be the one that makes them read as repetition.
+  await expect(page.locator('header a[data-way-home]')).toHaveCount(1)
+  await expect(page.locator('footer a[data-way-home]')).toHaveCount(1)
+  await expect(page.locator('a[data-way-home]')).toHaveCount(2)
 })
 
-test('each case study also carries a way home in the top bar', async ({
+test('each case study links back to the landing page from the top bar', async ({
   page,
 }) => {
   await page.goto('/diction')
@@ -262,6 +260,10 @@ test('returning from a case study restores where the visitor left', async ({
   await page.locator('#projects article').first().click()
   await expect(page).toHaveURL('/aitk')
 
+  // The unwind runs off the foot rather than the bar. `way-home.ts` binds
+  // every `[data-way-home]` anchor, so both controls carry it, and the foot is
+  // the one a reader reaches by scrolling the route, which is the path it
+  // exists for.
   await page.getByRole('link', { name: 'Back to Eric Le' }).click()
 
   await expect(page).toHaveURL('/')
@@ -270,7 +272,9 @@ test('returning from a case study restores where the visitor left', async ({
     .toBeGreaterThan(left / 2)
 })
 
-test('a case study opened directly still links home', async ({ page }) => {
+test('a case study opened directly still links home from the foot', async ({
+  page,
+}) => {
   await page.goto('/aitk')
 
   await page.getByRole('link', { name: 'Back to Eric Le' }).click()

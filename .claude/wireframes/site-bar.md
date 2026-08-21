@@ -42,7 +42,7 @@ The ground starts at the full width with square corners and contracts to a round
 └─────────────────────────────────────────────────────────────┘
 ```
 
-The route name is absent while the route's own title is still on screen and fades in once that title passes behind the bar, so the two never state the same thing at once. A route carries no arrow beside the name. One arrow plus the trailing way home at the foot of the page read as three exits from a page that needs one.
+The route name is absent while the route's own title is still on screen and fades in once that title passes behind the bar, so the two never state the same thing at once. A route carries no arrow beside the name. The foot carries one on its own control, and the two are separated by a page height rather than by an ornament, so an arrow here would state a second time what the name already does.
 
 ## Behavior
 

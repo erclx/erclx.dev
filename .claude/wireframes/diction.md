@@ -51,8 +51,9 @@ Reached from the diction project card on the landing page. Carries six measured 
 │   └────────────────────────────────────────────────┘     │
 │   (three wide figures follow, each with a caption)       │
 │                                                          │
-├──────────────────────────────────────────────────────────┤
-│   ← Back to Eric Le                                      │  ← the way home at the foot
+│                                                          │
+│   ← Back to Eric Le                                      │  ← closing way home, on the
+│                                                          │    prose column's left edge
 └──────────────────────────────────────────────────────────┘
 ```
 

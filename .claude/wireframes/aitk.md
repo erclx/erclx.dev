@@ -52,8 +52,9 @@ Reached from the aitk project card on the landing page. Carries the depth a visi
 │   agents                                                 │
 │   Every command has a non-interactive path ...           │
 │                                                          │
-├──────────────────────────────────────────────────────────┤
-│   ← Back to Eric Le                                      │  ← the way home at the foot
+│                                                          │
+│   ← Back to Eric Le                                      │  ← closing way home, on the
+│                                                          │    prose column's left edge
 └──────────────────────────────────────────────────────────┘
 ```
 

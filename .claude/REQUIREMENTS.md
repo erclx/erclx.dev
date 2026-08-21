@@ -32,7 +32,7 @@ The header lost the role, the headline, and the location on 2026-08-17. The clai
 
 - A visitor can reach the top of the site from anywhere on it, at any viewport. The section rail is hidden below 1280px and states position rather than offering reach, so it does not satisfy this on its own
 - A reader arriving on a project route from a shared link has a way back that does not require scrolling to the end of the page
-- The way back is one control per surface. A route carrying both a bar link and a trailing link reads as two exits from a page that needs one
+- The way back is one persistent control plus one closing affordance. The bar answers at any scroll position and the foot answers when the read is over, so the two differ in what they are for rather than repeating one exit. A third would be repetition
 - Navigation chrome holds one column across every surface, so it does not resize as a reader moves between the landing page and a route
 
 ## Project cards

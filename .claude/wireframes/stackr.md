@@ -36,8 +36,9 @@ Added on 2026-08-18, when every shipped project earned a route. This one has no 
 │   runtime                                                │
 │   The extension carries no runtime dependencies ...      │
 │                                                          │
-│   ────────────────────────────────────────────────────   │
-│   ← Back to Eric Le                                      │  ← way home at the foot
+│                                                          │
+│   ← Back to Eric Le                                      │  ← closing way home, on the
+│                                                          │    prose column's left edge
 └──────────────────────────────────────────────────────────┘
 ```
 
