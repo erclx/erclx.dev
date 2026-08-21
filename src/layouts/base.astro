@@ -17,6 +17,11 @@ interface Props {
 
 const { title, description, surface } = Astro.props
 const isRoute = surface === 'case-study'
+
+// The card is one image for every page, so its alt text describes the card
+// rather than the page it is attached to.
+const ogImageAlt =
+  'The claim this site opens on, set over the contour field it runs behind every page'
 ---
 
 <html lang="en">
@@ -51,6 +56,32 @@ const isRoute = surface === 'case-study'
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{title}</title>
+
+    {/* Every host reads these same tags and differs only in what it renders
+        from them, so there is one image and one set of copy rather than a
+        variant per network. The card carries no name, because each of them
+        prints the title beside it and a name in both is the same word twice in
+        one unfurl.
+
+        Absolute rather than root-relative. A crawler fetches the image on its
+        own rather than in the page's context, so a leading slash resolves
+        against nothing. `site` in the Astro config is what makes this work. */}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:image" content={new URL('/og.png', Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="og:site_name" content="erclx.dev" />
+
+    {/* X shows a thumbnail beside the text without this and the full card with
+        it, so the tag is what decides the size rather than the image. */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('/og.png', Astro.site)} />
     <script is:inline>
       const stored = localStorage.getItem('theme')
       const mode =

@@ -41,6 +41,7 @@ For the rationale behind these choices, such as Astro over Next, the shadcn inst
 | `bun run dev`           | Start the Astro dev server on port 4321.                                                                               |
 | `bun run device`        | Serve the dev site to a phone or tablet on the same network, printing a QR to scan.                                    |
 | `bun run brand`         | Redraw every brand raster from the one mark source. Run after editing that mark and never by hand.                     |
+| `bun run share-card`    | Redraw the link preview card. Needs the site served, since it composes inside the built page to get its own type.      |
 | `bun run build`         | Run `astro check` then build the static output.                                                                        |
 | `bun run preview`       | Serve the built site locally.                                                                                          |
 | `bun run astro`         | Expose the Astro CLI.                                                                                                  |
