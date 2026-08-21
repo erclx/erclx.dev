@@ -95,7 +95,7 @@ test('every diction figure loads its image', async ({ page }) => {
 test('each case study links back to the landing page', async ({ page }) => {
   await page.goto('/aitk')
 
-  await page.getByRole('link', { name: 'Back to Eric Le' }).click()
+  await page.getByRole('link', { name: 'Eric Le', exact: true }).click()
   await expect(page).toHaveURL('/')
 })
 
@@ -169,12 +169,17 @@ test('closing a figure returns focus to the figure that opened it', async ({
   await expect(trigger).toBeFocused()
 })
 
-test('each case study carries one way home at the foot', async ({ page }) => {
+test('each case study carries one way home in the bar and one at the foot', async ({
+  page,
+}) => {
   await page.goto('/diction')
 
-  await expect(page.getByRole('link', { name: 'Back to Eric Le' })).toHaveCount(
-    1,
-  )
+  // One persistent and one closing, rather than two of the same. The bar
+  // answers at any scroll position and the foot answers when the read is over,
+  // so a third would be the one that makes them read as repetition.
+  await expect(page.locator('header a[data-way-home]')).toHaveCount(1)
+  await expect(page.locator('footer a[data-way-home]')).toHaveCount(1)
+  await expect(page.locator('a[data-way-home]')).toHaveCount(2)
 })
 
 test('each case study also carries a way home in the top bar', async ({
@@ -262,7 +267,7 @@ test('returning from a case study restores where the visitor left', async ({
   await page.locator('#projects article').first().click()
   await expect(page).toHaveURL('/aitk')
 
-  await page.getByRole('link', { name: 'Back to Eric Le' }).click()
+  await page.getByRole('link', { name: 'Eric Le', exact: true }).click()
 
   await expect(page).toHaveURL('/')
   await expect
@@ -273,7 +278,7 @@ test('returning from a case study restores where the visitor left', async ({
 test('a case study opened directly still links home', async ({ page }) => {
   await page.goto('/aitk')
 
-  await page.getByRole('link', { name: 'Back to Eric Le' }).click()
+  await page.getByRole('link', { name: 'Eric Le', exact: true }).click()
 
   await expect(page).toHaveURL('/')
 })

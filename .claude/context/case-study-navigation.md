@@ -7,7 +7,11 @@ description: How the way-home controls return a reader to the position on the la
 
 ## Overview
 
-The behavior behind the two way-home controls a case-study route carries. Both are ordinary links to `/`. The module upgrades them to a history unwind for the reader who arrived from the landing page, so the browser restores the scroll position rather than dropping them at the hero.
+The behavior behind the two way-home controls a case-study route carries. Both are ordinary links to `/`, one in the route bar and one in the foot. The module upgrades them to a history unwind for the reader who arrived from the landing page, so the browser restores the scroll position rather than dropping them at the hero.
+
+The two are not one control repeated. The bar answers at any scroll position and the foot answers when the read is over, which is the split `.claude/REQUIREMENTS.md` § Navigation states.
+
+The foot came out on 2026-08-21 and went back the same day. Removing it rested on a measurement, that both controls sit on screen together at the foot of every route, and the measurement was right while the conclusion drawn from it was not: a control being reachable is a different question from whether the end of a long read should close on something. The operator read the removed version and reported the page ending too tight, which is the evidence the measurement could not carry. It returned left-aligned rather than at its old full width, on the edge every line of prose starts from, and the tail went from 80px to 96 above the control and 112 below.
 
 ## Layout
 
@@ -28,4 +32,6 @@ The behavior behind the two way-home controls a case-study route carries. Both a
 
 ## Hidden contracts
 
-- `[data-way-home]` on an anchor is what the module binds. A case-study route that adds a third way home gets the behavior by carrying the attribute, and one that drops the attribute silently falls back to a plain navigation.
+- `[data-way-home]` on an anchor is what the module binds. A case-study route that adds another way home gets the behavior by carrying the attribute, and one that drops the attribute silently falls back to a plain navigation.
+- A test counts those anchors by region, one in the header and one in the footer, rather than counting two anywhere on the page. A route that grew a third in the body would satisfy a bare count of two and is the case the split assertion catches.
+- `route-foot.astro` owns the closing control for all five routes. It carries the footer landmark as well, so a route that drops the component ends with no `[data-section="footer"]` at all, which is the shape the routes shipped in for part of 2026-08-21.
