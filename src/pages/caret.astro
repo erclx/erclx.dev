@@ -41,30 +41,24 @@ const navItems = [
     <section class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
         <p
-          data-fade data-visible="true"
+          data-fade
           class="text-muted-foreground text-label tracking-wide uppercase"
         >
           Project
         </p>
         <h1
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+          data-fade          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
         >
           Caret
         </h1>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-lede mt-4"
+          data-fade          class="text-muted-foreground text-lede mt-4"
         >
           A prompt palette that opens where the cursor already is, on three chat
           sites that each handle text differently.
         </p>
         <ul
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="mt-6 flex flex-wrap gap-x-6"
+          data-fade          class="mt-6 flex flex-wrap gap-x-6"
         >
           {
             artifactLinks.map((link) => (
@@ -85,9 +79,7 @@ const navItems = [
             `view` so a phone, which cannot hover, plays it on screen. */}
         <figure
           data-media-host="view"
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+          data-fade          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
           <video
             src={caretDemo}
@@ -106,31 +98,26 @@ const navItems = [
     <section id="problem" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2
-          data-fade data-visible="true"
+          data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           problem
         </h2>
         <p
-          data-fade data-visible="true"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           I was retyping the same instructions into Claude, Gemini, and ChatGPT
           several times a day. Each one holds text differently, so there was
           nowhere to keep a prompt that all three could reach.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The prompts worth reusing end up in a notes file, which means leaving
           the chat, finding the one you want, and pasting it back.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The gap is small and you cross it many times a day.
         </p>
@@ -140,24 +127,20 @@ const navItems = [
     <section id="trigger" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2
-          data-fade data-visible="true"
+          data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           trigger
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           Typing the trigger symbol at a word boundary opens a palette anchored
           above the cursor. Fuzzy search filters the library and the keyboard
           inserts the prompt without leaving the input.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The symbol is configurable per site, because one that is free on a
           chat surface collides with a native shortcut on another.
@@ -168,15 +151,13 @@ const navItems = [
     <section id="adapters" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2
-          data-fade data-visible="true"
+          data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           adapters
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           Three sites, two editor models. Claude and ChatGPT render their inputs
           through ProseMirror, Gemini uses a plain <code class="font-mono"
@@ -184,18 +165,14 @@ const navItems = [
           >.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           Writing into either directly corrupts the host's own state, so each
           site gets an adapter that synthesizes the events a real keystroke
           would produce rather than setting the value.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The <code class="font-mono">contenteditable</code> adapter walks the DOM
           to find an absolute cursor position across fragmented text nodes, which
@@ -211,6 +188,9 @@ const navItems = [
   <script>
     import { initWayHome } from '@/components/site/case-study/way-home'
     import { initHoverVideo } from '@/lib/hover-video'
+    import { initReveal } from '@/lib/reveal'
+
+    initReveal()
     initWayHome()
     initHoverVideo()
   </script>

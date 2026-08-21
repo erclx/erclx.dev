@@ -45,29 +45,23 @@ const navItems = [
     <section class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
         <p
-          data-fade data-visible="true"
+          data-fade
           class="text-muted-foreground text-label tracking-wide uppercase"
         >
           Project
         </p>
         <h1
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+          data-fade          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
         >
           Stackr
         </h1>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-lede mt-4"
+          data-fade          class="text-muted-foreground text-lede mt-4"
         >
           Named context tracks for the times a coding agent is the wrong tool.
         </p>
         <ul
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="mt-6 flex flex-wrap gap-x-6"
+          data-fade          class="mt-6 flex flex-wrap gap-x-6"
         >
           {
             artifactLinks.map((link) => (
@@ -88,9 +82,7 @@ const navItems = [
             `view` so a phone, which cannot hover, plays it on screen. */}
         <figure
           data-media-host="view"
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+          data-fade          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
           <video
             src={stackrDemo}
@@ -109,23 +101,20 @@ const navItems = [
     <section id="problem" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2
-          data-fade data-visible="true"
+          data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           problem
         </h2>
         <p
-          data-fade data-visible="true"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           I was assembling context for a planning conversation by opening files
           one at a time and pasting them in order, often enough that it started
           to grate.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           Some work is not agent work. Planning a change or arguing about
           architecture wants a chat with the right files in front of it, and
@@ -133,9 +122,7 @@ const navItems = [
           order.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The context is the input, and building it was the tedious part.
         </p>
@@ -145,24 +132,20 @@ const navItems = [
     <section id="tracks" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2
-          data-fade data-visible="true"
+          data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           tracks
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           A track is a named working set. Bug Fix #123 and Refactor Auth each
           keep their own staged list and swap on one keystroke, so the context
           for one piece of work survives while you go and do another.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           Copying a track emits an ASCII directory tree followed by the file
           contents, which gives the model the shape of the codebase before it
@@ -175,15 +158,13 @@ const navItems = [
     <section id="runtime" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2
-          data-fade data-visible="true"
+          data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           runtime
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           The extension carries no runtime dependencies. Everything runs against
           the VS Code API and the Node standard library, with esbuild bundling
@@ -192,17 +173,13 @@ const navItems = [
           >.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           For code loaded into someone else's editor the dependency tree is the
           risk surface, so removing it beats auditing it.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The other constraint is the extension host, which is shared and single
           threaded. Building an ASCII tree from a large stack would block it, so
@@ -219,6 +196,9 @@ const navItems = [
   <script>
     import { initWayHome } from '@/components/site/case-study/way-home'
     import { initHoverVideo } from '@/lib/hover-video'
+    import { initReveal } from '@/lib/reveal'
+
+    initReveal()
     initWayHome()
     initHoverVideo()
   </script>

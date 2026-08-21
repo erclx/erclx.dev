@@ -158,59 +158,12 @@ const projects = [
 </section>
 
 <script>
-  const targets = document.querySelectorAll<HTMLElement>('[data-fade]')
-  const BATCH_STEP_MS = 80
-  // A step per element with no ceiling makes a large batch wait longer than the
-  // authored delays this replaces, so the whole batch is fitted to one window.
-  const BATCH_WINDOW_MS = 400
-
-  if (targets.length > 0 && 'IntersectionObserver' in window) {
-    // The authored per-element delay assumes its surface arrives alone. A fast
-    // scroll delivers several surfaces in one callback, where a long-delayed
-    // card further up the page finishes after a short-delayed row below it and
-    // the page appears to reveal backwards. Everything arriving together is
-    // therefore re-staggered by document position, which is the order a reader
-    // expects whatever their scroll speed.
-    const documentOrder = new Map<Element, number>()
-    for (const [index, target] of targets.entries()) {
-      documentOrder.set(target, index)
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const arriving = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              (documentOrder.get(a.target) ?? 0) -
-              (documentOrder.get(b.target) ?? 0),
-          )
-
-        const stepMs = Math.min(
-          BATCH_STEP_MS,
-          BATCH_WINDOW_MS / Math.max(1, arriving.length),
-        )
-
-        for (const [step, entry] of arriving.entries()) {
-          const element = entry.target as HTMLElement
-          element.style.setProperty('--fade-delay', `${step * stepMs}ms`)
-          element.setAttribute('data-visible', 'true')
-          observer.unobserve(element)
-        }
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
-    )
-    for (const target of targets) {
-      observer.observe(target)
-    }
-  }
-</script>
-
-<script>
   import { initHoverVideo } from '@/lib/hover-video'
+  import { initReveal } from '@/lib/reveal'
 
   import { initTilt } from './tilt'
 
+  initReveal()
   initHoverVideo()
   initTilt()
 </script>

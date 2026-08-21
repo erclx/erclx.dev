@@ -62,37 +62,29 @@ const prescriptions = [
   <main>
     <section class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
-        <p data-fade data-visible="true" class="text-muted-foreground text-label tracking-wide uppercase">
+        <p data-fade class="text-muted-foreground text-label tracking-wide uppercase">
           Project
         </p>
         <h1
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+          data-fade          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
         >
           aitk
         </h1>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-lede mt-4"
+          data-fade          class="text-muted-foreground text-lede mt-4"
         >
           A CLI that installs one set of agent rules, skills, and standards into
           every project and keeps them in step.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 300ms"
-          class="text-muted-foreground text-body mt-3"
+          data-fade          class="text-muted-foreground text-body mt-3"
         >
           Public and MIT licensed. Installs from npm as
           <code class="font-mono">@erclx/aitk</code> and as a Claude Code
           plugin.
         </p>
         <ul
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="mt-6 flex flex-wrap gap-x-6"
+          data-fade          class="mt-6 flex flex-wrap gap-x-6"
         >
           {
             artifactLinks.map((link) => (
@@ -112,9 +104,7 @@ const prescriptions = [
         {/* The still closes the opening rather than interrupting it, so a
             reader meets the artifact existing before the argument starts. */}
         <figure
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+          data-fade          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
           <Image
             src={installTranscript}
@@ -128,21 +118,18 @@ const prescriptions = [
 
     <section id="problem" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           problem
         </h2>
         <p
-          data-fade data-visible="true"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           Every project I started got the same agent scaffolding typed into it
           again, and every copy moved away from the last. I wanted one source I
           could install rather than a folder I kept re-authoring.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           Every repository re-authors the same agent scaffolding. The rules an
           agent reads, the skills it runs, the prose standards it writes
@@ -151,9 +138,7 @@ const prescriptions = [
           instructions depending on which checkout it opened.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           Drift on this surface is quiet. A rule that fell behind still loads,
           still reads as authoritative, and produces work against a convention
@@ -165,13 +150,11 @@ const prescriptions = [
 
     <section id="thesis" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           thesis
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           This is infrastructure that carries a team across a step of AI
           adoption, rather than tooling one engineer prefers. Four prescriptions
@@ -180,9 +163,7 @@ const prescriptions = [
         </p>
 
         <ul
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="mt-10 flex flex-col gap-3"
+          data-fade          class="mt-10 flex flex-col gap-3"
         >
           {
             prescriptions.map((item) => (
@@ -194,18 +175,14 @@ const prescriptions = [
         </ul>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           The fourth is raising agency and review speed once agents touch code
           other teams own, which is an organizational permission rather than a
           thing a CLI can install.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The claim stops there deliberately, with the token budget named out
           loud as the ceiling. A larger claim about autonomous fleets is one
@@ -216,22 +193,18 @@ const prescriptions = [
 
     <section id="taxonomy" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           taxonomy
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           Content reaches a project through three separate operations, and what
           each one is allowed to touch is the whole design.
         </p>
 
         <dl
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="mt-10 grid gap-y-2 sm:grid-cols-[6rem_1fr]"
+          data-fade          class="mt-10 grid gap-y-2 sm:grid-cols-[6rem_1fr]"
         >
           {
             operations.map((row) => (
@@ -244,9 +217,7 @@ const prescriptions = [
         </dl>
 
         <figure
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+          data-fade          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
         >
           <figcaption class="text-muted-foreground font-mono text-label mb-4">
             content kinds and their merge rule
@@ -264,9 +235,7 @@ const prescriptions = [
         </figure>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           That taxonomy is what makes an update safe to run without reading it
           first. A sync that only touches files already present cannot introduce
@@ -276,9 +245,7 @@ const prescriptions = [
           version of this a team actually runs.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 550ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           Stacks compose through the same <code class="font-mono">extends</code>
           field. <code class="font-mono">react</code> extends
@@ -293,22 +260,18 @@ const prescriptions = [
 
     <section id="model" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           model
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           The toolkit ships the way of working alongside the files. Sessions
           split by vantage rather than by capability.
         </p>
 
         <figure
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="figure-breakout bg-card mt-10 rounded-lg p-6 md:p-10"
+          data-fade          class="figure-breakout bg-card mt-10 rounded-lg p-6 md:p-10"
         >
           <div class="font-mono text-label flex flex-col items-center gap-6">
             <div class="border-border text-foreground rounded-md border px-4 py-2">
@@ -345,9 +308,7 @@ const prescriptions = [
         </figure>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           Review travels on the pull request itself. One skill posts findings to
           it, another reads them back, fixes each, and pushes a follow-up, and
@@ -356,9 +317,7 @@ const prescriptions = [
           anything is open without reading the thread.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The two passes differ by vantage rather than by depth. A worker's
           self-review asks whether it built the plan and whether it passes, and
@@ -368,9 +327,7 @@ const prescriptions = [
           the plan itself.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 550ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           What binds the number of tracks is collision between file sets rather
           than a fixed cap. A candidate opens only where its files are disjoint
@@ -382,13 +339,11 @@ const prescriptions = [
 
     <section id="agents" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           agents
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           Every command has a non-interactive path, every listing emits JSON on
           stdout, and the framed terminal UI goes to stderr. A skill shelling
@@ -396,18 +351,14 @@ const prescriptions = [
           progress frame.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           Because <code class="font-mono">bash exec</code> drops parent traps,
           each subcommand re-arms its exit trap before an early JSON exit, so
           exactly one frame renders per invocation.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           Verification runs on sandbox scenarios rather than unit tests. Each
           scenario provisions an isolated project state anchored to a baseline
@@ -426,6 +377,9 @@ const prescriptions = [
 
   <script>
     import { initWayHome } from '@/components/site/case-study/way-home'
+    import { initReveal } from '@/lib/reveal'
+
+    initReveal()
     initWayHome()
   </script>
 </BaseLayout>
