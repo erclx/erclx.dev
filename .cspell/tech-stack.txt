@@ -1,5 +1,6 @@
 accDescr
 advected
+advfirewall
 aitk
 autoplay
 axios
@@ -8,6 +9,8 @@ bunx
 changelogithub
 cksum
 commitlint
+connectaddress
+connectport
 cutover
 dbaeumer
 dotfolders
@@ -38,10 +41,14 @@ libgl
 linecap
 linejoin
 lintstagedrc
+listenaddress
+listenport
 llvmpipe
+localport
 Mcpjson
 mediump
 mkhl
+netsh
 networkidle
 njsproj
 noopener
@@ -56,7 +63,9 @@ pipefail
 pointerenter
 pointerleave
 pointermove
+portproxy
 pyproject
+qrcode
 regen
 RLENGTH
 RSTART

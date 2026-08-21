@@ -39,6 +39,7 @@ For the rationale behind these choices, such as Astro over Next, the shadcn inst
 | `bun run clean`         | Wipe `node_modules/`, clear bun cache, reinstall.                                                                      |
 | `bun run update`        | Interactive `bun update` followed by verification.                                                                     |
 | `bun run dev`           | Start the Astro dev server on port 4321.                                                                               |
+| `bun run device`        | Serve the dev site to a phone or tablet on the same network, printing a QR to scan.                                    |
 | `bun run build`         | Run `astro check` then build the static output.                                                                        |
 | `bun run preview`       | Serve the built site locally.                                                                                          |
 | `bun run astro`         | Expose the Astro CLI.                                                                                                  |
@@ -56,7 +57,7 @@ For the rationale behind these choices, such as Astro over Next, the shadcn inst
 Keep `bun run dev` running in the background during landing-page sessions so changes are visible at http://localhost:4321 as they land.
 
 - `bun run screenshot` builds, then binds its own preview server on port 4173 via `scripts/screenshot.sh`. The separate port keeps it clear of the dev server on 4321, and the script exits rather than reuse a port already serving.
-- Three surfaces each hold their own port band so any two run at once: dev from 4321, screenshot from 4173, and Playwright from 4250. `playwright.config.ts` derives its `baseURL` from that base and passes the resolved port to `astro preview`.
+- Three surfaces each hold their own port band so any two run at once: dev from 4321, screenshot from 4173, and Playwright from 4250. `playwright.config.ts` derives its `baseURL` from that base and passes the resolved port to `astro preview`. The device harness is the exception and holds one fixed port at 4400, for the reason in § Serving to a real device.
 - `scripts/worktree-port.sh` shifts all three by the same per-worktree offset, derived from the worktree directory name. The offset caps at 50, which is what keeps the bands from overlapping, so a linked worktree never collides with the main checkout.
 - Two worktrees can collide with each other, because the offset is a hash rather than an allocation. It resolves as `cksum % 50 + 1` over the directory name, which guarantees nothing about uniqueness: measured across the nine worktrees present on 2026-08-21, `ci-engine-coverage` and `page-audit-run` both derive 29, and the odds over 50 slots are past even at nine names. It surfaces as Playwright refusing to start on a port a sibling's `astro preview` still holds, sometimes hours after that session ended. Set `WORKTREE_PORT_OFFSET` to override the derivation rather than killing the other server, which may be serving work still under review.
 - Running without collision is what lets several servers stay alive at once, so a reviewer handed one address can land on a sibling worktree serving work that is not under review. Stop the other `astro dev` and `astro preview` processes before handing over a URL, and read a token off the served page to confirm the change reached it. A reviewer reporting that nothing looks different is describing the wrong port as often as the wrong change.
@@ -69,6 +70,20 @@ Keep `bun run dev` running in the background during landing-page sessions so cha
 - No capture contains a favicon, so a tab-icon change is verified by loading the built page in a headed engine and sampling the icon through a canvas. Headless Chromium requests no favicon at all, so reading which icon an engine selects needs `xvfb-run` around a headed run. `e2e/favicon.spec.ts` holds that luminance sampling as a standing guard across all three engines.
 
 For the capture model and its output path, see `.claude/ARCHITECTURE.md` § Screenshots capture per-section on the landing page and whole on a case study. For when to reach for Playwright MCP over a static capture, see § Playwright MCP for interactive verification in the same file.
+
+## Serving to a real device
+
+`bun run device` puts the dev site on a phone or tablet on the same network and prints a code to scan. A desktop browser's device emulation is not a substitute: it reproduces the events and the viewport but not the finger, the display density, or the engine, and the interaction defects this project has shipped live in exactly that gap. A scroll that a rule reads as a hover is invisible under emulation and obvious under a thumb.
+
+The routing has three hops and only the middle one needs setting up. The dev server runs inside WSL, which holds its own address on its own virtual network. Windows reaches it through a special case for `localhost` that nothing else on the network gets, so a tablet asking for the Windows address arrives at a host with nothing listening on that port. A port forward from Windows into WSL is what closes it, and creating one needs an administrator, which is why the script prints the command rather than running it.
+
+The forward names the WSL address, and that address is assigned fresh on every boot. A forward set up yesterday therefore points into nothing today, and the failure is silent in the worst way: the port still answers on Windows and the connection is refused behind it, which reads as the dev server being down. Reading the current address and comparing it against what the forward holds is most of what the script does, and it prints `set` rather than `add` so the same command creates the forward and re-points a stale one.
+
+The port is fixed at 4400 rather than derived per worktree the way the other three servers are, which is the one place this harness breaks the band convention above. A forward covers exactly one port, so a derived port would mean an administrator prompt for every new worktree, which is the recurring cost the script exists to remove. One fixed port means one forward that outlives every worktree and comes back only after a reboot. What it gives up is two worktrees serving to a device at once, which needs two devices before it is worth anything, and Astro refuses a held port rather than sliding to the next, so the collision is loud. `DEVICE_PORT` overrides it.
+
+Three things the script cannot settle. A VPN on the phone may route local addresses away from the LAN, which shows as a scan that resolves and then times out, so turn it off before suspecting the forward. Several Windows adapters answer with link-local addresses that route nowhere, so the address is taken from the one holding a DHCP lease rather than the first one listed. And the firewall rule is needed once and never again, so it is printed only when no forward exists at all.
+
+A public tunnel was the alternative and is not installed. It needs no administrator and works from any network, which is genuinely better on both counts, but it puts the dev site on an address anyone holding the link can load, and it needs the Vite host check widened to accept a hostname that changes every run. The forward keeps the page on the local network, where a portfolio still under construction belongs.
 
 ## Reproduce a suite failure against the suite's own target
 

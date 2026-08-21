@@ -7,6 +7,7 @@
   },
   "scripts": {
     "dev": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) astro dev",
+    "device": "./scripts/device.sh",
     "build": "astro check && astro build",
     "preview": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) astro preview",
     "astro": "astro",
@@ -78,6 +79,7 @@
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
+    "qrcode-terminal": "^0.12.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "tailwindcss": "^4.2.4",
