@@ -445,3 +445,53 @@ test('the jobtriage clip posters an optimized derivative', async ({ page }) => {
 
   expect(poster).toMatch(/\.webp$/)
 })
+
+test('a route reveals its prose as the reader arrives at it', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  // Below the fold on arrival, so an unrevealed one has not been reached yet
+  // rather than having failed to reveal.
+  const last = page.locator('main [data-fade]').last()
+  await expect(last).not.toHaveAttribute('data-visible', 'true')
+
+  await scrollThroughPage(page)
+
+  await expect(last).toHaveAttribute('data-visible', 'true')
+})
+
+test('a route with no intersection observer still renders its prose', async ({
+  browser,
+}) => {
+  const context = await browser.newContext()
+  // The stylesheet hides a marked element whenever scripting is on, so an
+  // engine with no observer would hold the whole route hidden. Reduced motion
+  // and a failed script escape through the media query and the `data-js` gate,
+  // and this is the third case and the only one the module has to answer.
+  await context.addInitScript(() => {
+    // @ts-expect-error removing a platform global is what this exercises
+    delete window.IntersectionObserver
+  })
+  const page = await context.newPage()
+
+  await page.goto('/diction')
+
+  // Polled rather than read once. The fallback marks every element arrived and
+  // the stylesheet then fades it in over 700ms, so a single read taken on load
+  // catches most of them at an opacity of exactly zero and reports the repair
+  // as the defect it fixes.
+  await expect
+    .poll(() =>
+      page
+        .locator('main [data-fade]')
+        .evaluateAll(
+          (nodes) =>
+            nodes.filter((node) => getComputedStyle(node).opacity === '0')
+              .length,
+        ),
+    )
+    .toBe(0)
+
+  await context.close()
+})

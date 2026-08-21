@@ -79,35 +79,27 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
   <main>
     <section class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
-        <p data-fade data-visible="true" class="text-muted-foreground text-label tracking-wide uppercase">
+        <p data-fade class="text-muted-foreground text-label tracking-wide uppercase">
           Project
         </p>
         <h1
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+          data-fade          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
         >
           diction
         </h1>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-lede mt-4"
+          data-fade          class="text-muted-foreground text-lede mt-4"
         >
           A pronunciation trainer that scores each sound against what a native
           speaker actually sounds like, and reports how often it is wrong.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 300ms"
-          class="text-muted-foreground text-body mt-3"
+          data-fade          class="text-muted-foreground text-body mt-3"
         >
           Local and offline. Nothing leaves the machine it runs on.
         </p>
         <ul
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="mt-6 flex flex-wrap gap-x-6"
+          data-fade          class="mt-6 flex flex-wrap gap-x-6"
         >
           {
             artifactLinks.map((link) => (
@@ -134,9 +126,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
             the fold on arrival and a lazy load would leave the slot empty for
             the moment a reader is looking straight at it. */}
         <figure
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+          data-fade          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
           <Image
             src={dictionPoster}
@@ -150,21 +140,18 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 
     <section id="problem" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           problem
         </h2>
         <p
-          data-fade data-visible="true"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           I wanted to assess my own English rather than guess at it. The tools
           that do that are paid and closed, and building it myself meant
           running the speech models locally and seeing what they were doing.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The drill told native speakers they were wrong. It played a word,
           listened to the reading, and flagged the sound when the acoustic
@@ -172,9 +159,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           number, applied to every sound in English.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           On real speech it failed in both directions at once. A native
           <code class="font-mono">th</code> came back flagged. A swapped vowel
@@ -187,13 +172,11 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 
     <section id="data" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           data
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           speechocean762 supplies 5,000 English clips from non-native speakers,
           each phoneme scored 0 to 2 by five human experts. That per-sound score
@@ -201,9 +184,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           Apache-2.0, so it ships.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The acoustic model ran over 2,500 of those clips to read off its
           confidence in each sound, a measure called Goodness of Pronunciation.
@@ -212,7 +193,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           to minutes.
         </p>
 
-        <figure data-fade data-visible="true" style="--fade-delay: 350ms" class={tallFigureClass}>
+        <figure data-fade class={tallFigureClass}>
           <button type="button" data-figure-zoom class={zoomTriggerClass}>
             <Image
               src={baselines}
@@ -226,9 +207,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
         </figure>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           A native <code class="font-mono">s</code> sits near perfect
           confidence. A native <code class="font-mono">th</code> averages
@@ -238,9 +217,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           place on the axis.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 550ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The old <code class="font-mono">-5.0</code> line cuts none of it
           cleanly. It falls so far left that a mangled
@@ -254,13 +231,11 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 
     <section id="fix" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           fix
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           The rule became per-sound. For each phoneme, take the mean and spread
           of its native confidence, then flag a reading only where it falls more
@@ -268,7 +243,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           travels with the sound.
         </p>
 
-        <figure data-fade data-visible="true" style="--fade-delay: 250ms" class={tallFigureClass}>
+        <figure data-fade class={tallFigureClass}>
           <button type="button" data-figure-zoom class={zoomTriggerClass}>
             <Image
               src={separation}
@@ -282,9 +257,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
         </figure>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           All 27 sounds separate, from 0.83 to 0.98. A reliability gate backs
           the rule up: a sound whose confidence failed to separate clean from
@@ -292,7 +265,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           sound clears it today, and the gate is there for the next model.
         </p>
 
-        <figure data-fade data-visible="true" style="--fade-delay: 450ms" class={figureClass}>
+        <figure data-fade class={figureClass}>
           <button type="button" data-figure-zoom class={zoomTriggerClass}>
             <Image
               src={thresholds}
@@ -306,9 +279,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
         </figure>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 550ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           One earlier read had written the long-e vowel off as hopeless, its
           clean and wrong clouds apparently on top of each other. That came from
@@ -322,22 +293,18 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 
     <section id="holdout" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           holdout
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           A rule fit to its own data proves nothing, so the thresholds were fit
           on one half of the corpus and measured on the other half, held out
           from start to finish.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           On unseen speech it false-flags native readings 7% of the time and
           catches 66% of genuinely wrong sounds. That operating point is
@@ -346,9 +313,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           third of subtle errors slip past.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           It also fixes the two failures that started this. A native
           <code class="font-mono">th</code> sits at its own baseline and passes.
@@ -359,22 +324,18 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 
     <section id="beyond" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           beyond
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           Calibrating one score set the pattern for every other score the tool
           presents.
         </p>
 
         <figure
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+          data-fade          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
         >
           <table class="font-mono text-label w-full min-w-[28rem]">
             <thead>
@@ -400,7 +361,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           </table>
         </figure>
 
-        <figure data-fade data-visible="true" style="--fade-delay: 350ms" class={figureClass}>
+        <figure data-fade class={figureClass}>
           <button type="button" data-figure-zoom class={zoomTriggerClass}>
             <Image
               src={verdicts}
@@ -414,9 +375,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
         </figure>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           The minimal-pair drill asks a different question from the one the
           phoneme flag was fit for: whether a reading was
@@ -427,7 +386,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           pairs, and moved right words rejected from 5 to 6.
         </p>
 
-        <figure data-fade data-visible="true" style="--fade-delay: 550ms" class={figureClass}>
+        <figure data-fade class={figureClass}>
           <button type="button" data-figure-zoom class={zoomTriggerClass}>
             <Image
               src={fluency}
@@ -441,9 +400,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
         </figure>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 650ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           Fluency correlates with human judgment at 0.39 on held-out clips,
           matching its in-sample fit. That is real and modest, so the score
@@ -454,7 +411,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           it is.
         </p>
 
-        <figure data-fade data-visible="true" style="--fade-delay: 750ms" class={figureClass}>
+        <figure data-fade class={figureClass}>
           <button type="button" data-figure-zoom class={zoomTriggerClass}>
             <Image
               src={gaze}
@@ -468,9 +425,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
         </figure>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 850ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           The interview gaze metric first read a lens-look and a screen-glance
           as identical, since both keep the head inside 15 degrees. The raw yaw
@@ -482,9 +437,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
         </p>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 950ms"
-          class="text-foreground text-body mt-10"
+          data-fade          class="text-foreground text-body mt-10"
         >
           The flag is trustworthy now. The composite accent and prosody scores
           are still labeled directional, and they stay that way until real
@@ -492,9 +445,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           is the hard part, and that part is done.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 1050ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           The whole experiment lives beside the case study in the repository.
           <code class="font-mono">measure.py</code> runs the sweep,
@@ -516,6 +467,9 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
   <script>
     import { initWayHome } from '@/components/site/case-study/way-home'
     import { initFigureZoom } from '@/components/site/figures/figure-zoom'
+    import { initReveal } from '@/lib/reveal'
+
+    initReveal()
     initFigureZoom()
     initWayHome()
   </script>

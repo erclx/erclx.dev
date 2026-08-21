@@ -76,27 +76,21 @@ const toolPairings = [
   <main>
     <section class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
-        <p data-fade data-visible="true" class="text-muted-foreground text-label tracking-wide uppercase">
+        <p data-fade class="text-muted-foreground text-label tracking-wide uppercase">
           Project
         </p>
         <h1
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+          data-fade          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
         >
           Jobtriage
         </h1>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="text-muted-foreground text-lede mt-4"
+          data-fade          class="text-muted-foreground text-lede mt-4"
         >
           Live agent triages Swedish job ads against any profile.
         </p>
         <ul
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="mt-6 flex flex-wrap gap-x-6"
+          data-fade          class="mt-6 flex flex-wrap gap-x-6"
         >
           {
             artifactLinks.map((link) => (
@@ -120,9 +114,7 @@ const toolPairings = [
             `view` so a phone, which cannot hover, plays it on screen. */}
         <figure
           data-media-host="view"
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+          data-fade          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
           <video
             src={canvasViews}
@@ -140,21 +132,18 @@ const toolPairings = [
 
     <section id="problem" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           problem
         </h2>
         <p
-          data-fade data-visible="true"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           I wanted a project where a language model drove the interface rather
           than sitting behind it. Handing it the canvas, the filters, and the
           layout is a different problem from returning a good answer.
         </p>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           Job boards rank for the platform's monetization, not the candidate's
           fit. Profile-driven match should be a first-class operation, not a
@@ -165,22 +154,18 @@ const toolPairings = [
 
     <section id="system" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           system
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           Two postures share one agent shell. Same prompt, same tools,
           different data path.
         </p>
 
         <figure
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="figure-breakout bg-card mt-10 rounded-lg p-6 md:p-10"
+          data-fade          class="figure-breakout bg-card mt-10 rounded-lg p-6 md:p-10"
         >
           <div class="font-mono text-label flex flex-col items-center gap-6">
             <div
@@ -238,9 +223,7 @@ const toolPairings = [
         </figure>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           Deploy runs against the JobTech taxonomy and JobSearch APIs. Local
           CLI and local dev run the hybrid retrieval stack against a SQLite
@@ -248,9 +231,7 @@ const toolPairings = [
         </p>
 
         <dl
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="mt-10 grid gap-y-2 sm:grid-cols-[8rem_1fr]"
+          data-fade          class="mt-10 grid gap-y-2 sm:grid-cols-[8rem_1fr]"
         >
           {
             stack.map((row) => (
@@ -263,9 +244,7 @@ const toolPairings = [
         </dl>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 550ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           The mock-replay path lets a recruiter try the surface in five
           seconds. BYOK lets a technical visitor drive the agent with their
@@ -276,13 +255,11 @@ const toolPairings = [
 
     <section id="retrieval" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           retrieval
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           50-query Swedish golden set against a 59-ad corpus from Spotify,
           Klarna, Volvo Group, Volvo Cars, Ericsson, HT Engineering, Stig
@@ -291,9 +268,7 @@ const toolPairings = [
         </p>
 
         <figure
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+          data-fade          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
         >
           <figcaption
             class="text-muted-foreground font-mono text-label mb-4"
@@ -327,9 +302,7 @@ const toolPairings = [
         </figure>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           Dense alone wins P@1 by 6 points over hybrid on this corpus. Hybrid
           earns its place on adversarial queries where exact keyword matches
@@ -339,9 +312,7 @@ const toolPairings = [
         </p>
 
         <figure
-          data-fade data-visible="true"
-          style="--fade-delay: 450ms"
-          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+          data-fade          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
         >
           <figcaption
             class="text-muted-foreground font-mono text-label mb-4"
@@ -373,9 +344,7 @@ const toolPairings = [
         </figure>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 550ms"
-          class="text-muted-foreground text-body mt-6"
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           English-only MiniLM loses 11 points of recall@10 against e5-base on
           the Swedish golden set. e5-large lifts P@1 by another 8 points over
@@ -390,13 +359,11 @@ const toolPairings = [
 
     <section id="agent" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
-        <h2 data-fade data-visible="true" class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           agent
         </h2>
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 150ms"
-          class="text-foreground text-lede mt-6"
+          data-fade          class="text-foreground text-lede mt-6"
         >
           Spatial tool pairings are pinned in the system prompt. After every
           data tool the agent fires a spatial tool. The canvas is the answer,
@@ -404,9 +371,7 @@ const toolPairings = [
         </p>
 
         <dl
-          data-fade data-visible="true"
-          style="--fade-delay: 250ms"
-          class="mt-10 grid gap-y-2 sm:grid-cols-[1fr_auto_1fr]"
+          data-fade          class="mt-10 grid gap-y-2 sm:grid-cols-[1fr_auto_1fr]"
         >
           {
             toolPairings.map((pair) => (
@@ -425,9 +390,7 @@ const toolPairings = [
         </dl>
 
         <p
-          data-fade data-visible="true"
-          style="--fade-delay: 350ms"
-          class="text-muted-foreground text-body mt-8"
+          data-fade          class="text-muted-foreground text-body mt-8"
         >
           React Flow surfaces four canonical views: triage clusters, deadline
           timeline, side-by-side compare, and pinned shortlist. Custom nodes
@@ -444,6 +407,9 @@ const toolPairings = [
   <script>
     import { initWayHome } from '@/components/site/case-study/way-home'
     import { initHoverVideo } from '@/lib/hover-video'
+    import { initReveal } from '@/lib/reveal'
+
+    initReveal()
     initWayHome()
     initHoverVideo()
   </script>
