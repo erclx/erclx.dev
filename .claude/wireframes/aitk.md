@@ -23,8 +23,9 @@ Reached from the aitk project card on the landing page. Carries the depth a visi
 │   GitHub   npm                                           │  ← link row, no Project link back to itself
 │                                                          │
 │   problem                                                │  ← section heading, repeats per section
+│   Every project I started got the same scaffolding ...   │  ← the reason, at lede weight
 │   Every repository re-authors the same agent             │
-│   scaffolding ...                                        │
+│   scaffolding ...                                        │  ← the framing, demoted to body
 │                                                          │
 │   thesis                                                 │
 │   ┌────────────────────────────────────────────────┐     │

@@ -19,9 +19,11 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   [Live demo]    [GitHub]                                      │  ← header-row CTA links
 ├────────────────────────────────────────────────────────────────┤
 │   problem                                                      │  ← section heading
+│   I wanted a project where a language model drove the          │
+│   interface rather than sitting behind it ...                  │  ← the reason, at lede weight
 │   Job boards rank for the platform's monetization, not the     │
 │   candidate's fit. Profile-driven match should be a            │
-│   first-class operation, not a retrieval-as-a-feature bolt-on. │
+│   first-class operation, not a retrieval-as-a-feature bolt-on. │  ← the framing, demoted to body
 ├────────────────────────────────────────────────────────────────┤
 │   system                                                       │  ← section heading
 │   Two postures share one agent shell.                          │
@@ -67,7 +69,6 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   compareRoles      → pairAdsForCompare                       │
 │   deadlineWatch     → placeAdsOnTimeline                      │
 │   trackStatus       → markStatus                              │
-├────────────────────────────────────────────────────────────────┤
 │                                                                │
 │   ←  Back to Eric Le                                           │  ← closing way home, on the
 │                                                                │    prose column's left edge
@@ -101,17 +102,17 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   agent                          │
 │   [tool-pairing list wraps as    │
 │    two lines per pair]           │
-├──────────────────────────────────┤
 │                                  │
 │   ←  Back to Eric Le             │  ← closing way home
+│                                  │
 └──────────────────────────────────┘
 ```
 
 ## Behavior
 
 - Reuses the landing page's layout, theme toggle, and section-nav rail. The rail is present from first paint with no fade, since the page is otherwise static.
-- A thin top bar carries a way back to `/` on the left and the theme toggle on the right. The case study earns a quieter opening than the landing hero, so there is no tinted band. The foot carries the same control, so a reader can leave from either end.
-- The bar's controls and the rule under them sit at the same measure as the prose, so the frame agrees with the column instead of spanning past it. The foot already closed this way and the bar now matches it.
+- A thin top bar carries the way back to `/` on the left and the theme toggle on the right. The case study earns a quieter opening than the landing hero, so there is no tinted band. It is the only exit the route carries, and it answers at any scroll position rather than at one end.
+- The bar's controls and the rule under them sit at the same measure as the prose, so the frame agrees with the column instead of spanning past it.
 - A reader who arrived from the landing page returns to the place they left rather than to the top of it, and the landing page does not replay its reveal animations on the way back. A reader who opened the case study directly lands at the top, since there is nowhere else to return to. Mechanism: `.claude/context/case-study-navigation.md`.
 - Section padding matches the landing surfaces, so the editorial pace reads identical across the site. The eyebrow reads `Project` and the section names are headings rather than mono kickers, both changed once mono contracted to literal machine values.
 - The display title sits one step smaller than the landing hero so the page reads as secondary to the apex.
@@ -126,11 +127,11 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 - **Retrieval.** A lead on the 50-query Swedish golden set and 59-ad corpus, then two tables in card containers: the hybrid retrieval ablation and the multilingual encoder comparison. Each carries a caption framing its headline. The ablation notes dense wins P@1 here. The encoder notes e5-large lifts P@1 but gives back recall, so e5-base ships as default.
 - **Agent.** A lead on the pinned spatial tool pairings, a two-column data-tool-to-spatial-tool mapping list, and a closing paragraph on the four React Flow canvas views.
 
-## Footer
+## Foot
 
 A single `← Back to Eric Le` control carrying an arrow, on the left edge every line of prose starts from, with no rule above it. The landing page's signature wipe and résumé link stay on the landing page, and forward-motion content is reserved for live interview conversation. `src/components/site/case-study/route-foot.astro` renders it for all five routes.
 
-It carries almost no top padding of its own. The last section closes on `pb-20` already, so a foot adding a full step of its own stacks two closes: measured at 184px above the control against 48 below it. It holds 104px above and 80px below.
+It carries almost no top padding of its own. The last section closes on `pb-20` already, so a foot adding a full step of its own stacks two closes: measured at 184px above the control against 48 below it, which is the shape that shipped for part of 2026-08-21. It holds 104px above and 80px below.
 
 ## Hold for interviews
 

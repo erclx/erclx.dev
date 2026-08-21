@@ -45,31 +45,27 @@ const navItems = [
     <section class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
         <p
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           class="text-muted-foreground text-label tracking-wide uppercase"
         >
           Project
         </p>
         <h1
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 150ms"
           class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
         >
           Stackr
         </h1>
         <p
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 250ms"
           class="text-muted-foreground text-lede mt-4"
         >
           Named context tracks for the times a coding agent is the wrong tool.
         </p>
         <ul
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 350ms"
           class="mt-6 flex flex-wrap gap-x-6"
         >
@@ -92,8 +88,7 @@ const navItems = [
             `view` so a phone, which cannot hover, plays it on screen. */}
         <figure
           data-media-host="view"
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 450ms"
           class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
@@ -114,17 +109,23 @@ const navItems = [
     <section id="problem" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           problem
         </h2>
         <p
-          data-fade
-          data-visible="true"
-          style="--fade-delay: 150ms"
+          data-fade data-visible="true"
           class="text-foreground text-lede mt-6"
+        >
+          I was assembling context for a planning conversation by opening files
+          one at a time and pasting them in order, often enough that it started
+          to grate.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-muted-foreground text-body mt-6"
         >
           Some work is not agent work. Planning a change or arguing about
           architecture wants a chat with the right files in front of it, and
@@ -132,8 +133,7 @@ const navItems = [
           order.
         </p>
         <p
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 250ms"
           class="text-muted-foreground text-body mt-6"
         >
@@ -145,15 +145,13 @@ const navItems = [
     <section id="tracks" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           tracks
         </h2>
         <p
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 150ms"
           class="text-foreground text-lede mt-6"
         >
@@ -162,8 +160,7 @@ const navItems = [
           for one piece of work survives while you go and do another.
         </p>
         <p
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 250ms"
           class="text-muted-foreground text-body mt-6"
         >
@@ -178,15 +175,13 @@ const navItems = [
     <section id="runtime" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           runtime
         </h2>
         <p
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 150ms"
           class="text-foreground text-lede mt-6"
         >
@@ -197,8 +192,7 @@ const navItems = [
           >.
         </p>
         <p
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 250ms"
           class="text-muted-foreground text-body mt-6"
         >
@@ -206,8 +200,7 @@ const navItems = [
           risk surface, so removing it beats auditing it.
         </p>
         <p
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 350ms"
           class="text-muted-foreground text-body mt-6"
         >
@@ -226,7 +219,6 @@ const navItems = [
   <script>
     import { initWayHome } from '@/components/site/case-study/way-home'
     import { initHoverVideo } from '@/lib/hover-video'
-
     initWayHome()
     initHoverVideo()
   </script>

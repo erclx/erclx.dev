@@ -22,7 +22,8 @@ Reached from the diction project card on the landing page. Carries six measured 
 │   GitHub                                                 │  ← link row
 │                                                          │
 │   problem                                                │
-│   The drill told native speakers they were wrong ...     │
+│   I wanted to assess my own English ...                  │  ← the reason, at lede weight
+│   The drill told native speakers they were wrong ...     │  ← the framing, demoted to body
 │                                                          │
 │   data                                                   │
 │   ┌────────────────────────────────────────────────┐     │

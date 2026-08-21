@@ -112,8 +112,7 @@ const prescriptions = [
         {/* The still closes the opening rather than interrupting it, so a
             reader meets the artifact existing before the argument starts. */}
         <figure
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 450ms"
           class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
@@ -134,8 +133,16 @@ const prescriptions = [
         </h2>
         <p
           data-fade data-visible="true"
-          style="--fade-delay: 150ms"
           class="text-foreground text-lede mt-6"
+        >
+          Every project I started got the same agent scaffolding typed into it
+          again, and every copy moved away from the last. I wanted one source I
+          could install rather than a folder I kept re-authoring.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-muted-foreground text-body mt-6"
         >
           Every repository re-authors the same agent scaffolding. The rules an
           agent reads, the skills it runs, the prose standards it writes
@@ -419,7 +426,6 @@ const prescriptions = [
 
   <script>
     import { initWayHome } from '@/components/site/case-study/way-home'
-
     initWayHome()
   </script>
 </BaseLayout>

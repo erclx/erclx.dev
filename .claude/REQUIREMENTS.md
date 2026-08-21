@@ -45,6 +45,8 @@ The header lost the role, the headline, and the location on 2026-08-17. The clai
 
 - Every shipped project owns a route, so a card carrying a link and a card carrying none never reads as a ranking between them
 - A visitor wanting depth on one project reads its problem framing and how it works without leaving the domain. Where the project has measured results the route carries them, and where it has none it says what the thing does and why it exists rather than manufacturing a number
+- Every route says why the work was started before it says what the work measured, in the first paragraph of its problem section and at that section's largest weight. A reader meets the reason before the evidence on all five, so moving between routes meets one shape rather than five arrangements of the same idea
+- That reason is the author's to give. A session may carry one he has already written elsewhere on the site and may not draft a new one, which is the same constraint the about surface carries and for the same reason
 - Each route answers for one project only. A second project earns a second route rather than a section inside the first
 - A route carries the demo the project card can only show small. A card renders its still at 498px against a 1280px recording, where a route reaches 896px and 1216px
 - The landing page stays the entry point, and a route is reached from the project card that owns it

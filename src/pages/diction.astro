@@ -3,8 +3,8 @@ import { Image } from 'astro:assets'
 import BaseLayout from '@/layouts/base.astro'
 import RouteBar from '@/components/site/nav/route-bar.astro'
 import SectionNav from '@/components/site/section-nav/section-nav.astro'
-import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import FigureDialog from '@/components/site/figures/figure-dialog.astro'
+import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
 import dictionPoster from '@/assets/projects/diction.png'
 import baselines from '@/assets/projects/diction-baselines.png'
@@ -134,8 +134,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
             the fold on arrival and a lazy load would leave the slot empty for
             the moment a reader is looking straight at it. */}
         <figure
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 450ms"
           class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
@@ -156,8 +155,16 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
         </h2>
         <p
           data-fade data-visible="true"
-          style="--fade-delay: 150ms"
           class="text-foreground text-lede mt-6"
+        >
+          I wanted to assess my own English rather than guess at it. The tools
+          that do that are paid and closed, and building it myself meant
+          running the speech models locally and seeing what they were doing.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-muted-foreground text-body mt-6"
         >
           The drill told native speakers they were wrong. It played a word,
           listened to the reading, and flagged the sound when the acoustic
@@ -508,8 +515,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 
   <script>
     import { initWayHome } from '@/components/site/case-study/way-home'
-import { initFigureZoom } from '@/components/site/figures/figure-zoom'
-
+    import { initFigureZoom } from '@/components/site/figures/figure-zoom'
     initFigureZoom()
     initWayHome()
   </script>
