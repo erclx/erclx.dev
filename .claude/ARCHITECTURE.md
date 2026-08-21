@@ -110,6 +110,51 @@ Nothing headless caught any of this. Two of the three defects reproduce only und
 
 Measured at 12eb2d0 on 2026-08-21, across twenty pointer responses on six pages, of which three were gated before this and seven after.
 
+### A shared link renders one card, and the card says what the title cannot
+
+Six pages declared nothing for a link preview, so every share of this domain was
+rendered from whatever the host guessed. Pinned to a professional profile it came
+back as the operator's own avatar beside a bare title.
+
+Every host reads the same Open Graph tags and differs only in what it renders
+from them, so there is one image and one set of copy rather than a variant per
+network. `public/og.png` at 1200x630 covers all of them: LinkedIn asks 1200x627
+and X 1200x628, and Discord scales what it is given.
+
+The absolute URL is the load-bearing part and the one that fails silently. A
+crawler fetches the image outside the page's context, so a root-relative path
+resolves against nothing and the preview arrives with no image at all. `site` in
+the Astro config is what makes `Astro.site` resolve them. `twitter:card` is
+`summary_large_image` for a similar reason: X shows a thumbnail beside the text
+without it, so the tag rather than the image decides the size.
+
+The card carries the claim, the mark, and the domain, and deliberately not the
+name. Every host prints the page title beside the image, so a name in both puts
+the same word twice in one unfurl. That is the same redundancy the description
+carried against the title until this batch, where a card opening on "Applied AI
+engineer in Gothenburg" sat under a title ending "Applied AI engineer".
+
+It is composed inside the served site rather than in a bare page, which is what
+gives it the real Fraunces and the shipped tokens. A card drawn in a fallback
+face is a card judged on the wrong letterforms. The field behind it is captured
+from the page with every other element hidden, after a first attempt shot the
+canvas while content sat over it and baked the hero's own text into the image.
+
+The text is capped at 17 characters to the line, which is a measure decision
+rather than a composition one, and the left weighting is its consequence. That
+weighting is safe only because hosts crop vertically: X renders this at 2:1,
+taking about 15px off the top and bottom against 88px of padding, where a
+horizontal crop would take the first word of every line. Read the empty right
+half as the field earning its place rather than as a layout to balance.
+
+`bun run share-card` redraws it, and `e2e/share-card.spec.ts` guards it. Two of
+its nine assertions are worth naming: one fails a description that opens on
+words the title already used, and one fails a route title carrying `case study`,
+which `.claude/REQUIREMENTS.md` retired on 2026-08-18 and which had reached the
+visible labels without ever reaching the titles a shared link shows.
+
+Measured at f0fd385 on 2026-08-22.
+
 ### Resume PDF served from `public/`
 
 The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source remains `assets/resumes/eric-le-resume.pdf` in the parent career repo. Updates land here as a binary copy via the sync queue rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
