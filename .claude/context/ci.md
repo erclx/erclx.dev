@@ -69,15 +69,21 @@ The compile path stays untested rather than ruled out. `mount.ts` reveals the sa
 
 The reason the log could not answer it is worth keeping. `playwright.config.ts` reported `list` alone under CI, so `playwright-report/` was never written and the failure step uploaded an artifact that did not exist. CI now runs `list` and `html` together and uploads `test-results/` beside the report, since a gate that reports a failure a reader cannot open is only half a gate.
 
-## Worker count changes the two WebKit image cases, and does not settle them
+## The walk outran WebKit's lazy fetch, and worker count stood in for machine load
 
-The card poster and the diction figures each fail three times of three at the default worker count and pass three times of three at `--workers=1`, measured 2026-08-21 by varying worker count alone on one commit against one build. Probing the pages directly agrees: every poster and every figure reports pixels in WebKit against both the dev server and a production build, so nothing on the page fails to load.
+`scrollThroughPage` paused a fixed 100ms per step, which is a guess at how much lead an engine needs before it issues a lazy fetch. The engines disagree on that lead by an order of magnitude. Measured on `/diction` at 1280x720 by varying the pause alone, chromium loads all seven figures at no pause at all, firefox drops one, and webkit drops one at 20ms, four at 10ms, and six at 0ms.
 
-Run a local three-engine pass at `--workers=1` when the question is whether something is broken, and accept the wall clock for the answer. A pass at the default count reads a red suite as a shipped defect.
+The page is not the defect. Walking the same route in webkit at reading pace, half a viewport every 700ms, reports all seven figures. A visitor on that engine has never been served an incomplete page, so the gate was holding against the harness rather than against the site.
 
-What that does not license is calling either case impossible in the gating job. This entry said so on the reasoning that `playwright.config.ts` pins `workers` to 1 under CI, and the diction figure case then failed in CI at one worker on 2026-08-21, three times including both retries, after passing there on the commit before it. One pass and one failure at the same worker count separate nothing, so whether that commit moved it or it is flaky at one worker stays open.
+Nothing recovers a figure the walk outran. Dropping the `scrollTo(0, 0)` that ends the walk still leaves webkit reading three of seven at no pause while parked at the bottom, so the return home is neither the cause nor the place to repair it. An image the viewport has left behind has no later event to fetch it.
 
-Read the whole area as unsettled rather than as measured. That figure has now carried four characterizations, a deterministic defect, a flake, a case that cannot fire in CI, and this one, and the first three were wrong. Every one of them rested on a count of passes and failures across runs that differed in something nobody had controlled. Settle it by running the WebKit leg repeatedly at one worker on one commit, and until that exists, do not write a fifth.
+Worker count moved these cases because it moved machine load, which moved how far the walk outran the fetch. A full local suite at the default count reproduces both CI failures on the pristine tree, and the webkit leg alone passes on the same commit against the same build. Four earlier characterizations were counting that contention without naming it.
+
+A step now holds until the images standing in the viewport report themselves loaded, rather than for a fixed span. Waiting on what sits inside the viewport rather than on a band around it keeps the timeout off the ordinary path, since every engine agrees to fetch an image a reader can see. The walk costs less where nothing is pending and more only where the waiting is the point, running 947ms against 1507ms on chromium and 1765ms against 1547ms on webkit.
+
+The reveal case is the same defect rather than a second one. `a route reveals its prose as the reader arrives at it` reads a marker `src/lib/reveal.ts` writes on intersection, which is driven off the viewport and equally unrecoverable once the walk has gone past. A step waits on the markers its own geometry says are due, so one change repairs all three cases.
+
+Verified 2026-08-21 at one worker, the count `playwright.config.ts` pins under CI: three consecutive green webkit legs, plus chromium and firefox. Run a local leg one engine at a time at `--workers=1` when the question is whether something is broken, because the default count adds contention this repair does not remove. The shader paint case fails under a three-engine parallel run and passes at one worker, which is that contention rather than a defect in the surface it reads.
 
 ## The pull request trigger carries no branch filter
 

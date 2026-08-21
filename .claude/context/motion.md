@@ -16,6 +16,7 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 - An authored delay assumes its surface arrives alone, and a fast scroll breaks that assumption. Several surfaces land in one callback, a card at 800ms finishes after a row below it at 150ms, and the page reveals backwards. Sorting the batch puts that inversion out of reach at any scroll speed, and the window caps the longest wait rather than letting it grow with the batch.
 - `data-visible="true"` set at server render makes the fade a no-op. Every project route sets it on every faded element so those long-form pages render static.
 - Under `prefers-reduced-motion: reduce` elements render at final position immediately.
+- `REVEAL_THRESHOLD` and `REVEAL_ROOT_BOTTOM_INSET_PERCENT` are exported and the observer builds its `threshold` and `rootMargin` from them. `e2e/lazy-images.ts` imports the pair, because the walk a test runs has to wait on the elements this module is due to mark, and a walk holding its own copies drifts from these the moment either moves.
 - The cascade defeats a geometry assertion that reads too early. Two cards in one grid row report positions several pixels apart while the later one is still rising, which reads as a layout defect and is not one. A test comparing positions scrolls the surface into view and waits out the longest delay first. Heights are unaffected, since the reveal translates rather than scales, so a height comparison needs no wait.
 
 ## Availability pulse
