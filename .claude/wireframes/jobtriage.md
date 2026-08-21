@@ -130,7 +130,7 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 
 A single `← Back to Eric Le` control carrying an arrow, on the left edge every line of prose starts from, with no rule above it. The landing page's signature wipe and résumé link stay on the landing page, and forward-motion content is reserved for live interview conversation. `src/components/site/case-study/route-foot.astro` renders it for all five routes.
 
-It carries almost no top padding of its own. The last section closes on `pb-20` already, so a foot adding a full step of its own stacks two closes: measured at 171px above the control against 112 below it. It holds 99px above and 80px below.
+It carries almost no top padding of its own. The last section closes on `pb-20` already, so a foot adding a full step of its own stacks two closes: measured at 184px above the control against 48 below it. It holds 104px above and 80px below.
 
 ## Hold for interviews
 
