@@ -17,6 +17,7 @@ esac
 esbenp
 esbuild
 evenodd
+firefoxUserPrefs
 fontsource
 FOUT
 fract
@@ -33,9 +34,11 @@ jsxSingleQuote
 labelledby
 lerp
 lerps
+libgl
 linecap
 linejoin
 lintstagedrc
+llvmpipe
 Mcpjson
 mediump
 mkhl
@@ -76,6 +79,7 @@ Vercel
 viewports
 visibilitychange
 vitest
+webgl
 webglcontextlost
 webglcontextrestored
 wght

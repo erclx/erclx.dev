@@ -55,6 +55,18 @@ Playwright's Firefox answers `(hover: hover)` and `(pointer: fine)` both false o
 
 The settled form is `not all and (pointer: coarse)` for an exclusion and `(hover: none) and (pointer: coarse)` for a positive touch test. `src/lib/hover-video.ts`, `src/components/site/contact-dock/contact-dock.astro`, and `src/components/site/experience/employers.astro` all read one of the two. A new hover-keyed rule takes the same form.
 
+The exclusion admits a device reporting `pointer: none` alongside one reporting `pointer: fine`, which is a known cost rather than an oversight. Measured across all three engines on 2026-08-21, Playwright's Firefox answers `(pointer: none)` true, `(hover: none)` true, and both `(pointer: fine)` and `(pointer: coarse)` false, so it agrees with a television or a kiosk on every pointer and hover query there is. No pairing separates them, and keying a fallback on `(hover: none)` sends Firefox down the touch path the exclusion exists to keep it off. The class the fallback was written for is phones, which report a coarse pointer and are unaffected. What a no-pointer device loses is a clip that autoplays, and it still gets the poster.
+
+## Firefox needs a software GL driver and a pref, and a red engine needs a trace
+
+The first widened run went red on firefox alone, four cases in `e2e/header-shader.spec.ts` against 147 passing, while chromium and webkit passed on the same machine. All four are one cause: `mount.ts` reveals the fallback when it cannot draw, and `revealFallback` sets `canvas.style.display` to `none`, which fails the geometry case, the paint case, the reduced-motion case, and the case asserting the fallback is hidden at rest.
+
+The engines differ in how they reach WebGL without a GPU. Measured locally on 2026-08-21, chromium reports `ANGLE (SwiftShader)` and webkit reports its own path, both bundled, where firefox reports `Mesa, llvmpipe` and therefore depends on a driver being installed. The firefox leg installs `libgl1-mesa-dri` and launches with `webgl.force-enabled`, which covers the driver being absent and the blocklist refusing it in turn.
+
+Read that as two candidate causes rather than one confirmed. `mount.ts` takes the same fallback when `getContext` returns null and when the renderer fails to compile, so the log cannot separate them, and the pair above is what closes the first. A run still red after it points at the second.
+
+The reason the log could not answer it is worth keeping. `playwright.config.ts` reported `list` alone under CI, so `playwright-report/` was never written and the failure step uploaded an artifact that did not exist. CI now runs `list` and `html` together and uploads `test-results/` beside the report, since a gate that reports a failure a reader cannot open is only half a gate.
+
 ## A local three-engine run reports failures the gate never sees
 
 The card poster and the diction figures each fail three times of three at the default worker count and pass three times of three at `--workers=1`, measured 2026-08-21 by varying worker count alone on one commit against one build. Probing the pages directly agrees: every poster and every figure reports pixels in WebKit against both the dev server and a production build, so nothing on the page fails to load.
@@ -68,6 +80,8 @@ Two wrong characterizations reached the task file before worker count was varied
 `on: pull_request:` with a `branches: [main]` filter fires no job at all on a pull request targeting anything else. Measured 2026-08-21 against a four-deep stack: the bottom pull request reported five jobs and the three above it reported no checks on their branches, so two of the four could be merged having never been checked until their base landed. The filter also serialized every run in the stack behind a merge.
 
 The filter is off. `push` keeps its `branches: [main]`, since the deploy job gates on that ref and a push to any other branch has its pull request run already.
+
+Read the cost of this change and the matrix as one number rather than two. The matrix takes a gated pull request from four legs to six, and removing the filter takes a four-deep stack from one gated pull request to four, so the two multiply: that stack goes from six legs to twenty-four. Both halves are worth it and the product is what a later reader weighs, since pricing the matrix alone understates the bill by the depth of the deepest stack.
 
 ## Running CI locally
 

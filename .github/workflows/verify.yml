@@ -137,6 +137,12 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: bunx playwright install ${{ matrix.browser }}
 
+      - name: Install Software GL for Firefox
+        if: matrix.browser == 'firefox'
+        # A runner has no GPU, and firefox reaches WebGL through a Mesa driver
+        # that has to be on disk. Chromium bundles SwiftShader and needs none.
+        run: sudo apt-get install -y libgl1-mesa-dri
+
       - name: Run E2E Tests
         run: bun run test:e2e --project=${{ matrix.browser }}
 
@@ -146,7 +152,11 @@ jobs:
         with:
           # Unique per leg. A duplicate artifact name fails the upload.
           name: playwright-report-${{ matrix.browser }}
-          path: playwright-report/
+          # Both, because the report renders the run and test-results carries
+          # the traces and the error context a failing engine is read from.
+          path: |
+            playwright-report/
+            test-results/
           retention-days: 7
 
   deploy:
