@@ -122,15 +122,53 @@ The apex domain already lives in Cloudflare. Pages attaches the custom domain wi
 
 `cloudflare/wrangler-action` runs after `static-checks`, `unit-tests`, `build-verify`, and `e2e-tests` pass. CF's native Git integration would deploy on every push without honoring the test gate and would build in CF's environment with a separate bun version. Direct upload from Actions keeps the test gate and the build environment unified with CI.
 
-### Small rasters serve the tab, not the stippled vector
+### The vector serves the tab, and the rasters serve the surfaces that composite
 
-The synced brand mark is 268 stippled dots inside a 512 disc, at a median radius near 6.7. At 16px each dot covers roughly 0.14 of a pixel in area, so a cream dot over a near-black ground averages to mid-grey. Masked to the disc, the vector peaks at luminance 129 at 16px and 148 at 32px with zero pixels above 180, while the purpose-built 32-square raster peaks at 221 and 255 with 30 and 152 such pixels. The rasters come from a pipeline tuned for small size in the parent checkout and are copied rather than generated, since this repository carries no image-processing dependency.
+The mark is a lowercase e followed by a block cursor, drawn in this repository
+rather than synced from the parent checkout. `src/assets/brand/mark.svg` is the
+one drawing and `scripts/brand.ts` renders it to rasters, so the tab, the home screen,
+and the avatar cannot drift.
 
-Declaration order does not decide which icon an engine draws. With the raster declared first carrying explicit `sizes` and the vector second, headed Chromium and Firefox both fetched `/favicon.svg` and never requested the raster. Removing the vector from the icon relation is what moved both engines onto `/favicon-32.png`. The vector still ships at `/favicon.svg` for any surface with room for it, and the 180-square raster covers the home screen through `apple-touch-icon`.
+The vector leads the icon relation, which reverses a decision this file carried
+until 2026-08-22. That decision was correct about the artwork it measured: the
+synced mark was 268 stippled dots inside a 512 disc at a median radius near 6.7,
+so at 16px each dot covered roughly 0.14 of a pixel and a cream dot over a
+near-black ground averaged to mid-grey. It peaked at luminance 129 at 16px and
+148 at 32px with zero pixels above 180, against a purpose-built 32-square raster
+peaking at 221 and 255 with 30 and 152 such pixels.
 
-Do not restore the vector to an `icon` relation and do not replace either raster with a downsample of it. The measurement above is the whole reason the set exists. The parent checkout's sync overwrites `public/favicon.svg` and touches neither raster, so an upstream change to the vector leaves the tab as it is.
+Re-taken on the new mark with the same instrument, the vector peaks at 239 with
+48 of 256 pixels above 180 at 16px. It beats the raster that replaced it. The
+finding was never about the format, and reading it as a rule about SVG is the
+mistake to avoid: it was a fact about a drawing whose detail could not survive
+the size, and three shapes survive it. The stippled numbers stay above because
+they are still true of that artwork.
 
-Measured at 60f1e0a on 2026-08-15.
+Declaration order still does not decide which icon an engine draws. An engine
+that reads the vector never requests the raster, which is why the 32-square PNG
+is a fallback for engines that ignore an SVG icon rather than a first choice
+that ordering could protect.
+
+The vector is transparent and swaps its ink on `prefers-color-scheme`. Chrome
+and Firefox honour that inside a favicon and Safari does not, so the mark has to
+read in whichever single color Safari picks, and the measurement above is taken
+over the dark page for that reason. A disc behind it was rejected: inscribed at
+16px it leaves about 11 pixels of usable mark, which spends the aperture the
+drawing is built around.
+
+The two ground-carrying rasters take cream with a dark mark. A home screen and a
+profile host both composite onto a canvas this repository does not control, and
+the dark surfaces are the ones where an edge disappears: Discord sits near
+`#313338` and GitHub dark at `#0d1117`, both close enough to this site's own
+dark theme that a dark disc dissolves into the page. Cream stays a defined shape
+on both, and on GitHub light it separates on warmth against white.
+
+The reduction path the earlier entry barred also turns out to cost almost
+nothing here, measuring 57 bright pixels against 48 for a direct draw. Each size
+is still drawn at its own dimensions, because that is what stays true if the
+mark ever gains detail a reduction would average away.
+
+Measured at 12eb2d0 on 2026-08-22.
 
 ### A landing-page figure sits inside the text column, and marks derive from type metrics
 

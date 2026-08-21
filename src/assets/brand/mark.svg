@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="erclx logomark">
+  <!-- A lowercase e followed by a block cursor. The tail sweeps to 55 degrees
+       below horizontal, which is the first angle whose aperture is still an
+       aperture at 16 pixels rather than a trapped grey pixel. Stroke 10 against
+       a 25 radius: lighter goes grey at that size and heavier refills the
+       opening the angle just bought. -->
+  <path
+    d="M 67.5 50 A 25 25 0 1 0 56.84 70.48"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="10"
+    stroke-linecap="round"
+  />
+  <path
+    d="M 17.5 50 L 67.5 50"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="10"
+    stroke-linecap="round"
+  />
+  <rect x="74.5" y="21" width="13" height="58" rx="1.5" fill="currentColor" />
+</svg>

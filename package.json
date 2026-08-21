@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) astro dev",
     "device": "./scripts/device.sh",
+    "brand": "bun scripts/brand.ts",
     "build": "astro check && astro build",
     "preview": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) astro preview",
     "astro": "astro",

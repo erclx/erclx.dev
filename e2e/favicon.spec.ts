@@ -1,7 +1,9 @@
 import { expect, type Page, test } from '@playwright/test'
 
-// Both engines draw a declared SVG icon whatever the order, so the vector must stay
-// out of the icon relation for the raster to reach the tab.
+// Every engine draws a declared SVG icon whatever the order, so the raster is
+// reached only by an engine that ignores the vector entirely. That is what the
+// vector leading the relation means here, and why the raster is a fallback
+// rather than a first choice ordering could protect.
 const iconSelector = 'link[rel="icon"]'
 
 interface DiscLuminance {
@@ -58,22 +60,109 @@ async function measureDiscLuminance(
   )
 }
 
-test('declares the raster as the only tab icon', async ({ page }) => {
+test('leads the icon relation with the vector and keeps the raster behind it', async ({
+  page,
+}) => {
   await page.goto('/')
 
   const icons = page.locator(iconSelector)
+  await expect(icons).toHaveCount(2)
 
-  await expect(icons).toHaveCount(1)
-  await expect(icons).toHaveAttribute('href', '/favicon-32.png')
-  await expect(icons).toHaveAttribute('sizes', '32x32')
+  // An engine that reads the vector never requests the raster, so the order is
+  // a statement about which one the fallback is rather than a mechanism.
+  await expect(icons.first()).toHaveAttribute('href', '/favicon.svg')
+  await expect(icons.first()).toHaveAttribute('type', 'image/svg+xml')
+  await expect(icons.nth(1)).toHaveAttribute('href', '/favicon-32.png')
+  await expect(icons.nth(1)).toHaveAttribute('sizes', '32x32')
 })
 
-test('keeps the stippled vector out of the icon relation', async ({ page }) => {
+test('draws a tab icon whose detail survives 16 pixels', async ({ page }) => {
   await page.goto('/')
 
-  const vectorIcons = page.locator(`${iconSelector}[href$=".svg"]`)
+  // Ink coverage rather than luminance. The recorded figure of 239 was taken on
+  // cream over the dark page, and this mark is transparent and swaps its ink on
+  // the reader's scheme, so a luminance reading answers which scheme the run
+  // emulated rather than whether the drawing holds. What the stippled mark
+  // failed was coverage: 268 dots each covering a seventh of a pixel reached
+  // full ink nowhere, which is why it averaged to grey whatever color it was.
+  const covered = await page.evaluate(async () => {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const candidate = new Image()
+      candidate.onload = () => resolve(candidate)
+      candidate.onerror = () => reject(new Error('failed to load /favicon.svg'))
+      candidate.src = '/favicon.svg'
+    })
+    const canvas = document.createElement('canvas')
+    canvas.width = 16
+    canvas.height = 16
+    const context = canvas.getContext('2d', { willReadFrequently: true })
+    if (!context) throw new Error('no 2d context')
+    context.drawImage(image, 0, 0, 16, 16)
+    const { data } = context.getImageData(0, 0, 16, 16)
+    let solid = 0
+    let peak = 0
+    for (let i = 3; i < data.length; i += 4) {
+      const alpha = data[i] ?? 0
+      if (alpha > peak) peak = alpha
+      if (alpha > 200) solid += 1
+    }
+    return { solid, peak }
+  })
 
-  await expect(vectorIcons).toHaveCount(0)
+  // Somewhere in the drawing has to reach full ink, which is the thing a
+  // stipple never does at this size.
+  expect(covered.peak).toBeGreaterThan(240)
+
+  // And enough of it, so a mark that resolves to one solid pixel and a haze
+  // does not pass on the peak alone.
+  expect(covered.solid).toBeGreaterThan(20)
+})
+
+test('swaps its ink with the reader’s color scheme', async ({ page }) => {
+  const inkUnder = async (scheme: 'light' | 'dark') => {
+    await page.emulateMedia({ colorScheme: scheme })
+    await page.goto('/')
+    return page.evaluate(async () => {
+      const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const candidate = new Image()
+        candidate.onload = () => resolve(candidate)
+        candidate.onerror = () => reject(new Error('failed to load'))
+        candidate.src = '/favicon.svg?' + Math.random()
+      })
+      const canvas = document.createElement('canvas')
+      canvas.width = 64
+      canvas.height = 64
+      const context = canvas.getContext('2d', { willReadFrequently: true })
+      if (!context) throw new Error('no 2d context')
+      context.drawImage(image, 0, 0, 64, 64)
+      const { data } = context.getImageData(0, 0, 64, 64)
+      let sum = 0
+      let counted = 0
+      for (let i = 0; i < data.length; i += 4) {
+        if ((data[i + 3] ?? 0) < 200) continue
+        sum +=
+          0.2126 * (data[i] ?? 0) +
+          0.7152 * (data[i + 1] ?? 0) +
+          0.0722 * (data[i + 2] ?? 0)
+        counted += 1
+      }
+      return counted ? sum / counted : -1
+    })
+  }
+
+  const light = await inkUnder('light')
+  const dark = await inkUnder('dark')
+
+  // Chrome and Firefox honour a media query inside a favicon and Safari does
+  // not, so this asserts the file is authored correctly rather than that every
+  // reader gets the swap. A run on an engine that ignores it reports one value
+  // twice, which is the skip below rather than a failure of the drawing.
+  test.skip(
+    Math.abs(light - dark) < 1,
+    'engine ignores prefers-color-scheme inside an svg icon',
+  )
+
+  expect(dark).toBeGreaterThan(light)
 })
 
 test('declares the apple touch icon at 180 square', async ({ page }) => {

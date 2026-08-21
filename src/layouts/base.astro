@@ -22,6 +22,15 @@ const isRoute = surface === 'case-study'
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    {/* The vector leads. It held the tab until 2026-08-15, when the mark was
+        268 stippled dots that averaged to grey at 16px, and the rasters took
+        over on that measurement. The mark is three shapes now and the same
+        instrument reverses the finding: it peaks at luminance 239 with 48 of
+        256 pixels above 180, where the raster it replaces peaked at 221 with
+        30. The raster stays as the fallback for an engine that ignores an SVG
+        icon, and it is reached only by those engines, since one that reads the
+        vector never requests it. */}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link
