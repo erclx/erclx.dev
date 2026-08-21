@@ -86,6 +86,7 @@ tolower
 toplevel
 Vercel
 viewports
+Vite
 visibilitychange
 vitest
 webgl

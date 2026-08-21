@@ -97,6 +97,24 @@ fi
 echo "  Serving on localhost:$port as well. Stop with ctrl-c."
 echo
 
+# The built output rather than the dev server, which costs a build on every run
+# and is the only thing that serves a second device the page a visitor gets.
+#
+# Astro's dev server resolves an optimized image through an endpoint that reads
+# the file off disk by absolute path, and Vite refuses that read from a remote
+# origin. The refusal is a security guard working correctly, so the portrait and
+# every project still arrive on this machine and break on the tablet, which
+# reads as the site having lost its images. A build emits them as static files
+# and the whole class goes away with it.
+#
+# What it costs is the hot reload. A device check is a verification rather than
+# an editing loop, so the rebuild lands between passes rather than inside one.
+bun run build
+
+echo
+echo "  Built. Serving to the network."
+echo
+
 # Bound to every interface rather than to localhost, which is what lets the
 # forward above have something to forward to. The server starts whether or not
 # the forward exists, since the local address is useful on its own.
@@ -104,4 +122,4 @@ echo
 # The port is passed rather than left to the config, which derives a different
 # one per worktree. Astro refuses a port already held instead of moving to the
 # next free one, so a second worktree serving here fails loudly.
-exec bun run dev --host --port "$port"
+exec bun run preview -- --host --port "$port"
