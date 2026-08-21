@@ -170,11 +170,11 @@ The toggle interpolates its position rather than riding the scroll. Riding it, a
 
 Verified at 1280x800 and 390x844 across chromium, firefox, and webkit at f10cfb7 on 2026-08-19.
 
-### Cross-engine defects ship, because CI runs one engine
+### The merge gate runs every engine the suite defines, as a matrix rather than one job
 
-The e2e job runs `--project=chromium` alone while the Playwright config defines three. A full three-engine run of the same suite on 2026-08-19 reported four failures against a green chromium run, one of which had already shipped in an earlier pull request. Two of the four were the production defects the decision above records, and neither reproduced in chromium at all.
+The e2e job fans out over chromium, firefox, and webkit, one job per engine, so a failure names the engine it came from without anyone parsing a combined report. A matrix rather than one job running three engines, because `playwright.config.ts` pins `workers` to 1 under CI: a combined job would run all of it serially and multiply the two retries on top, where three jobs each hold one runner at one worker. It costs three runner slots per pull request against a defect class this project shipped three times behind a green single-engine job, twice more caught only by hand.
 
-Read a lone WebKit or Firefox failure as a candidate defect rather than as a flake. Widening the job is queued rather than done, so until it is, a local three-engine run before a pull request is the only thing that sees them.
+Widening the engines closes half the class. A rule silently taking its touch branch breaks no assertion, so a hover path is asserted reachable beside each rule that writes one, and the `pull_request` branch filter came off in the same change because a gate that never fires on a stacked pull request runs no engines at all. `.claude/context/ci.md` carries the cache trap, the local worker-count hazard, and the pointer-query form the fix settled. Measured at d91ba03 on 2026-08-21 with this branch applied, where all three engines pass the full suite at one worker: 455 passed, 1 skipped, 0 failed in 4.0m.
 
 ### The header signature is an authored shader, and the same drawing runs under the whole page
 
