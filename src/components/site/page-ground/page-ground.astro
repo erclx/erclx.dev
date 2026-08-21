@@ -78,6 +78,13 @@
     mountShaderField(canvas, null, column, streamsField, {
       animate: false,
       alphaScale: GROUND_ALPHA_SCALE,
+      // The field's scale divides by the viewport, so the whole drawing
+      // squeezes as the screen narrows while the reading column does not. One
+      // damping fraction therefore covered steadily more contours the smaller
+      // the screen: measured inside the column in the dark theme, the field
+      // laid 0.08% of its pixels at 1920 and 1.29% at 390. Damping keyed to the
+      // column's share of the screen holds one budget across that range.
+      columnTreatment: 'share',
     })
   }
 </script>

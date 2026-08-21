@@ -1,0 +1,139 @@
+import { expect, type Page, test } from '@playwright/test'
+
+const FIELD = '[data-page-ground-field]'
+const COLUMN = '[data-page-ground-column]'
+const SETTLE_MS = 900
+
+// The ground draws one frame and runs no loop, so its buffer is cleared once
+// composited and every later read returns nothing. Keeping it readable has to
+// land before the mount, which is why this is an init script rather than a
+// call. A run without it reports an empty field at every width and reads as the
+// surface being switched off.
+const preserveBuffer = `
+  const original = HTMLCanvasElement.prototype.getContext
+  HTMLCanvasElement.prototype.getContext = function (type, attrs) {
+    return original.call(
+      this,
+      type,
+      type === 'webgl' ? Object.assign({}, attrs, { preserveDrawingBuffer: true }) : attrs,
+    )
+  }
+`
+
+interface Weights {
+  /** Mean alpha inside the strip the field damps within. */
+  readonly column: number
+  /** Mean alpha in the margins either side of it. */
+  readonly margin: number
+}
+
+/**
+ * The field's mean alpha inside the reading column and in the margins beside
+ * it.
+ *
+ * Mean alpha rather than a count of pixels above a cutoff. A cutoff has to be
+ * chosen against a surface, and this one runs at a fraction of the hero's
+ * weight: inside the column its peak sits near 7 of 255, so the hero spec's own
+ * cutoff of 8 reports this surface as painting nothing at all. A mean needs no
+ * such choice and moves with exactly what damping multiplies.
+ *
+ * Read off the canvas rather than off a screenshot, so the number is the
+ * field's own alpha rather than its composite over whatever the page put
+ * behind it.
+ */
+async function fieldWeights(page: Page): Promise<Weights> {
+  return page.evaluate(
+    ({ fieldSelector, columnSelector }) => {
+      const empty = { column: 0, margin: 0 }
+      const canvas = document.querySelector(fieldSelector)
+      const column = document.querySelector(columnSelector)
+      if (!(canvas instanceof HTMLCanvasElement) || !column) return empty
+
+      const flat = document.createElement('canvas')
+      flat.width = canvas.width
+      flat.height = canvas.height
+      const context = flat.getContext('2d', { willReadFrequently: true })
+      if (!context) return empty
+      context.drawImage(canvas, 0, 0)
+
+      // The backing store is the CSS box times the ratio the mount settled on,
+      // which is clamped and can be degraded, so it is derived from the canvas
+      // rather than read off the device.
+      const scale = canvas.width / canvas.clientWidth
+      const box = column.getBoundingClientRect()
+      const left = Math.max(0, Math.round(box.left * scale))
+      const right = Math.min(flat.width, Math.round(box.right * scale))
+
+      const { data } = context.getImageData(0, 0, flat.width, flat.height)
+      let columnSum = 0
+      let columnCount = 0
+      let marginSum = 0
+      let marginCount = 0
+
+      for (let i = 3; i < data.length; i += 4) {
+        const pixel = (i - 3) / 4
+        const x = pixel % flat.width
+        const alpha = data[i] ?? 0
+        if (x >= left && x < right) {
+          columnSum += alpha
+          columnCount += 1
+        } else {
+          marginSum += alpha
+          marginCount += 1
+        }
+      }
+
+      return {
+        column: columnCount ? columnSum / columnCount : 0,
+        margin: marginCount ? marginSum / marginCount : 0,
+      }
+    },
+    { fieldSelector: FIELD, columnSelector: COLUMN },
+  )
+}
+
+async function readAt(page: Page, width: number): Promise<Weights> {
+  await page.setViewportSize({ width, height: 900 })
+  await page.reload()
+  await page.waitForTimeout(SETTLE_MS)
+  return fieldWeights(page)
+}
+
+test.describe('the page ground over the reading column', () => {
+  test('paints in the margins and quieter over the prose', async ({
+    page,
+    baseURL,
+  }) => {
+    await page.addInitScript(preserveBuffer)
+    await page.goto(baseURL ?? '/')
+
+    const { column, margin } = await readAt(page, 1440)
+
+    // The field is present rather than switched off over prose. A treatment
+    // that clears the column entirely satisfies every ceiling below, so this
+    // floor is what separates damping from deletion.
+    expect(column).toBeGreaterThan(0)
+    expect(margin).toBeGreaterThan(column)
+  })
+
+  test('lays no more weight over prose as the viewport narrows', async ({
+    page,
+    baseURL,
+  }) => {
+    await page.addInitScript(preserveBuffer)
+    await page.goto(baseURL ?? '/')
+
+    const wide = await readAt(page, 1440)
+    const tablet = await readAt(page, 1366)
+    const phone = await readAt(page, 390)
+
+    // The field's scale divides by the viewport, so the pattern squeezes as the
+    // screen narrows while the reading column does not. Under one flat damping
+    // fraction that put sixteen times the ink over prose on a phone as on a
+    // wide desktop, and a reader met contours crossing text on a tablet that
+    // were absent on a laptop. Damping keyed to the column's share of the
+    // screen is what holds these three together.
+    expect(tablet.column).toBeLessThanOrEqual(wide.column)
+    expect(phone.column).toBeLessThanOrEqual(wide.column)
+  })
+})

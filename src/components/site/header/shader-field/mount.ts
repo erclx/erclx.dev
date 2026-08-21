@@ -1,4 +1,10 @@
-import type { ContentBox, FieldSpec, Rgb, UniformLocations } from './field'
+import type {
+  ColumnTreatment,
+  ContentBox,
+  FieldSpec,
+  Rgb,
+  UniformLocations,
+} from './field'
 import { vertexSource } from './fields/prelude'
 import { RIPPLE_SLOTS, streamsConfig } from './fields/streams'
 
@@ -164,6 +170,8 @@ export interface MountOptions {
   readonly animate: boolean
   /** Multiplies the field's resting alpha. Defaults to the field's own weight. */
   readonly alphaScale?: number
+  /** Defaults to one damping fraction at every width. */
+  readonly columnTreatment?: ColumnTreatment
 }
 
 export function mountShaderField(
@@ -173,7 +181,7 @@ export function mountShaderField(
   field: FieldSpec,
   options: MountOptions,
 ): () => void {
-  const { animate, alphaScale = 1 } = options
+  const { animate, alphaScale = 1, columnTreatment = 'flat' } = options
   const maybeGl = canvas.getContext('webgl', {
     alpha: true,
     antialias: false,
@@ -281,6 +289,7 @@ export function mountShaderField(
       accent,
       isDark: dark,
       alphaScale,
+      columnTreatment,
     })
 
     gl.drawArrays(gl.TRIANGLES, 0, 3)

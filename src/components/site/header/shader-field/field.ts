@@ -17,6 +17,21 @@ export interface Ripple {
   readonly age: number
 }
 
+/**
+ * How a surface answers the column a reader reads down.
+ *
+ * `flat` damps by one fraction whatever the viewport. The field's scale divides
+ * by the viewport width, so the pattern squeezes as the screen narrows while
+ * the column does not, and one fraction therefore covers steadily more contours
+ * the smaller the screen gets.
+ *
+ * `share` scales that fraction with the share of the screen the column takes,
+ * which holds the field to one budget over the prose at every width. The two
+ * differ only where the column takes a large share, so they agree on a wide
+ * desktop and diverge on a tablet and a phone.
+ */
+export type ColumnTreatment = 'flat' | 'share'
+
 /** The per-frame state the mount owns and every field reads. */
 export interface FieldFrame {
   readonly time: number
@@ -42,6 +57,8 @@ export interface FieldFrame {
    * drawing has to sit at two weights without becoming two drawings.
    */
   readonly alphaScale: number
+  /** How the column a reader reads down is answered. */
+  readonly columnTreatment: ColumnTreatment
 }
 
 /**
