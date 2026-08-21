@@ -1,5 +1,10 @@
 import type { Page } from '@playwright/test'
 
+import {
+  REVEAL_ROOT_BOTTOM_INSET_PERCENT,
+  REVEAL_THRESHOLD,
+} from '@/lib/reveal'
+
 const SCROLL_STEP_RATIO = 0.8
 
 /**
@@ -27,20 +32,10 @@ const WALK_SETTLE_BUDGET_MS = 10_000
 const SETTLE_POLL_MS = 50
 
 /**
- * The share of an element `src/lib/reveal.ts` needs to see before it marks one,
- * and the share of the viewport that observer treats as its root. Both are
- * copies of its `threshold` and its `rootMargin`, since the module holds them
- * inside the observer it constructs and exports neither. A step waits on the
- * elements the pair says are due, so an edit there leaves these stale with
- * nothing reporting it.
- *
- * Staleness costs asymmetrically, which is what makes the copy affordable. A
- * value too wide here waits on an element the observer has not marked and gives
- * up at `STEP_SETTLE_TIMEOUT_MS`, and one too narrow steps past an element the
- * observer marks the more easily for it.
+ * The share of the viewport the reveal observer treats as its root, derived
+ * from the inset that module declares rather than restated as a second number.
  */
-const REVEAL_THRESHOLD = 0.15
-const REVEAL_BOTTOM_RATIO = 0.9
+const REVEAL_BOTTOM_RATIO = 1 - REVEAL_ROOT_BOTTOM_INSET_PERCENT / 100
 
 /**
  * Lazy images only fetch once they approach the viewport, so a test that reads
@@ -67,7 +62,7 @@ const REVEAL_BOTTOM_RATIO = 0.9
  * step settles where it stands rather than the walk settling once it is over.
  */
 export async function scrollThroughPage(page: Page): Promise<void> {
-  await page.evaluate(
+  const exhausted = await page.evaluate(
     async ([
       stepRatio,
       timeoutMs,
@@ -114,6 +109,8 @@ export async function scrollThroughPage(page: Page): Promise<void> {
         await settleViewport()
       }
       window.scrollTo(0, 0)
+
+      return performance.now() > walkDeadline
     },
     [
       SCROLL_STEP_RATIO,
@@ -124,6 +121,15 @@ export async function scrollThroughPage(page: Page): Promise<void> {
       REVEAL_BOTTOM_RATIO,
     ] as const,
   )
+
+  // Past the budget every remaining step settles for one poll and returns, which
+  // is a shorter fixed pause than the one this walk replaced. Whatever a caller
+  // counts afterwards reads as a page defect, so the walk says which it was.
+  if (exhausted) {
+    console.warn(
+      `page walk exhausted its ${WALK_SETTLE_BUDGET_MS}ms settle budget, so a later step may not have waited`,
+    )
+  }
 }
 
 /**
