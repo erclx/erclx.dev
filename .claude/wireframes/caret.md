@@ -29,7 +29,8 @@ Added on 2026-08-18, when every shipped project earned a route. This one has no 
 │ └────────────────────────────────────────────────────┘   │
 │                                                          │
 │   problem                                                │  ← section heading, above the prose
-│   The prompts worth reusing end up in a notes file ...   │
+│   I was retyping the same instructions ...               │  ← the reason, at lede weight
+│   The prompts worth reusing end up in a notes file ...   │  ← the framing, demoted to body
 │                                                          │
 │   trigger                                                │
 │   Typing the trigger symbol at a word boundary ...       │

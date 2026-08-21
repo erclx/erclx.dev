@@ -28,7 +28,8 @@ Added on 2026-08-18, when every shipped project earned a route. This one has no 
 │ └────────────────────────────────────────────────────┘   │
 │                                                          │
 │   problem                                                │  ← section heading, above the prose
-│   Some work is not agent work ...                        │
+│   I was assembling context by hand ...                   │  ← the reason, at lede weight
+│   Some work is not agent work ...                        │  ← the framing, demoted to body
 │                                                          │
 │   tracks                                                 │
 │   A track is a named working set ...                     │

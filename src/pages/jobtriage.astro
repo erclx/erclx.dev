@@ -120,8 +120,7 @@ const toolPairings = [
             `view` so a phone, which cannot hover, plays it on screen. */}
         <figure
           data-media-host="view"
-          data-fade
-          data-visible="true"
+          data-fade data-visible="true"
           style="--fade-delay: 450ms"
           class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
@@ -146,8 +145,16 @@ const toolPairings = [
         </h2>
         <p
           data-fade data-visible="true"
-          style="--fade-delay: 150ms"
           class="text-foreground text-lede mt-6"
+        >
+          I wanted a project where a language model drove the interface rather
+          than sitting behind it. Handing it the canvas, the filters, and the
+          layout is a different problem from returning a good answer.
+        </p>
+        <p
+          data-fade data-visible="true"
+          style="--fade-delay: 150ms"
+          class="text-muted-foreground text-body mt-6"
         >
           Job boards rank for the platform's monetization, not the candidate's
           fit. Profile-driven match should be a first-class operation, not a
@@ -437,7 +444,6 @@ const toolPairings = [
   <script>
     import { initWayHome } from '@/components/site/case-study/way-home'
     import { initHoverVideo } from '@/lib/hover-video'
-
     initWayHome()
     initHoverVideo()
   </script>
