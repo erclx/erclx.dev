@@ -149,15 +149,30 @@ that reads the vector never requests the raster, which is why the 32-square PNG
 is a fallback for engines that ignore an SVG icon rather than a first choice
 that ordering could protect.
 
-The vector is transparent and swaps its ink on `prefers-color-scheme`. Chrome
-and Firefox honour that inside a favicon and Safari does not, so the mark has to
-read in whichever single color Safari picks, and the measurement above is taken
-over the dark page for that reason. A disc behind it was rejected: inscribed at
-16px it leaves about 11 pixels of usable mark, which spends the aperture the
-drawing is built around.
+The vector carries its own cream ground with a dark mark, which is what every
+brand raster does, so all four assets agree.
 
-The two ground-carrying rasters take cream with a dark mark. A home screen and a
-profile host both composite onto a canvas this repository does not control, and
+Transparent and theme-adaptive shipped first and is not reliable. A favicon
+resolves `prefers-color-scheme` against the browser while the tab strip takes
+its color from a theme set separately, and the two disagree routinely: the
+operator's browser reported dark against a light strip and the mark rendered
+cream on white and vanished. The same mismatch the other way puts dark ink on a
+dark tab, so the failure is symmetric rather than a light-mode bug. A ground
+removes the dependency instead of betting on two independent settings agreeing.
+
+A disc was rejected and a rounded square was not, which is one distinction
+rather than two. Inscribed in 16 pixels a circle leaves about 11 for the mark
+and the letter reads cramped, where a square keeps the frame and costs the
+drawing 16% of its scale. The earlier reading against a ground was arithmetic
+about circles applied to grounds in general.
+
+What it gives up is the swap, and the measurement that justified the vector
+leading is unaffected: that reading was of whether the drawing survives 16
+pixels, which is a property of the artwork rather than of what sits behind it.
+
+The two other ground-carrying rasters take the same cream with a dark mark. A
+home screen and a profile host both composite onto a canvas this repository does
+not control, and
 the dark surfaces are the ones where an edge disappears: Discord sits near
 `#313338` and GitHub dark at `#0d1117`, both close enough to this site's own
 dark theme that a dark disc dissolves into the page. Cream stays a defined shape
@@ -196,7 +211,7 @@ nothing here, measuring 57 bright pixels against 48 for a direct draw. Each size
 is still drawn at its own dimensions, because that is what stays true if the
 mark ever gains detail a reduction would average away.
 
-Measured at b15d929 on 2026-08-22.
+Measured at 0b7e7bd on 2026-08-22.
 
 ### A landing-page figure sits inside the text column, and marks derive from type metrics
 
