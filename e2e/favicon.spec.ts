@@ -76,16 +76,15 @@ test('leads the icon relation with the vector and keeps the raster behind it', a
   await expect(icons.nth(1)).toHaveAttribute('sizes', '32x32')
 })
 
-test('draws a tab icon whose detail survives 16 pixels', async ({ page }) => {
+test('draws a tab icon that reads as a letter at 16 pixels', async ({
+  page,
+}) => {
   await page.goto('/')
 
-  // Ink coverage rather than luminance. The recorded figure of 239 was taken on
-  // cream over the dark page, and this mark is transparent and swaps its ink on
-  // the reader's scheme, so a luminance reading answers which scheme the run
-  // emulated rather than whether the drawing holds. What the stippled mark
-  // failed was coverage: 268 dots each covering a seventh of a pixel reached
-  // full ink nowhere, which is why it averaged to grey whatever color it was.
-  const covered = await page.evaluate(async () => {
+  // Ink read as dark against a cream ground rather than as alpha against
+  // nothing. The icon carries its own ground now, so every pixel is opaque and
+  // an alpha reading reports the whole frame as solid whatever the drawing does.
+  const shape = await page.evaluate(async () => {
     const image = await new Promise<HTMLImageElement>((resolve, reject) => {
       const candidate = new Image()
       candidate.onload = () => resolve(candidate)
@@ -99,61 +98,33 @@ test('draws a tab icon whose detail survives 16 pixels', async ({ page }) => {
     if (!context) throw new Error('no 2d context')
     context.drawImage(image, 0, 0, 16, 16)
     const { data } = context.getImageData(0, 0, 16, 16)
-    let solid = 0
-    let peak = 0
-    for (let i = 3; i < data.length; i += 4) {
-      const alpha = data[i] ?? 0
-      if (alpha > peak) peak = alpha
-      if (alpha > 200) solid += 1
+
+    const isInk = (x: number, y: number) => {
+      const offset = (y * 16 + x) * 4
+      const luminance =
+        0.2126 * (data[offset] ?? 0) +
+        0.7152 * (data[offset + 1] ?? 0) +
+        0.0722 * (data[offset + 2] ?? 0)
+      return luminance < 128
     }
-    return { solid, peak }
-  })
 
-  // Somewhere in the drawing has to reach full ink, which is the thing a
-  // stipple never does at this size.
-  expect(covered.peak).toBeGreaterThan(240)
+    let inked = 0
+    for (let y = 0; y < 16; y += 1) {
+      for (let x = 0; x < 16; x += 1) if (isInk(x, y)) inked += 1
+    }
 
-  // And enough of it, so a mark that resolves to one solid pixel and a haze
-  // does not pass on the peak alone.
-  expect(covered.solid).toBeGreaterThan(20)
-})
-
-test('keeps the letter open at 16 pixels', async ({ page }) => {
-  await page.goto('/')
-
-  // The counter is the enclosed space inside the bowl, and it closing is what
-  // turns this mark into a blob with a bar beside it. It is the property the
-  // tail angle was tuned around and the one an ink-coverage reading cannot see:
-  // a filled-in letter has more ink, not less, so coverage rises as the mark
-  // fails. A frame change alone once closed it with every other check passing.
-  const openPixels = await page.evaluate(async () => {
-    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const candidate = new Image()
-      candidate.onload = () => resolve(candidate)
-      candidate.onerror = () => reject(new Error('failed to load /favicon.svg'))
-      candidate.src = '/favicon.svg'
-    })
-    const canvas = document.createElement('canvas')
-    canvas.width = 16
-    canvas.height = 16
-    const context = canvas.getContext('2d', { willReadFrequently: true })
-    if (!context) throw new Error('no 2d context')
-    context.drawImage(image, 0, 0, 16, 16)
-    const { data } = context.getImageData(0, 0, 16, 16)
-
-    const alphaAt = (x: number, y: number) => data[(y * 16 + x) * 4 + 3] ?? 0
-
-    // Every region of empty pixels, and whether it touches the frame's edge.
-    // A region that does not is a hole in the drawing. Named coordinates were
-    // the first attempt and the seed landed on the crossbar, which bisects the
-    // bowl, so the reading was of ink rather than of a counter.
+    // Every region of ground, and whether it reaches the frame's edge. One that
+    // does not is a hole in the drawing, and the eye of the e is the hole this
+    // mark is built around. A filled bowl carries more ink rather than less, so
+    // a coverage count rises as the letter dies and only this separates them:
+    // the mark once shipped as a solid disc and passed on coverage alone.
     const seen = new Set<number>()
     let largestHole = 0
 
     for (let startY = 0; startY < 16; startY += 1) {
       for (let startX = 0; startX < 16; startX += 1) {
         if (seen.has(startY * 16 + startX)) continue
-        if (alphaAt(startX, startY) > 60) continue
+        if (isInk(startX, startY)) continue
 
         const queue = [{ x: startX, y: startY }]
         let size = 0
@@ -168,7 +139,7 @@ test('keeps the letter open at 16 pixels', async ({ page }) => {
             touchesEdge = true
             continue
           }
-          if (alphaAt(point.x, point.y) > 60) continue
+          if (isInk(point.x, point.y)) continue
           seen.add(key)
           size += 1
           queue.push(
@@ -183,60 +154,54 @@ test('keeps the letter open at 16 pixels', async ({ page }) => {
       }
     }
 
-    return largestHole
+    return { inked, largestHole }
   })
 
-  // The eye of the e, enclosed by the bowl and the crossbar. It is the first
-  // thing to disappear when the drawing is scaled down inside its frame, and
-  // a mark whose eye has filled reads as a dot rather than a letter.
-  expect(openPixels).toBeGreaterThan(1)
+  // Enough of the frame is drawn on. A mark resolving to a few pixels and a
+  // haze fails here whatever else holds.
+  expect(shape.inked).toBeGreaterThan(20)
+
+  // And the letter still has its eye.
+  expect(shape.largestHole).toBeGreaterThan(1)
 })
 
-test('swaps its ink with the reader’s color scheme', async ({ page }) => {
-  const inkUnder = async (scheme: 'light' | 'dark') => {
-    await page.emulateMedia({ colorScheme: scheme })
-    await page.goto('/')
-    return page.evaluate(async () => {
-      const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-        const candidate = new Image()
-        candidate.onload = () => resolve(candidate)
-        candidate.onerror = () => reject(new Error('failed to load'))
-        candidate.src = '/favicon.svg?' + Math.random()
-      })
-      const canvas = document.createElement('canvas')
-      canvas.width = 64
-      canvas.height = 64
-      const context = canvas.getContext('2d', { willReadFrequently: true })
-      if (!context) throw new Error('no 2d context')
-      context.drawImage(image, 0, 0, 64, 64)
-      const { data } = context.getImageData(0, 0, 64, 64)
-      let sum = 0
-      let counted = 0
-      for (let i = 0; i < data.length; i += 4) {
-        if ((data[i + 3] ?? 0) < 200) continue
-        sum +=
-          0.2126 * (data[i] ?? 0) +
-          0.7152 * (data[i + 1] ?? 0) +
-          0.0722 * (data[i + 2] ?? 0)
-        counted += 1
-      }
-      return counted ? sum / counted : -1
+test('carries its own ground so a tab theme cannot hide it', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  // The transparent version resolved its ink from `prefers-color-scheme`, which
+  // a favicon reads off the browser while the tab strip takes its color from a
+  // theme set separately. The two disagree routinely, and the mark then
+  // rendered cream on a white tab and vanished. An opaque ground is what
+  // removes the dependency, so the absence of transparency is the property.
+  const clearPixels = await page.evaluate(async () => {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const candidate = new Image()
+      candidate.onload = () => resolve(candidate)
+      candidate.onerror = () => reject(new Error('failed to load /favicon.svg'))
+      candidate.src = '/favicon.svg'
     })
-  }
+    const canvas = document.createElement('canvas')
+    canvas.width = 32
+    canvas.height = 32
+    const context = canvas.getContext('2d', { willReadFrequently: true })
+    if (!context) throw new Error('no 2d context')
+    context.drawImage(image, 0, 0, 32, 32)
+    const { data } = context.getImageData(0, 0, 32, 32)
 
-  const light = await inkUnder('light')
-  const dark = await inkUnder('dark')
+    // The corners fall outside the rounded ground and are clear by design, so
+    // the reading covers the middle rather than the whole frame.
+    let clear = 0
+    for (let y = 6; y < 26; y += 1) {
+      for (let x = 6; x < 26; x += 1) {
+        if ((data[(y * 32 + x) * 4 + 3] ?? 0) < 250) clear += 1
+      }
+    }
+    return clear
+  })
 
-  // Chrome and Firefox honour a media query inside a favicon and Safari does
-  // not, so this asserts the file is authored correctly rather than that every
-  // reader gets the swap. A run on an engine that ignores it reports one value
-  // twice, which is the skip below rather than a failure of the drawing.
-  test.skip(
-    Math.abs(light - dark) < 1,
-    'engine ignores prefers-color-scheme inside an svg icon',
-  )
-
-  expect(dark).toBeGreaterThan(light)
+  expect(clearPixels).toBe(0)
 })
 
 test('declares the apple touch icon at 180 square', async ({ page }) => {

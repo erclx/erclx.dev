@@ -27,6 +27,8 @@ interface Raster {
   readonly ink: string
   /** Fraction of the frame the mark occupies, leaving the rest as margin. */
   readonly scale: number
+  /** Corner radius as a fraction of the frame, for a ground that has corners. */
+  readonly radius: number
   readonly note: string
 }
 
@@ -34,9 +36,10 @@ const rasters: readonly Raster[] = [
   {
     file: 'public/favicon-32.png',
     size: 32,
-    ground: null,
-    ink: CREAM,
-    scale: 1,
+    ground: CREAM,
+    ink: INK,
+    scale: 0.84,
+    radius: 0.2,
     note: 'tab fallback for engines that ignore an SVG favicon',
   },
   {
@@ -45,7 +48,8 @@ const rasters: readonly Raster[] = [
     ground: CREAM,
     ink: INK,
     scale: 0.68,
-    note: 'home screen, which composites over its own ground and ignores alpha',
+    radius: 0,
+    note: 'home screen, which applies its own mask, so the ground stays square',
   },
   {
     file: 'public/avatar.png',
@@ -53,6 +57,7 @@ const rasters: readonly Raster[] = [
     ground: CREAM,
     ink: INK,
     scale: 0.62,
+    radius: 0,
     note: 'profile avatar, cropped to a circle by the hosts that show one',
   },
 ]
@@ -74,7 +79,8 @@ for (const raster of rasters) {
     `<style>
        html, body { margin:0; width:100%; height:100%; }
        body { display:flex; align-items:center; justify-content:center;
-              background:${raster.ground ?? 'transparent'}; color:${raster.ink}; }
+              background:${raster.ground ?? 'transparent'}; color:${raster.ink};
+              border-radius:${raster.size * raster.radius}px; overflow:hidden; }
        svg { display:block; width:${raster.size * raster.scale}px;
              height:${raster.size * raster.scale}px; }
      </style>${source}`,

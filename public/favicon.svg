@@ -1,42 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5 9.5 81 81" role="img" aria-label="erclx logomark">
-  <!-- The tab icon. Generated from src/assets/brand/mark.svg, which is the one
-       drawing, with the ink resolved here rather than inherited: a favicon has
-       no document to take currentColor from.
+  <!-- The tab icon, carrying its own ground. Generated from
+       src/assets/brand/mark.svg, which is the one drawing.
 
-       Transparent rather than sitting on a disc. An inscribed circle at 16px
-       leaves about 11 pixels of usable mark, which spends the aperture this
-       drawing exists to protect.
+       Transparent and theme-adaptive was the first attempt and it is not
+       reliable. A favicon resolves `prefers-color-scheme` against the browser
+       setting while the tab strip takes its color from a theme chosen
+       separately, so the two disagree routinely: measured on a light tab strip
+       with the browser in dark, the mark rendered cream on white and vanished,
+       and the same mismatch the other way puts dark ink on a dark tab. A ground
+       removes the dependency rather than betting on the two agreeing.
 
-       Chrome and Firefox honour the query below. Safari does not, so the mark
-       has to read in whichever single color it picks, and it does: measured
-       over the dark page it peaks at luminance 239 with 48 of 256 pixels above
-       180. -->
-  <!-- Two classes rather than one. A CSS declaration outranks a presentation
-       attribute in SVG, so a single rule carrying `fill` overrode the
-       `fill="none"` on the stroked paths and filled the bowl: the mark shipped
-       as a solid disc with a bar, which reads as more ink rather than less and
-       so passed a coverage check while failing to be a letter at all. -->
-  <style>
-    .stroke {
-      fill: none;
-      stroke: #1a1815;
-      stroke-width: 10;
-      stroke-linecap: round;
-    }
-    .solid {
-      fill: #1a1815;
-      stroke: none;
-    }
-    @media (prefers-color-scheme: dark) {
-      .stroke {
-        stroke: #f4efe6;
-      }
-      .solid {
-        fill: #f4efe6;
-      }
-    }
-  </style>
-  <path class="stroke" d="M 67.5 50 A 25 25 0 1 0 56.84 70.48" />
-  <path class="stroke" d="M 17.5 50 L 67.5 50" />
-  <rect class="solid" x="74.5" y="21" width="13" height="58" rx="1.5" />
+       A rounded square rather than a disc. A circle inscribed in 16 pixels
+       leaves about 11 for the mark and the letter reads cramped at that size,
+       where a square keeps the frame and costs the drawing 16% of its scale. -->
+  <rect x="9.5" y="9.5" width="81" height="81" rx="16" fill="#f4efe6" />
+  <g transform="translate(50 50) scale(0.84) translate(-50 -50)">
+    <path
+      d="M 67.5 50 A 25 25 0 1 0 56.84 70.48"
+      fill="none"
+      stroke="#1a1815"
+      stroke-width="10"
+      stroke-linecap="round"
+    />
+    <path
+      d="M 17.5 50 L 67.5 50"
+      fill="none"
+      stroke="#1a1815"
+      stroke-width="10"
+      stroke-linecap="round"
+    />
+    <rect x="74.5" y="21" width="13" height="58" rx="1.5" fill="#1a1815" />
+  </g>
 </svg>
