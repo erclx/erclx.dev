@@ -18,5 +18,6 @@ Per-domain narrative loaded on demand
 - [Project cards](project-cards.md): Static Astro card rendering with hover-play video and parallax tilt as vanilla TS modules
 - [Section nav](section-nav.md): Scroll-position tracking, reveal gates, and click-lock behind the section-nav rail
 - [Shader field](shader-field.md): The authored WebGL surface behind the hero and under the page, its mount lifecycle, and the reduced-motion still
+- [Stacked shipping](stacked-shipping.md): How a chain of dependent pull requests is cut, reviewed, and merged, and what git does under it
 - [Theming](theming.md): Dark mode wiring across the first-paint script, theme toggle, and CSS class variant
 - [Typography](typography.md): Variable font loading, the preload split, and the type scale tokens

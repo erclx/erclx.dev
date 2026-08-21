@@ -9,6 +9,7 @@ BYOK
 devex
 downsamples
 erclx
+handback
 Isaksson
 Jobtriage
 Klarna
@@ -23,6 +24,7 @@ Rekrytering
 reranking
 retarget
 retargeted
+retargets
 Résumé
 screencasts
 shiba
@@ -30,6 +32,7 @@ Stackr
 Stig
 telematics
 undercount
+ungated
 Värnamo
 woah
 wordmark
