@@ -1,20 +1,6 @@
+import { hasHoverPointer } from '@/lib/pointer'
+
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
-// Everywhere except a true touch device. Excluding a coarse pointer rather
-// than requiring hover, because Playwright's Firefox answers `(hover: hover)`
-// and `(pointer: fine)` both false on a desktop that hovers perfectly well and
-// would take the touch branch. A coarse pointer is the one capability only a
-// real touch device reports.
-//
-// This is true of a device reporting `pointer: none` as well, so a `view` host
-// on a television or a kiosk binds a hover that cannot fire and shows its
-// poster instead of its clip. That is accepted rather than missed. Measured
-// across all three engines, Playwright's Firefox answers `(pointer: none)` and
-// `(hover: none)` both true, so it is indistinguishable from that device on
-// every pointer and hover query, and no pairing separates the two. Routing the
-// `view` fallback on `(hover: none)` sends Firefox back to intersection, which
-// is the defect this query exists to close. The devices `view` was written for
-// are phones, which report a coarse pointer and still reach it.
-const HOVER_CAPABLE_QUERY = 'not all and (pointer: coarse)'
 const VIEWPORT_VISIBLE_RATIO = 0.5
 
 // A video plays while its host is hovered. A host declaring `view` also plays
@@ -26,7 +12,11 @@ export function initHoverVideo(): void {
   if (typeof window === 'undefined') return
   if (window.matchMedia(REDUCED_MOTION_QUERY).matches) return
 
-  const canHover = window.matchMedia(HOVER_CAPABLE_QUERY).matches
+  // A `view` host routed on `(hover: none)` instead would send Playwright's
+  // Firefox back to the intersection branch, which is the defect the shared
+  // query exists to close. The devices `view` was written for are phones, which
+  // report a coarse pointer and still reach it.
+  const canHover = hasHoverPointer()
   const videos =
     document.querySelectorAll<HTMLVideoElement>('[data-media-video]')
 

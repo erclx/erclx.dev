@@ -1,3 +1,5 @@
+import { hasHoverPointer } from '@/lib/pointer'
+
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
 const MAX_TILT_DEG = 6
 const MAX_PARALLAX_PX = 8
@@ -15,6 +17,11 @@ interface TiltState {
 export function initTilt(): void {
   if (typeof window === 'undefined') return
   if (window.matchMedia(REDUCED_MOTION_QUERY).matches) return
+  // The tilt reads where a pointer rests inside the card, which a touch device
+  // never reports. Bound there, `pointermove` fires all the way down a scroll
+  // and every card a finger passes over rotates and stays rotated, since the
+  // pointer is destroyed on lift and `pointerleave` never returns it to rest.
+  if (!hasHoverPointer()) return
 
   const cards = document.querySelectorAll<HTMLElement>('[data-tilt]')
   if (cards.length === 0) return

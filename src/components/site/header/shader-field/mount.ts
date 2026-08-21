@@ -1,3 +1,5 @@
+import { hasHoverPointer } from '@/lib/pointer'
+
 import type {
   ColumnTreatment,
   ContentBox,
@@ -12,7 +14,14 @@ import { RIPPLE_SLOTS, streamsConfig } from './fields/streams'
 const RIPPLE_RETIREMENT_FRACTION = 1 / 1000
 
 export const mountConfig = {
-  maxPixelRatio: 1.5,
+  // Matches a dense display rather than sitting under one. At 1.5 the field is
+  // drawn below the resolution the screen paints at and the panel interpolates
+  // the difference, which softens every contour and pulls its peak down: a
+  // tablet reporting a ratio of 2 was being handed a surface rendered at 1.5
+  // and stretched, so the same drawing read crisp on a desktop and washed out
+  // there. The frame guard below is what protects a device that cannot afford
+  // this, by measuring what it actually draws rather than by capping up front.
+  maxPixelRatio: 2,
   lowEndPixelRatio: 1,
   degradedPixelRatio: 1,
   lowEndConcurrency: 4,
@@ -35,6 +44,8 @@ export const mountConfig = {
   // the throttle itself holds elapsed near 33.3ms, so a device reporting four
   // cores degraded inside its first window whatever it could actually draw.
   perfFloorRatio: 0.75,
+  /** How far a press may travel and still read as a tap rather than a drag. */
+  tapSlopPx: 10,
 } as const
 
 const fallbackRgb: Rgb = [0.102, 0.094, 0.082]
@@ -226,6 +237,10 @@ export function mountShaderField(
   let cursorY = 0
   let cursorStrength = 0
   let cursorTarget = 0
+  // Where a press landed, and whether it is still a candidate for a tap.
+  let pressX = 0
+  let pressY = 0
+  let pressed = false
   // Ages in seconds, oldest first. A click appends and the oldest is dropped
   // once the set is full, so a reader clicking repeatedly always gets an
   // answer and the shader's loop bound never has to change.
@@ -374,7 +389,38 @@ export function mountShaderField(
     cursorTarget = 0
   }
 
+  // A tap read off the pointer itself, rather than off `pointerdown` or off a
+  // click.
+  //
+  // `pointerdown` alone is contact and not intent: a finger landing to scroll
+  // fires it before anything else, so every scroll a touch reader started
+  // dropped a disturbance they had not asked for.
+  //
+  // A `click` bound on the window looks like the answer and is not. WebKit does
+  // not dispatch one to the window for a tap on an element that is not natively
+  // interactive, so the response worked on a desktop and did nothing at all on
+  // a phone. Nothing in a headless run reports that, and it took a device.
+  //
+  // A press that does not travel and is not taken over by a scroll is the act
+  // on every engine. The browser fires `pointercancel` at the moment it claims
+  // the gesture for scrolling, so that is what separates the two, and the slop
+  // covers the movement a finger makes while resting still.
   function handlePointerDown(event: PointerEvent): void {
+    pressX = event.clientX
+    pressY = event.clientY
+    pressed = true
+  }
+
+  function handlePointerCancel(): void {
+    pressed = false
+  }
+
+  function handlePointerUp(event: PointerEvent): void {
+    if (!pressed) return
+    pressed = false
+    const distance = Math.hypot(event.clientX - pressX, event.clientY - pressY)
+    if (distance > mountConfig.tapSlopPx) return
+
     const rect = canvas.getBoundingClientRect()
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
@@ -455,9 +501,17 @@ export function mountShaderField(
   // A still surface reads no pointer and needs no visibility gate, since there
   // is no loop for either to govern.
   if (animate) {
-    window.addEventListener('pointermove', handlePointerMove)
-    window.addEventListener('pointerleave', handlePointerLeave)
+    // The cursor raises a hill under a pointer resting on the surface, which a
+    // finger dragging the page past it is not doing. The click above is bound
+    // on every device, since it answers an act rather than a position.
+    if (hasHoverPointer()) {
+      window.addEventListener('pointermove', handlePointerMove)
+      window.addEventListener('pointerleave', handlePointerLeave)
+    }
+    // Bound on every device, since a tap is an act rather than a position.
     window.addEventListener('pointerdown', handlePointerDown)
+    window.addEventListener('pointerup', handlePointerUp)
+    window.addEventListener('pointercancel', handlePointerCancel)
     document.addEventListener('visibilitychange', handleVisibility)
     start()
   } else {
@@ -472,6 +526,8 @@ export function mountShaderField(
     window.removeEventListener('pointermove', handlePointerMove)
     window.removeEventListener('pointerleave', handlePointerLeave)
     window.removeEventListener('pointerdown', handlePointerDown)
+    window.removeEventListener('pointerup', handlePointerUp)
+    window.removeEventListener('pointercancel', handlePointerCancel)
     document.removeEventListener('visibilitychange', handleVisibility)
     canvas.removeEventListener('webglcontextlost', handleContextLost)
     canvas.removeEventListener('webglcontextrestored', handleContextRestored)

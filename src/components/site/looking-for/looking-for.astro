@@ -357,6 +357,8 @@ const criteria = [
 </style>
 
 <script>
+  import { hasHoverPointer } from '@/lib/pointer'
+
   const stage = document.querySelector<HTMLElement>('.looking-stage')
   const rows = stage?.querySelector<HTMLElement>('.looking-rows')
   if (stage && rows) {
@@ -381,7 +383,11 @@ const criteria = [
       stage.dataset.peekVisible = 'true'
     }
 
-    if (!reduce) {
+    // The peek ducks for a pointer resting over the rows and returns when it
+    // leaves. A touch pointer is destroyed on lift, so a finger crossing the
+    // rows on its way down the page ducked the peek and nothing brought it
+    // back.
+    if (!reduce && hasHoverPointer()) {
       rows.addEventListener('pointerenter', () => {
         stage.dataset.peekDucked = 'true'
       })

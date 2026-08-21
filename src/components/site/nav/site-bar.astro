@@ -124,6 +124,8 @@
 </style>
 
 <script>
+  import { hasHoverPointer } from '@/lib/pointer'
+
   import { initHeroHandoff } from './hero-handoff'
 
   const bar = document.querySelector<HTMLElement>('[data-site-bar]')
@@ -151,8 +153,14 @@
     else flyer.removeAttribute('data-hot')
   }
 
-  toTop?.addEventListener('pointerenter', () => setHot(true))
-  toTop?.addEventListener('pointerleave', () => setHot(false))
+  // A pointer resting on the control marks the name it would return to. Touch
+  // has no resting state: the tap that scrolls home set the mark and the
+  // pointer was gone before anything cleared it. Focus carries the same mark
+  // for a keyboard, ungated, since focus is a deliberate act on every device.
+  if (hasHoverPointer()) {
+    toTop?.addEventListener('pointerenter', () => setHot(true))
+    toTop?.addEventListener('pointerleave', () => setHot(false))
+  }
   toTop?.addEventListener('focus', () => setHot(true))
   toTop?.addEventListener('blur', () => setHot(false))
 

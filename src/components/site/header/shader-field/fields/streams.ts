@@ -47,7 +47,12 @@ export const streamsConfig = {
   // came from. The widest desktop sits at 0.40 and stays where it is.
   columnShareLow: 0.4,
   columnShareHigh: 0.75,
-  narrowColumnDamp: 0.08,
+  // The floor the damping walks down to, rather than off. At 0.08 the field
+  // left the column entirely on a tablet, and the sections far enough down the
+  // page for the hero's own surface to have scrolled away read as a flat plate
+  // where the sections near the top still borrow that surface. One weight over
+  // prose has to mean a weight rather than nothing.
+  narrowColumnDamp: 0.25,
 
   // The pointer raises a hill in the stream function, and the lighting below
   // then picks out its flanks, so the surface reads as displaced rather than
