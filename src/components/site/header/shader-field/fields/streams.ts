@@ -38,21 +38,20 @@ export const streamsConfig = {
   contentDamp: 0.4,
   contentRevealDamp: 0.7,
 
-  // The share of the viewport the reading column takes where damping starts to
-  // tighten, and where it reaches its narrow value.
+  // The widths damping runs between, and the fraction it reaches at the narrow
+  // end. A wide desktop keeps what it had and a phone is damped hardest.
   //
-  // The band runs from 0.40 rather than from the 0.45 a first pass used. A
-  // tablet at 1366 holds 0.56, which that band answered with a 9% change in
-  // damping, so the treatment was a no-op on the only device the complaint
-  // came from. The widest desktop sits at 0.40 and stays where it is.
-  columnShareLow: 0.4,
-  columnShareHigh: 0.75,
-  // The floor the damping walks down to, rather than off. At 0.08 the field
-  // left the column entirely on a tablet, and the sections far enough down the
-  // page for the hero's own surface to have scrolled away read as a flat plate
-  // where the sections near the top still borrow that surface. One weight over
-  // prose has to mean a weight rather than nothing.
-  narrowColumnDamp: 0.25,
+  // Driven by viewport width rather than by the reading column's share of it,
+  // which is what shipped first and stops working exactly where it is needed.
+  // The column caps at the viewport, so its share pins at 1.0 from 768 down and
+  // the curve freezes there while the field's own density keeps climbing: the
+  // scale divides by width, so a narrower screen fits more contours across it.
+  // Measured under the share curve in dark, mean ink fell to 0.12 at 768 and
+  // then rose back to 0.20 at 390, so a phone was the least damped screen of
+  // the three narrow ones. Width sees what share cannot.
+  dampWideWidth: 1920,
+  dampNarrowWidth: 390,
+  narrowColumnDamp: 0.1,
 
   // The pointer raises a hill in the stream function, and the lighting below
   // then picks out its flanks, so the surface reads as displaced rather than
@@ -302,27 +301,30 @@ function smoothstep(edge0: number, edge1: number, value: number): number {
  * The fraction the field's resting alpha is multiplied by inside the reading
  * column.
  *
- * One flat fraction is what shipped and it holds at every width, while the
- * column's share of the pattern does not. The field's scale divides by the
- * viewport, so the whole drawing squeezes as the screen narrows and the column
- * crosses steadily more contours at an unchanged weight. Measured inside the
- * column in the dark theme, the field lays 0.08% of its pixels at 1920 and
- * 1.29% at 390, which is the difference a reader met as contours crossing the
- * prose on a tablet and staying off it on a desktop.
+ * It walks down with viewport width rather than holding one value, because the
+ * field's scale divides by that width: the drawing squeezes as the screen
+ * narrows, so one fraction covers steadily more contours the smaller the screen
+ * gets. A phone therefore needs the hardest damping and a wide desktop the
+ * least.
+ *
+ * The first shipped version keyed on the reading column's share of the viewport
+ * instead. That share caps at 1.0 once the column is the whole screen, which
+ * happens at 768, so from there down the curve froze while density kept
+ * climbing: measured in dark, mean ink fell to 0.12 at 768 and rose back to
+ * 0.20 at 390, leaving a phone the least damped of the three narrow screens.
+ * Width is the variable that still moves where share cannot.
  */
 function resolveColumnDamp(frame: FieldFrame): number {
   const { content, width, columnTreatment } = frame
   if (!content) return 1
 
   if (columnTreatment === 'share') {
-    // The measured box carries the padding the mount added around it, which is
-    // margin rather than column, so reading it as column overstates the share
-    // on exactly the narrow widths this treatment exists for.
-    const columnWidth = (content.halfX - streamsConfig.contentPadding) * 2
+    // Reversed edges, so a narrow screen travels all the way to the floor and a
+    // wide one stays where it was.
     const travel = smoothstep(
-      streamsConfig.columnShareLow,
-      streamsConfig.columnShareHigh,
-      columnWidth / width,
+      streamsConfig.dampWideWidth,
+      streamsConfig.dampNarrowWidth,
+      width,
     )
     return (
       streamsConfig.contentDamp +
