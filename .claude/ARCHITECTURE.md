@@ -84,6 +84,16 @@ Two further reasons hold whichever file is open. The glob overlaps `445-screensh
 
 Reading its absence as an install gap is the specific mistake to avoid: a session did exactly that on 2026-08-15 and installed it alongside two rules that were genuinely missing. What tells the two cases apart is `.claude/aitk.json`. It named `556-groundwork` and `557-intake` with no file behind them, which is a missing install, while `440-surface-capture` appeared in neither the record nor the tree, which is what a declined rule looks like.
 
+### A touch decision is judged on a device, not in device emulation
+
+Three verification surfaces above read the page through a headless engine or a desktop browser, and none of them can answer what a finger does. Device emulation reproduces the events and the viewport and not the pointer hardware, the display density, or the engine, so a rule silently taking its touch branch renders identically under emulation and wrongly under a thumb. That is the same defect class the engine matrix was widened for, arriving through the one gap a matrix cannot close.
+
+`bun run device` serves the dev site to a phone or tablet on the local network and prints a code to scan. `.claude/context/development.md` § Serving to a real device carries the routing, the reboot trap, and the failure modes.
+
+Two decisions inside it are worth stating here rather than there. A local port forward was chosen over a public tunnel, which needs no administrator and works from any network and was rejected anyway because it puts an unfinished portfolio on an address anyone holding the link can load. And the harness holds one fixed port where the other three servers derive one per worktree, because a forward covers exactly one port and a derived port would put an administrator prompt in front of every new worktree, which is the recurring cost the harness exists to remove. Reading that fixed port as an oversight against the band convention is the mistake to avoid: it is the convention traded away deliberately, for one forward that outlives every worktree.
+
+What it gives up is two worktrees serving to a device at once, which needs two devices before it is worth anything.
+
 ### Resume PDF served from `public/`
 
 The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source remains `assets/resumes/eric-le-resume.pdf` in the parent career repo. Updates land here as a binary copy via the sync queue rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
