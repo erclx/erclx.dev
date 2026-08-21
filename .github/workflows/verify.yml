@@ -100,7 +100,14 @@ jobs:
       # One red engine leaves the other two results readable.
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        include:
+          - browser: chromium
+          - browser: firefox
+            # Headless firefox creates no GL context without an X display, and
+            # no pref substitutes for one. Chromium carries SwiftShader and
+            # webkit its own path, so neither needs this.
+            wrapper: xvfb-run -a
+          - browser: webkit
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -137,14 +144,8 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: bunx playwright install ${{ matrix.browser }}
 
-      - name: Install Software GL for Firefox
-        if: matrix.browser == 'firefox'
-        # A runner has no GPU, and firefox reaches WebGL through a Mesa driver
-        # that has to be on disk. Chromium bundles SwiftShader and needs none.
-        run: sudo apt-get install -y libgl1-mesa-dri
-
       - name: Run E2E Tests
-        run: bun run test:e2e --project=${{ matrix.browser }}
+        run: ${{ matrix.wrapper }} bun run test:e2e --project=${{ matrix.browser }}
 
       - name: Upload E2E Report
         uses: actions/upload-artifact@v4

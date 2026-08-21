@@ -21,21 +21,7 @@ export default defineConfig({
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        // A CI runner has no GPU, so Firefox blocklists WebGL and the shader
-        // surface draws its fallback. Forcing it on keeps the spec asserting
-        // what a visitor sees rather than what the runner can do.
-        launchOptions: {
-          firefoxUserPrefs: {
-            'webgl.force-enabled': true,
-            'webgl.disabled': false,
-          },
-        },
-      },
-    },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {

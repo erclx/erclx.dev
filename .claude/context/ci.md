@@ -61,19 +61,23 @@ The exclusion admits a device reporting `pointer: none` alongside one reporting 
 
 The first widened run went red on firefox alone, four cases in `e2e/header-shader.spec.ts` against 147 passing, while chromium and webkit passed on the same machine. All four are one cause: `mount.ts` reveals the fallback when it cannot draw, and `revealFallback` sets `canvas.style.display` to `none`, which fails the geometry case, the paint case, the reduced-motion case, and the case asserting the fallback is hidden at rest.
 
-The engines differ in how they reach WebGL without a GPU. Measured locally on 2026-08-21, chromium reports `ANGLE (SwiftShader)` and webkit reports its own path, both bundled, where firefox reports `Mesa, llvmpipe` and therefore depends on a driver being installed. The firefox leg installs `libgl1-mesa-dri` and launches with `webgl.force-enabled`, which covers the driver being absent and the blocklist refusing it in turn.
+Headless firefox creates no GL context without an X display, and the firefox leg runs under `xvfb-run` for that reason. Chromium carries SwiftShader and webkit its own path, so both draw on a runner with no display and neither needs the wrapper.
 
-Read that as two candidate causes rather than one confirmed. `mount.ts` takes the same fallback when `getContext` returns null and when the renderer fails to compile, so the log cannot separate them, and the pair above is what closes the first. A run still red after it points at the second.
+Reproduced locally rather than inferred, by unsetting `DISPLAY` on a machine whose firefox otherwise reports `Mesa, llvmpipe`: the spec fails four of six, the same four and the same count CI reported, and adding `xvfb-run` alone returns all six to passing. That also retires two earlier candidates. A missing Mesa driver is not the cause, since the runner already carries `libgl1-mesa-dri` and an install step for it reported the package as current. `webgl.force-enabled` is not the fix either, since the four cases fail with it set and pass without it once a display exists.
+
+The compile path stays untested rather than ruled out. `mount.ts` reveals the same fallback when `getContext` returns null and when the renderer fails to compile, and no run has separated them, so what the display repair establishes is that a context is now granted rather than that compilation was never at fault.
 
 The reason the log could not answer it is worth keeping. `playwright.config.ts` reported `list` alone under CI, so `playwright-report/` was never written and the failure step uploaded an artifact that did not exist. CI now runs `list` and `html` together and uploads `test-results/` beside the report, since a gate that reports a failure a reader cannot open is only half a gate.
 
-## A local three-engine run reports failures the gate never sees
+## Worker count changes the two WebKit image cases, and does not settle them
 
 The card poster and the diction figures each fail three times of three at the default worker count and pass three times of three at `--workers=1`, measured 2026-08-21 by varying worker count alone on one commit against one build. Probing the pages directly agrees: every poster and every figure reports pixels in WebKit against both the dev server and a production build, so nothing on the page fails to load.
 
-`playwright.config.ts` pins `workers` to 1 under CI, so the contention producing them cannot exist in the gating job. Run a local three-engine pass with `--workers=1` when the question is whether something is broken, and accept the wall clock for the answer. A pass at the default count reads a red suite as a shipped defect.
+Run a local three-engine pass at `--workers=1` when the question is whether something is broken, and accept the wall clock for the answer. A pass at the default count reads a red suite as a shipped defect.
 
-Two wrong characterizations reached the task file before worker count was varied, one calling the poster case a deterministic defect and one calling a flaked-green run a fix. Both came from comparing pass and fail counts across runs that differed in parallelism. Vary one thing before concluding from a count.
+What that does not license is calling either case impossible in the gating job. This entry said so on the reasoning that `playwright.config.ts` pins `workers` to 1 under CI, and the diction figure case then failed in CI at one worker on 2026-08-21, three times including both retries, after passing there on the commit before it. One pass and one failure at the same worker count separate nothing, so whether that commit moved it or it is flaky at one worker stays open.
+
+Read the whole area as unsettled rather than as measured. That figure has now carried four characterizations, a deterministic defect, a flake, a case that cannot fire in CI, and this one, and the first three were wrong. Every one of them rested on a count of passes and failures across runs that differed in something nobody had controlled. Settle it by running the WebKit leg repeatedly at one worker on one commit, and until that exists, do not write a fifth.
 
 ## The pull request trigger carries no branch filter
 
