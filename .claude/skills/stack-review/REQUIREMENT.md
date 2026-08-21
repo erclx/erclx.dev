@@ -17,7 +17,7 @@ Without this skill, a session reviewing a chain of pull requests:
 - Posts nothing on a branch a pass found nothing on, so the operator reads a thread nobody answered and does not merge it.
 - Leaves a close-out standing on a commit the branch no longer carries after a rebase, so the thread reads as a review predating the head whatever the trees say. Written as a rule once and broken an hour later on the same chain, with the verification sitting in the session channel while the thread showed a close-out on a dead commit.
 - Resolves the dispatch target from a session listing. Work running in linked worktrees surfaced as neither, so the listing reported four branches as held by nobody while one session held every one.
-- Recommends a merge order derived from the diff rather than from the check trigger, which gates the bottom branch alone.
+- Recommends a merge order read off the diff rather than off what a squash does to every base above it, so a chain merges in the order its branches happen to be ready.
 
 ## Must
 
@@ -27,7 +27,7 @@ Without this skill, a session reviewing a chain of pull requests:
 - Post a close-out on every branch every time, including a branch carrying no finding and a branch that only rebased.
 - Name the comparison that cleared a rebased branch, rather than asserting it is clear.
 - Post one handback covering the whole stack, naming the branch each finding sits on.
-- State the merge order and what each merge unlocks, as the consequence of the check trigger rather than as a standing truth.
+- State the merge order and what each merge unlocks, from what a squash does to the bases above it.
 - Correct the pull request body as well as the thread when a finding invalidates what the body claims.
 
 ## Must not

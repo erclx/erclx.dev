@@ -14,7 +14,7 @@ Without this skill, a session shipping a run that holds several slices:
 - Derives the squash rebase live at the moment a merge breaks the chain, with the mechanics sitting in a file the run had no reason to open. A squash is an ancestor of nothing stacked on the pre-merge tip, so every base above it goes stale at once.
 - Reads a mergeable state as evidence the base is current. Measured on a branch reporting `MERGEABLE` and `CLEAN` while its merge base sat two merges back, whose own diff carried eleven files instead of two and whose merge would have squashed the branch below into the trunk a second time under the wrong title.
 - Opens the next branch only when the last lands, so a chain built in one run is reviewed over as many rounds as it has slices while every dependency between them was already fixed at planning.
-- Assumes a stacked pull request is gated. Measured on a four-deep chain where the bottom reported five jobs and the three above it reported no checks at all, because the check trigger names the trunk as its only base.
+- Reads a green check on a stacked branch as clearance to merge it. The run covers the branch's own tip and reports nothing about whether its base is current, which is the state that merges the work below it into the trunk a second time.
 
 ## Must
 

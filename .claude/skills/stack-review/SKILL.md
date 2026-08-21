@@ -59,12 +59,14 @@ The operator merges by reading the thread, so every branch owes a visible close-
 
 This section owns the order. `stack-ship` and `stack-address` cite it rather than deriving one.
 
-1. Merge the bottom branch first, always. It is the only one the checks gate.
-2. That merge retargets the branch above onto the trunk and gives it checks for the first time.
-3. Wait for those checks, then merge it, and repeat upward.
-4. Between each merge the worker rebases every surviving branch, so nothing merges on a base a merge has moved.
+1. Merge the bottom branch first, always.
+2. That merge retargets the branch above onto the trunk and leaves its base stale, so the worker rebases every surviving branch before anything else moves.
+3. Read the rebased branch's merge base against the trunk head and its diff file count, then merge it.
+4. Repeat upward, so nothing merges on a base a merge has moved.
 
-The order is forced rather than chosen, because `verify.yml` fires on a pull request targeting the trunk alone. Read it as the consequence of that trigger, so a reader can tell which half moves if the trigger does. See `.claude/context/stacked-shipping.md` § The merge order is forced by the check trigger.
+The order is forced rather than chosen, because a squash is an ancestor of nothing stacked on the pre-merge tip. Merging out of order replays the branch below into the trunk a second time under the wrong title. See `.claude/context/stacked-shipping.md` § The merge order is forced by the squash.
+
+Every branch in a chain is gated on its own, so the whole chain can be green before the first merge. Green is not the clearance to merge, since a check reports nothing about whether a base is current.
 
 ## What this delegates
 

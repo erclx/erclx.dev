@@ -32,7 +32,6 @@ Stackr
 Stig
 telematics
 undercount
-ungated
 Värnamo
 woah
 wordmark

@@ -9,7 +9,7 @@ description: How a chain of dependent pull requests is cut, reviewed, and merged
 
 A stack is a chain of pull requests where each branch targets the one below it rather than the trunk, so work built in order is read in order while all of it is open at once. A dependency between two slices is the reason to stack them rather than the reason to fold them into one review.
 
-This entry carries what is not a step. The roles a stack runs under, how git behaves when one of its branches merges, and which checks a stacked pull request does not get all sit here. Every procedure sits in the skill that runs it, and neither surface restates the other.
+This entry carries what is not a step. The roles a stack runs under, how git behaves when one of its branches merges, and what a green check on a stacked branch does and does not report all sit here. Every procedure sits in the skill that runs it, and neither surface restates the other.
 
 ## Layout
 
@@ -39,11 +39,11 @@ Two sessions running a stack talk over a channel that is faster than the thread 
 
 The operator decides every merge by reading the thread. Anything that decides a merge therefore belongs there, and everything else belongs on the channel. A finding, a fix, or a withdrawal that reaches only the channel is lost at merge, and a branch whose thread reads open or reads as nothing does not get merged whatever the channel says.
 
-### The merge order is forced by the check trigger
+### The merge order is forced by the squash
 
-`verify.yml` fires on `pull_request` with `branches: [main]`, so a pull request targeting anything else is not gated at all. Measured across a four-deep chain, the bottom branch reported five jobs and the three above it reported no checks whatever. Merging the bottom is what retargets the next one onto the trunk and gives it checks for the first time.
+Merge the bottom of a chain first and work up. The order follows from what a squash does rather than from anything a session picks: the merged commit is an ancestor of nothing stacked on the pre-merge tip, so merging out of order replays the branch below into the trunk a second time under the wrong title.
 
-Read this as a consequence of the trigger rather than as a standing truth about stacks, so a reader can tell which half moves if the trigger does.
+The gate does not bear on the order. `verify.yml` fires on `pull_request` with no branch filter, so every branch in a chain is gated from the moment its pull request opens and a whole chain can be reviewed with all of it green. What the order costs is a rebase behind each merge rather than a wait for a branch to receive its first checks.
 
 ## Gotchas
 
@@ -82,4 +82,4 @@ Work running in linked worktrees surfaced in the session listing as neither work
 ## Hidden contracts
 
 - A cross-branch defect is invisible to a per-branch review. Two branches can each be correct read alone and wrong as a pair, which is why the whole chain is read before anything is posted rather than branch by branch.
-- Nothing in the chain is verified by the checks until it reaches the bottom. A branch's first gated run is the one that happens after the merge below it retargets it onto the trunk.
+- A branch's checks run against its own tip, which already carries every commit below it, so a green run on the top of a chain reports the whole chain passing together. What green says nothing about is whether the branch's base is current, which is the state that merges the work below it a second time.

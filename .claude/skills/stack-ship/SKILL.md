@@ -43,7 +43,7 @@ The second is the one nothing else states. One slice renumbered fade delays acro
 
 - Open every branch before asking for a review rather than opening the next when the last lands. The slices were built in order and already depend on each other in that order, so the whole chain is reviewable at once and holding it back buys nothing.
 - Say how many pull requests the run will open before the first is written. A count that first appears at ship time was never a boundary.
-- Expect no checks above the bottom. `verify.yml` fires on a pull request targeting the trunk alone, so a stacked branch is ungated until a merge retargets it. See `.claude/context/stacked-shipping.md` § The merge order is forced by the check trigger.
+- Read a green check on a stacked branch as covering the chain below it, since the branch already carries every commit under it. What it reports nothing about is whether the base is current, so it is never the clearance to merge. See `.claude/context/stacked-shipping.md` § The merge order is forced by the squash.
 
 ## Phase 3: rebase behind each merge
 
