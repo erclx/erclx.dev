@@ -83,7 +83,7 @@ An interactive decision is one the operator has to drive: how a gesture feels to
 
 1. Write the arms: an id, a label naming what the arm costs, and the CSS when the decision is a treatment. Use `0` for what ships, so the baseline is an arm.
 2. Where the decision is a value the page reads at runtime rather than a stylesheet, leave the arm's CSS out and have the module holding that value read the active id off `document.documentElement.dataset[param]`.
-3. Mount the component on the page and hand over the links.
+3. Mount the component on the page and hand over a way into each arm, which is a link where the operator drives on this machine and a scannable code where they drive on a device.
 4. Stop. The operator drives the arms and picks.
 5. Delete the arms and the call site in the same change that applies the pick. The component stays: it is scaffolding a decision reaches for and puts back, so a branch with no open visual decision holds no call site.
 
@@ -92,7 +92,8 @@ An interactive decision is one the operator has to drive: how a gesture feels to
 - Do not hand-roll the parameter and the switcher. That was the shape before the harness existed, five times in one run with no two alike, and rebuilding it is what the component was written to stop.
 - The harness renders nothing on a bare page and nothing in a production build, since it sits behind `import.meta.env.DEV`. Prove the first with a check counting the switcher's own elements on the page with no parameter.
 - Put the switcher where the decision is visible. A control inside a modal belongs in the modal, since a fixed element outside it sits under the backdrop.
-- Send the composed sheet as well as the links. The sheet is what the operator scans to pick two arms worth driving, and driving is what settles between them.
+- Send the composed sheet as well as the way in. The sheet is what the operator scans to pick two arms worth driving, and driving is what settles between them.
+- Serve the arms to the device when the decision is about one. A tablet reaches no link in a chat window and nobody types a query string on a touch keyboard, so an arm handed over as text is an arm that never gets driven.
 - Keep the arms in the source rather than in a scratch script when the decision is a constant the page reads at runtime. A scratch script that rewrites a file between captures cannot be driven by a person.
 - Say what each arm costs in the handoff, not only what it is. An arm with no stated cost is not an option.
 - Never leave the seam behind a flag. A variant nobody removed is a second design nobody maintains, and the parameter is a surface a reader can reach.
