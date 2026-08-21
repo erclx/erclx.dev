@@ -119,10 +119,7 @@ Page copy is canonical upstream at `career/assets/portfolio/` and is read across
 - Fold batches into one record entry where they are one story. Three batches that together gave the page one elevation language read as three unrelated styling changes when written up separately.
 - Keep one batch's commits contiguous. A later fix to an earlier batch goes on that batch's own commits, not on the end of the branch, since a batch interrupted by another cannot be lifted onto its own branch afterward. One run landed a fix to its ripple batch after the next batch's two commits and lost the split with that one commit.
 - Root `CLAUDE.md` § Shipping owns when a commit and a push are allowed. Follow it rather than a copy, and do not infer a shipping rule from this file.
-- On the ship signal, cut one branch per batch in the order they were committed, each targeting the branch before it, and open a pull request for each with `git-pr`. Use `git-stage` to split a batch that holds more than one concern into focused commits inside its own branch.
-- Rebase the stack from the bottom as each merges, rather than opening the next only when the last lands. The batches were built in order and already depend on each other in that order, so the whole stack is open and reviewable at once.
-- A run that opens one pull request for many batches has failed this phase whatever the diff looks like. Two runs ended at 25 and 30 commits in one review, which is the outcome every rule above exists to prevent.
-- These rules were written from the second of those runs and shipped inside it, so the branch carrying them is the case they describe. The operator refused a retro split there: the sweep and the out-of-order fix had already welded the batches, two reviews had passed the branch clean, and seven new heads would have thrown that away to reshape work nobody disputed. Read that as the cost of finding this late rather than as the rule being optional, since the same refusal is what the rules above make unnecessary next time.
+- Hand over to `stack-ship` on the ship signal. It cuts one branch per batch in commit order, opens the chain, and rebases it as each branch merges. Everything from that signal onward belongs to it, including the observability test a batch has to pass before it earns a branch of its own.
 
 ## Voice
 
@@ -136,5 +133,6 @@ Cite these rather than restating them. A step reimplemented here rots against th
 - `claude-tasks` writes and archives the task files phase 1 produces
 - `e2e/inventory.ts` reads every control on every page and groups them by treatment, which is what `## Sweeping` is measured with
 - `claude-docs` refreshes the record at ship
+- `stack-ship` cuts the batches into a chain of pull requests on the ship signal and rebases it behind each merge
 - `git-stage`, `git-pr`, and `git-followup` carry the commits and the pull request
 - `claude-review` and `claude-address-review` run the review pass
