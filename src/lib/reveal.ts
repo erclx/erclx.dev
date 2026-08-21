@@ -30,6 +30,16 @@ const BATCH_STEP_MS = 80
 const BATCH_WINDOW_MS = 400
 
 /**
+ * How much of an element has to be inside the root before it is marked, and how
+ * far the root is inset from the bottom of the viewport. Both are exported
+ * because `e2e/lazy-images.ts` walks the page waiting on the elements this
+ * observer is due to mark, and a walk holding its own copies drifts from these
+ * the moment either moves.
+ */
+export const REVEAL_THRESHOLD = 0.15
+export const REVEAL_ROOT_BOTTOM_INSET_PERCENT = 10
+
+/**
  * Marks every target arrived at once, all of them running the fade together.
  * The stylesheet holds the 700ms transition on `[data-fade]` wherever it is not
  * suppressed, and this path is inside that case rather than outside it, which
@@ -86,7 +96,10 @@ export function initReveal(): void {
         observer.unobserve(element)
       }
     },
-    { threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
+    {
+      threshold: REVEAL_THRESHOLD,
+      rootMargin: `0px 0px -${REVEAL_ROOT_BOTTOM_INSET_PERCENT}% 0px`,
+    },
   )
 
   for (const target of targets) observer.observe(target)
