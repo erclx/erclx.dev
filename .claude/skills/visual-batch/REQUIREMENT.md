@@ -26,7 +26,7 @@ Without this skill, a session working on a visual surface:
 
 - Group a dump into batches and file one task per batch before implementing any of them.
 - Decide the pull request boundary during planning, from the file sets the batches touch, and state it in the batch table.
-- Open one pull request per batch, stacked in commit order with each targeting the one before it, and keep each batch's commits contiguous so that split stays available until ship time.
+- Keep each batch's commits contiguous, so the split the table declared is still available at the ship signal, and hand over to `stack-ship` there.
 - Classify a decision as static, motion, or interactive before capturing, and take the matching option from the capture rule.
 - Render and look at every visual change before reporting on it, and prefer a measurement whenever the claim is about a number.
 - Run the four-step copy cycle before changing any rendered text, and report the upstream edit in the same message as the component edit.
@@ -51,6 +51,7 @@ The refusal strings sit in the body, since the runtime loads that file and ignor
 - `claude-feature` plans a feature from a request. This plans a visual run from a dump and owns the batch-to-pull-request mapping, which that skill has no reason to carry.
 - `claude-ux-audit` reads source to find roughness and reports it. This changes surfaces with the operator judging each one, and takes its input from the operator rather than from a scan.
 - `claude-ux-measure` measures what a running interface costs to paint. This measures whatever a visual claim depends on, which is usually geometry or contrast rather than cost.
+- `stack-ship` cuts the batches into a chain of pull requests and rebases it behind each merge. This declares where the boundary falls and stops at the ship signal.
 - `claude-tasks`, `claude-docs`, `git-stage`, `git-pr`, and `claude-review` are invoked by this skill and own their own steps.
 - A copy correction with no visual change is the copy cycle alone and needs no batch or loop.
 - The content-sync handoff from the career repo belongs to the `landing-page` skill there, which explicitly excludes editing files under `public/erclx.dev/`.
