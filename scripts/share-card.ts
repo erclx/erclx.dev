@@ -5,10 +5,16 @@
  * site's own Fraunces and the tokens are the ones it ships. A card drawn in a
  * fallback face is a card judged on the wrong letterforms.
  *
- * It carries the claim and the mark and no name. Every host that renders this
- * image prints the page title beside it, so a name inside the image is the same
- * word twice in one unfurl. What the image adds is the sentence the title has
- * no room for.
+ * The mark leads and the claim sits beside it. Two earlier arrangements put the
+ * name in the image at display weight, which is the same word twice in one
+ * unfurl since every host prints the title alongside. Attribution stays, small
+ * and under the claim, because a host shows the domain and not always the
+ * person.
+ *
+ * The claim runs 22 characters to the line. Judged at 1200 a longer line looks
+ * fuller, and a card is met at 400 to 600 in a feed and smaller in a compact
+ * unfurl, where the longer setting goes thin and the shorter one holds. Judge
+ * this downscaled or the reading is of a size nobody sees.
  *
  * Run: bun scripts/share-card.ts, with the site served at CARD_BASE_URL.
  */
@@ -75,13 +81,15 @@ await page.evaluate(
       <div style="position:fixed;inset:0;background:var(--background);overflow:hidden">
         <img src="${field}"
           style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-        <div style="position:absolute;inset:0;padding:88px 96px;display:flex;
-          flex-direction:column;justify-content:space-between">
-          <span style="width:64px;height:64px;display:block;color:var(--foreground)">${MARK}</span>
-          <p style="margin:0;font-family:var(--font-display);font-size:62px;
-            line-height:1.14;color:var(--foreground);max-width:17ch">${CLAIM}</p>
-          <p style="margin:0;font-size:24px;letter-spacing:0.01em;
-            color:var(--muted-foreground)">erclx.dev</p>
+        <div style="position:absolute;inset:0;padding:0 84px;display:flex;
+          align-items:center;gap:64px">
+          <span style="width:210px;height:210px;flex:none;display:block;
+            color:var(--foreground)">${MARK}</span>
+          <div style="display:flex;flex-direction:column;gap:22px">
+            <p style="margin:0;font-family:var(--font-display);font-size:44px;
+              line-height:1.2;color:var(--foreground);max-width:22ch">${CLAIM}</p>
+            <p style="margin:0;font-size:23px;color:var(--muted-foreground)">Eric Le · erclx.dev</p>
+          </div>
         </div>
       </div>`,
   },

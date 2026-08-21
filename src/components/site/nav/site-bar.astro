@@ -1,4 +1,5 @@
 ---
+import BarMark from '@/components/site/nav/bar-mark.astro'
 ---
 
 {/* The flyer carries the name from the hero to the bar. It renders at the
@@ -70,14 +71,19 @@
         the flyer is the glyph a reader sees. In the hero the name is a heading
         and nothing else, so this only answers once the bar is revealed and the
         bar's `inert` lifts with it. */}
-    <button
-      type="button"
-      data-bar-name-slot
-      data-to-top
-      class="text-foreground text-label inline-flex min-h-11 cursor-pointer items-center rounded-sm"
-    >
-      Eric Le
-    </button>
+    {/* The mark and the name read as one lockup, so they are grouped rather
+        than spread by the row's own `justify-between`. */}
+    <span class="flex items-center gap-2.5">
+      <BarMark />
+      <button
+        type="button"
+        data-bar-name-slot
+        data-to-top
+        class="text-foreground text-label inline-flex min-h-11 cursor-pointer items-center rounded-sm"
+      >
+        Eric Le
+      </button>
+    </span>
     {/* The toggle the page renders is the hero's own, moved into the fixed
         host below once the handoff runs. This slot reserves the space it lands
         in so the bar's row never reflows when it arrives. */}

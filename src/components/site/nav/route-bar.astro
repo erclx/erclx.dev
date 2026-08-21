@@ -1,4 +1,5 @@
 ---
+import BarMark from '@/components/site/nav/bar-mark.astro'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 
 interface Props {
@@ -27,13 +28,18 @@ const { here } = Astro.props
     data-bar-row
     class="relative mx-auto flex max-w-3xl items-center justify-between py-4"
   >
-    <a
-      href="/"
-      data-way-home
-      class="text-foreground text-label inline-flex min-h-11 items-center underline-offset-4 hover:underline"
-    >
-      Eric Le
-    </a>
+    {/* Grouped the way the landing bar groups them, so the chrome holds one
+        shape as a reader crosses between the two surfaces. */}
+    <span class="flex items-center gap-2.5">
+      <BarMark />
+      <a
+        href="/"
+        data-way-home
+        class="text-foreground text-label inline-flex min-h-11 items-center underline-offset-4 hover:underline"
+      >
+        Eric Le
+      </a>
+    </span>
     {/* The name states where the reader is only once the page has stopped
         stating it. Both on screen together covers the first screen of every
         route, which is the duplication this closes. */}

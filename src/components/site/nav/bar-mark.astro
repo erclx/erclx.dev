@@ -1,0 +1,23 @@
+---
+import markSvg from '@/assets/brand/mark.svg?raw'
+---
+
+{/* The mark beside the name in both bars, which is the only place a visitor
+    meets it while reading rather than in a tab or a profile.
+
+    A sibling before the name rather than inside it. The landing bar's name is
+    the slot the hero's flying name aims at, read as that element's own left
+    edge, so a mark placed inside it moves the landing target and drops the name
+    onto the mark. Outside it, the slot simply sits further right and the
+    handoff needs no change.
+
+    Hidden from assistive technology, since the name beside it says the same
+    thing and a reader on a screen reader would otherwise hear it twice. That is
+    also why it is not the control: it decorates the name rather than repeating
+    the link. */}
+<span
+  data-bar-mark
+  aria-hidden="true"
+  class="text-foreground block size-6 shrink-0 [&>svg]:block [&>svg]:size-full"
+  set:html={markSvg}
+/>
