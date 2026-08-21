@@ -163,12 +163,40 @@ the dark surfaces are the ones where an edge disappears: Discord sits near
 dark theme that a dark disc dissolves into the page. Cream stays a defined shape
 on both, and on GitHub light it separates on warmth against white.
 
+Two defects shipped between authoring the mark and it reading as a letter, and
+both are worth carrying because neither was caught by the checks in place.
+
+The drawing was tuned inside one frame and authored inside another. The tail
+angle that holds the counter open was measured on a box the mark nearly filled,
+then the shipped file squared its frame and added margin, dropping the letter to
+60% of the frame height. At 16px that takes a fifth off every stroke and the
+counter closes. **Re-measure after changing a frame**, since every figure behind
+a small-size decision is a ratio between the drawing and its box rather than a
+property of the drawing.
+
+Then a CSS declaration outranks a presentation attribute in SVG. One rule
+carrying `fill` overrode the `fill="none"` on the stroked paths, so the bowl
+filled and the mark shipped as a solid disc with a bar. The stroked paths and
+the filled rect take separate classes for that reason.
+
+**The second one is the lesson rather than the bug.** It made the mark fail
+while making the guard pass, because a filled disc carries more ink than an open
+letter and the check in place counted ink. A measure that rises as the thing
+fails is worse than no measure. What catches it is a guard on the property the
+drawing is actually built around: `e2e/favicon.spec.ts` counts enclosed holes in
+the rendered pixels, so a letter with no eye fails whatever its coverage, and it
+found this on its first run.
+
+`public/avatar.png` is served at the domain root and no visitor navigates to it.
+It sits there because a profile host wants a file to upload rather than a URL to
+embed, and `public/resume.pdf` already sets that precedent.
+
 The reduction path the earlier entry barred also turns out to cost almost
 nothing here, measuring 57 bright pixels against 48 for a direct draw. Each size
 is still drawn at its own dimensions, because that is what stays true if the
 mark ever gains detail a reduction would average away.
 
-Measured at 12eb2d0 on 2026-08-22.
+Measured at b15d929 on 2026-08-22.
 
 ### A landing-page figure sits inside the text column, and marks derive from type metrics
 
