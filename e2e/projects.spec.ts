@@ -32,6 +32,29 @@ test('a card without a hover video still renders its poster', async ({
   await expect(aitkCard.locator('[data-media-video]')).toHaveCount(0)
 })
 
+test('pointing at a card plays the clip it reveals', async ({ page }) => {
+  await page.goto('/')
+
+  // A card host declares no `view`, so the clip has one way in and hovering is
+  // it. The rule keying that path answered false on every desktop engine that
+  // reports its hover capability conservatively, which took the card to a
+  // branch that plays nothing and broke no assertion on the way. This is the
+  // assertion, and it belongs beside the behavior rather than in one shared
+  // case, which would pass while any single rule silently went touch-side.
+  const card = page.locator('#projects article').nth(1)
+  const clip = card.locator('[data-media-video]')
+
+  await expect
+    .poll(() => clip.evaluate((video: HTMLVideoElement) => video.paused))
+    .toBe(true)
+
+  await card.hover()
+
+  await expect
+    .poll(() => clip.evaluate((video: HTMLVideoElement) => video.paused))
+    .toBe(false)
+})
+
 test('the projects section states no count of its own cards', async ({
   page,
 }) => {

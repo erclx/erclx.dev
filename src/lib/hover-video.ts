@@ -1,5 +1,10 @@
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
-const HOVER_QUERY = '(hover: hover)'
+// Everywhere except a true touch device. Excluding a coarse pointer rather
+// than requiring hover, because Playwright's Firefox answers `(hover: hover)`
+// and `(pointer: fine)` both false on a desktop that hovers perfectly well and
+// would take the touch branch. A coarse pointer is the one capability only a
+// real touch device reports.
+const HOVER_CAPABLE_QUERY = 'not all and (pointer: coarse)'
 const VIEWPORT_VISIBLE_RATIO = 0.5
 
 // A video plays while its host is hovered. A host declaring `view` also plays
@@ -11,7 +16,7 @@ export function initHoverVideo(): void {
   if (typeof window === 'undefined') return
   if (window.matchMedia(REDUCED_MOTION_QUERY).matches) return
 
-  const canHover = window.matchMedia(HOVER_QUERY).matches
+  const canHover = window.matchMedia(HOVER_CAPABLE_QUERY).matches
   const videos =
     document.querySelectorAll<HTMLVideoElement>('[data-media-video]')
 
