@@ -60,9 +60,12 @@ oklch
 Ollama
 parallelizable
 pipefail
+pointercancel
+pointerdown
 pointerenter
 pointerleave
 pointermove
+pointerup
 portproxy
 pyproject
 qrcode
@@ -86,8 +89,8 @@ tolower
 toplevel
 Vercel
 viewports
-Vite
 visibilitychange
+Vite
 vitest
 webgl
 webglcontextlost

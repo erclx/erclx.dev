@@ -96,6 +96,20 @@ Two decisions inside it are worth stating here rather than there. A local port f
 
 What it gives up is two worktrees serving to a device at once, which needs two devices before it is worth anything.
 
+### A pointer response is gated on a device that has a pointer
+
+The site answered a pointer twenty times across six pages and asked whether one existed three of those times. A finger dragged down the page therefore tilted every project card it crossed and left them tilted, walked the experience timeline to whichever beat it last touched, ducked the closing ask's character, marked the bar's name, and dropped a disturbance into the field on every scroll a reader started.
+
+One rule decides membership and it is a test rather than a list. A response keyed to a pointer _being over_ something, `:hover`, `pointerenter`, `pointerleave`, `pointermove`, is gated on a device reporting a pointer. A response keyed to a _deliberate act_, a click, a focus, an activation, never is, because touch performs those exactly as a mouse does and gating them takes the page away from the reader rather than giving it back. `src/lib/pointer.ts` holds the query and every caller reads it, so a component nobody has built yet can be judged against the same test.
+
+The field's disturbance is the case that test does not settle on its own. It listened on `pointerdown`, which is contact rather than intent, so it fired on every scroll. Moving it to a window-level `click` looked correct and failed on the device: WebKit does not dispatch a click to the window for a tap on an element that is not natively interactive, so the response worked on every desktop and did nothing at all on a phone. It now reads a tap off the pointer itself, a press that travels under 10px and is not taken over by a scroll, which the browser signals by firing `pointercancel` the moment it claims the gesture. That works on every engine and keeps the response for touch rather than gating it away.
+
+The surface also drew below the density of the screen it was on. The cap sat at 1.5 while a tablet reported 2, so the panel interpolated the difference and softened every contour, which is why the same drawing read crisp in a desktop capture and washed out on the device. The cap matches the display now, and the frame guard is what protects a device that cannot afford it, by measuring what it actually draws rather than refusing up front.
+
+Nothing headless caught any of this. Two of the three defects reproduce only under a real finger on a real engine, which is what `bun run device` exists for, and both were found within a minute of the page reaching the operator's own hardware.
+
+Measured at 12eb2d0 on 2026-08-21, across twenty pointer responses on six pages, of which three were gated before this and seven after.
+
 ### Resume PDF served from `public/`
 
 The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source remains `assets/resumes/eric-le-resume.pdf` in the parent career repo. Updates land here as a binary copy via the sync queue rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
@@ -196,7 +210,9 @@ Two things drove the replacement and neither is that the old one was broken. The
 
 The medium was not the problem the first attempt solved. `.claude/DESIGN.md` rejected shader work outright until this branch, on the reading that a shader is a preset. What is actually rejected is the shortcut, and an authored field with its own stream function and its own lighting is not one. The standard now says so.
 
-The still copy mounts from the layout, so it reaches the project routes as well as the landing page. It damps inside the reading measure, tracking `--prose-column` rather than a fixed strip, because a route scales its column and a landing section does not. See `.claude/context/page-ground.md` for the measured cost, which is 16.16:1 to 15.74:1 on body text.
+The still copy mounts from the layout, so it reaches the project routes as well as the landing page. It damps inside the reading measure, tracking `--prose-column` rather than a fixed strip, because a route scales its column and a landing section does not. How hard it damps walks down with viewport width, since the field's scale divides by that width and one fraction therefore covers more contours the smaller the screen gets. See `.claude/context/page-ground.md` for the measured cost, which is 16.16:1 to 15.74:1 on body text.
+
+Keying that curve to the column's share of the viewport instead is the mistake to avoid, and it shipped once. The column caps at the viewport, so its share pins at 1.0 from 768 down and the curve freezes exactly where the complaint came from: measured in dark, mean weight fell to 0.12 at 768 and rose back to 0.20 at 390, leaving a phone the least damped narrow screen while the code read as though it damped hardest. Read it as the general case rather than as one bad variable. A quantity that saturates before the range ends looks correct wherever it was measured, and share was measured at three wide widths where it still moves. Measured at 12eb2d0 on 2026-08-21, where mean weight falls 0.39, 0.33, 0.24, 0.04, 0.03, 0.03 across 1920, 1366, 1024, 768, 560, and 390.
 
 A click disturbs it, and the disturbance is added to the stream function rather than to the drawn output. That one placement is what makes the field keep evolving underneath the wave, bend where it crosses, and recover with nothing restoring it, so the behavior falls out of where the term sits rather than being written. Painting a ring over the surface would have needed all three coded and none of them would have interacted with the field at all.
 
