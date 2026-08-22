@@ -1,5 +1,6 @@
-import { expect, test } from '@playwright/test'
+import { expect, type Page, test } from '@playwright/test'
 
+import { REVEAL_THRESHOLD } from '../src/lib/reveal'
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 
 // One per beat. The three counts below read the same number on purpose, so a
@@ -705,3 +706,188 @@ for (const width of [320, 375, 390, 768]) {
     expect(overflow).toBeLessThanOrEqual(0)
   })
 }
+
+// A refresh restores the scroll, which puts the hero above the viewport before
+// anything has observed it. An IntersectionObserver only reports an element
+// becoming intersecting, so a hero that starts out of view never reveals, and a
+// placement waiting on that reveal can only time out.
+//
+// Reproduced by scrolling on `DOMContentLoaded` rather than by reloading.
+// Restoration is what a reader triggers, and Firefox does not perform it under
+// automation, so a test resting on it measures nothing on one engine of three.
+const MID_PAGE_LANDING = 2400
+// How much slower than a fresh load a mid-page landing may place its controls.
+// The defect this guards ran 3057ms against 876ms, a gap of 2181ms, because the
+// placement wait expired rather than resolving. Read as a difference rather than
+// as a duration: an absolute budget measures the machine as much as the page,
+// and one set at 2000ms passed alone and failed under three parallel workers.
+const PLACEMENT_GAP_TOLERANCE_MS = 1000
+
+async function landMidPage(page: Page): Promise<void> {
+  await page.addInitScript((top) => {
+    addEventListener('DOMContentLoaded', () => window.scrollTo(0, top), {
+      once: true,
+    })
+  }, MID_PAGE_LANDING)
+}
+
+/**
+ * Lands with a sliver of the hero's reveal still on screen, under the share of
+ * its own height the observer marks at.
+ *
+ * The row is partly visible and will never be marked, which is the narrow band
+ * a test for "any of it is on screen" reads as arriving. Landing far past the
+ * hero does not reach it.
+ *
+ * The position is measured on a settled page and replayed as a literal, rather
+ * than computed inside the landing itself. At `DOMContentLoaded` the row has
+ * not taken its final box, and a landing computed there overshot into the fully
+ * scrolled-past case in Firefox, which is the state the test above already
+ * covers.
+ */
+async function landUnderRevealThreshold(page: Page): Promise<void> {
+  await page.goto('/')
+  await page.waitForSelector('[data-toggle-host][data-ready]', {
+    timeout: 15000,
+  })
+  const target = await page.evaluate((share) => {
+    const revealing = document
+      .querySelector('[data-hero-name]')
+      ?.closest('[data-fade]')
+    if (!revealing) throw new Error('the hero name carries no reveal')
+    const box = revealing.getBoundingClientRect()
+    return Math.round(window.scrollY + box.bottom - box.height * share)
+  }, 0.05)
+
+  await page.addInitScript((top) => {
+    addEventListener('DOMContentLoaded', () => window.scrollTo(0, top), {
+      once: true,
+    })
+  }, target)
+}
+
+async function timeToPlacement(page: Page): Promise<number> {
+  const started = Date.now()
+  await page.goto('/', { waitUntil: 'commit' })
+  await page.waitForSelector('[data-toggle-host][data-ready]', {
+    timeout: 15000,
+  })
+  return Date.now() - started
+}
+
+test('a refresh landing mid-page fills the bar as fast as a fresh load does', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+
+  const fresh = await timeToPlacement(page)
+  await landMidPage(page)
+  const midPage = await timeToPlacement(page)
+
+  // The landing is asserted rather than assumed. An engine that ignored the
+  // scroll would report a fresh load's timing twice and pass having measured
+  // nothing. Firefox does exactly that under automation on a real reload, which
+  // is why the landing is scripted rather than restored.
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(1000)
+  expect(midPage - fresh).toBeLessThan(PLACEMENT_GAP_TOLERANCE_MS)
+})
+
+test('the reveal marks a row at any sliver, not at its declared threshold', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await landUnderRevealThreshold(page)
+  await page.goto('/', { waitUntil: 'commit' })
+  await page.waitForSelector('[data-toggle-host][data-ready]', {
+    timeout: 15000,
+  })
+  await page.waitForTimeout(400)
+
+  // `initReveal` passes `threshold: REVEAL_THRESHOLD` and then branches on
+  // `entry.isIntersecting` alone. A threshold decides when a callback fires and
+  // not what `isIntersecting` reports, and the initial observation fires once
+  // regardless, so a row is marked by any part of it being on screen.
+  //
+  // The placement wait reads that, which is why it tests `bottom > 0` rather
+  // than a share of the row's height. Written against the threshold instead, it
+  // would place through a row the observer still marks and pin the name while
+  // that row was about to rise.
+  const state = await page.evaluate(() => {
+    const revealing = document
+      .querySelector('[data-hero-name]')
+      ?.closest('[data-fade]')
+    if (!revealing) throw new Error('the hero name carries no reveal')
+    const box = revealing.getBoundingClientRect()
+    return {
+      visible: box.bottom / box.height,
+      marked: revealing.getAttribute('data-visible'),
+    }
+  })
+
+  expect(state.visible).toBeGreaterThan(0)
+  expect(state.visible).toBeLessThan(REVEAL_THRESHOLD)
+  expect(state.marked).toBe('true')
+})
+
+test('the name is not placed before the hero it sits in has arrived', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/', { waitUntil: 'commit' })
+  await page.waitForSelector('[data-toggle-host][data-ready]', {
+    timeout: 15000,
+  })
+
+  // The other direction of the same wait, and the one a repair reaches for
+  // first. Treating an unmarked reveal as settled makes the mid-page case
+  // instant and pins the name at its landed position while the row around it is
+  // still rising, which is the title appearing to correct itself after
+  // everything else has landed. Measured on that version: placement at 210ms
+  // against a hero that had not begun to reveal.
+  const heroOpacity = await page.evaluate(() => {
+    const revealing = document
+      .querySelector('[data-hero-name]')
+      ?.closest('[data-fade]')
+    if (!revealing) throw new Error('the hero name carries no reveal')
+    return Number(getComputedStyle(revealing).opacity)
+  })
+
+  expect(heroOpacity).toBeGreaterThan(0.98)
+})
+
+test('the controls land in the bar when the page opens mid-page', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await landMidPage(page)
+  await page.goto('/', { waitUntil: 'commit' })
+  await page.waitForSelector('[data-toggle-host][data-ready]', {
+    timeout: 15000,
+  })
+
+  // Placing sooner is worth nothing unless it places correctly. A wait cut
+  // without keeping its measurement leaves the control where it sits in the
+  // hero, 216px across and 28px up from the slot.
+  //
+  // Polled rather than read once. `data-ready` is set after the first paint is
+  // scheduled rather than after it lands, so a single read straight after it
+  // catches the control a frame short and reported 6px on two engines.
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() => {
+          const toggle = document.querySelector('[data-theme-toggle]')
+          const slot = document.querySelector('[data-bar-toggle-slot]')
+          if (!toggle || !slot) {
+            throw new Error('the promoted toggle or the bar slot is missing')
+          }
+          const control = toggle.getBoundingClientRect()
+          const target = slot.getBoundingClientRect()
+          return Math.round(
+            Math.hypot(control.left - target.left, control.top - target.top),
+          )
+        }),
+      { timeout: 5000 },
+    )
+    .toBeLessThanOrEqual(2)
+})
