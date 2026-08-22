@@ -62,7 +62,7 @@ interface Cluster {
   readonly members: readonly ClusterMember[]
 }
 
-// Three groups and two singles. A cast that is all pairs reads as staged and a
+// Two pairs and three singles. A cast that is all pairs reads as staged and a
 // cast that is all singles is what the operator asked to move away from, so the
 // section carries both and a reader meets a pair twice rather than five times.
 //
