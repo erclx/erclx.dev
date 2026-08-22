@@ -1,4 +1,5 @@
 ---
+import BarMark from '@/components/site/nav/bar-mark.astro'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 
 interface Props {
@@ -27,11 +28,16 @@ const { here } = Astro.props
     data-bar-row
     class="relative mx-auto flex max-w-3xl items-center justify-between py-4"
   >
+    {/* One control carrying both, the way the landing bar carries them, so the
+        chrome holds one shape and one hit area as a reader crosses between the
+        two surfaces. The mark stays decoration inside the link rather than
+        becoming a second link to the same place. */}
     <a
       href="/"
       data-way-home
-      class="text-foreground text-label inline-flex min-h-11 items-center underline-offset-4 hover:underline"
+      class="text-foreground text-label flex min-h-11 items-center gap-2.5 underline-offset-4 hover:underline"
     >
+      <BarMark />
       Eric Le
     </a>
     {/* The name states where the reader is only once the page has stopped

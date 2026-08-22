@@ -1,4 +1,5 @@
 ---
+import BarMark from '@/components/site/nav/bar-mark.astro'
 ---
 
 {/* The flyer carries the name from the hero to the bar. It renders at the
@@ -70,13 +71,28 @@
         the flyer is the glyph a reader sees. In the hero the name is a heading
         and nothing else, so this only answers once the bar is revealed and the
         bar's `inert` lifts with it. */}
+    {/* The mark and the name read as one lockup, so they are grouped rather
+        than spread by the row's own `justify-between`.
+
+        The lockup is one control rather than a mark beside one. A logo in a bar
+        is a thing readers click, and a decorative mark sitting against a live
+        name is a dead 24px target next to a working one, which reads as broken
+        to anyone who tries it. Making the mark its own link would instead put
+        two adjacent controls on one destination, so the group takes the
+        control and the mark stays `aria-hidden` inside it: one accessible name,
+        one hit area, and a wider one on touch.
+
+        The name keeps its own element and its own marker, because the flying
+        name is measured against that box. Moving the marker onto the group
+        would hand the handoff the lockup's left edge and land the name on the
+        mark. */}
     <button
       type="button"
-      data-bar-name-slot
       data-to-top
-      class="text-foreground text-label inline-flex min-h-11 cursor-pointer items-center rounded-sm"
+      class="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-sm"
     >
-      Eric Le
+      <BarMark />
+      <span data-bar-name-slot class="text-foreground text-label">Eric Le</span>
     </button>
     {/* The toggle the page renders is the hero's own, moved into the fixed
         host below once the handoff runs. This slot reserves the space it lands
@@ -88,7 +104,21 @@
 
 <style>
   /* The bar arrives once the reader is into the content, matching the rail's
-     own gate so the two never appear apart. */
+     own gate so the two never appear apart.
+
+     The bar itself switches rather than fading, and the ground under it is
+     what fades. The name and the toggle reach this row by riding the scroll,
+     so they are placed and fully opaque the moment they arrive, and a
+     mark fading up beside them was a third timing on a row that already had
+     one: measured at 1280, the mark ramped 0, 0.84, 1 across the same 40px in
+     which the name had already landed and stopped.
+
+     Everything in the row is hidden by other means until this flips, so the
+     switch reveals nothing early. The ground is drawn at zero below, the name
+     slot paints its text transparent, and the toggle slot is an empty box. The
+     opacity stays on the bar rather than moving to the row because reduced
+     motion gives the name slot its color back, and a row held visible by an
+     always-opaque bar would then carry a second name through the whole hero. */
   [data-site-bar] {
     opacity: 0;
     pointer-events: none;
@@ -98,8 +128,15 @@
     pointer-events: auto;
   }
 
+  [data-site-bar] [data-bar-ground] {
+    opacity: 0;
+  }
+  [data-site-bar][data-revealed='true'] [data-bar-ground] {
+    opacity: 1;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
-    [data-site-bar] {
+    [data-site-bar] [data-bar-ground] {
       transition: opacity 200ms ease-out;
     }
   }
@@ -124,6 +161,8 @@
 </style>
 
 <script>
+  import { hasHoverPointer } from '@/lib/pointer'
+
   import { initHeroHandoff } from './hero-handoff'
 
   const bar = document.querySelector<HTMLElement>('[data-site-bar]')
@@ -151,8 +190,14 @@
     else flyer.removeAttribute('data-hot')
   }
 
-  toTop?.addEventListener('pointerenter', () => setHot(true))
-  toTop?.addEventListener('pointerleave', () => setHot(false))
+  // A pointer resting on the control marks the name it would return to. Touch
+  // has no resting state: the tap that scrolls home set the mark and the
+  // pointer was gone before anything cleared it. Focus carries the same mark
+  // for a keyboard, ungated, since focus is a deliberate act on every device.
+  if (hasHoverPointer()) {
+    toTop?.addEventListener('pointerenter', () => setHot(true))
+    toTop?.addEventListener('pointerleave', () => setHot(false))
+  }
   toTop?.addEventListener('focus', () => setHot(true))
   toTop?.addEventListener('blur', () => setHot(false))
 

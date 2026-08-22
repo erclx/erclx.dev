@@ -59,13 +59,17 @@ The edge is drawn as its own layer rather than as the row's left border. A negat
 
 A small filled-silhouette character perches at the right end of the hairline rule. It stays hidden below the rule until the section enters the viewport, then springs up to a peeked position with paws gripping the rule.
 
-The character needs an opaque edge to rise out of rather than a panel to hide behind, which is what lets the section carry no panel and keep the peek. The rows block is painted in the page's own background, so it hides the character's body below the rule while showing nothing itself.
+The character needs an edge to rise out of rather than a panel to hide behind, which is what lets the section carry no panel and keep the peek. It sits in a window of its own whose lower edge rests on the rule, so the window clips whatever hangs below it.
+
+Painting the rows block in the page's own background is what did that job until 2026-08-21, and it made this the one section on the site that hid the ground behind it while every other section let the field through. A reader on a tablet described the section as solid against transparent siblings, and the fill was the whole cause. Clip the character rather than plating what sits over it.
 
 The character rises past the heading's own line and shares a band with it rather than being given clearance below it. The two never meet because the heading sits at the left edge and the character at the right, at every width down to the narrowest. Buying that clearance vertically instead pushed the heading roughly five times further from its rows than the experience heading sits from its own, which read as a floating label.
 
 When the cursor enters the rows the character ducks back below the rule. When the cursor leaves, it pops back up. Under reduced motion the character stays peeked with no transitions.
 
-The character SVG carries its own fixed palette of a warm tan body, a cream face mask, and dark brown features. That palette stays consistent across light and dark themes rather than tracking the page tokens, so the character keeps one identity. Its body extends below its head so the lower portion clips naturally behind the card edge.
+The character SVG carries its own fixed palette of a warm tan body, a cream face mask, and dark brown features. That palette stays consistent across light and dark themes rather than tracking the page tokens, so the character keeps one identity. Its body extends below its head so the lower portion clips against its window's lower edge.
+
+Its resting and peeked positions are stated against that window rather than against the section, so fully down is fully clipped and the peeked position shows the top of it. A reader of those two values needs to know which box they are measured from, since the same character reads at a different height under either reading.
 
 ## Status pulse
 

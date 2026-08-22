@@ -23,6 +23,10 @@ export function initShaderField(): () => void {
     (entries) => {
       for (const entry of entries) {
         if (entry.isIntersecting) {
+          // No share damping here, which the page ground carries. This surface
+          // damps around a heading rather than around prose, and at phone width
+          // that heading is most of the screen, so a curve written for a
+          // reading column would empty the band behind the name.
           cleanup = mountShaderField(canvas, fallback, content, streamsField, {
             animate,
           })

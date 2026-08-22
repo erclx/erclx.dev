@@ -38,6 +38,21 @@ export const streamsConfig = {
   contentDamp: 0.4,
   contentRevealDamp: 0.7,
 
+  // The widths damping runs between, and the fraction it reaches at the narrow
+  // end. A wide desktop keeps what it had and a phone is damped hardest.
+  //
+  // Driven by viewport width rather than by the reading column's share of it,
+  // which is what shipped first and stops working exactly where it is needed.
+  // The column caps at the viewport, so its share pins at 1.0 from 768 down and
+  // the curve freezes there while the field's own density keeps climbing: the
+  // scale divides by width, so a narrower screen fits more contours across it.
+  // Measured under the share curve in dark, mean ink fell to 0.12 at 768 and
+  // then rose back to 0.20 at 390, so a phone was the least damped screen of
+  // the three narrow ones. Width sees what share cannot.
+  dampWideWidth: 1920,
+  dampNarrowWidth: 390,
+  narrowColumnDamp: 0.1,
+
   // The pointer raises a hill in the stream function, and the lighting below
   // then picks out its flanks, so the surface reads as displaced rather than
   // recolored under the cursor.
@@ -277,6 +292,49 @@ const uniformNames = [
   'uContentRevealDamp',
 ] as const
 
+function smoothstep(edge0: number, edge1: number, value: number): number {
+  const t = Math.min(1, Math.max(0, (value - edge0) / (edge1 - edge0)))
+  return t * t * (3 - 2 * t)
+}
+
+/**
+ * The fraction the field's resting alpha is multiplied by inside the reading
+ * column.
+ *
+ * It walks down with viewport width rather than holding one value, because the
+ * field's scale divides by that width: the drawing squeezes as the screen
+ * narrows, so one fraction covers steadily more contours the smaller the screen
+ * gets. A phone therefore needs the hardest damping and a wide desktop the
+ * least.
+ *
+ * The first shipped version keyed on the reading column's share of the viewport
+ * instead. That share caps at 1.0 once the column is the whole screen, which
+ * happens at 768, so from there down the curve froze while density kept
+ * climbing: measured in dark, mean ink fell to 0.12 at 768 and rose back to
+ * 0.20 at 390, leaving a phone the least damped of the three narrow screens.
+ * Width is the variable that still moves where share cannot.
+ */
+function resolveColumnDamp(frame: FieldFrame): number {
+  const { content, width, columnTreatment } = frame
+  if (!content) return 1
+
+  if (columnTreatment === 'scaled') {
+    // Reversed edges, so a narrow screen travels all the way to the floor and a
+    // wide one stays where it was.
+    const travel = smoothstep(
+      streamsConfig.dampWideWidth,
+      streamsConfig.dampNarrowWidth,
+      width,
+    )
+    return (
+      streamsConfig.contentDamp +
+      (streamsConfig.narrowColumnDamp - streamsConfig.contentDamp) * travel
+    )
+  }
+
+  return streamsConfig.contentDamp
+}
+
 export const streamsField: FieldSpec = {
   fragmentSource,
   uniformNames,
@@ -374,10 +432,7 @@ export const streamsField: FieldSpec = {
       content?.halfY ?? 0,
     )
     gl.uniform1f(uniforms.uContentFeather ?? null, streamsConfig.contentFeather)
-    gl.uniform1f(
-      uniforms.uContentDamp ?? null,
-      content ? streamsConfig.contentDamp : 1,
-    )
+    gl.uniform1f(uniforms.uContentDamp ?? null, resolveColumnDamp(frame))
     gl.uniform1f(
       uniforms.uContentRevealDamp ?? null,
       content ? streamsConfig.contentRevealDamp : 1,

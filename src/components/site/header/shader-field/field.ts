@@ -17,6 +17,26 @@ export interface Ripple {
   readonly age: number
 }
 
+/**
+ * How a surface answers the column a reader reads down.
+ *
+ * `flat` damps by one fraction whatever the viewport. The field's scale divides
+ * by the viewport width, so the pattern squeezes as the screen narrows while
+ * the column does not, and one fraction therefore covers steadily more contours
+ * the smaller the screen gets.
+ *
+ * `scaled` walks that fraction down with the viewport width instead, which
+ * holds the field to one budget over the prose at every width. The two agree on
+ * a wide desktop and diverge as the screen narrows, where the drawing squeezes
+ * and the flat fraction stops keeping up.
+ *
+ * Keyed to width rather than to the column's share of it, which is what shipped
+ * first: the column caps at the viewport, so its share pins at 1.0 from 768 down
+ * and the curve freezes there while density keeps climbing. `resolveColumnDamp`
+ * in `fields/streams.ts` carries the measurement that settled it.
+ */
+export type ColumnTreatment = 'flat' | 'scaled'
+
 /** The per-frame state the mount owns and every field reads. */
 export interface FieldFrame {
   readonly time: number
@@ -42,6 +62,8 @@ export interface FieldFrame {
    * drawing has to sit at two weights without becoming two drawings.
    */
   readonly alphaScale: number
+  /** How the column a reader reads down is answered. */
+  readonly columnTreatment: ColumnTreatment
 }
 
 /**

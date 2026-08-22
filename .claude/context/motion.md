@@ -25,7 +25,18 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 - The header's shader field also runs without end, and the two do not compete. The field is a ground rather than an element, it carries no edge to track, and it moves at 0.13px per second against a halo completing a cycle every 2400ms. The still copy of that field under the rest of the page does not move at all. See `.claude/context/shader-field.md` and `.claude/context/page-ground.md`.
 - The halo is a pseudo-element rather than the dot itself, so the pulse never changes the dot’s box and nothing in the status row reflows against it.
 - Under a reduced-motion preference the pseudo-element is not generated at all, so the halo has no presence in the layout and the dot keeps its static ring.
-- Only this dot pulses. The experience section's active marker states a position rather than a state, it already animates on hover and on the walk back, and a second heartbeat would compete with the first for the same attention.
+- Two things pulse, and they never share a screen. This dot sits in the closing ask and the portrait's rings sit at the top of the hero, so the reason a second heartbeat was barred, that it competes with the first for the same attention, does not reach a surface a reader has to scroll a page to leave. Read the rule as one pulse per screen rather than one per page.
+- The experience section's active marker still takes none. It states a position rather than a state, it already animates on hover and on the walk back, and it sits between the two above.
+
+## Portrait rings
+
+- The portrait carries concentric contour rings on a frame element, since an image is replaced content and generates no pseudo-element of its own. The frame draws nothing at rest and holds the float and the size, so it is markup a treatment can use rather than a treatment.
+- One swell every 13s, then a rest for the back half of the cycle. A pulse restarting the moment it ends reads as presence rather than as a signal, and this surface already carries the field's own motion under it.
+- Reduced motion keeps the rings and drops the swell, which is the same drawing without the movement.
+- The ink is one hue at two weights rather than two colors. `--accent` is already theme-aware, so what needs splitting is how much of it to use: the same ink over cream carries far more than over near-black.
+- Both weights are set against the field's own contour lines in the annulus the rings occupy, where the field peaks at 10.73 in light and 12.65 in dark. Light saturates at 12% and lands on 10.87, dark takes 22% and lands on 12.79, so the rings join the field rather than sitting on top of it. Measured as added ink the two match within 4%, at 0.126 and 0.131 of mean deviation.
+- The 30% that looked right in dark measured 20.32 in light, nearly twice the weight of the lines it was meant to join. A single alpha across both themes is the mistake to avoid.
+- Rings are drawn with a repeating radial gradient rather than stacked box shadows. A box shadow is a filled disc, so the visible ring is the gap between two of them and the weight lands in the band, which read as a grey donut in light at every alpha tried.
 
 ## Experience timeline
 

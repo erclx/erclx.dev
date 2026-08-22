@@ -86,6 +86,86 @@ Two further reasons hold whichever file is open. The glob overlaps `445-screensh
 
 Reading its absence as an install gap is the specific mistake to avoid: a session did exactly that on 2026-08-15 and installed it alongside two rules that were genuinely missing. What tells the two cases apart is `.claude/aitk.json`. It named `556-groundwork` and `557-intake` with no file behind them, which is a missing install, while `440-surface-capture` appeared in neither the record nor the tree, which is what a declined rule looks like.
 
+### A touch decision is judged on a device, not in device emulation
+
+Three verification surfaces above read the page through a headless engine or a desktop browser, and none of them can answer what a finger does. Device emulation reproduces the events and the viewport and not the pointer hardware, the display density, or the engine, so a rule silently taking its touch branch renders identically under emulation and wrongly under a thumb. That is the same defect class the engine matrix was widened for, arriving through the one gap a matrix cannot close.
+
+`bun run device` serves the dev site to a phone or tablet on the local network and prints a code to scan. `.claude/context/development.md` § Serving to a real device carries the routing, the reboot trap, and the failure modes.
+
+Two decisions inside it are worth stating here rather than there. A local port forward was chosen over a public tunnel, which needs no administrator and works from any network and was rejected anyway because it puts an unfinished portfolio on an address anyone holding the link can load. And the harness holds one fixed port where the other three servers derive one per worktree, because a forward covers exactly one port and a derived port would put an administrator prompt in front of every new worktree, which is the recurring cost the harness exists to remove. Reading that fixed port as an oversight against the band convention is the mistake to avoid: it is the convention traded away deliberately, for one forward that outlives every worktree.
+
+What it gives up is two worktrees serving to a device at once, which needs two devices before it is worth anything.
+
+### A pointer response is gated on a device that has a pointer
+
+The site answered a pointer twenty times across six pages and asked whether one existed three of those times. A finger dragged down the page therefore tilted every project card it crossed and left them tilted, walked the experience timeline to whichever beat it last touched, ducked the closing ask's character, marked the bar's name, and dropped a disturbance into the field on every scroll a reader started.
+
+One rule decides membership and it is a test rather than a list. A response keyed to a pointer _being over_ something, `:hover`, `pointerenter`, `pointerleave`, `pointermove`, is gated on a device reporting a pointer. A response keyed to a _deliberate act_, a click, a focus, an activation, never is, because touch performs those exactly as a mouse does and gating them takes the page away from the reader rather than giving it back. `src/lib/pointer.ts` holds the query and every caller reads it, so a component nobody has built yet can be judged against the same test.
+
+The field's disturbance is the case that test does not settle on its own. It listened on `pointerdown`, which is contact rather than intent, so it fired on every scroll. Moving it to a window-level `click` looked correct and failed on the device: WebKit does not dispatch a click to the window for a tap on an element that is not natively interactive, so the response worked on every desktop and did nothing at all on a phone. It now reads a tap off the pointer itself, a press that travels under 10px and is not taken over by a scroll, which the browser signals by firing `pointercancel` the moment it claims the gesture. That works on every engine and keeps the response for touch rather than gating it away.
+
+The surface also drew below the density of the screen it was on. The cap sat at 1.5 while a tablet reported 2, so the panel interpolated the difference and softened every contour, which is why the same drawing read crisp in a desktop capture and washed out on the device. The cap matches the display now, and the frame guard is what protects a device that cannot afford it, by measuring what it actually draws rather than refusing up front.
+
+Nothing headless caught any of this. Two of the three defects reproduce only under a real finger on a real engine, which is what `bun run device` exists for, and both were found within a minute of the page reaching the operator's own hardware.
+
+Measured at 12eb2d0 on 2026-08-21, across twenty pointer responses on six pages, of which three were gated before this and seven after.
+
+### A shared link renders one card, and the card says what the title cannot
+
+Six pages declared nothing for a link preview, so every share of this domain was
+rendered from whatever the host guessed. Pinned to a professional profile it came
+back as the operator's own avatar beside a bare title.
+
+Every host reads the same Open Graph tags and differs only in what it renders
+from them, so there is one image and one set of copy rather than a variant per
+network. `public/og.png` at 1200x630 covers all of them: LinkedIn asks 1200x627
+and X 1200x628, and Discord scales what it is given.
+
+The absolute URL is the load-bearing part and the one that fails silently. A
+crawler fetches the image outside the page's context, so a root-relative path
+resolves against nothing and the preview arrives with no image at all. `site` in
+the Astro config is what makes `Astro.site` resolve them. `twitter:card` is
+`summary_large_image` for a similar reason: X shows a thumbnail beside the text
+without it, so the tag rather than the image decides the size.
+
+The mark leads at 210px, the claim sits beside it, and an attribution line
+carrying the name and the domain runs at 23px underneath. The name is
+deliberately not at display weight: every host prints the page title beside the
+image, so a name twice in one unfurl is the redundancy to avoid, and small under
+the claim is not that. It is the same redundancy the description carried against
+the title until this batch, where a card opening on "Applied AI engineer in
+Gothenburg" sat under a title ending "Applied AI engineer".
+
+It is composed inside the served site rather than in a bare page, which is what
+gives it the real Fraunces and the shipped tokens. A card drawn in a fallback
+face is a card judged on the wrong letterforms. The field behind it is captured
+from the page with every other element hidden, after a first attempt shot the
+canvas while content sat over it and baked the hero's own text into the image.
+
+The mark grew from a 64px corner element to a 210px lead, which retires the
+empty right half an earlier draft of this entry defended. With the composition
+spanning the width, the measure was re-settled at 22 characters to the line
+against a candidate at 28, judged downscaled rather than at 1200: a card is met
+at 400 to 600 in a feed and smaller in a compact unfurl, and at full size the
+longer line only looks fuller. At 340 it goes thin and 22 holds.
+
+A square crop takes the mark and the last word of every line, and that is
+accepted rather than designed around. Centring the group to survive it costs the
+feed and the compact unfurl, which is a certain price for an uncertain benefit,
+and a crop taken from the centre is close to the worst case rather than the
+typical one, since the hosts that square-crop mostly anchor left or letterbox. A
+separate 1:1 asset is the repair when one is wanted, and it waits on a consumer
+that asks for it: most hosts take the first `og:image` and ignore the rest, and
+`public/avatar.png` already ships as this project's square mark.
+
+`bun run share-card` redraws it, and `e2e/share-card.spec.ts` guards it. Two of
+its nine assertions are worth naming: one fails a description that opens on
+words the title already used, and one fails a route title carrying `case study`,
+which `.claude/REQUIREMENTS.md` retired on 2026-08-18 and which had reached the
+visible labels without ever reaching the titles a shared link shows.
+
+Measured at e96e63c on 2026-08-22.
+
 ### Resume PDF served from `public/`
 
 The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source remains `assets/resumes/eric-le-resume.pdf` in the parent career repo. Updates land here as a binary copy via the sync queue rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
@@ -98,15 +178,129 @@ The apex domain already lives in Cloudflare. Pages attaches the custom domain wi
 
 `cloudflare/wrangler-action` runs after `static-checks`, `unit-tests`, `build-verify`, and `e2e-tests` pass. CF's native Git integration would deploy on every push without honoring the test gate and would build in CF's environment with a separate bun version. Direct upload from Actions keeps the test gate and the build environment unified with CI.
 
-### Small rasters serve the tab, not the stippled vector
+### The vector serves the tab, and the rasters serve the surfaces that composite
 
-The synced brand mark is 268 stippled dots inside a 512 disc, at a median radius near 6.7. At 16px each dot covers roughly 0.14 of a pixel in area, so a cream dot over a near-black ground averages to mid-grey. Masked to the disc, the vector peaks at luminance 129 at 16px and 148 at 32px with zero pixels above 180, while the purpose-built 32-square raster peaks at 221 and 255 with 30 and 152 such pixels. The rasters come from a pipeline tuned for small size in the parent checkout and are copied rather than generated, since this repository carries no image-processing dependency.
+The mark is a lowercase e followed by a block cursor, drawn in this repository
+rather than synced from the parent checkout. `src/assets/brand/mark.svg` is the
+one drawing and `scripts/brand.ts` renders it to rasters, so the tab, the home screen,
+the avatar, and the bar cannot drift.
 
-Declaration order does not decide which icon an engine draws. With the raster declared first carrying explicit `sizes` and the vector second, headed Chromium and Firefox both fetched `/favicon.svg` and never requested the raster. Removing the vector from the icon relation is what moved both engines onto `/favicon-32.png`. The vector still ships at `/favicon.svg` for any surface with room for it, and the 180-square raster covers the home screen through `apple-touch-icon`.
+The vector leads the icon relation, which reverses a decision this file carried
+until 2026-08-22. That decision was correct about the artwork it measured: the
+synced mark was 268 stippled dots inside a 512 disc at a median radius near 6.7,
+so at 16px each dot covered roughly 0.14 of a pixel and a cream dot over a
+near-black ground averaged to mid-grey. It peaked at luminance 129 at 16px and
+148 at 32px with zero pixels above 180, against a purpose-built 32-square raster
+peaking at 221 and 255 with 30 and 152 such pixels.
 
-Do not restore the vector to an `icon` relation and do not replace either raster with a downsample of it. The measurement above is the whole reason the set exists. The parent checkout's sync overwrites `public/favicon.svg` and touches neither raster, so an upstream change to the vector leaves the tab as it is.
+Re-taken on the new mark with the same instrument, the vector peaks at 239 with
+48 of 256 pixels above 180 at 16px. It beats the raster that replaced it. The
+finding was never about the format, and reading it as a rule about SVG is the
+mistake to avoid: it was a fact about a drawing whose detail could not survive
+the size, and three shapes survive it. The stippled numbers stay above because
+they are still true of that artwork.
 
-Measured at 60f1e0a on 2026-08-15.
+Declaration order still does not decide which icon an engine draws. An engine
+that reads the vector never requests the raster, which is why the 32-square PNG
+is a fallback for engines that ignore an SVG icon rather than a first choice
+that ordering could protect.
+
+The vector carries its own cream ground with a dark mark, which is what every
+brand raster does, so all four assets agree.
+
+The bar is the one surface that takes no ground, because it is the one surface
+this repository paints. A ground exists for a canvas nobody here controls, so
+inside the site's own chrome it would be a cream plate laid on the page, and the
+mark takes the theme's foreground instead. It renders at 24px, above the 20px at
+which this drawing resolves as a letter.
+
+The mark sits inside the way-home control and outside the name slot, which are
+two different boxes and only one of them is measured. A logo in a bar is a thing
+readers click, and a decorative mark against a live name is a dead 24px target
+beside a working one. Making it its own link would instead put two adjacent
+controls on one destination. The group is therefore the control, at 79x44 on
+both bars, with the mark `aria-hidden` inside it so the accessible name stays
+`Eric Le`. The name keeps its own marker because the flying name is measured
+against that box, and moving the marker up to the group would hand the handoff
+the lockup's left edge and land the name on the mark. Measured at 1280, the
+flyer still lands 10px clear of the mark in both themes and the two centre to
+0.0px.
+
+The bar switches on rather than fading, and its ground is what fades. The name
+and the toggle reach that row by riding the scroll, so both are placed and fully
+opaque the moment they arrive, and a mark fading up beside them was a third
+timing on a row that already had one: measured at 1280 it ramped 0, 0.84, 1
+across the same 40px in which the name had already landed and stopped. It now
+reads 0 then 1 with no step between, against a ground still passing 0.77.
+
+Moving the opacity off the bar and onto the row is the version to avoid, and it
+was built first. Reduced motion gives the name slot its color back, so a row
+held visible by an always-opaque bar carries a second name through the whole
+hero. Keeping the switch on the bar and the fade on the ground gets the same
+arrival with nothing revealed early, since the ground is drawn at zero, the name
+slot paints its text transparent, and the toggle slot is an empty box.
+
+Transparent and theme-adaptive shipped first and is not reliable. A favicon
+resolves `prefers-color-scheme` against the browser while the tab strip takes
+its color from a theme set separately, and the two disagree routinely: the
+operator's browser reported dark against a light strip and the mark rendered
+cream on white and vanished. The same mismatch the other way puts dark ink on a
+dark tab, so the failure is symmetric rather than a light-mode bug. A ground
+removes the dependency instead of betting on two independent settings agreeing.
+
+A disc was rejected and a rounded square was not, which is one distinction
+rather than two. Inscribed in 16 pixels a circle leaves about 11 for the mark
+and the letter reads cramped, where a square keeps the frame and costs the
+drawing 16% of its scale. The earlier reading against a ground was arithmetic
+about circles applied to grounds in general.
+
+What it gives up is the swap, and the measurement that justified the vector
+leading is unaffected: that reading was of whether the drawing survives 16
+pixels, which is a property of the artwork rather than of what sits behind it.
+
+The two other ground-carrying rasters take the same cream with a dark mark. A
+home screen and a profile host both composite onto a canvas this repository does
+not control, and
+the dark surfaces are the ones where an edge disappears: Discord sits near
+`#313338` and GitHub dark at `#0d1117`, both close enough to this site's own
+dark theme that a dark disc dissolves into the page. Cream stays a defined shape
+on both, and on GitHub light it separates on warmth against white.
+
+Two defects shipped between authoring the mark and it reading as a letter, and
+both are worth carrying because neither was caught by the checks in place.
+
+The drawing was tuned inside one frame and authored inside another. The tail
+angle that holds the counter open was measured on a box the mark nearly filled,
+then the shipped file squared its frame and added margin, dropping the letter to
+60% of the frame height. At 16px that takes a fifth off every stroke and the
+counter closes. **Re-measure after changing a frame**, since every figure behind
+a small-size decision is a ratio between the drawing and its box rather than a
+property of the drawing.
+
+Then a CSS declaration outranks a presentation attribute in SVG. One rule
+carrying `fill` overrode the `fill="none"` on the stroked paths, so the bowl
+filled and the mark shipped as a solid disc with a bar. The stroked paths and
+the filled rect take separate classes for that reason.
+
+**The second one is the lesson rather than the bug.** It made the mark fail
+while making the guard pass, because a filled disc carries more ink than an open
+letter and the check in place counted ink. A measure that rises as the thing
+fails is worse than no measure. What catches it is a guard on the property the
+drawing is actually built around: `e2e/favicon.spec.ts` counts enclosed holes in
+the rendered pixels, so a letter with no eye fails whatever its coverage, and it
+found this on its first run.
+
+`public/avatar.png` is served at the domain root and no visitor navigates to it.
+It sits there because a profile host wants a file to upload rather than a URL to
+embed, and `public/resume.pdf` already sets that precedent.
+
+The reduction path the earlier entry barred also turns out to cost almost
+nothing here, measuring 57 bright pixels against 48 for a direct draw. Each size
+is still drawn at its own dimensions, because that is what stays true if the
+mark ever gains detail a reduction would average away.
+
+Measured on 2026-08-22 with the arrival and lockup figures read on this branch,
+and the luminance figures above carried forward from 0b7e7bd unchanged.
 
 ### A landing-page figure sits inside the text column, and marks derive from type metrics
 
@@ -186,7 +380,9 @@ Two things drove the replacement and neither is that the old one was broken. The
 
 The medium was not the problem the first attempt solved. `.claude/DESIGN.md` rejected shader work outright until this branch, on the reading that a shader is a preset. What is actually rejected is the shortcut, and an authored field with its own stream function and its own lighting is not one. The standard now says so.
 
-The still copy mounts from the layout, so it reaches the project routes as well as the landing page. It damps inside the reading measure, tracking `--prose-column` rather than a fixed strip, because a route scales its column and a landing section does not. See `.claude/context/page-ground.md` for the measured cost, which is 16.16:1 to 15.74:1 on body text.
+The still copy mounts from the layout, so it reaches the project routes as well as the landing page. It damps inside the reading measure, tracking `--prose-column` rather than a fixed strip, because a route scales its column and a landing section does not. How hard it damps walks down with viewport width, since the field's scale divides by that width and one fraction therefore covers more contours the smaller the screen gets. See `.claude/context/page-ground.md` for the measured cost, which is 16.16:1 to 15.74:1 on body text.
+
+Keying that curve to the column's share of the viewport instead is the mistake to avoid, and it shipped once. The column caps at the viewport, so its share pins at 1.0 from 768 down and the curve freezes exactly where the complaint came from: measured in dark, mean weight fell to 0.12 at 768 and rose back to 0.20 at 390, leaving a phone the least damped narrow screen while the code read as though it damped hardest. Read it as the general case rather than as one bad variable. A quantity that saturates before the range ends looks correct wherever it was measured, and share was measured at three wide widths where it still moves. Measured at 12eb2d0 on 2026-08-21, where mean weight falls 0.39, 0.33, 0.24, 0.04, 0.03, 0.03 across 1920, 1366, 1024, 768, 560, and 390.
 
 A click disturbs it, and the disturbance is added to the stream function rather than to the drawn output. That one placement is what makes the field keep evolving underneath the wave, bend where it crosses, and recover with nothing restoring it, so the behavior falls out of where the term sits rather than being written. Painting a ring over the surface would have needed all three coded and none of them would have interacted with the field at all.
 

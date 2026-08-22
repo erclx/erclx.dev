@@ -96,14 +96,25 @@ const links = [
               image inside a heading prepends to that heading's accessible name,
               and the heading already states the name. */}
           <h1 class="font-display text-display text-foreground">
-            <Image
-              src={portrait}
-              alt=""
-              widths={[112, 160, 320]}
-              sizes="(min-width: 1024px) 10rem, (min-width: 768px) 7rem, 5rem"
-              data-portrait
-              class="border-border/60 bg-muted float-right ml-6 size-20 rounded-full border object-cover md:size-28 lg:size-40"
-            />
+            {/* The float and the size sit on a frame around the image rather
+                than on the image itself, so a treatment drawn behind the
+                portrait has an element to hang off. An image is a replaced
+                element and generates no pseudo-element of its own. The frame
+                draws nothing at rest, so this is markup a treatment can use
+                rather than a treatment. */}
+            <span
+              data-portrait-frame
+              class="relative float-right ml-6 block size-20 md:size-28 lg:size-40"
+            >
+              <Image
+                src={portrait}
+                alt=""
+                widths={[112, 160, 320]}
+                sizes="(min-width: 1024px) 10rem, (min-width: 768px) 7rem, 5rem"
+                data-portrait
+                class="border-border/60 bg-muted relative z-[1] size-full rounded-full border object-cover"
+              />
+            </span>
             {/* Only the text travels into the sticky bar. The portrait floats
                 inside this heading and stays with the hero, so the name is its
                 own element rather than the whole line. */}
@@ -181,6 +192,98 @@ const links = [
       rgb(from var(--background) r g b / 0.997) 96.875%,
       var(--background) 100%
     );
+  }
+
+  /* Contour rings around the portrait, drawn in the field's own language so the
+     photo sits in the terrain rather than on top of it.
+
+     The ink is one hue at two weights rather than two colors. `--accent` is
+     already theme-aware, so what needed splitting is how much of it to use: the
+     same ink over cream carries far more than over near-black. Both values are
+     set by measurement against the field's own contour lines in the annulus
+     these occupy, where the field peaks at 10.73 in light and 12.65 in dark.
+     Light saturates at 12% and lands on 10.87, dark takes 22% and lands on
+     12.79, so the rings read as part of the field in both. The 30% that looked
+     right in dark measured 20.32 in light, which is nearly twice the weight of
+     the lines it was meant to join.
+
+     Rings rather than a glow, and a gradient rather than stacked shadows. A box
+     shadow is a filled disc, so the visible ring is the gap between two of them
+     and the weight lands in the band: it read as a grey donut in light at every
+     alpha. A repeating radial gradient draws the line itself. */
+  [data-portrait-frame] {
+    --ring-ink: color-mix(in oklch, var(--accent) 12%, transparent);
+  }
+  :global(.dark) [data-portrait-frame] {
+    --ring-ink: color-mix(in oklch, var(--accent) 22%, transparent);
+  }
+
+  [data-portrait-frame]::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 0;
+    width: 320%;
+    height: 320%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    background: repeating-radial-gradient(
+      circle at 50% 50%,
+      transparent 0 15px,
+      var(--ring-ink) 15px 16px
+    );
+    /* Faded out well before the frame's own edge, so the outermost ring ends in
+       the field rather than at a rim the mask would otherwise draw. */
+    -webkit-mask-image: radial-gradient(
+      circle at 50% 50%,
+      #000 15%,
+      transparent 52%
+    );
+    mask-image: radial-gradient(circle at 50% 50%, #000 15%, transparent 52%);
+  }
+
+  /* One swell across the whole cycle. Reduced motion keeps the rings and drops
+     the swell, which is the same information without the movement.
+
+     The travel is what `.claude/DESIGN.md` § Motion constrains rather than the
+     duration. This is unattended and infinite, so it answers to the ambient
+     band and not to the reaction rule the cast members run on: the 4 to 11px
+     per second band pulls the eye without rewarding it, and a term above the
+     band is something to watch rather than something to live beside. The hero
+     field is the precedent at 0.13px per second.
+
+     An earlier setting swept 0.9 to 1.14 over 55% of the cycle with an
+     ease-out, which put the ring's edge at a peak of 15.1px/s at lg and
+     12.2px/s at md, inside the band for 28.6% and 38.0% of the cycle. The
+     ceiling a resting cast term answers to is 8%. Slowing that sweep alone
+     lands further inside the band rather than under it, so the travel came
+     down with it. 0.96 to 1.04 across the full 13s peaks at 3.5px/s at lg and
+     2.3px/s at md, and spends none of the cycle in the band at either. An
+     intermediate 0.95 to 1.05 was measured first and grazed its lower edge at
+     4.2px/s. */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-portrait-frame]::after {
+      animation: portrait-swell 13s ease-in-out infinite;
+    }
+  }
+
+  @keyframes portrait-swell {
+    0% {
+      transform: translate(-50%, -50%) scale(0.96);
+      opacity: 0;
+    }
+    18% {
+      opacity: 1;
+    }
+    82% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1.04);
+      opacity: 0;
+    }
   }
 </style>
 

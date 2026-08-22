@@ -39,6 +39,10 @@ For the rationale behind these choices, such as Astro over Next, the shadcn inst
 | `bun run clean`         | Wipe `node_modules/`, clear bun cache, reinstall.                                                                      |
 | `bun run update`        | Interactive `bun update` followed by verification.                                                                     |
 | `bun run dev`           | Start the Astro dev server on port 4321.                                                                               |
+| `bun run device`        | Serve the dev site to a phone or tablet on the same network, printing a QR to scan.                                    |
+| `bun run brand`         | Redraw every brand raster from the one mark source. Run after editing that mark and never by hand.                     |
+| `bun run share-card`    | Redraw the link preview card. Needs the site served, since it composes inside the built page to get its own type.      |
+| `bun run unfurl`        | Render every page's preview as five hosts compose it. Needs the site served, since it reads the tags off the document. |
 | `bun run build`         | Run `astro check` then build the static output.                                                                        |
 | `bun run preview`       | Serve the built site locally.                                                                                          |
 | `bun run astro`         | Expose the Astro CLI.                                                                                                  |
@@ -56,7 +60,7 @@ For the rationale behind these choices, such as Astro over Next, the shadcn inst
 Keep `bun run dev` running in the background during landing-page sessions so changes are visible at http://localhost:4321 as they land.
 
 - `bun run screenshot` builds, then binds its own preview server on port 4173 via `scripts/screenshot.sh`. The separate port keeps it clear of the dev server on 4321, and the script exits rather than reuse a port already serving.
-- Three surfaces each hold their own port band so any two run at once: dev from 4321, screenshot from 4173, and Playwright from 4250. `playwright.config.ts` derives its `baseURL` from that base and passes the resolved port to `astro preview`.
+- Three surfaces each hold their own port band so any two run at once: dev from 4321, screenshot from 4173, and Playwright from 4250. `playwright.config.ts` derives its `baseURL` from that base and passes the resolved port to `astro preview`. The device harness is the exception and holds one fixed port at 4400, for the reason in § Serving to a real device.
 - `scripts/worktree-port.sh` shifts all three by the same per-worktree offset, derived from the worktree directory name. The offset caps at 50, which is what keeps the bands from overlapping, so a linked worktree never collides with the main checkout.
 - Two worktrees can collide with each other, because the offset is a hash rather than an allocation. It resolves as `cksum % 50 + 1` over the directory name, which guarantees nothing about uniqueness: measured across the nine worktrees present on 2026-08-21, `ci-engine-coverage` and `page-audit-run` both derive 29, and the odds over 50 slots are past even at nine names. It surfaces as Playwright refusing to start on a port a sibling's `astro preview` still holds, sometimes hours after that session ended. Set `WORKTREE_PORT_OFFSET` to override the derivation rather than killing the other server, which may be serving work still under review.
 - Running without collision is what lets several servers stay alive at once, so a reviewer handed one address can land on a sibling worktree serving work that is not under review. Stop the other `astro dev` and `astro preview` processes before handing over a URL, and read a token off the served page to confirm the change reached it. A reviewer reporting that nothing looks different is describing the wrong port as often as the wrong change.
@@ -69,6 +73,50 @@ Keep `bun run dev` running in the background during landing-page sessions so cha
 - No capture contains a favicon, so a tab-icon change is verified by loading the built page in a headed engine and sampling the icon through a canvas. Headless Chromium requests no favicon at all, so reading which icon an engine selects needs `xvfb-run` around a headed run. `e2e/favicon.spec.ts` holds that luminance sampling as a standing guard across all three engines.
 
 For the capture model and its output path, see `.claude/ARCHITECTURE.md` § Screenshots capture per-section on the landing page and whole on a case study. For when to reach for Playwright MCP over a static capture, see § Playwright MCP for interactive verification in the same file.
+
+## Serving to a real device
+
+`bun run device` puts the dev site on a phone or tablet on the same network and prints a code to scan. A desktop browser's device emulation is not a substitute: it reproduces the events and the viewport but not the finger, the display density, or the engine, and the interaction defects this project has shipped live in exactly that gap. A scroll that a rule reads as a hover is invisible under emulation and obvious under a thumb.
+
+The routing has three hops and only the middle one needs setting up. The dev server runs inside WSL, which holds its own address on its own virtual network. Windows reaches it through a special case for `localhost` that nothing else on the network gets, so a tablet asking for the Windows address arrives at a host with nothing listening on that port. A port forward from Windows into WSL is what closes it, and creating one needs an administrator, which is why the script prints the command rather than running it.
+
+The forward names the WSL address, and that address is assigned fresh on every boot. A forward set up yesterday therefore points into nothing today, and the failure is silent in the worst way: the port still answers on Windows and the connection is refused behind it, which reads as the dev server being down. Reading the current address and comparing it against what the forward holds is most of what the script does, and it prints `set` rather than `add` so the same command creates the forward and re-points a stale one.
+
+The port is fixed at 4400 rather than derived per worktree the way the other three servers are, which is the one place this harness breaks the band convention above. A forward covers exactly one port, so a derived port would mean an administrator prompt for every new worktree, which is the recurring cost the script exists to remove. One fixed port means one forward that outlives every worktree and comes back only after a reboot. What it gives up is two worktrees serving to a device at once, which needs two devices before it is worth anything, and Astro refuses a held port rather than sliding to the next, so the collision is loud. `DEVICE_PORT` overrides it.
+
+Three things the script cannot settle. A VPN on the phone may route local addresses away from the LAN, which shows as a scan that resolves and then times out, so turn it off before suspecting the forward. Several Windows adapters answer with link-local addresses that route nowhere, so the address is taken from the one holding a DHCP lease rather than the first one listed. And the firewall rule is needed once and never again, so it is printed only when no forward exists at all.
+
+A public tunnel was the alternative and is not installed. It needs no administrator and works from any network, which is genuinely better on both counts, but it puts the dev site on an address anyone holding the link can load, and it needs the Vite host check widened to accept a hostname that changes every run. The forward keeps the page on the local network, where a portfolio still under construction belongs.
+
+### Two flags, and the reason each exists
+
+`DEVICE_MODE=dev` serves the dev server instead of the build. The scenario harness in `src/components/dev/` is gated on `import.meta.env.DEV` and leaves the production tree, so an interactive decision served through it is unreachable from a built page and can only be judged on the machine running it. That is the whole reason the flag exists, and the build stays the default because it is what a visitor receives.
+
+`DEVICE_PATHS` takes a comma-separated list and renders one code per entry. A comparison served as several arms needs one code each, since a query string typed by hand on a tablet is where a live comparison stops being worth running.
+
+```bash
+DEVICE_MODE=dev DEVICE_PATHS="/?arm=0,/?arm=1" bun run device
+```
+
+The dev server was ruled out for device work until 2026-08-22, on a real finding that no longer holds. Astro resolves an optimized image through an endpoint reading the file off disk by absolute path under Vite's `/@fs/` prefix, and that read was refused from a remote origin, so images arrived on this machine and broke on the tablet. Re-measured against the current Astro and Vite over the LAN address, and again with a foreign `Host` header, which is what a device arriving through the Windows forward actually sends: both the page and an optimized image return 200 with `content-type: image/webp`.
+
+Read that as a server-side reading rather than a browser one. A device still losing its images is the reading that wins, and the flag is opt-in partly for that reason.
+
+### A code a session hands over is an image, not blocks
+
+`bun run device` draws its code with terminal block characters and skips drawing entirely when stdout is not a terminal, printing a line saying so. That is correct for a human at a prompt and useless to every agent session, which runs the script through a tool and captures its output, so a session following this entry alone reaches an address it cannot hand over in scannable form.
+
+`bun scripts/qr.ts <url> [url...]` is the answer. It reads the matrix out of the same encoder the terminal renderer vendors, draws it as squares with a four-module quiet zone, and writes a PNG per address under `.claude/review/qr/`. A code cropped to its own edge fails against a busy background and the failure looks like a bad camera rather than a bad image, which is what the quiet zone is for.
+
+## Reading a link preview without pasting one
+
+`bun run unfurl` renders all six pages as Discord, LinkedIn, X, Slack, and a Notion bookmark compose them, one sheet per page under `.claude/review/unfurl/`. It reads the tags off the served document rather than out of the source, since a crawler reads the rendered page and that is the copy that can be wrong, and it fetches the declared image the same way and embeds it so a sheet survives the server going away.
+
+Three failures make it throw rather than draw. A page missing any of the five tags names them. A relative `og:image` is rejected outright, which is the defect the record already carries as the one that fails silently in production. An image the server will not return names the status.
+
+Read a sheet as evidence about this card and never as a screenshot of that app. The chrome is drawn to each host's published shape, so what the sheet proves is what the card does under a given crop and a given line clamp, which is the half that belongs to this repository. A host redesigning its own embed is the half it cannot see, and the caveat under each frame names what that host is known to vary on.
+
+The apex is where it pays. Every host except LinkedIn renders the description, and the card image draws the claim, so a description opening on that same claim prints one sentence twice in a single unfurl. The five route pages carry their own descriptions and never hit it. `e2e/share-card.spec.ts` guards the description against the title and does not guard it against the image, which is the gap this found.
 
 ## Reproduce a suite failure against the suite's own target
 

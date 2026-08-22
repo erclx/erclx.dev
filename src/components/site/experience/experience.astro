@@ -349,6 +349,7 @@ const artifacts = [
 
 <script>
   import { initAnnotations } from '@/lib/annotate'
+  import { hasHoverPointer } from '@/lib/pointer'
 
   initAnnotations()
 
@@ -379,12 +380,18 @@ const artifacts = [
     rows[defaultIdx]?.removeAttribute('data-default-active')
     setActive(defaultIdx)
 
-    for (const [i, row] of rows.entries()) {
-      row.addEventListener('pointerenter', () => {
-        cancelWalk()
-        stage.dataset.engaged = 'true'
-        setActive(i)
-      })
+    // The beats answer a pointer resting on one, which a finger dragging down
+    // the page is not doing to every beat it crosses. Left ungated, a scroll
+    // walked the list and lit each row in turn, and the pointer is destroyed on
+    // lift so the stage never left its engaged state.
+    if (hasHoverPointer()) {
+      for (const [i, row] of rows.entries()) {
+        row.addEventListener('pointerenter', () => {
+          cancelWalk()
+          stage.dataset.engaged = 'true'
+          setActive(i)
+        })
+      }
     }
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
