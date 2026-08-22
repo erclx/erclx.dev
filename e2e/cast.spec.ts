@@ -41,7 +41,19 @@ async function settleCast(page: Page): Promise<void> {
 
 /** Share of a member's own box that differs from the page behind it. */
 async function inkShare(page: Page, index: number): Promise<number> {
-  const shot = await page.locator(MEMBER).nth(index).screenshot()
+  // Every member carries `cast-breathe`, an ambient scale that runs forever, and
+  // an element screenshot waits for two consecutive frames to report the same
+  // box before it shoots. A scaling box gives it that only where the term passes
+  // through a slow point, so the wait is variable rather than fatal: measured on
+  // one member it ran 4499ms, then 873ms, then 666ms, against a flat 760ms with
+  // the animations frozen. Seven members at the long end of that reach the
+  // capture timeout on a loaded runner, which is why this failed in CI and
+  // passed here. Freezing costs the reading nothing, since the term is a scale
+  // rather than a travel and the drawing is the same at any phase of it.
+  const shot = await page
+    .locator(MEMBER)
+    .nth(index)
+    .screenshot({ animations: 'disabled' })
   return page.evaluate(
     async ({ data }) => {
       const context = document.createElement('canvas').getContext('2d')!
@@ -428,20 +440,41 @@ test.describe('agent cast', () => {
     const sleeper = page.locator(MEMBER).last()
     const before = await sleeper.evaluate((member) => member.dataset.react)
 
+    // Recorded at handler time rather than read after the round trip. The tap
+    // marks clear once the reaction ends, which for this member is an 820ms
+    // `hop`, so a separate `evaluate` races a state whose lifetime is shorter
+    // than a loaded runner's round trip. Registered after the component's own
+    // listener, so it runs second and sees what that one set.
+    await sleeper.evaluate((member) => {
+      member.addEventListener('click', () => {
+        const tapped = member.querySelector('.cast-face.is-tapped')
+        Object.assign(window, {
+          __tap: {
+            react: member.dataset.react,
+            woken: 'woken' in member.dataset,
+            showing: tapped ? getComputedStyle(tapped).display : 'missing',
+          },
+        })
+      })
+    })
+
     await sleeper.click({ force: true })
 
-    const after = await sleeper.evaluate((member) => ({
-      react: member.dataset.react,
-      woken: 'woken' in member.dataset,
-      showing: member.querySelector('.cast-face.is-tapped')
-        ? getComputedStyle(member.querySelector('.cast-face.is-tapped')!)
-            .display
-        : 'missing',
-    }))
+    const after = await page.evaluate(
+      () =>
+        (
+          window as unknown as {
+            __tap?: { react?: string; woken: boolean; showing: string }
+          }
+        ).__tap,
+    )
 
-    expect(after.woken).toBe(true)
-    expect(after.react).not.toBe(before)
-    expect(after.showing).toBe('block')
+    // Asserted present before its members are read, so a tap the listener never
+    // saw fails here rather than passing on three reads of `undefined`.
+    expect(after, 'no tap was recorded').toBeDefined()
+    expect(after?.woken).toBe(true)
+    expect(after?.react).not.toBe(before)
+    expect(after?.showing).toBe('block')
   })
 
   test('settles the cast in place for a reader who asked for less motion', async ({
