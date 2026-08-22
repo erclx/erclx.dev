@@ -30,6 +30,12 @@ const FIELD = '[data-cast-field]'
 const MEMBER = '[data-cast-member]'
 const SECTION = '[data-section="experience"]'
 const SETTLE_MS = 1800
+/**
+ * Long enough to hold several of the scheduler's own gaps, which run 5.2 to
+ * 7.8 seconds apart. A window shorter than one gap reports a working scheduler
+ * as silent.
+ */
+const SCHEDULER_WATCH_MS = 20_000
 
 const WIDE = { width: 1440, height: 900 }
 
@@ -626,5 +632,113 @@ test.describe('agent cast', () => {
     // written by hand beside the scale spends two thirds of it standing still,
     // which is a guard that reports nothing until the drift is already large.
     expect(ratio).toBeCloseTo(11.111, 2)
+  })
+
+  // The margin check reads a cluster's own box, and the power layer is a
+  // sibling reaching past that box on every side, so it can paint over the
+  // prose while the cluster still measures clear. That is the shape of the
+  // defect `.claude/ARCHITECTURE.md` records under a panel measuring correctly
+  // while sitting off screen: the instrument answers about the wrong element.
+  test('keeps every power layer clear of the reading column', async ({
+    page,
+  }) => {
+    const clearances: number[] = []
+
+    for (const width of [1280, 1440, 1920]) {
+      await page.setViewportSize({ width, height: 900 })
+      await settleCast(page)
+
+      clearances.push(
+        await page.evaluate((section) => {
+          const prose = document.querySelector(`${section} p`)
+          if (!prose) throw new Error('the experience section carries no prose')
+          const column = prose.getBoundingClientRect()
+
+          const layers = [
+            ...document.querySelectorAll('.cast-power-layer'),
+          ].filter((layer) => layer.getBoundingClientRect().width > 0)
+          if (layers.length === 0)
+            throw new Error('no power layer is painted, so nothing was read')
+
+          // Signed, and the larger of the two edge distances. Branching on
+          // which side of the column a layer sits is meaningless once it
+          // overlaps, and that form reported a 10px overlap as 890px.
+          return Math.min(
+            ...layers.map((layer) => {
+              const box = layer.getBoundingClientRect()
+              return Math.max(box.left - column.right, column.left - box.right)
+            }),
+          )
+        }, SECTION),
+      )
+    }
+
+    expect(Math.min(...clearances)).toBeGreaterThan(0)
+  })
+
+  // The scheduler is the one term that runs without a reader asking for it, so
+  // it answers to three things and each is the defect its own class has. A
+  // second member moving at the same time is what turns a margin into a
+  // performance. A term that fires nothing is indistinguishable from a broken
+  // selector unless something proves it can still fire. And a member left
+  // marked holds the scheduler's only slot for the life of the page.
+  test('lets one member act on its own, and never two', async ({ page }) => {
+    await page.setViewportSize(WIDE)
+    await settleCast(page)
+
+    const watched = await page.evaluate(
+      async ({ member, watchMs }) => {
+        const members = [...document.querySelectorAll<HTMLElement>(member)]
+        let starts = 0
+        let mostAtOnce = 0
+        const wasActive = new Array<boolean>(members.length).fill(false)
+
+        const until = performance.now() + watchMs
+        while (performance.now() < until) {
+          let atOnce = 0
+          members.forEach((one, index) => {
+            const on = one.dataset.reacting !== undefined
+            if (on) {
+              atOnce += 1
+              if (!wasActive[index]) starts += 1
+            }
+            wasActive[index] = on
+          })
+          mostAtOnce = Math.max(mostAtOnce, atOnce)
+          await new Promise((resolve) => window.setTimeout(resolve, 50))
+        }
+        return { starts, mostAtOnce }
+      },
+      { member: MEMBER, watchMs: SCHEDULER_WATCH_MS },
+    )
+
+    expect(watched.starts).toBeGreaterThan(0)
+    expect(watched.mostAtOnce).toBe(1)
+  })
+
+  test('holds the cast still for a reader who asked for less motion', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize(WIDE)
+    await settleCast(page)
+
+    const acted = await page.evaluate(
+      async ({ member, watchMs }) => {
+        const members = [...document.querySelectorAll<HTMLElement>(member)]
+        let seen = 0
+        const until = performance.now() + watchMs
+        while (performance.now() < until) {
+          seen += members.filter(
+            (one) => one.dataset.reacting !== undefined,
+          ).length
+          await new Promise((resolve) => window.setTimeout(resolve, 50))
+        }
+        return seen
+      },
+      { member: MEMBER, watchMs: SCHEDULER_WATCH_MS },
+    )
+
+    expect(acted).toBe(0)
   })
 })

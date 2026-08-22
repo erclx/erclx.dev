@@ -19,7 +19,13 @@
  * Those steps overlap rather than sitting side by side. A first pass spaced them
  * exactly and every chevron broke into three dots at the smallest size the cast
  * ships at, because a step measuring 0.35 of an eye box is 2.6px on a 60px
- * member. `e2e/cast.spec.ts` fails a face carrying a cell under 3px there.
+ * member. `cast.test.ts` fails a stepped figure whose cells stop touching.
+ *
+ * That guard is connectivity rather than size, and the distinction cost a pass
+ * to find. Reading the rule as a floor on every cell reports thirty of
+ * thirty-four parts broken, since a `closed` eye is one bar at 1.5px and has
+ * nothing beside it to separate from. What breaks a chevron is a gap between
+ * two cells, so a gap is what is measured.
  *
  * Nothing is deleted from here. It is an inventory a placement draws from, and
  * an unused entry costs a few bytes of a static build.

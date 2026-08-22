@@ -92,8 +92,8 @@ function eyes(
       ? {
           x: at.x,
           y: at.y,
-          w: 1.05,
-          h: 1.05,
+          w: 0.95,
+          h: 0.95,
           round: 4,
           ink: 'eye' as const,
           part: 'pet-eye' as const,
