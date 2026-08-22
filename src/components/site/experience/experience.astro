@@ -1,6 +1,6 @@
 ---
 import Employers from '@/components/site/experience/employers.astro'
-
+import Cast from '@/components/site/experience/cast/cast.astro'
 const intro = [
   'In practice that means agents, and the developer tools around them. Some of that was paid work, eighteen months of it at Volvo Technology, and the rest is tools I have built to make working with AI easier. I came to it from engineering physics and complex adaptive systems at Chalmers.',
   'I spend most of my working day with coding agents, and the tooling I build comes out of that. When the same rules kept drifting out of sync across my projects, that became a CLI. When staging files for a prompt got tedious, that became an extension.',
@@ -74,7 +74,14 @@ const artifacts = [
 ]
 ---
 
-<section id="experience" data-section="experience" class="page-inset py-16 md:py-20">
+<section
+  id="experience"
+  data-section="experience"
+  class="page-inset relative py-16 md:py-20"
+>
+  {/* The cast anchors to this section's own box, so it scatters down the
+      margins beside the timeline rather than against the viewport. */}
+  <Cast />
   <div class="mx-auto max-w-3xl">
     <h2
       data-fade
