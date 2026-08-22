@@ -28,13 +28,23 @@ const updated = new Date().toLocaleDateString('en-GB', {
       set:html={signatureSvg}
     >
     </div>
+    {/* The footer arrived with nothing: it carried no reveal marker at all
+        while every section above it animated, so a reader scrolling to the end
+        met the last surface already in place. The signature is the exception
+        and keeps its own wipe.
+
+        Grouped rather than left to the batch path, because these two stack at
+        narrow widths and would then cross the viewport edge separately, which
+        gives a batch of one and a step of zero. */}
     <div
+      data-fade-group
       class="mt-8 flex flex-col gap-3 md:mt-10 md:flex-row md:items-end md:justify-between md:gap-12"
     >
       <a
         href="/resume.pdf"
         target="_blank"
         rel="noopener"
+        data-fade
         class="text-foreground text-label inline-flex min-h-11 items-center gap-2 underline-offset-4 hover:underline"
       >
         <svg
@@ -57,7 +67,7 @@ const updated = new Date().toLocaleDateString('en-GB', {
           states it as a filter, which is where the scope doc put it, so the
           footer was repeating it beside a year that read as a copyright with
           its symbol missing. */}
-      <div class="text-muted-foreground text-label md:text-right">
+      <div data-fade class="text-muted-foreground text-label md:text-right">
         {/* The page claims its author builds the layer between a language
             model and the job it has to do. Stating how the page itself was
             made is that claim demonstrated on the one artifact the reader is

@@ -87,6 +87,13 @@ function observeGroup(group: HTMLElement): void {
         // the delay itself. Marking each row on its own timer puts the stagger
         // out of the cascade's reach entirely.
         for (const [index, row] of rows.entries()) {
+          // The authored `--fade-delay` is cleared rather than left alone. The
+          // batch path overwrites it on every element it marks, so a value in
+          // the markup has set nothing for a long time and several surfaces
+          // still carry one. Left in place here it would add to the timer
+          // rather than replace it, and the two together push the last row of
+          // a list past the ceiling `e2e/home.spec.ts` holds them to.
+          row.style.setProperty('--fade-delay', '0ms')
           window.setTimeout(
             () => row.setAttribute('data-visible', 'true'),
             index * GROUP_STEP_MS,

@@ -196,7 +196,11 @@ const criteria = [
             Each row keeps its vertical padding. The left border that lights on
             hover is an affordance rather than a division, and it needs a row
             tall enough to draw against. */}
-        <dl class="grid gap-y-2">
+        {/* Grouped like the timeline, so the criteria read down rather than
+            landing together. Seven rows arriving in one observer callback got
+            57ms apart against a 700ms fade, and one per callback got nothing
+            at all. See `src/lib/reveal.ts`. */}
+        <dl data-fade-group class="grid gap-y-2">
           {
             criteria.map((item, idx) => (
               <div

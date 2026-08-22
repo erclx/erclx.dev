@@ -23,9 +23,14 @@
     sections. */}
 <footer data-section="footer" class="page-inset pt-4 pb-16 md:pt-6 md:pb-20">
   <div class="mx-auto prose-column">
+    {/* Arrives with the prose it closes, now that a route's prose reveals. The
+        bar's copy of this destination deliberately takes no marker: it is
+        chrome a reader reaches for at any scroll position, and delaying it
+        would take navigation away to gain nothing. */}
     <a
       href="/"
       data-way-home
+      data-fade
       class="text-foreground text-label inline-flex min-h-11 items-center gap-2 underline-offset-4 transition-colors hover:underline md:min-h-0 md:py-2"
     >
       <svg

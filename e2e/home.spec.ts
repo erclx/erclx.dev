@@ -541,16 +541,23 @@ test('every revealed element can actually animate its opacity', async ({
   // the specificity. The six timeline rows shipped in exactly that state:
   // snapping from 0 to 1 while carrying every marker an inventory reads, which
   // is why nothing caught it until the page was watched frame by frame.
-  const clobbered = await page.evaluate(() =>
-    Array.from(document.querySelectorAll('[data-fade]'))
-      .filter(
-        (element) =>
-          !getComputedStyle(element).transitionProperty.includes('opacity'),
-      )
-      .map((element) => element.tagName.toLowerCase()),
-  )
+  const readClobbered = () =>
+    page.evaluate(() =>
+      Array.from(document.querySelectorAll('[data-fade]'))
+        .filter(
+          (element) =>
+            !getComputedStyle(element).transitionProperty.includes('opacity'),
+        )
+        .map((element) => element.tagName.toLowerCase()),
+    )
 
-  expect(clobbered).toEqual([])
+  expect(await readClobbered()).toEqual([])
+
+  // A route carries its own components and its own utilities, so the landing
+  // page passing says nothing about it. The way home there sits under a
+  // `transition-colors` utility, which is the same shape of declaration.
+  await page.goto('/jobtriage')
+  expect(await readClobbered()).toEqual([])
 })
 
 test('a grouped list staggers its rows rather than landing them together', async ({
