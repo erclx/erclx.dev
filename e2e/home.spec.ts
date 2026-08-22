@@ -585,6 +585,16 @@ test('the footer arrives on a tall viewport, not only a short one', async ({
     // The assertion is unchanged: every row still has to reach 0.9, and a row
     // that never reveals fails this on the timeout with the same list it
     // reported before.
+    //
+    // Counted first, because an empty list of hidden rows reads the same
+    // whether every row revealed or the footer carries none to reveal, and the
+    // second is the state this branch exists to close.
+    const rows = await page.evaluate(
+      () =>
+        document.querySelectorAll('[data-section="footer"] [data-fade]').length,
+    )
+    expect(rows, `footer rows at ${height}px`).toBeGreaterThan(0)
+
     await expect
       .poll(
         () =>
