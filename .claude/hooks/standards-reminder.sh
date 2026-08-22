@@ -34,7 +34,12 @@ matches() {
 # First match wins, so a command authoring one kind of text never draws a second
 # reminder. Each test is for the writing form alone: `gh pr edit` reaching only
 # for a title or a body, `git commit` that is not an amend keeping its message,
-# and the three branch forms that name one rather than list or delete one.
+# and the branch forms that name one rather than list or delete one.
+#
+# The branch rows read the flag apart from the subcommand, since `checkout` and
+# `switch` both take flags before it and `git checkout --track -b feat/x` would
+# otherwise be missed. `git branch` takes a rename as well as a creation, which
+# is the form the worktree guidance names as the sanctioned one.
 standard=""
 if matches '\bgh pr create\b'; then
   standard='pr'
@@ -42,9 +47,11 @@ elif matches '\bgh pr edit\b' && matches '[-][-](title|body)\b'; then
   standard='pr'
 elif matches '\bgit commit\b' && ! matches '[-][-]no-edit\b'; then
   standard='commit'
-elif matches '\bgit (checkout -b|switch -c)\b'; then
+elif matches '\bgit checkout\b' && matches ' -b\b'; then
   standard='branch'
-elif matches '\bgit branch\b' && matches '\bgit branch +[^-]'; then
+elif matches '\bgit switch\b' && matches ' -c\b'; then
+  standard='branch'
+elif matches '\bgit branch +(-m\b|--move\b|[^-])'; then
   standard='branch'
 fi
 

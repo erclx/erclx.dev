@@ -124,15 +124,16 @@ Page copy is canonical upstream at `career/assets/portfolio/` and is read across
 
 Every batch ends the same four ways. Run them in order once the operator has judged the batch, before the next one opens.
 
-1. Commit, per `## Holding the diff` above.
-2. Run `claude-docs`.
+1. Run `claude-docs`.
+2. Commit, per `## Holding the diff` above, carrying that record with the batch.
 3. Re-run `bun run screenshot` for the surfaces the batch touched.
 4. Hand over the address, per `.claude/rules/ui/445-screenshot.md` § Handoff.
 
 ### Rules
 
 - Run `claude-docs` per batch rather than per commit or once at ship. Per commit is too often, since outcomes close per batch and not per commit. At the end of the run is too late: the architecture entries then get written from a summary rather than from the measurements that produced them, which is how a record loses the failed attempts and the numbers that decided it. A run that skipped this reported its early batches reading as unrelated changes afterward.
-- Render the address as a scannable code beside the link, with `bun scripts/qr.ts <url>`. A link is what the operator opens on the machine they are already at, and the code is the only one of the two a phone can act on, so a handoff carrying the link alone cannot be judged on the device half the decisions are about.
+- Run it ahead of the commit rather than behind it. It reads the working tree and untracked files as well as the committed diff, so it needs no commit to see the batch, and a record written afterward sits outside the commit that closes the batch. The next boundary then sweeps it up, and since `stack-ship` cuts one branch per slice in commit order, batch N's record ships on batch N+1's branch.
+- Render the address as a scannable code beside the link wherever the project ships a renderer for one. A link is what the operator opens on the machine they are already at, and the code is the only one of the two a phone can act on, so a handoff carrying the link alone cannot be judged on the device half the decisions are about.
 - Close the batch even when nothing about it looked wrong. The steps run on the batch being finished rather than on a session noticing it needs them, which is what makes them a sequence rather than a judgment.
 
 ## Voice
