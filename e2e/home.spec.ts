@@ -456,6 +456,70 @@ test('the experience rail marks every entry', async ({ page }) => {
   )
 })
 
+// The band between a phone and the old breakpoint, where the rail used to be
+// switched off outright. 767 is the last width that took the flat stack and 620
+// sits inside the range the operator read it at.
+//
+// 390 is the one that is not in that band, and it covers the tier the change
+// actually adds. Below 600 the gutter spans two grid rows instead of one and
+// takes its type from the span rather than the head, so the dot meets a
+// different line. The other three all land in the middle tier, which shares its
+// shape with the widest one.
+const NARROW_TIMELINE_WIDTHS = [390, 620, 700, 767]
+
+for (const width of NARROW_TIMELINE_WIDTHS) {
+  test(`the timeline keeps its rail at ${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.goto('/')
+
+    // Painted rather than present. The markers stay in the DOM at every width,
+    // so the count assertion above passed throughout the band this covers,
+    // against a gutter the stylesheet had set to `display: none`.
+    const painted = await page.evaluate(() => {
+      const markers = [
+        ...document.querySelectorAll<HTMLElement>(
+          '#experience .experience-marker',
+        ),
+      ]
+      if (markers.length === 0) throw new Error('the timeline draws no markers')
+      return markers.filter((marker) => {
+        const box = marker.getBoundingClientRect()
+        return box.width > 0 && box.height > 0
+      }).length
+    })
+
+    expect(painted).toBe(EXPERIENCE_ENTRY_COUNT)
+  })
+
+  test(`a beat keeps its span out of the reading column at ${width}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.goto('/')
+
+    // The stack put the span at the head's own left edge and at the head's own
+    // size, which is what made it read as a line of prose rather than as a
+    // date. Either separation answers that, so the assertion takes the two
+    // together rather than fixing which one the layout uses.
+    const separated = await page.evaluate(() => {
+      const row = document.querySelector('#experience .experience-row')
+      const date = row?.querySelector<HTMLElement>('.experience-date')
+      const head = row?.querySelector<HTMLElement>('.experience-head')
+      if (!date || !head) throw new Error('a beat is missing its span or head')
+      return {
+        indented:
+          Math.round(head.getBoundingClientRect().left) >
+          Math.round(date.getBoundingClientRect().left),
+        smaller:
+          parseFloat(getComputedStyle(date).fontSize) <
+          parseFloat(getComputedStyle(head).fontSize),
+      }
+    })
+
+    expect(separated.indented || separated.smaller).toBe(true)
+  })
+}
+
 test('every beat states its span in its own column', async ({ page }) => {
   await page.goto('/')
 

@@ -391,6 +391,56 @@ An earlier draft of this entry claimed a line box centres about 2.5px lower than
 
 The heading says landing page because the case-study routes take the opposite treatment, and the two do not conflict. What made the origin graph read as off-centre was a figure sitting beside its text rather than under it, so the section's mass fell to one side of its own column. A case-study figure stays centred on the prose it interrupts and overhangs it symmetrically, measured at 0px of centre offset across five widths. The landing page also varies its measure per section and has other ways to break a column, where a case study holds one measure for thousands of pixels and has none. Read the rule as barring a figure that pulls a section off its axis rather than as barring width.
 
+### The timeline holds its rail at every width, in three tiers rather than two
+
+The experience timeline switched its gutter off below 768, which took the rail
+and all six dots with it. Every beat then read as four stacked lines, a span, a
+head, a detail and the chips, separated by 28px of padding and nothing else,
+with the span sitting at the head's own left edge and the head's own size so it
+read as a paragraph rather than as a date. The entry above records the rail as
+one of the two lines kept deliberately, because it is the only element saying
+the beats are a sequence and the active-row highlight attaches to its dots. Both
+of those were absent across the whole band.
+
+The band was never described. The surface carried one wireframe, headed
+`Desktop (≥768px)`, so nothing stated what a narrower reader was meant to see
+and the collapse was invisible to every review that read the document. Two
+variants now carry it.
+
+Width was not the constraint, which is what makes this a missing tier rather
+than a necessary fallback. The row measured 558px at 620 and 690px at 767,
+against the 455px reading column that 768 was content with. The middle tier
+therefore keeps three columns and narrows the two it can, and at 767 it hands
+the reader 498px of reading column, more than the tier above it.
+
+The span is what forced the type step. The widest of the six measures 177px at
+the body size against a 184px column, so its column cannot narrow at all while
+the span stays at body size. At the label step it needs 146px and the column
+holds at 9.5rem. The same step is what stops the span reading as prose on a
+phone, where it sits directly above the head rather than beside it.
+
+Below 600 the rail moves to the section's left edge and spans the beat, since
+there is no room for a column beside the reading one. That moves what the dot
+has to meet: the span leads a beat there where the head leads it everywhere
+else. The gutter takes its type from whichever line it is meeting rather than
+carrying an offset, which keeps the mark derived in the terms the entry above
+sets. Measured across eleven widths from 320 to 1280, the dot lands 0.0px from
+its line at every one, the span holds one line throughout, and nothing scrolls
+sideways.
+
+What the middle tier costs is reading width at its own bottom end. At 600 the
+head runs 348px against the 511px the flat stack gave it, so it wraps to two
+lines where it had one. That is the trade the tier is, and it was taken
+deliberately: a beat wrapping is legible and a list of six paragraphs claiming
+to be a timeline is not.
+
+A 43px step survives at 768, where the reading column goes 498px to 455px as the
+window grows, because the span column and the gutter widen while the container
+is already capped. It was a 235px step before this change. Closing it means
+moving the widest tier's own columns, which nothing has asked for.
+
+Measured at e9f68e5 on 2026-08-22.
+
 ### A case-study route scales its measure with the viewport, and its figures overhang it
 
 Prose runs 672px at 1280 and 832px at 1920, and the body scales with it from 17px to 22px. Both are clamps that hold today's values at 1280 and below and stop growing past 1920. Figures overhang the prose symmetrically, reaching 896px and 1216px at those widths, which takes the widest viewport from 35% content to 63%.
