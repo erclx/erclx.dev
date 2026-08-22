@@ -39,6 +39,6 @@ It answers the stretch between the hero and the footer, where the destinations t
 
 The dock holds to the bottom of every surface and never stands down. The footer is not a second home for its destinations: measured on both surfaces, the landing footer carries the resume alone and a route's carries the way home, against four destinations in the dock. Hiding it there would remove three of them and replace one, at the moment a reader has finished reading a page whose job is hiring.
 
-The two margins therefore no longer arrive and leave together, since the rail does stand down over the footer. That asymmetry is deliberate and follows from what each control is for. The rail states position and there is no section under the footer to state. The dock offers reach, and the end of the page is where reaching matters.
+The rail's own footer gate came out for an unrelated reason, so the two margins arrive and leave together again. See `.claude/ARCHITECTURE.md` § The rail carries looking-for through the footer rather than hiding near it.
 
 A claim that a gate rests on gets measured. Both this entry and `.claude/ARCHITECTURE.md` asserted the footer closed with the hero's three links, and the assertion did not survive a reading of either footer.

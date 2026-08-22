@@ -1,6 +1,6 @@
 ---
 title: Section nav
-description: Fixed left-margin rail that tracks the active section as the visitor scrolls. Hidden below xl and during the hero and footer beats
+description: Fixed left-margin rail that tracks the active section as the visitor scrolls. Hidden below xl and during the hero beat
 ---
 
 # Section nav

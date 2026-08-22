@@ -157,8 +157,6 @@ const {
     let scrollFrame: number | null = null
     let clickLockUntil = 0
 
-    const isInstant = nav.dataset.instant === 'true'
-
     const computeActive = () => {
       scrollFrame = null
       if (performance.now() < clickLockUntil) return
@@ -192,6 +190,7 @@ const {
     window.addEventListener('resize', scheduleCompute)
     computeActive()
 
+    const isInstant = nav.dataset.instant === 'true'
     if (!isInstant) {
       const hero = document.querySelector<HTMLElement>(
         '[data-section="header"]',
