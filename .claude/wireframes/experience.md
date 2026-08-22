@@ -81,6 +81,22 @@ The list opened on `Newest first.` in Fraunces italic at label size until 2026-0
 - The plate travels with the highlight through the walk, and several rows carry one at once on the way back because a plate leaves more slowly than the walk steps. Nothing is plated once the walk settles, including the row highlighted by default.
 - The framing line sits above the timeline rather than below it, and states the reading order rather than a thought about the path. `each entry made the next one possible` closed the list until 2026-08-19 and came out on the operator's call: an aphorism about a career makes a claim no record can check, which is the register that reads as machine-written. A line describing the list is the page's to write and a line speaking for the person is not.
 
+## Margin cast
+
+Above 1280 the section carries small figures in both margins, in the tan the dog and the airliner already fill at. They sit in clusters anchored to the reading column's own edge rather than to the viewport, two of them as pairs and three alone, and the pairs face each other.
+
+```plaintext
+   [rail]        [ figures ]   |  reading column  |   [ figures ]   [dock]
+                  lead + child |                  |   working
+                               |                  |   frustrated + flustered
+                  thinking     |                  |
+                               |                  |   asleep
+```
+
+At rest they hold still apart from a slow swell. Pointing at one runs the gesture its mood carries, and tapping one changes its face: the sleeping figure wakes surprised, the thinking one charges, the frustrated one gives up. A lit shape appears behind whichever is pointed at, so a reader can tell they answer.
+
+Below 1280 the section carries none. Both margins measure zero there, which is the same reason the rail stands down.
+
 ## Employer marks
 
 A row of three marks sits between the prose and the timeline under a muted `Where that happened` label. The section states two degrees and two jobs in text alone, so recognition arrives only after a line has been read, and the marks carry it in a glance.

@@ -1,0 +1,624 @@
+/**
+ * The cast's motion vocabulary, as one style sheet.
+ *
+ * Idle is slow and reactions are quick, and the keyframes are shaped for that
+ * rather than shared between them. Every reaction puts its movement at the
+ * start of its own cycle and rests afterwards, because the reverse shipped
+ * once: written for ambient looping, `blink` moved at 96% of 5600ms and the
+ * thought marks at 62% of 10000ms, so a reader who clicked a member waited five
+ * seconds for anything to happen and reported the click as dead.
+ *
+ * It sits in a plain file rather than inside the component because two things
+ * read it: the page, and `e2e/cast-inventory.ts`, which renders every behavior
+ * as a labelled grid. A copy in the harness would drift from the page within a
+ * pass, and the drift would be invisible because both would still animate.
+ *
+ * Every rate here answers to `behaviors.ts`, which declares what each one was
+ * measured at, and to `e2e/cast.spec.ts`, which fails any behavior spending
+ * more than a small share of its cycle inside the band `.claude/DESIGN.md`
+ * bars. A behavior is either well under that band or crosses it fast and then
+ * rests. Nothing idles inside it.
+ *
+ * A behavior reads its member's own phase rather than carrying a rate of its
+ * own. Rates set independently drift apart and the fastest becomes the thing a
+ * reader tracks, where one clock with per-member offsets pulls the cast
+ * out of step without adding a second tempo.
+ */
+
+/* Every part turns about its own box rather than the drawing's origin. Without
+   it a wobble swings the limb across the whole figure. This sits here rather
+   than with the layout because it is what makes a transform mean anything, and
+   the inventory harness needs it as much as the page does. */
+.cast-member .bn rect {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Arrival. Staggered off one clock so the group reads as a spawn rather than
+     as six timers that happen to be near each other. */
+  .cast-field[data-arrived] .cast-member {
+    animation: cast-spawn 620ms cubic-bezier(0.2, 1.3, 0.5, 1) backwards;
+    animation-delay: var(--cast-delay);
+  }
+  @keyframes cast-spawn {
+    from {
+      opacity: 0;
+      transform: translateY(-22px) scale(0.7);
+    }
+    70% {
+      opacity: 1;
+      transform: translateY(0) scale(1.06);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* --- at rest ---------------------------------------------------------- */
+
+  /* The only term that runs unattended. A scale rather than a translation, so
+     there is no travel for the barred band to apply to at all, and slow enough
+     that a reader registers the cast as alive without being able to point at
+     what moved.
+     
+     Everything expressive sits behind a pointer instead. A margin of characters
+     performing at a reader who has not looked at them is the ambient motion
+     problem restated rather than answered. */
+  .cast-field[data-arrived] .cast-member[data-idle~='breathe'] .bn {
+    animation: cast-breathe 7.2s ease-in-out infinite;
+    animation-delay: var(--cast-offset);
+  }
+  @keyframes cast-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.022);
+    }
+  }
+
+  /* --- on a pointer ------------------------------------------------------ */
+
+  /* A reaction runs once for a reader and forever for the inventory, which is
+     one variable rather than two code paths: `e2e/cast-inventory.ts` sets
+     `--cast-loops` and the page never does. A harness with its own rules is a
+     harness that stops describing what ships. */
+
+  /* --- whole body ------------------------------------------------------- */
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='nod']:hover
+    .bn,
+  .cast-field[data-arrived] .cast-member[data-react~='nod'][data-reacting] .bn {
+    animation: cast-nod 900ms ease-in-out var(--cast-loops, 1);
+  }
+  @keyframes cast-nod {
+    0%,
+    62%,
+    100% {
+      transform: translateY(0);
+    }
+    14% {
+      transform: translateY(3.2px);
+    }
+    30% {
+      transform: translateY(0);
+    }
+    44% {
+      transform: translateY(2.4px);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='lean']:hover
+    .bn,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='lean'][data-reacting]
+    .bn {
+    animation: cast-lean 1400ms cubic-bezier(0.3, 0, 0.2, 1)
+      var(--cast-loops, 1);
+  }
+  @keyframes cast-lean {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    12%,
+    74% {
+      transform: rotate(-6deg);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='hop']:hover
+    .bn,
+  .cast-field[data-arrived] .cast-member[data-react~='hop'][data-reacting] .bn {
+    animation: cast-hop 820ms ease-out var(--cast-loops, 1);
+  }
+  @keyframes cast-hop {
+    0%,
+    84%,
+    100% {
+      transform: translateY(0) scaleY(1);
+    }
+    8% {
+      transform: translateY(0) scaleY(0.84);
+    }
+    34% {
+      transform: translateY(-14px) scaleY(1.07);
+    }
+    62% {
+      transform: translateY(0) scaleY(0.88);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='shake']:hover
+    .bn,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='shake'][data-reacting]
+    .bn {
+    animation: cast-shake 700ms steps(1, end) var(--cast-loops, 1);
+  }
+  @keyframes cast-shake {
+    0%,
+    68%,
+    100% {
+      transform: translateX(0);
+    }
+    10% {
+      transform: translateX(-2.8px);
+    }
+    22% {
+      transform: translateX(2.8px);
+    }
+    34% {
+      transform: translateX(-2.4px);
+    }
+    46% {
+      transform: translateX(2.4px);
+    }
+    58% {
+      transform: translateX(-1.4px);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='slump']:hover
+    .bn,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='slump'][data-reacting]
+    .bn {
+    animation: cast-slump 1600ms cubic-bezier(0.3, 0, 0.2, 1)
+      var(--cast-loops, 1);
+  }
+  @keyframes cast-slump {
+    0%,
+    100% {
+      transform: rotate(0deg) translateY(0);
+    }
+    12%,
+    76% {
+      transform: rotate(-7deg) translateY(2px);
+    }
+  }
+
+  /* Rising off the ground and holding there. The one term that leaves the
+     floor, which is why it is the powered-up reading rather than a bigger hop. */
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='float']:hover
+    .bn,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='float'][data-reacting]
+    .bn {
+    animation: cast-float 1800ms cubic-bezier(0.25, 0.9, 0.3, 1)
+      var(--cast-loops, 1);
+  }
+  @keyframes cast-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    18% {
+      transform: translateY(-18px);
+    }
+    38% {
+      transform: translateY(-13px);
+    }
+    58% {
+      transform: translateY(-17px);
+    }
+    80% {
+      transform: translateY(-2px);
+    }
+  }
+
+  /* A charge and a release. The swell is slow enough to read as effort and the
+     snap fast enough to read as a discharge. */
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='power']:hover
+    .bn,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='power'][data-reacting]
+    .bn {
+    animation: cast-power 1100ms cubic-bezier(0.4, 0, 0.1, 1)
+      var(--cast-loops, 1);
+  }
+  @keyframes cast-power {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    44% {
+      transform: scale(0.9);
+    }
+    56% {
+      transform: scale(1.18);
+    }
+    72% {
+      transform: scale(0.98);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='sway']:hover
+    .bn,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='sway'][data-reacting]
+    .bn {
+    animation: cast-sway 1100ms ease-in-out var(--cast-loops, 1);
+  }
+  @keyframes cast-sway {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    26% {
+      transform: translateX(-7px);
+    }
+    68% {
+      transform: translateX(7px);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='turn']:hover
+    .bn,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='turn'][data-reacting]
+    .bn {
+    animation: cast-turn 1600ms steps(1, end) var(--cast-loops, 1);
+  }
+  @keyframes cast-turn {
+    0%,
+    84%,
+    100% {
+      transform: scaleX(1);
+    }
+    16%,
+    72% {
+      transform: scaleX(-1);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='pace']:hover
+    .bn,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='pace'][data-reacting]
+    .bn {
+    animation: cast-pace 2200ms ease-in-out var(--cast-loops, 1);
+  }
+  @keyframes cast-pace {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    26%,
+    62% {
+      transform: translateX(16px);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='bob']:hover
+    .bn,
+  .cast-field[data-arrived] .cast-member[data-react~='bob'][data-reacting] .bn {
+    animation: cast-bob 900ms ease-in-out var(--cast-loops, 1);
+  }
+  @keyframes cast-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    28% {
+      transform: translateY(-9px);
+    }
+    58% {
+      transform: translateY(0);
+    }
+    76% {
+      transform: translateY(-4px);
+    }
+  }
+
+  /* --- parts ------------------------------------------------------------ */
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='wobble']:hover
+    .bn-hat,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='wobble'][data-reacting]
+    .bn-hat {
+    animation: cast-wobble 900ms ease-in-out var(--cast-loops, 1);
+  }
+  @keyframes cast-wobble {
+    0%,
+    72%,
+    100% {
+      transform: rotate(0deg);
+    }
+    16% {
+      transform: rotate(11deg);
+    }
+    36% {
+      transform: rotate(-8deg);
+    }
+    54% {
+      transform: rotate(3deg);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='twitch']:hover
+    .bn-hat-l,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='twitch'][data-reacting]
+    .bn-hat-l {
+    animation: cast-twitch-l 760ms ease-in-out var(--cast-loops, 1);
+  }
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='twitch']:hover
+    .bn-hat-r,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='twitch'][data-reacting]
+    .bn-hat-r {
+    animation: cast-twitch-r 760ms ease-in-out var(--cast-loops, 1);
+    animation-delay: 90ms;
+  }
+  @keyframes cast-twitch-l {
+    0%,
+    66%,
+    100% {
+      transform: rotate(0deg);
+    }
+    20% {
+      transform: rotate(-15deg);
+    }
+    44% {
+      transform: rotate(5deg);
+    }
+  }
+  @keyframes cast-twitch-r {
+    0%,
+    66%,
+    100% {
+      transform: rotate(0deg);
+    }
+    20% {
+      transform: rotate(15deg);
+    }
+    44% {
+      transform: rotate(-5deg);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='wave']:hover
+    .bn-arm-r,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='wave'][data-reacting]
+    .bn-arm-r {
+    animation: cast-wave 1000ms ease-in-out var(--cast-loops, 1);
+  }
+  @keyframes cast-wave {
+    0%,
+    88%,
+    100% {
+      transform: rotate(0deg);
+    }
+    18% {
+      transform: rotate(-30deg);
+    }
+    38% {
+      transform: rotate(-8deg);
+    }
+    58% {
+      transform: rotate(-30deg);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='flail']:hover
+    .bn-arm-l,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='flail'][data-reacting]
+    .bn-arm-l {
+    animation: cast-flail-l 900ms cubic-bezier(0.3, 0, 0.2, 1)
+      var(--cast-loops, 1);
+  }
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='flail']:hover
+    .bn-arm-r,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='flail'][data-reacting]
+    .bn-arm-r {
+    animation: cast-flail-r 900ms cubic-bezier(0.3, 0, 0.2, 1)
+      var(--cast-loops, 1);
+  }
+  @keyframes cast-flail-l {
+    0%,
+    82%,
+    100% {
+      transform: rotate(0deg);
+    }
+    16%,
+    54% {
+      transform: rotate(36deg);
+    }
+    35% {
+      transform: rotate(14deg);
+    }
+  }
+  @keyframes cast-flail-r {
+    0%,
+    82%,
+    100% {
+      transform: rotate(0deg);
+    }
+    16%,
+    54% {
+      transform: rotate(-36deg);
+    }
+    35% {
+      transform: rotate(-14deg);
+    }
+  }
+
+  /* --- face ------------------------------------------------------------- */
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='blink']:hover
+    .bn-eye-l,
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='blink']:hover
+    .bn-eye-r,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='blink'][data-reacting]
+    .bn-eye-l,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='blink'][data-reacting]
+    .bn-eye-r {
+    animation: cast-blink 700ms steps(1, end) var(--cast-loops, 1);
+  }
+  @keyframes cast-blink {
+    0%,
+    26%,
+    100% {
+      transform: scaleY(1);
+    }
+    8%,
+    20% {
+      transform: scaleY(0.12);
+    }
+  }
+
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='glance']:hover
+    .bn-eye-l,
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='glance']:hover
+    .bn-eye-r,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='glance'][data-reacting]
+    .bn-eye-l,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='glance'][data-reacting]
+    .bn-eye-r {
+    animation: cast-glance 1500ms steps(1, end) var(--cast-loops, 1);
+  }
+  @keyframes cast-glance {
+    0%,
+    88%,
+    100% {
+      transform: translateX(0);
+    }
+    14%,
+    42% {
+      transform: translateX(2.4px);
+    }
+    52%,
+    80% {
+      transform: translateX(-2.4px);
+    }
+  }
+
+  /* --- marks ------------------------------------------------------------ */
+
+  /* The member's own mark, thrown up and settling. It used to be three dots
+     drawn by a separate element that knew nothing about the face, so five
+     members answered a pointer with the same gesture and the cast read as one
+     animation repeated. A mood that wants three dots asks for `ellipsis`. */
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='emote']:hover
+    .bn-mark,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='emote'][data-reacting]
+    .bn-mark {
+    animation: cast-emote 1100ms cubic-bezier(0.2, 1.4, 0.4, 1)
+      var(--cast-loops, 1);
+  }
+  @keyframes cast-emote {
+    0% {
+      transform: translateY(6px) scale(0.3);
+    }
+    30% {
+      transform: translateY(-5px) scale(1.25);
+    }
+    52% {
+      transform: translateY(0) scale(1);
+    }
+    74% {
+      transform: translateY(-2px) scale(1.08);
+    }
+    100% {
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+/* The aura. It exists because a member now answers a pointer, and a thing that
+   reacts without saying it can be reached is a discovery a reader makes by
+   accident. It takes the site's own response tokens rather than a value of its
+   own, so it belongs to the same system as every other control that lights.
+
+   It is not the control glow. Those sit on things a reader operates, and a
+   member is decoration that plays back: the shape is round, it carries no
+   border, and the cursor stays a default rather than a pointer, so nothing
+   promises a destination.
+
+   Slower out than in, which is the easing every lit surface on this page uses:
+   a reader crossing two members sees the one behind them still lit. */
+.cast-member {
+  position: relative;
+  isolation: isolate;
+}
+.cast-member::after {
+  content: '';
+  position: absolute;
+  inset: -14%;
+  z-index: -1;
+  border-radius: 50%;
+  opacity: 0;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--cast-body) 16%, transparent) 0%,
+    transparent 68%
+  );
+}
+.cast-field[data-pointer] .cast-member:hover::after,
+.cast-member[data-reacting]::after {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cast-member::after {
+    transition: opacity var(--glow-out, 520ms) ease-out;
+  }
+  .cast-field[data-pointer] .cast-member:hover::after,
+  .cast-member[data-reacting]::after {
+    transition: opacity var(--glow-in, 130ms) ease-out;
+  }
+}
