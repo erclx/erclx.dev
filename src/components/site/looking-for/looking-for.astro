@@ -356,10 +356,7 @@ const criteria = [
     transform: translateY(27%);
   }
   .looking-stage[data-peek-visible='true'][data-peek-ducked='true']
-    /* Measured from the window's own bottom edge, which sits on the rule. Fully
-     down is fully clipped, and the visible state shows the top of him with the
-     rest cut by the window rather than covered by a plate. */
-  .looking-peek {
+    .looking-peek {
     transform: translateY(100%);
     transition: transform 350ms ease-in;
   }
