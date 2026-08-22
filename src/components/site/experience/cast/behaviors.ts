@@ -358,7 +358,10 @@ export const TEMPERAMENTS: Record<string, Temperament> = {
   neutral: { idle: 'breathe', react: ['nod', 'blink'] },
   pleased: { idle: 'breathe', react: ['hop', 'blink'] },
   humming: { idle: 'breathe', react: ['hop', 'emote'] },
-  charged: { idle: 'breathe', react: ['power', 'float', 'emote'] },
+  // A scale and a rise, which is why tapping the member carrying this read as
+  // the figure simply getting bigger. Neither term is a gesture. A jump with
+  // the arms thrown up and the mark with it is an event a reader can name.
+  charged: { idle: 'breathe', react: ['hop', 'flail', 'emote'] },
   working: { idle: 'breathe', react: ['nod', 'emote'] },
   thinking: { idle: 'breathe', react: ['lean', 'emote'] },
   frustrated: { idle: 'breathe', react: ['shake', 'flail'] },
@@ -367,11 +370,27 @@ export const TEMPERAMENTS: Record<string, Temperament> = {
   done: { idle: 'breathe', react: ['slump', 'blink'] },
   surprised: { idle: 'breathe', react: ['hop', 'blink'] },
   asleep: { idle: 'breathe', react: ['blink', 'emote'] },
-  // No `emote` here, and the omission is load-bearing. It moves the mood's own
-  // mark and `smug` carries none, so binding it would fire a reaction that
-  // animates nothing, which no rate check can see because there is no rate to
-  // read. A lean is what a confident figure does instead.
-  smug: { idle: 'breathe', react: ['lean', 'blink'] },
+  // A lean and a blink were the two weakest terms in the vocabulary, and the
+  // lead had both while every other member jumped or shook. He read as a
+  // villain because he stood in flames and did nothing. No `emote` even now:
+  // it moves the mood's own mark and `smug` carries none, so binding it would
+  // fire a reaction that animates nothing.
+  smug: { idle: 'breathe', react: ['power', 'flail'] },
+  driven: { idle: 'breathe', react: ['power', 'flail', 'emote'] },
+  roused: { idle: 'breathe', react: ['power', 'flail', 'emote'] },
+  stoked: { idle: 'breathe', react: ['power', 'flail', 'emote'] },
+  composed: { idle: 'breathe', react: ['nod', 'emote'] },
+  // No `emote` on `assured`: it moves the mood's own mark and this one carries
+  // none, so binding it would fire a reaction that animates nothing.
+  assured: { idle: 'breathe', react: ['power', 'flail'] },
+  bold: { idle: 'breathe', react: ['power', 'flail', 'emote'] },
+  sunny: { idle: 'breathe', react: ['power', 'flail', 'emote'] },
+  // No `float` beside `power`. A scale and a rise together read as the figure
+  // simply getting bigger, which is the defect the worker's tap already had.
+  // A flail throws the arms out, which is a gesture rather than a size change.
+  surging: { idle: 'breathe', react: ['power', 'flail', 'emote'] },
+  rapt: { idle: 'breathe', react: ['hop', 'emote'] },
+  revved: { idle: 'breathe', react: ['hop', 'flail', 'emote'] },
   cocky: { idle: 'breathe', react: ['hop', 'emote'] },
   fired: { idle: 'breathe', react: ['power', 'emote'] },
   beaming: { idle: 'breathe', react: ['hop', 'flail', 'emote'] },

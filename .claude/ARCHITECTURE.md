@@ -432,9 +432,38 @@ closer than anything the cast had held. And a mood added to `MOODS` without a
 `emote` to a mood carrying no mark is silent and fires a reaction that animates
 nothing.
 
+A later pass on the same section found the reason three rounds of expression
+work had moved nothing, and it was not the expression. The lead paints 3396px²
+against the horned member's 4012px², so he is the second heaviest figure in a
+margin he is meant to lead. A face is a few hundred pixels inside a silhouette,
+and no face wins an argument the silhouette is losing. **Measure the thing that
+dominates before redrawing the thing that decorates.**
+
+Nothing available closes it on its own. His power is already the heaviest in the
+vocabulary, so every alternative makes him lighter. The best of three new hats
+buys 223px² against a 490px² gap. Growing him fails the margin guard, since his
+cluster holds 2px of headroom at 1280 before it meets the rail. What is left is
+trimming the figure that outweighs him, which is a decision about another
+member rather than about him, and it stands open.
+
+Two rules came out of the same pass and both are about transitions rather than
+states. **A tap escalates a face rather than replacing it**, which is what the
+sleeping member always did by waking surprised rather than waking as somebody
+else. And **which way a pair runs carries the meaning**: wide eyes settling to
+points reads as gathering, and points widening reads as being startled, so the
+same two faces say opposite things depending on which is at rest.
+
+The third is about the layer rather than the drawing. A power is a sibling drawn
+behind the member and it does not move when the member does, so a cell stopping
+at the silhouette tears open the moment a behavior displaces the body. It passes
+under instead, far enough to cover the furthest any behavior travels, **and
+inward only**: a bar crossing the whole body comes out of the far side and the
+member reads as caged, which is worse than the gap it closed. Both halves were
+needed and the first shipped alone.
+
 Measured at 1280, 1440, and 1920 across the seven members, where no two share an
 eye or a mouth, every power and gear cell fits its box and clears the 3px stroke
-floor, no power layer crosses the reading column, and the cast's fifteen guards
+floor, no power layer crosses the reading column, and the cast's eighteen guards
 pass.
 
 ### A landing-page figure sits inside the text column, and marks derive from type metrics

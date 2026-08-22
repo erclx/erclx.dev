@@ -45,6 +45,7 @@ import './motion.css'
             class:list={['cast-member', member.seated && 'is-idle']}
             data-cast-member
             data-member={memberIndex(cluster, member)}
+            data-tap-power={member.tapPower ? '' : undefined}
             data-idle={TEMPERAMENTS[member.mood].idle ?? undefined}
             data-react={TEMPERAMENTS[member.mood].react.join(' ')}
             data-react-tap={member.tapMood ? TEMPERAMENTS[member.tapMood].react.join(' ') : undefined}
@@ -102,10 +103,20 @@ import './motion.css'
             class="cast-member is-pet"
             data-cast-pet
             data-idle="breathe"
+            data-react="hop"
             style={`--cast-dx: ${pet.dx}px; --cast-dy: ${pet.dy}px; --cast-size: ${pet.size}px; --cast-delay: ${cluster.delay}ms; --cast-offset: ${-cluster.phase}ms`}
           >
             <span class="cast-face">
               <Fragment set:html={renderPet(pet.kind, pet.mood, pet.facing)} />
+            </span>
+            <span class="cast-face is-tapped">
+              <Fragment
+                set:html={renderPet(
+                  pet.kind,
+                  pet.mood === 'alert' ? 'resting' : 'alert',
+                  pet.facing,
+                )}
+              />
             </span>
           </div>
         ))}
@@ -180,12 +191,11 @@ import './motion.css'
      a scroll or a selection. The cursor stays a default: a member plays back
      rather than leading anywhere, and a pointer cursor would promise a
      destination that does not exist. */
-  /* A pet answers no pointer. It is scenery rather than a character a reader
-     plays back, and giving it a reaction would make it a member with fewer
-     legs. It keeps the shared class so the resting term reaches it. */
-  .cast-member.is-pet {
-    pointer-events: none;
-  }
+  /* A pet answers a pointer, with one gesture and the two faces it already
+     carries. Standing still beside six members that move it read as scenery,
+     which is worse than the risk it was held back for. What keeps it a pet
+     rather than a member with fewer legs is the size of what it does: no mood
+     system, no power, and a single term. */
   .cast-member {
     pointer-events: auto;
     position: absolute;
@@ -212,10 +222,14 @@ import './motion.css'
   .cast-power-layer.is-tapped {
     display: none;
   }
-  .cast-member[data-woken] .cast-power-layer:not(.is-tapped) {
+  /* Scoped to a member that actually carries a tap power. Unscoped, the first
+     rule hid the resting layer on every member a reader touched, and only one
+     of the seven has a replacement, so tapping any of the other six made its
+     power disappear and nothing took its place. */
+  .cast-member[data-woken][data-tap-power] .cast-power-layer:not(.is-tapped) {
     display: none;
   }
-  .cast-member[data-woken] .cast-power-layer.is-tapped {
+  .cast-member[data-woken][data-tap-power] .cast-power-layer.is-tapped {
     display: block;
   }
   .cast-power-layer {
@@ -291,7 +305,9 @@ import './motion.css'
         )
       })
 
-    for (const member of field.querySelectorAll<HTMLElement>('[data-cast-member]')) {
+    for (const member of field.querySelectorAll<HTMLElement>(
+      '[data-cast-member], [data-cast-pet]',
+    )) {
       member.addEventListener('click', () => {
         if (member.dataset.reacting !== undefined) return
         const tapped = member.dataset.reactTap

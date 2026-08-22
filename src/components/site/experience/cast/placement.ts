@@ -127,7 +127,7 @@ export const clusters: readonly Cluster[] = [
       {
         hat: 'antenna',
         seated: false,
-        mood: 'smug',
+        mood: 'assured',
         size: 72,
         power: 'blaze',
         tapPower: 'bolts',
@@ -135,7 +135,7 @@ export const clusters: readonly Cluster[] = [
         dy: 0,
         facing: 1,
         phase: 0,
-        tapMood: 'unleashed',
+        tapMood: 'surging',
       },
       {
         hat: 'ears',
@@ -171,7 +171,7 @@ export const clusters: readonly Cluster[] = [
         dy: 0,
         facing: -1,
         phase: 0,
-        tapMood: 'charged',
+        tapMood: 'revved',
       },
     ],
     pets: [
@@ -223,14 +223,14 @@ export const clusters: readonly Cluster[] = [
       {
         hat: 'crown',
         seated: false,
-        mood: 'starstruck',
+        mood: 'rapt',
         size: 68,
         power: 'ring',
         dx: 0,
         dy: 0,
         facing: 1,
         phase: 0,
-        tapMood: 'humming',
+        tapMood: 'composed',
       },
     ],
   },

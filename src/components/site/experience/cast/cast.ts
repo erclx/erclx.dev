@@ -30,6 +30,9 @@ const FOOT_HEIGHT = 1.7
 export type HatId =
   | 'none'
   | 'antenna'
+  | 'plume'
+  | 'halo'
+  | 'mane'
   | 'ears'
   | 'earsTall'
   | 'horns'
@@ -140,6 +143,55 @@ function buildHat(
       return [
         solid({ x: center - 0.3, y: top - 1.5, w: 0.6, h: 1.5, part: 'hat' }),
         solid({ x: center - 0.95, y: top - 2.4, w: 1.9, h: 1, part: 'hat' }),
+      ]
+    // Three lead hats, and none of them joins the worker pool. The antenna
+    // marks a role and carries almost no mass, which is measurable: the lead
+    // ranked second by painted area behind a horned member a sixth larger than
+    // him, and a role marker that weighs nothing cannot make a figure read as
+    // the lead. Each of these keeps the antenna's stalk so the role still reads,
+    // and adds the weight it never had.
+    case 'plume':
+      return [
+        solid({ x: center - 0.35, y: top - 1.9, w: 0.7, h: 1.9, part: 'hat' }),
+        solid({ x: center - 1.0, y: top - 3.0, w: 2.0, h: 1.1, part: 'hat' }),
+        solid({ x: left + 0.4, y: top - 1.4, w: 1.0, h: 1.5, part: 'hat-l' }),
+        solid({ x: left + 1.6, y: top - 2.1, w: 1.0, h: 2.2, part: 'hat-l' }),
+        solid({ x: left + 4.4, y: top - 2.1, w: 1.0, h: 2.2, part: 'hat-r' }),
+        solid({ x: left + 5.6, y: top - 1.4, w: 1.0, h: 1.5, part: 'hat-r' }),
+      ]
+    // A bar held clear of the head on two posts. The only hat in the family
+    // that does not touch the body, which is what makes it read as worn rather
+    // than as grown.
+    case 'halo':
+      return [
+        solid({
+          x: left + 0.2,
+          y: top - 3.1,
+          w: width - 0.4,
+          h: 1.0,
+          part: 'hat',
+        }),
+        solid({ x: center - 1.9, y: top - 2.1, w: 0.8, h: 1.2, part: 'hat-l' }),
+        solid({ x: center + 1.1, y: top - 2.1, w: 0.8, h: 1.2, part: 'hat-r' }),
+        solid({ x: center - 0.35, y: top - 1.6, w: 0.7, h: 1.6, part: 'hat' }),
+        solid({ x: center - 0.9, y: top - 2.3, w: 1.8, h: 0.9, part: 'hat' }),
+      ]
+    // A graduated crest, tallest at the centre. Heaviest of the three, and the
+    // one that changes the silhouette rather than sitting on top of it.
+    case 'mane':
+      return [
+        solid({
+          x: left + 0.3,
+          y: top - 1.0,
+          w: width - 0.6,
+          h: 1.1,
+          part: 'hat',
+        }),
+        solid({ x: left + 0.5, y: top - 2.2, w: 0.9, h: 1.4, part: 'hat-l' }),
+        solid({ x: left + 1.8, y: top - 3.0, w: 0.9, h: 2.2, part: 'hat-l' }),
+        solid({ x: center - 0.45, y: top - 3.6, w: 0.9, h: 2.8, part: 'hat' }),
+        solid({ x: left + 4.3, y: top - 3.0, w: 0.9, h: 2.2, part: 'hat-r' }),
+        solid({ x: left + 5.6, y: top - 2.2, w: 0.9, h: 1.4, part: 'hat-r' }),
       ]
     case 'ears':
       return [
@@ -402,7 +454,10 @@ export function renderPower(power: PowerId, facing: 1 | -1 = 1): string {
   )
 }
 
-/** Every hat a worker draws from. The lead's antenna is not in it, since that hat marks a role. */
+/**
+ * Every hat a worker draws from. The lead's own hats are not in it, since those
+ * mark a role rather than flavour.
+ */
 export const HAT_POOL: readonly HatId[] = [
   'none',
   'ears',

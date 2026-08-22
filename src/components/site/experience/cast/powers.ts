@@ -27,6 +27,22 @@
  * Everything here is stepped rather than tapered, because a diagonal is the one
  * thing this grammar has none of, and adding one would break the cast rather
  * than extend it.
+ *
+ * **A cell that meets the body passes under it rather than stopping at its
+ * edge.** The layer is a sibling drawn behind the member and it does not move
+ * when the member does, so a trailing bar ending at the silhouette tore a gap
+ * open the moment a reader made the figure hop. Running it 3 cells into the
+ * body covers the furthest any behavior travels, which is 13px against the
+ * 54px smallest member, and the body hides the overlap because it is opaque and
+ * painted over the top.
+ *
+ * The overlap runs inward only. A bar long enough to cross the whole body
+ * comes out of the far side, and a member with lines emerging both ways reads
+ * as caged rather than as moving, which is worse than the gap it was closing.
+ * A trailing set therefore trails one way and stops short of the centre.
+ *
+ * That is why only the ones that touch carry the overlap. `bolts` and `sparks`
+ * never reach the silhouette and need none.
  */
 
 export type PowerId =
@@ -147,17 +163,30 @@ export function powerCells(id: PowerId): readonly PowerCell[] {
         },
       ]
 
-    // The same figure driven much further: taller tongues, a wider spread, and
-    // a base under the feet so the member reads as standing inside it.
+    // Fire rising from behind him rather than fire he is standing in.
+    //
+    // The first draft flanked him with tongues at exactly arm height and laid a
+    // bar across the ground under his feet. Both were wrong in the same way:
+    // they put the effect level with the figure instead of behind it, so the
+    // arms disappeared into the flames and the bar read as a plinth he had been
+    // stood on. What says a member is burning is a silhouette rising past his
+    // shoulders, not one meeting him at the waist.
+    //
+    // So the crown carries it, tallest at the centre and reaching a full cell
+    // above the box. The flanks start at shoulder height and clear the arms by
+    // 0.2 cells on each side, which is 0.9px on the smallest member and the
+    // reason they are placed against the arm's own edge rather than by eye.
     case 'blaze':
       return [
-        ...flames(1.9, [8.4, 6.2, 4.2, 2.4]),
-        { x: 3.0, y: -1.2, w: 1.0, h: 4.7, round: 3, part: 'aura-t' },
-        { x: 5.0, y: -1.9, w: 1.0, h: 5.4, round: 3, part: 'aura-t' },
-        { x: 7.0, y: -1.5, w: 1.0, h: 5.0, round: 3, part: 'aura-t' },
-        { x: 8.8, y: 0.2, w: 0.9, h: 3.3, round: 3, part: 'aura-t' },
-        { x: 1.4, y: 0.9, w: 0.9, h: 2.6, round: 3, part: 'aura-t' },
-        { x: 0.9, y: GROUND - 0.4, w: 10.2, h: 0.9, round: 3, part: 'aura-b' },
+        { x: 2.6, y: 0.6, w: 1.0, h: 3.6, round: 3, part: 'aura-t' },
+        { x: 4.0, y: -1.2, w: 1.1, h: 5.2, round: 3, part: 'aura-t' },
+        { x: 5.5, y: -2.0, w: 1.2, h: 6.0, round: 3, part: 'aura-t' },
+        { x: 7.0, y: -1.4, w: 1.1, h: 5.4, round: 3, part: 'aura-t' },
+        { x: 8.4, y: 0.4, w: 1.0, h: 3.8, round: 3, part: 'aura-t' },
+        { x: 0.3, y: 2.2, w: 0.9, h: 5.0, round: 3, part: 'aura-l' },
+        { x: -0.9, y: 4.0, w: 0.85, h: 4.4, round: 3, part: 'aura-l' },
+        { x: 10.8, y: 2.2, w: 0.9, h: 5.0, round: 3, part: 'aura-r' },
+        { x: 12.2, y: 4.0, w: 0.85, h: 4.4, round: 3, part: 'aura-r' },
       ]
 
     // Arcs leaving the body, stepped outward so each reads as a discharge
@@ -208,12 +237,10 @@ export function powerCells(id: PowerId): readonly PowerCell[] {
     // than that it is standing there.
     case 'speed':
       return [
-        { x: -1.9, y: 4.6, w: 4.5, h: 0.8, round: 3, part: 'aura-l' },
-        { x: -1.4, y: 6.1, w: 3.9, h: 0.8, round: 3, part: 'aura-l' },
-        { x: -2.0, y: 7.6, w: 4.1, h: 0.8, round: 3, part: 'aura-l' },
-        { x: -1.4, y: 3.2, w: 3.4, h: 0.8, round: 3, part: 'aura-l' },
-        { x: 9.6, y: 5.3, w: 2.6, h: 0.8, round: 3, part: 'aura-r' },
-        { x: 9.9, y: 7.1, w: 3.1, h: 0.8, round: 3, part: 'aura-r' },
+        { x: -2.0, y: 3.9, w: 7.5, h: 0.8, round: 3, part: 'aura-l' },
+        { x: -1.2, y: 5.2, w: 6.7, h: 0.8, round: 3, part: 'aura-l' },
+        { x: -2.0, y: 6.5, w: 7.5, h: 0.8, round: 3, part: 'aura-l' },
+        { x: -1.4, y: 7.8, w: 6.9, h: 0.8, round: 3, part: 'aura-l' },
       ]
 
     // A second figure standing behind the member rather than an effect around
@@ -296,9 +323,9 @@ export function powerCells(id: PowerId): readonly PowerCell[] {
     // stroke with a direction rather than as a bar.
     case 'gust':
       return [
-        { x: 0.6, y: 4.8, w: 2.2, h: 0.75, round: 3, part: 'aura-l' },
+        { x: 0.6, y: 4.8, w: 4.9, h: 0.75, round: 3, part: 'aura-l' },
         { x: 0.6, y: 4.8, w: 0.75, h: 1.5, round: 3, part: 'aura-l' },
-        { x: 9.4, y: 7.4, w: 2.2, h: 0.75, round: 3, part: 'aura-r' },
+        { x: 6.5, y: 7.4, w: 5.1, h: 0.75, round: 3, part: 'aura-r' },
         { x: 10.85, y: 6.2, w: 0.75, h: 1.95, round: 3, part: 'aura-r' },
       ]
   }
