@@ -1,0 +1,361 @@
+---
+/**
+ * The agent cast, scattered down both margins of the experience section.
+ *
+ * Desktop only. Measured at 390 and 768 the clear margin is 0px on both sides,
+ * and the alternative was placing characters inside a reading column already
+ * running 2067px at 390. The breakpoint matches the section rail's, which is
+ * the other control that stands down for the same reason.
+ *
+ * Placement is by cluster rather than by member. A cluster anchors to the
+ * reading column's own edge and every member inside it sits at an offset from
+ * that origin, so a pair keeps its relationship to itself while the page
+ * resizes. Six members holding six page positions could not express a pair at
+ * all: two of them standing near each other would have been a coincidence of
+ * two literals rather than a group, and nothing would have kept it true.
+ *
+ * A cluster fits inside the clear margin by construction. That margin is 141px
+ * on the left at 1280 and 188px on the right, after the rail and the dock take
+ * their share, and `e2e/cast.spec.ts` fails a cluster that outgrows it.
+ */
+import { renderMember, type HatId } from './cast.ts'
+import { TEMPERAMENTS } from './behaviors.ts'
+import type { MoodId } from './faces.ts'
+import './motion.css'
+
+interface ClusterMember {
+  readonly hat: HatId
+  readonly seated: boolean
+  readonly mood: MoodId
+  readonly size: number
+  /** Offset from the cluster origin, outward and downward. */
+  readonly dx: number
+  readonly dy: number
+  readonly facing: 1 | -1
+  /** Shifts this member's whole clock, which is what makes a pair alternate. */
+  readonly phase: number
+  /**
+   * The mood a tap changes it to, held for as long as the reaction runs.
+   *
+   * A reaction alone answers a pointer with movement and leaves the face
+   * saying what it said before, so tapping the sleeping one shook a sleeping
+   * member. Changing the mood is what makes a tap an event rather than a
+   * gesture, and it is the only thing on this surface a reader can cause a
+   * state change with.
+   */
+  readonly tapMood?: MoodId
+}
+
+interface Cluster {
+  readonly side: 'left' | 'right'
+  /** Down the section, as a percentage of its height. */
+  readonly top: number
+  /** Outward from the column edge. */
+  readonly gap: number
+  readonly delay: number
+  /**
+   * Shifts every clock inside this cluster. Member phase alone pulls a pair out of
+   * step with itself and leaves the pairs in step with each other, which is the
+   * state the operator read as two groups moving as one.
+   */
+  readonly phase: number
+  readonly members: readonly ClusterMember[]
+}
+
+// Three groups and two singles. A cast that is all pairs reads as staged and a
+// cast that is all singles is what the operator asked to move away from, so the
+// section carries both and a reader meets a pair twice rather than five times.
+//
+// No member names a behavior. What each one does follows from its mood, per
+// `TEMPERAMENTS`, because a placement free to pick its own motion produces a
+// happy face tilting like a disappointed one.
+//
+// Every mark in the cast appears once. A mood is a pairing of eyes, mouth, and
+// mark, and reusing one across members makes two of them answer a pointer with
+// the same gesture however different their faces are, which is what the shared
+// three dots did to five of them. `e2e/cast.spec.ts` fails a mark used more
+// than twice.
+//
+// The pairs read as beats rather than as states. Determined becomes unleashed,
+// working becomes triumphant, thinking becomes charged, frustrated becomes
+// exasperated, flustered becomes dizzy, and the sleeping one wakes surprised.
+const clusters: readonly Cluster[] = [
+  {
+    side: 'left', top: 15, gap: 8, delay: 0, phase: 0,
+    members: [
+      {
+        hat: 'antenna', seated: false, mood: 'determined', size: 72,
+        dx: 0, dy: 0, facing: 1, phase: 0, tapMood: 'unleashed',
+      },
+      {
+        hat: 'ears', seated: false, mood: 'playful', size: 54,
+        dx: 56, dy: 10, facing: -1, phase: 1500, tapMood: 'starstruck',
+      },
+    ],
+  },
+  {
+    side: 'right', top: 29, gap: 22, delay: 220, phase: 900,
+    members: [
+      {
+        hat: 'band', seated: false, mood: 'working', size: 64,
+        dx: 0, dy: 0, facing: -1, phase: 0, tapMood: 'triumphant',
+      },
+    ],
+  },
+  {
+    side: 'right', top: 50, gap: 12, delay: 480, phase: 2100,
+    members: [
+      // `horns` loses its step below 96px, so the one member carrying it is the
+      // one large member in the cast.
+      {
+        hat: 'horns', seated: false, mood: 'frustrated', size: 88,
+        dx: 0, dy: 0, facing: 1, phase: 0, tapMood: 'exasperated',
+      },
+      {
+        hat: 'none', seated: false, mood: 'flustered', size: 56,
+        dx: 76, dy: 36, facing: -1, phase: 1500, tapMood: 'dizzy',
+      },
+    ],
+  },
+  {
+    side: 'left', top: 66, gap: 30, delay: 700, phase: 3400,
+    members: [
+      {
+        hat: 'crown', seated: false, mood: 'thinking', size: 68,
+        dx: 0, dy: 0, facing: 1, phase: 0, tapMood: 'charged',
+      },
+    ],
+  },
+  {
+    // The idle one does the least, which is what the role is for.
+    side: 'right', top: 79, gap: 34, delay: 880, phase: 4700,
+    members: [
+      {
+        hat: 'ears', seated: true, mood: 'asleep', size: 64,
+        dx: 0, dy: 0, facing: -1, phase: 0, tapMood: 'surprised',
+      },
+    ],
+  },
+]
+
+/** A cluster is as wide as its furthest member reaches. */
+const clusterWidth = (cluster: Cluster) =>
+  Math.max(...cluster.members.map((member) => member.dx + member.size))
+---
+
+<div class="cast-field" data-cast-field aria-hidden="true">
+  {
+    clusters.map((cluster) => (
+      <div
+        class:list={['cast-cluster', `is-${cluster.side}`]}
+        data-cast-cluster
+        style={`--cluster-top: ${cluster.top}%; --cluster-gap: ${cluster.gap}px; --cluster-width: ${clusterWidth(cluster)}px`}
+      >
+        {cluster.members.map((member) => (
+          <div
+            class:list={['cast-member', member.seated && 'is-idle']}
+            data-cast-member
+            data-idle={TEMPERAMENTS[member.mood].idle ?? undefined}
+            data-react={TEMPERAMENTS[member.mood].react.join(' ')}
+            data-react-tap={member.tapMood ? TEMPERAMENTS[member.tapMood].react.join(' ') : undefined}
+            style={`--cast-dx: ${member.dx}px; --cast-dy: ${member.dy}px; --cast-size: ${member.size}px; --cast-delay: ${cluster.delay}ms; --cast-offset: ${-(cluster.phase + member.phase)}ms`}
+          >
+            {/* Both faces are rendered and one is hidden. Swapping the drawing
+                at tap time would mean re-running the generator in the browser,
+                which is a second copy of it shipped to every reader for a state
+                two members ever reach. */}
+            <span class="cast-face">
+              <Fragment
+                set:html={renderMember({
+                  hat: member.hat,
+                  arms: true,
+                  seated: member.seated,
+                  mood: member.mood,
+                  facing: member.facing,
+                })}
+              />
+            </span>
+            {member.tapMood && (
+              <span class="cast-face is-tapped">
+                <Fragment
+                  set:html={renderMember({
+                    hat: member.hat,
+                    arms: true,
+                    seated: member.seated,
+                    mood: member.tapMood,
+                    facing: member.facing,
+                  })}
+                />
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  /* The palette the page already has for figures. The dog fills at `#d4a574`
+     and so does the airliner, neither inverts with the theme, and the design
+     standard derives the palette from the artwork the site ships rather than
+     from a value picked here. The cast is the third figure and had been the
+     only one not in the family.
+     
+     It measures 2.03:1 against the light page and 7.96:1 against the dark one.
+     The 3:1 a graphic answers to governs a meaningful one, and all three
+     figures here are decoration hidden from assistive technology, so the
+     shipped pair is the precedent rather than the exception. The eye takes the
+     dog's own ink at 7.35:1 inside the body.
+     
+     Two earlier answers are retired. A brand fill was rejected for matching the
+     employer marks at 1.10:1 in dark, and an inverting ink replaced it on the
+     reading that no fixed color could clear 4.5:1 in both themes. That reading
+     was sound and the floor was wrong: 4.5:1 is a text threshold and nothing
+     here is text. */
+  .cast-field {
+    --cast-body: #d4a574;
+    --cast-eye: #2a1d14;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: none;
+  }
+  /* The rail's own breakpoint. Below it neither margin exists. */
+  @media (min-width: 1280px) {
+    .cast-field {
+      display: block;
+    }
+  }
+
+  /* Half the reading column, which is what a cluster anchors outward from. */
+  .cast-cluster {
+    --cast-column: 24rem;
+    position: absolute;
+    top: var(--cluster-top);
+    width: var(--cluster-width);
+  }
+  .cast-cluster.is-left {
+    right: calc(50% + var(--cast-column) + var(--cluster-gap));
+  }
+  .cast-cluster.is-right {
+    left: calc(50% + var(--cast-column) + var(--cluster-gap));
+  }
+
+  /* Members sit at offsets from their cluster rather than from the page, which
+     is what keeps a pair a pair at every width. */
+  /* The field stays transparent to a pointer and the members do not, so a
+     reader can reach a character without the empty margin around it swallowing
+     a scroll or a selection. The cursor stays a default: a member plays back
+     rather than leading anywhere, and a pointer cursor would promise a
+     destination that does not exist. */
+  .cast-member {
+    pointer-events: auto;
+    position: absolute;
+    left: var(--cast-dx);
+    top: var(--cast-dy);
+    width: var(--cast-size);
+    height: var(--cast-size);
+    opacity: 0;
+  }
+  .cast-face {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .cast-face.is-tapped {
+    display: none;
+  }
+  .cast-member[data-woken] .cast-face:not(.is-tapped) {
+    display: none;
+  }
+  .cast-member[data-woken] .cast-face.is-tapped {
+    display: block;
+  }
+  .cast-member :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .cast-field[data-arrived] .cast-member {
+    opacity: 1;
+  }
+
+  /* Motion lives in `motion.css`, which the inventory harness reads as well. */
+</style>
+
+<script>
+  import { hasHoverPointer } from '@/lib/pointer'
+
+  // Arrival is gated on the section reaching the reader rather than on load, so
+  // the spawn is something they cause by scrolling to it.
+  const field = document.querySelector<HTMLElement>('[data-cast-field]')
+  if (field) {
+    // Hover reactions are gated on a device that reports a pointer, the same
+    // test every other response on this site answers to. A touch pointer is
+    // destroyed on lift, so a finger crossing a member on its way down the page
+    // would leave it mid-reaction with nothing to end it.
+    if (hasHoverPointer()) field.dataset.pointer = ''
+
+    // A tap reaches what a hover cannot. It runs the same reaction on a class
+    // the stylesheet already answers to, removed when the animation ends rather
+    // than after a duration guessed here.
+    for (const member of field.querySelectorAll<HTMLElement>('[data-cast-member]')) {
+      member.addEventListener('click', () => {
+        if (member.dataset.reacting !== undefined) return
+        const tapped = member.dataset.reactTap
+        if (tapped) {
+          member.dataset.restReact = member.dataset.react ?? ''
+          member.dataset.react = tapped
+          member.dataset.woken = ''
+        }
+        member.dataset.reacting = ''
+      })
+
+      // Restored when nothing is left running rather than after a duration
+      // guessed here. A reaction fires several animations of different lengths
+      // and `animationend` arrives once per animation, so the first to finish
+      // would cut the rest short.
+      member.addEventListener('animationend', () => {
+        const running = member
+          .getAnimations({ subtree: true })
+          .some((animation) => {
+            const name = String(
+              (animation as unknown as { animationName?: string }).animationName ?? '',
+            )
+            return (
+              animation.playState === 'running' &&
+              name.startsWith('cast-') &&
+              name !== 'cast-breathe'
+            )
+          })
+        if (running) return
+        delete member.dataset.reacting
+        delete member.dataset.woken
+        if (member.dataset.restReact !== undefined) {
+          member.dataset.react = member.dataset.restReact
+          delete member.dataset.restReact
+        }
+      })
+    }
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue
+            field.dataset.arrived = ''
+            observer.unobserve(entry.target)
+          }
+        },
+        { threshold: 0.15 },
+      )
+      observer.observe(field)
+    } else {
+      // Without an observer the cast is placed rather than left invisible, since
+      // the field is decoration and a reader loses nothing by meeting it settled.
+      field.dataset.arrived = ''
+    }
+  }
+</script>
