@@ -40,6 +40,23 @@ const BATCH_WINDOW_MS = 400
 const GROUP_STEP_MS = 220
 
 /**
+ * Which containers count as a group.
+ *
+ * A project card is one, so its numeral leads and the card follows. That lead
+ * already existed by accident, since the numeral sits above and outside the
+ * card and crosses the viewport edge first: measured under a scroll it ran 199,
+ * 198, 226, and 197ms on the four two-column cards and collapsed to 56ms on the
+ * wide one that closes the section, whose geometry differs. Grouping makes it
+ * 222 to 247ms on all five, and it matters most on a phone, where one column
+ * makes every card the wide case.
+ *
+ * The grid itself is deliberately not a group. It runs 1477px against a 900px
+ * viewport, and watching a container that much taller lights its last card
+ * while that card is still off screen, which is what the measurement showed.
+ */
+const GROUP_SELECTOR = '[data-fade-group], [data-project-frame]'
+
+/**
  * How much of an element has to be inside the root before it is marked, and how
  * far the root is inset from the bottom of the viewport. Both are exported
  * because `e2e/lazy-images.ts` walks the page waiting on the elements this
@@ -182,9 +199,7 @@ export function initReveal(): void {
 
   // A grouped row is stepped by its position in its own list rather than by
   // what shared its callback, so the two paths are exclusive.
-  const groups = [
-    ...document.querySelectorAll<HTMLElement>('[data-fade-group]'),
-  ]
+  const groups = [...document.querySelectorAll<HTMLElement>(GROUP_SELECTOR)]
   const grouped = new Set<HTMLElement>()
   const pendingGroups: (() => void)[] = []
   for (const group of groups) {
