@@ -1,6 +1,6 @@
 ---
 title: Section nav
-description: Fixed left-margin rail that tracks the active section as the visitor scrolls. Hidden below xl and during the hero and footer beats
+description: Fixed left-margin rail that tracks the active section as the visitor scrolls. Hidden below xl and during the hero beat
 ---
 
 # Section nav
@@ -40,8 +40,8 @@ Hiding it no longer leaves the viewport without navigation. The sticky bar in `.
 - They carried the monospace face, authored lowercase and set to capitals by CSS, until 2026-08-17, when mono contracted to literal machine values and uppercase to the eyebrow and diagram chrome. A rail label is neither, and the casing rule the project writes for nav items asks for sentence case.
 - The label carries three marks answering to different things. Its focus ring appears when the reader reaches it and belongs to the operable role. Its ground and edge track scroll position, sit there under a reader who never clicked, and belong to the accent. Its glow answers the pointer alone. Read the marks rather than the element, since the label is a clickable anchor and reading it by that alone puts the edge on the wrong color. The timeline's current node carries the same position mark.
 - The rail tracks which story section the visitor is reading and marks its label active. Clicking a label smooth-scrolls to that section.
-- Over the hero the rail is hidden. It fades in once the visitor scrolls into the content and fades back out as the footer comes into view. The bar reveals on the same beat, so the two never appear apart. They read that beat differently and arrive at the same moment anyway: the rail measures half the viewport and the bar half the hero, which coincide wherever the rail is visible, because the hero holds the full viewport height from md up.
+- Over the hero the rail is hidden. It fades in once the visitor scrolls into the content and stays visible for the rest of the page, footer included. The bar reveals on the same beat, so the two never appear apart. They read that beat differently and arrive at the same moment anyway: the rail measures half the viewport and the bar half the hero, which coincide wherever the rail is visible, because the hero holds the full viewport height from md up.
 - On a project route the rail is present from first paint with no fade, since those pages are otherwise static.
 - Without JS the rail stays hidden. The page reads correctly without it.
 
-Scroll-position tracking, reveal and footer gates, the click-intent lock, and the `instant` prop: see `.claude/context/section-nav.md`.
+Scroll-position tracking, the reveal gate, the click-intent lock, and the `instant` prop: see `.claude/context/section-nav.md`.

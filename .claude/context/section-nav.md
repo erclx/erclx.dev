@@ -23,10 +23,11 @@ When `scrollY + innerHeight` reaches `document.documentElement.scrollHeight - 4`
 
 Clicking a rail link sets the clicked section active immediately and suppresses scroll-based recomputation for 700ms (`CLICK_LOCK_MS`), matching the smooth-scroll duration. Without the lock, clicking a section whose smooth scroll cannot fully reach the top resolves the active label to a different section via the near-bottom override.
 
-## Reveal and footer gates
+## Reveal gate
 
-- The rail starts hidden and fades in once the hero is roughly half-scrolled past. An `IntersectionObserver` on the hero element with `rootMargin: '-50% 0px 0px 0px'` toggles `data-revealed`. Bidirectional: scrolling back into the hero hides the rail again.
-- A second `IntersectionObserver` on `<footer data-section="footer">` toggles `data-near-footer` so the rail fades out once the footer enters the viewport. It carries no root margin. A margin capping the root at its top half never fires, since the footer sits in the lower part of the last screen by definition, so the rail held full opacity over the beat it is meant to stand down for. Measured at 1440x900 scrolled to the end: the footer spanned 622 to 900 against a capped root ending at 450.
+The rail starts hidden and fades in once the hero is roughly half-scrolled past. An `IntersectionObserver` on the hero element with `rootMargin: '-50% 0px 0px 0px'` toggles `data-revealed`. Bidirectional: scrolling back into the hero hides the rail again.
+
+Nothing hides the rail near the footer. Looking-for and the footer together barely clear one viewport, so any scroll-position trigger for a footer fade has little to no runway to fire on before the document runs out of scroll room, and forcing one in with a minimum-dwell hold read as a timer disconnected from the reader's own scrolling rather than a response to it. A capture of the rail held visible over a fully-shown footer at 1280x800 and 1920x1080 found no clutter or overlap, so the rail carries looking-for through the rest of the page instead: revealed once and visible until the reader scrolls back into the hero, the same as a project route always behaved. See `.claude/ARCHITECTURE.md` § The rail carries looking-for through the footer rather than hiding near it.
 
 ## The active row
 
@@ -47,10 +48,11 @@ Pointing at a row is a separate claim from being inside one, so a hover adds the
 
 ## instant prop
 
-When the `instant` prop is set, the rail renders with `data-revealed` already true at server render, a `data-instant` marker disables the opacity-transition CSS, and the hero and footer observers do not attach. Used on every project route, which are otherwise static, so the rail does not fade in alone.
+When the `instant` prop is set, the rail renders with `data-revealed` already true at server render, a `data-instant` marker disables the opacity-transition CSS, and the hero observer does not attach. Used on every project route, which are otherwise static, so the rail does not fade in alone.
 
 ## Gotchas
 
 - An earlier max-intersection-ratio `IntersectionObserver` drove active tracking. It flipped the active label to a taller preceding section when the visitor clicked the last, shorter rail item. The scroll-position handler replaced it.
 - No-JS path: the rail stays hidden and non-interactive because the reveal gate only flips under JS. The page reads correctly without it.
 - Click handling calls `e.preventDefault()` then `scrollIntoView({ behavior: 'smooth', block: 'start' })` with no URL hash side effect. Reduced-motion users get the native instant scroll.
+- A footer `IntersectionObserver` with no root margin fired the instant the footer's own border box, carrying roughly 100px of empty top padding before any visible content, touched the bottom of the viewport. That hid the rail while looking-for was still the section on screen. Keying the hide to looking-for's own bottom crossing the 30% anchor closed that case and reopened the one the missing root margin was meant to fix: a viewport tall enough to run out of scroll room before the crossing never hid the rail at all. A minimum-dwell hold fixed that too, at the cost of a fade timed to a clock rather than to the reader's own scrolling. See `.claude/ARCHITECTURE.md` § The rail carries looking-for through the footer rather than hiding near it for why the gate was removed instead of retuned again.
