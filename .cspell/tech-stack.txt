@@ -97,6 +97,7 @@ vitest
 webgl
 webglcontextlost
 webglcontextrestored
+webp
 wght
 wireframe
 wireframes

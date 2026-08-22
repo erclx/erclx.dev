@@ -31,6 +31,17 @@ set -euo pipefail
 # to a device at once, which needs two devices to be worth anything.
 port="${DEVICE_PORT:-4400}"
 
+# What to serve. The build is the default because it is the page a visitor
+# gets, and `dev` exists for the one thing a build cannot show: the scenario
+# harness in `src/components/dev/`, which leaves the production tree entirely,
+# so an interactive decision served through it is otherwise desktop-only.
+mode="${DEVICE_MODE:-build}"
+
+# Which addresses to render a code for. A comparison served as several arms
+# needs one code each, since a query string typed by hand on a tablet is where
+# a live comparison stops being worth running.
+paths="${DEVICE_PATHS:-/}"
+
 # The address of the interface holding the default route, rather than the first
 # of however many `hostname -I` prints. A machine running containers or a VPN
 # answers that with an address the forward must not name.
@@ -64,16 +75,20 @@ if [[ -z "$windows_address" ]]; then
   echo "  Connect to Wi-Fi and run this again."
   echo
 elif [[ "$forwarded_to" == "$wsl_address" ]]; then
-  echo "  Reachable at  http://$windows_address:$port/"
-  echo
-  # The renderer draws nothing when stdout is not a terminal, which is correct
-  # for a code made of block characters and unexplained in a captured log.
-  if [[ -t 1 ]]; then
-    "$(dirname "$0")/../node_modules/.bin/qrcode-terminal" "http://$windows_address:$port/"
-  else
-    echo "  Run this in a terminal for a code to scan."
-  fi
-  echo
+  IFS=',' read -ra device_paths <<<"$paths"
+  for device_path in "${device_paths[@]}"; do
+    echo "  Reachable at  http://$windows_address:$port$device_path"
+    echo
+    # The renderer draws nothing when stdout is not a terminal, which is correct
+    # for a code made of block characters and unexplained in a captured log.
+    if [[ -t 1 ]]; then
+      "$(dirname "$0")/../node_modules/.bin/qrcode-terminal" \
+        "http://$windows_address:$port$device_path"
+    else
+      echo "  Run this in a terminal for a code to scan."
+    fi
+    echo
+  done
 else
   if [[ -n "$forwarded_to" ]]; then
     echo "  The forward on port $port points at $forwarded_to, and this machine is now"
@@ -97,18 +112,40 @@ fi
 echo "  Serving on localhost:$port as well. Stop with ctrl-c."
 echo
 
-# The built output rather than the dev server, which costs a build on every run
-# and is the only thing that serves a second device the page a visitor gets.
+# The dev server, for the one case a build cannot answer. The scenario harness
+# is gated on `import.meta.env.DEV` and leaves the production tree, so an arm
+# served through it is unreachable from a built page and the decision it serves
+# can only be judged on this machine.
 #
-# Astro's dev server resolves an optimized image through an endpoint that reads
-# the file off disk by absolute path, and Vite refuses that read from a remote
-# origin. The refusal is a security guard working correctly, so the portrait and
-# every project still arrive on this machine and break on the tablet, which
-# reads as the site having lost its images. A build emits them as static files
-# and the whole class goes away with it.
+# It is not the default. A build is the page a visitor receives, and the images
+# below are the reason that mattered.
+if [[ "$mode" == "dev" ]]; then
+  echo "  Serving the dev server, so a dev-only harness is reachable."
+  echo
+  # Bound to every interface for the same reason the preview below is, and
+  # given the port explicitly so the config's per-worktree offset cannot move
+  # it off the one address the forward covers.
+  exec bun run dev --host --port "$port"
+fi
+
+# The built output otherwise, which costs a build on every run and is what a
+# second device should be judging.
 #
-# What it costs is the hot reload. A device check is a verification rather than
-# an editing loop, so the rebuild lands between passes rather than inside one.
+# This once carried a second reason that no longer holds. Astro's dev server
+# resolves an optimized image through an endpoint reading the file off disk by
+# absolute path, under Vite's `/@fs/` prefix, and that read was refused from a
+# remote origin: the portrait and every project arrived on this machine and
+# broke on the tablet, which read as the site having lost its images.
+#
+# Re-measured on 2026-08-22 against the current Astro and Vite, over the LAN
+# address and again with a foreign `Host` header, which is what a device
+# arriving through the Windows forward sends. Both the page and an optimized
+# image return 200 with `content-type: image/webp`. The refusal is gone.
+#
+# That re-measurement is a server-side read rather than a browser one, so a
+# device still disagreeing with it is the reading that wins. The default stays
+# the build either way, since a visitor gets the build and a dev server also
+# costs the hot reload nobody wants mid-verification.
 bun run build
 
 echo

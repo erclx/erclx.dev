@@ -88,6 +88,26 @@ Three things the script cannot settle. A VPN on the phone may route local addres
 
 A public tunnel was the alternative and is not installed. It needs no administrator and works from any network, which is genuinely better on both counts, but it puts the dev site on an address anyone holding the link can load, and it needs the Vite host check widened to accept a hostname that changes every run. The forward keeps the page on the local network, where a portfolio still under construction belongs.
 
+### Two flags, and the reason each exists
+
+`DEVICE_MODE=dev` serves the dev server instead of the build. The scenario harness in `src/components/dev/` is gated on `import.meta.env.DEV` and leaves the production tree, so an interactive decision served through it is unreachable from a built page and can only be judged on the machine running it. That is the whole reason the flag exists, and the build stays the default because it is what a visitor receives.
+
+`DEVICE_PATHS` takes a comma-separated list and renders one code per entry. A comparison served as several arms needs one code each, since a query string typed by hand on a tablet is where a live comparison stops being worth running.
+
+```bash
+DEVICE_MODE=dev DEVICE_PATHS="/?arm=0,/?arm=1" bun run device
+```
+
+The dev server was ruled out for device work until 2026-08-22, on a real finding that no longer holds. Astro resolves an optimized image through an endpoint reading the file off disk by absolute path under Vite's `/@fs/` prefix, and that read was refused from a remote origin, so images arrived on this machine and broke on the tablet. Re-measured against the current Astro and Vite over the LAN address, and again with a foreign `Host` header, which is what a device arriving through the Windows forward actually sends: both the page and an optimized image return 200 with `content-type: image/webp`.
+
+Read that as a server-side reading rather than a browser one. A device still losing its images is the reading that wins, and the flag is opt-in partly for that reason.
+
+### A code a session hands over is an image, not blocks
+
+`bun run device` draws its code with terminal block characters and skips drawing entirely when stdout is not a terminal, printing a line saying so. That is correct for a human at a prompt and useless to every agent session, which runs the script through a tool and captures its output, so a session following this entry alone reaches an address it cannot hand over in scannable form.
+
+`bun scripts/qr.ts <url> [url...]` is the answer. It reads the matrix out of the same encoder the terminal renderer vendors, draws it as squares with a four-module quiet zone, and writes a PNG per address under `.claude/review/qr/`. A code cropped to its own edge fails against a busy background and the failure looks like a bad camera rather than a bad image, which is what the quiet zone is for.
+
 ## Reading a link preview without pasting one
 
 `bun run unfurl` renders all six pages as Discord, LinkedIn, X, Slack, and a Notion bookmark compose them, one sheet per page under `.claude/review/unfurl/`. It reads the tags off the served document rather than out of the source, since a crawler reads the rendered page and that is the copy that can be wrong, and it fetches the declared image the same way and embeds it so a sheet survives the server going away.
