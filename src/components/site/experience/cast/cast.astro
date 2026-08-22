@@ -52,6 +52,16 @@ interface ClusterMember {
   readonly tapMood?: MoodId
   /** What the member emits at rest. Drawn as its own layer behind the body. */
   readonly power?: PowerId
+  /**
+   * What it emits while a tap is running, held as long as the reaction is.
+   *
+   * A power is a state and a discharge is an event, and the two want opposite
+   * treatments: flames say a member is powerful whether or not anyone is
+   * looking, where bolts say it just did something and read as odd standing
+   * still. Splitting them is what lets one member carry both without either
+   * being wrong.
+   */
+  readonly tapPower?: PowerId
 }
 
 interface Cluster {
@@ -70,6 +80,17 @@ interface Cluster {
   readonly members: readonly ClusterMember[]
 }
 
+// A pair is offset down as well as across, and the vertical figure is what
+// carries it. Both pairs were laid out when a member was its own box, so adding
+// a power layer that reaches a sixth of the member past that box put the lead's
+// flames through the member beside him and the two read as one shape. Their
+// bodies overlapped 16px and 12px.
+//
+// Separating across is not available: measured at 1280 the left cluster has 2px
+// of headroom before it meets the rail, so any `dx` that clears the bodies puts
+// the cluster into it. Down costs nothing, since a cluster's height is bounded
+// by nothing.
+//
 // Two pairs and three singles. A cast that is all pairs reads as staged and a
 // cast that is all singles is what the operator asked to move away from, so the
 // section carries both and a reader meets a pair twice rather than five times.
@@ -94,12 +115,13 @@ const clusters: readonly Cluster[] = [
       {
         hat: 'antenna', seated: false, mood: 'smug', size: 72,
         power: 'blaze',
+        tapPower: 'bolts',
         dx: 0, dy: 0, facing: 1, phase: 0, tapMood: 'unleashed',
       },
       {
         hat: 'ears', seated: false, mood: 'playful', size: 54,
         power: 'sparks',
-        dx: 56, dy: 10, facing: -1, phase: 1500, tapMood: 'starstruck',
+        dx: 56, dy: 88, facing: -1, phase: 1500, tapMood: 'starstruck',
       },
     ],
   },
@@ -126,7 +148,7 @@ const clusters: readonly Cluster[] = [
       {
         hat: 'none', seated: false, mood: 'flustered', size: 56,
         power: 'gust',
-        dx: 76, dy: 36, facing: -1, phase: 1500, tapMood: 'dizzy',
+        dx: 76, dy: 100, facing: -1, phase: 1500, tapMood: 'dizzy',
       },
     ],
   },
@@ -227,6 +249,16 @@ const clusterGap = (cluster: Cluster) => cluster.gap + clusterOverhang(cluster)
             {member.power && (
               <span class="cast-power-layer" data-power={member.power}>
                 <Fragment set:html={renderPower(member.power, member.facing)} />
+              </span>
+            )}
+            {member.tapPower && (
+              <span
+                class="cast-power-layer is-tapped"
+                data-power={member.tapPower}
+              >
+                <Fragment
+                  set:html={renderPower(member.tapPower, member.facing)}
+                />
               </span>
             )}
             {/* Both faces are rendered and one is hidden. Swapping the drawing
@@ -349,6 +381,19 @@ const clusterGap = (cluster: Cluster) => cluster.gap + clusterOverhang(cluster)
      inset is the reach as a share of the 12-cell grid, which is 25% at a reach
      of 3, and it is negative because the box grows outward from the member
      rather than the member shrinking inside it. */
+  /* Swapped by the same `data-woken` the tapped face answers to, so a tap
+     changes what a member emits and what it is feeling in one move. Only a tap
+     sets that mark: a hover and the scheduler both run the reaction without it,
+     which is what keeps a discharge something a reader causes. */
+  .cast-power-layer.is-tapped {
+    display: none;
+  }
+  .cast-member[data-woken] .cast-power-layer:not(.is-tapped) {
+    display: none;
+  }
+  .cast-member[data-woken] .cast-power-layer.is-tapped {
+    display: block;
+  }
   .cast-power-layer {
     position: absolute;
     inset: calc(-1 * var(--cast-overhang) * 100%);
@@ -477,5 +522,83 @@ const clusterGap = (cluster: Cluster) => cluster.gap + clusterOverhang(cluster)
       // the field is decoration and a reader loses nothing by meeting it settled.
       field.dataset.arrived = ''
     }
+
+    /**
+     * One member acts on its own every few seconds, and never two at once.
+     *
+     * `.claude/ARCHITECTURE.md` records expressive motion being moved to a
+     * pointer on the reading that a margin full of characters performing at a
+     * reader who has not looked at them is the ambient motion problem
+     * restated. This does not reverse that. The band `.claude/DESIGN.md` bars
+     * is *sustained* motion with no fixed reference, at 4 to 11px per second,
+     * and every term here is a reaction that crosses it in a fraction of its
+     * own cycle. What changes is who triggers one, not what a trigger runs.
+     *
+     * So the whole of it is a scheduler over the reactions that already exist.
+     * It writes the same `data-reacting` a tap writes and the same
+     * `animationend` clears it, which is why no keyframe and no selector moved
+     * for this.
+     */
+    const SOLO_GAP_MS = 5200
+    /** Spread, so the cast never settles into a countable rhythm. */
+    const SOLO_JITTER_MS = 2600
+
+    const members = [
+      ...field.querySelectorAll<HTMLElement>('[data-cast-member]'),
+    ]
+
+    /**
+     * Whether the section is on screen. A member acting behind the reader is
+     * the ambient motion complaint with none of the payoff, and it is also the
+     * only part of this that costs anything when nobody is looking.
+     */
+    let watching = false
+    if ('IntersectionObserver' in window) {
+      const presence = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) watching = entry.isIntersecting
+        },
+        { threshold: 0 },
+      )
+      presence.observe(field)
+    }
+
+    const stillMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const actOnce = () => {
+      // A reader's own pointer outranks the schedule, and a member already
+      // moving is what the one-at-a-time rule is about. Both are read off the
+      // page rather than tracked, so nothing here can disagree with it.
+      if (!watching || document.hidden || stillMotion.matches) return
+      if (field.querySelector('[data-reacting]')) return
+      if (field.querySelector('[data-cast-member]:hover')) return
+
+      const idle = members.filter(
+        (member) => member.dataset.reacting === undefined,
+      )
+      if (idle.length === 0) return
+
+      const chosen = idle[Math.floor(Math.random() * idle.length)]
+      chosen.dataset.reacting = ''
+
+      // A term that starts no animation is never ended by one, which is the
+      // trap the tap path already carries. Here it costs more, because a
+      // member left marked would take the scheduler's one slot for the life of
+      // the page and the cast would go quiet with nothing saying why.
+      window.setTimeout(() => {
+        if (!isReacting(chosen)) settle(chosen)
+      }, STILL_REACTION_MS)
+    }
+
+    const schedule = () => {
+      window.setTimeout(
+        () => {
+          actOnce()
+          schedule()
+        },
+        SOLO_GAP_MS + Math.random() * SOLO_JITTER_MS,
+      )
+    }
+    schedule()
   }
 </script>
