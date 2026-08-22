@@ -681,6 +681,8 @@ Two repairs are recorded here as the shape to avoid rather than as what shipped.
 
 A capture of the rail forced visible over a fully-shown footer at 1280x800 and 1920x1080 settled it: the rail sits in the empty left margin at both widths, clear of the signature, the résumé link, and the colophon, so hiding it near the footer was never buying anything a reader would notice losing. The gate comes out rather than getting retuned a third time. The rail now behaves exactly as it always did on a project route, which never gated on the footer at all: revealed once the hero is scrolled past, visible through the rest of the page, and hidden again only on scrolling back into the hero. The operator confirmed against the running page rather than a capture, since the question was how the removal reads while scrolling through it rather than how it looks at rest.
 
+Measured at f2da68b on 2026-08-22.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
