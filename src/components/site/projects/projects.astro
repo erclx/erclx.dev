@@ -116,7 +116,11 @@ const projects = [
         what they can prove. Every project owns one, which is what stops a card
         with a live link and a card without reading as a ranking, and the routes
         are otherwise reachable only by clicking a card's name. */}
-    <p data-fade class="text-muted-foreground text-body mt-6 max-w-2xl">
+    {/* The measure every other section on the page holds, rather than the
+        column this one breaks out to. Level with the cards puts the line at
+        127 characters against the 92 and 93 the sections either side run, and
+        leaves the closing word alone on a line of its own. */}
+    <p data-fade class="text-muted-foreground text-body mt-6 max-w-3xl">
       Some of these solved a problem for me first and other people second. Each
       one has a page here on why it exists and how it works.
     </p>

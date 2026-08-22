@@ -5,7 +5,7 @@ description: Below the experience timeline. Shipped tools as unboxed cards, one 
 
 # Projects
 
-Appears below the experience timeline, with about and experience between it and the header. Lists shipped tools as cards, one per shipped project, each linking to the route that project owns. The heading stands alone, with no line counting the cards under it.
+Appears below the experience timeline, with about and experience between it and the header. Lists shipped tools as cards, one per shipped project, each linking to the route that project owns. One sentence opens the section under the heading, and no line counts the cards.
 
 A card carries no outline. Its still, its heading, and its link row sit on the page ground, and the gutter between two cards is what separates them. The dotted frames below mark where a card's bounds fall and are not drawn on the page.
 
@@ -14,6 +14,9 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 ```plaintext
 ┌──────────────────────────────────────────────────────────┐
 │   Projects                                               │  ← serif heading, aligned with the grid
+│                                                          │
+│   Some of these solved a problem for me first and        │  ← opening sentence, at the page measure
+│   other people second. Each one has a page here ...      │
 │                                                          │
 │   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐    │
 │     ┌──────────────────────────────────────────────┐     │  ← media slot, still with optional hover video
@@ -44,6 +47,9 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 ┌────────────────────────────────────────────────────────────────────┐
 │   Projects                                                         │
 │                                                                    │
+│   Some of these solved a problem for me first and other people     │  ← opening sentence stops at the page
+│   second. Each one has a page here on why it exists ...            │     measure, short of the grid beside it
+│                                                                    │
 │  01 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐ 02       │  ← numerals hang into the outer margin
 │       aitk                        Jobtriage                        │
 │     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘          │
@@ -64,6 +70,7 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 ## Behavior
 
 - One line opens the section under its heading, saying that these came out of the author's own work and that each carries a page of its own. It landed on 2026-08-22, into the only section on the page that had opened straight onto its content. A count opened it until 2026-08-14 and came out because a number small enough to count is one to leave unstated.
+- That line runs at the page measure rather than at the column this section breaks out to, so it reads level with the opening paragraphs of about, experience and the closing ask. It ran narrower than its own heading until 2026-08-22, which read as a mistake rather than as a choice. Level with the cards was the other candidate and was rejected on the line it produced: 127 characters against the 92 and 93 the sections either side run, closing on a single word alone on its own line.
 - That line names the routes rather than sorting the cards by what they can prove. Every project owns one, which is what stops a card with a live link and a card without reading as a ranking, and a route is otherwise reachable only by clicking a card's name. A draft splitting the cards on which carry measured results was rejected on both counts, the second being that it was false: all five have a route.
 - Cards stack in document order. No filtering and no sorting.
 - Every card owns a route and opens it from anywhere on the card. The card name is the link that says so, which is also the one a keyboard reaches: the full-card link is hidden from assistive technology and held out of the tab order.
