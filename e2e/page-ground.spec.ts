@@ -53,7 +53,10 @@ async function fieldWeights(page: Page): Promise<Weights> {
       flat.width = canvas.width
       flat.height = canvas.height
       const context = flat.getContext('2d', { willReadFrequently: true })
-      if (!context) return empty
+      // Raised rather than reported as an empty reading. A refused context is
+      // the harness running out of them, and returning zeros from here spends
+      // that as a field that never drew.
+      if (!context) throw new Error('the readback canvas was refused a context')
       context.drawImage(canvas, 0, 0)
 
       // The backing store is the CSS box times the ratio the mount settled on,
@@ -83,10 +86,17 @@ async function fieldWeights(page: Page): Promise<Weights> {
         }
       }
 
-      return {
+      const weights = {
         column: columnCount ? columnSum / columnCount : 0,
         margin: marginCount ? marginSum / marginCount : 0,
       }
+
+      // The scratch canvas is the size of the drawing buffer, so one call holds
+      // several megabytes and a suite holds one per reading. Zeroing it drops
+      // the backing store rather than waiting for a collector.
+      flat.width = 0
+      flat.height = 0
+      return weights
     },
     { fieldSelector: FIELD, columnSelector: COLUMN },
   )

@@ -4,6 +4,7 @@ advfirewall
 aitk
 autoplay
 axios
+backgrounded
 bradlc
 bunx
 changelogithub
@@ -70,6 +71,7 @@ pointerup
 portproxy
 pyproject
 qrcode
+readback
 regen
 RLENGTH
 RSTART
