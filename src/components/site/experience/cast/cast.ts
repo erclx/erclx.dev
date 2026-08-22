@@ -30,6 +30,9 @@ const FOOT_HEIGHT = 1.7
 export type HatId =
   | 'none'
   | 'antenna'
+  | 'plume'
+  | 'halo'
+  | 'mane'
   | 'ears'
   | 'earsTall'
   | 'horns'
@@ -44,6 +47,9 @@ import {
   MOODS,
   mouthCells,
 } from './faces'
+import { gearCells, type GearId } from './gear'
+import { petCells, type PetId, type PetMood } from './pets'
+import { powerCells, type PowerId, REACH } from './powers'
 
 export interface Member {
   readonly hat: HatId
@@ -52,6 +58,8 @@ export interface Member {
   readonly seated: boolean
   /** A named pairing from the expression inventory. Defaults to neutral. */
   readonly mood?: MoodId
+  /** What the member holds, drawn in front of it. */
+  readonly gear?: GearId
   /**
    * Which way the member looks. Mirroring happens inside the drawing rather
    * than as a CSS transform, because the wrapper already carries the arrival
@@ -74,13 +82,25 @@ type PartName =
   | 'eye-r'
   | 'mouth'
   | 'mark'
+  | 'aura-l'
+  | 'aura-r'
+  | 'aura-t'
+  | 'aura-b'
+  | 'gear'
+  | 'gear-head'
+  | 'gear-grip'
+  | 'pet-body'
+  | 'pet-head'
+  | 'pet-foot'
+  | 'pet-tail'
+  | 'pet-eye'
 
 interface Shape {
   readonly x: number
   readonly y: number
   readonly w: number
   readonly h: number
-  readonly ink: 'body' | 'eye'
+  readonly ink: 'body' | 'eye' | 'aura' | 'shade'
   readonly part: PartName
   readonly round?: number
 }
@@ -123,6 +143,55 @@ function buildHat(
       return [
         solid({ x: center - 0.3, y: top - 1.5, w: 0.6, h: 1.5, part: 'hat' }),
         solid({ x: center - 0.95, y: top - 2.4, w: 1.9, h: 1, part: 'hat' }),
+      ]
+    // Three lead hats, and none of them joins the worker pool. The antenna
+    // marks a role and carries almost no mass, which is measurable: the lead
+    // ranked second by painted area behind a horned member a sixth larger than
+    // him, and a role marker that weighs nothing cannot make a figure read as
+    // the lead. Each of these keeps the antenna's stalk so the role still reads,
+    // and adds the weight it never had.
+    case 'plume':
+      return [
+        solid({ x: center - 0.35, y: top - 1.9, w: 0.7, h: 1.9, part: 'hat' }),
+        solid({ x: center - 1.0, y: top - 3.0, w: 2.0, h: 1.1, part: 'hat' }),
+        solid({ x: left + 0.4, y: top - 1.4, w: 1.0, h: 1.5, part: 'hat-l' }),
+        solid({ x: left + 1.6, y: top - 2.1, w: 1.0, h: 2.2, part: 'hat-l' }),
+        solid({ x: left + 4.4, y: top - 2.1, w: 1.0, h: 2.2, part: 'hat-r' }),
+        solid({ x: left + 5.6, y: top - 1.4, w: 1.0, h: 1.5, part: 'hat-r' }),
+      ]
+    // A bar held clear of the head on two posts. The only hat in the family
+    // that does not touch the body, which is what makes it read as worn rather
+    // than as grown.
+    case 'halo':
+      return [
+        solid({
+          x: left + 0.2,
+          y: top - 3.1,
+          w: width - 0.4,
+          h: 1.0,
+          part: 'hat',
+        }),
+        solid({ x: center - 1.9, y: top - 2.1, w: 0.8, h: 1.2, part: 'hat-l' }),
+        solid({ x: center + 1.1, y: top - 2.1, w: 0.8, h: 1.2, part: 'hat-r' }),
+        solid({ x: center - 0.35, y: top - 1.6, w: 0.7, h: 1.6, part: 'hat' }),
+        solid({ x: center - 0.9, y: top - 2.3, w: 1.8, h: 0.9, part: 'hat' }),
+      ]
+    // A graduated crest, tallest at the centre. Heaviest of the three, and the
+    // one that changes the silhouette rather than sitting on top of it.
+    case 'mane':
+      return [
+        solid({
+          x: left + 0.3,
+          y: top - 1.0,
+          w: width - 0.6,
+          h: 1.1,
+          part: 'hat',
+        }),
+        solid({ x: left + 0.5, y: top - 2.2, w: 0.9, h: 1.4, part: 'hat-l' }),
+        solid({ x: left + 1.8, y: top - 3.0, w: 0.9, h: 2.2, part: 'hat-l' }),
+        solid({ x: center - 0.45, y: top - 3.6, w: 0.9, h: 2.8, part: 'hat' }),
+        solid({ x: left + 4.3, y: top - 3.0, w: 0.9, h: 2.2, part: 'hat-r' }),
+        solid({ x: left + 5.6, y: top - 2.2, w: 0.9, h: 1.4, part: 'hat-r' }),
       ]
     case 'ears':
       return [
@@ -269,6 +338,19 @@ export function renderMember(member: Member): string {
 
   shapes.push(...faceShapes(member.mood ?? 'neutral', center, bodyTop, left))
 
+  // Last, so a held item passes in front of the arm holding it.
+  shapes.push(
+    ...gearCells(member.gear ?? 'none').map((cell) => ({
+      x: cell.x,
+      y: cell.y,
+      w: cell.w,
+      h: cell.h,
+      ink: cell.ink ?? ('body' as const),
+      part: cell.part,
+      round: cell.round,
+    })),
+  )
+
   const drawn = shapes.map(drawShape).join('')
   const body =
     member.facing === -1
@@ -282,7 +364,100 @@ export function renderMember(member: Member): string {
   )
 }
 
-/** Every hat a worker draws from. The lead's antenna is not in it, since that hat marks a role. */
+/**
+ * The power layer, drawn on the member's own grid and stacked behind it.
+ *
+ * Its own drawing rather than part of the member, for two reasons that are not
+ * about the shapes. A power needs its own clock, since an aura pulses while the
+ * body is doing something else, and a single SVG carrying both would make one
+ * animation fight the other. And a candidate power can then be swapped without
+ * re-rendering the member, which is what lets the whole vocabulary be served
+ * live for a pick.
+ *
+ * Gear stays inside the member for the same test read the other way: it moves
+ * with the hand that holds it, so it has no clock of its own to want.
+ *
+ * The ink is `aura` rather than the body's. Drawn in the body fill a power
+ * merges with the silhouette and reads as anatomy: the flanking tongues became
+ * a second pair of ears and the standing shadow became a lump on the back.
+ */
+/**
+ * A companion, drawn on the member family's own grid so the two read as one
+ * page. It takes no power layer and no gear: a pet that emits is a member, and
+ * the whole point of the family is that it is not one.
+ */
+export function renderPet(
+  pet: PetId,
+  mood: PetMood,
+  facing: 1 | -1 = 1,
+): string {
+  const drawn = petCells(pet, mood)
+    .map((cell) =>
+      drawShape({
+        x: cell.x,
+        y: cell.y,
+        w: cell.w,
+        h: cell.h,
+        ink: cell.ink,
+        part: cell.part,
+        round: cell.round,
+      }),
+    )
+    .join('')
+
+  return (
+    `<svg class="bn" viewBox="0 0 ${SIZE} ${SIZE}" aria-hidden="true" focusable="false">` +
+    (facing === -1
+      ? `<g transform="translate(${SIZE} 0) scale(-1 1)">${drawn}</g>`
+      : drawn) +
+    `</svg>`
+  )
+}
+
+/**
+ * How far the power layer reaches past the member, as a share of the member's
+ * own size. Placement adds it to a cluster's gap so a power cannot cross the
+ * reading column, and the stylesheet reads it to size the layer, so the two
+ * cannot disagree. Measured rather than assumed: the layer overlapped the
+ * column by 10px on the 88px member before the gap accounted for it.
+ */
+export const POWER_OVERHANG = REACH / GRID
+
+export function renderPower(power: PowerId, facing: 1 | -1 = 1): string {
+  const drawn = powerCells(power)
+    .map((cell) =>
+      drawShape({
+        x: cell.x,
+        y: cell.y,
+        w: cell.w,
+        h: cell.h,
+        ink: cell.ink ?? 'aura',
+        part: cell.part,
+        round: cell.round,
+      }),
+    )
+    .join('')
+
+  // The viewBox is padded by the reach on every side and the layer's own box
+  // grows to match, so the member's grid still maps to the member's own pixels.
+  // Scaling the drawing down inside a box with no padding would shrink the figure the
+  // power is drawn against, which is the one thing that has to stay fixed.
+  const pad = REACH * CELL
+  const span = SIZE + pad * 2
+
+  return (
+    `<svg class="bn bn-power" viewBox="${-pad} ${-pad} ${span} ${span}" aria-hidden="true" focusable="false">` +
+    (facing === -1
+      ? `<g transform="translate(${SIZE} 0) scale(-1 1)">${drawn}</g>`
+      : drawn) +
+    `</svg>`
+  )
+}
+
+/**
+ * Every hat a worker draws from. The lead's own hats are not in it, since those
+ * mark a role rather than flavour.
+ */
 export const HAT_POOL: readonly HatId[] = [
   'none',
   'ears',

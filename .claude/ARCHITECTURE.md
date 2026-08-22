@@ -339,18 +339,36 @@ and the floor was wrong. 4.5:1 governs text and every figure here is decoration
 hidden from assistive technology, so the shipped pair at 2.03:1 was the
 precedent rather than the exception.
 
-Motion is bound to expression rather than assigned, and almost none of it runs
-unattended. One term rests, a scale rather than a travel so there is no speed
-for the ambient band to apply to, and everything expressive fires under a
-pointer or a tap. That split then decided how it is guarded. Shortening the
-reactions put twelve of them inside the barred band and it looked like twelve
-defects. It was the guard measuring the wrong population: the band bars motion
-with no fixed reference to judge it against, and a reaction has one, namely the
-pointer that caused it. Holding a gesture to the ambient ceiling would mean
-slowing twelve movements a reader asked for to satisfy a rule about surfaces
-nobody asked for. A behavior now declares its kind, an idle term answers to the
-band, and a reaction answers to being brief and visible, which is the defect its
-own class actually has.
+Motion is bound to expression rather than assigned, and what runs unattended is
+bounded rather than absent. One term rests, a scale rather than a travel so
+there is no speed for the ambient band to apply to. Everything expressive is a
+reaction, and a scheduler fires one of those every few seconds with nothing
+touched.
+
+That split decided how it is guarded. Shortening the reactions put twelve of
+them inside the barred band and it looked like twelve defects. It was the guard
+measuring the wrong population, and the reason is worth stating carefully
+because this entry stated it wrongly first. It said a reaction is exempt because
+it carries a fixed reference, namely the pointer that caused it. That was true
+of every reaction at the time and it was never the ground. **What exempts a
+reaction is that it is brief and ends on its own**, so it crosses the band
+rather than sitting inside it, and the band bars sustained movement rather than
+movement. A pointer is one thing that can start such a term and was never what
+made the term acceptable.
+
+Reading it the other way is what an unattended reaction breaks. One fired on a
+schedule has no pointer behind it, so an exemption grounded in the pointer does
+not reach it, and the record would say reactions are exempt because a reader
+caused them while some of them have no reader. The guard was already measuring
+the right thing: a behavior declares its kind, an idle term answers to the band,
+and a reaction answers to being brief and visible, which is the defect its own
+class actually has.
+
+A scheduled reaction owes two things the pointer used to supply. It never runs
+beside another, since two at once is a margin performing rather than a figure
+acting. And it stands down while the section is off screen, under reduced
+motion, and while a reader's own pointer rests on a member, so a hand present
+outranks the schedule.
 
 **Read the instrument failures as one class rather than five incidents.** Each
 was a measure that passed hardest when the thing it watched had failed. A
@@ -376,6 +394,95 @@ invisible while both still animate.
 Verified at 1280x800, 1440x900, and 390x844 across chromium, firefox, and
 webkit, where the full suite passes 183 and the cast's twelve guards pass on
 every engine.
+
+### A slot is decided by what it needs a clock for, and sameness is counted rather than compared
+
+The cast gained two slots and a face pass. What is worth keeping is why each
+slot sits where it does, and one instrument that answered a different question
+than the one asked.
+
+A power is a slot rather than another mark. A mark's box is 17.6px across on the
+smallest member and anchored to the head's top right corner, so nothing that
+surrounds a body fits in it, and the aura meant to power the lead up drew a
+small comb beside his ear. Gear is a slot rather than a hat, because a hat is
+the only signal separating a lead from a worker and loading it with a sword
+spends that signal on flavour.
+
+**What decides whether a slot joins the member's drawing or gets its own is
+whether it needs a clock.** A power pulses while the body does something else,
+so one SVG carrying both makes the two animations fight, and it draws behind on
+its own layer. Gear moves with the hand holding it and stays inside. The same
+test settles a slot nobody has drawn yet.
+
+That split then paid twice. Held inside the member's box a power cannot be
+larger than the figure emitting it, and served live at that size a blaze read as
+a fringe rather than as anything the lead was doing. Its own layer takes its own
+padded viewBox. And a candidate can be swapped without re-rendering the member,
+which is what let the whole vocabulary be driven from the running page.
+
+How far it reaches is a placement number rather than a drawing one. A cluster
+reserves the reach twice, once as clearance from the reading column and once in
+its own width, so its footprint grows by twice the overhang. At three cells the
+88px member's cluster ran 12.6px past the margin the rail and dock leave at
+1280, which the existing cluster guard caught. Two clears the column by 12px and
+the dock by 7px. A larger reach costs a placement change rather than a drawing
+change, since what does not fit is the cluster.
+
+**The instrument lesson is the one to carry.** The complaint was that the cast
+read as one face repeated, and pairwise pixel difference found it: five of seven
+members sat within 8.4% to 12.8% of each other. It is useless as a target.
+Every pair in this cast lands between 8% and 12% whatever the faces say, because
+a head is mostly body fill either way, so two rounds of work moved the mean from
+21.2% to 21.6% while the faces changed completely. Counting members sharing a
+feature is the measure that tracks what a reader sees, and it named the actual
+defect on its first run: four of seven wore the identical flat mouth. No
+pairwise figure pointed at it.
+
+A measure can be right about a problem and wrong as a target. Read the first
+number to find the defect and a different one to know whether it closed.
+
+Two errors on this branch are worth naming because both were made after the rule
+that forbids them had been written down. A candidate lead face was argued down
+for sharing `happy` eyes with the member standing beside him, and the next
+change gave a different member exactly that pairing, producing a 4.8% pair,
+closer than anything the cast had held. And a mood added to `MOODS` without a
+`TEMPERAMENTS` entry fails the build at render, which is loud, while binding
+`emote` to a mood carrying no mark is silent and fires a reaction that animates
+nothing.
+
+A later pass on the same section found the reason three rounds of expression
+work had moved nothing, and it was not the expression. The lead paints 3396px²
+against the horned member's 4012px², so he is the second heaviest figure in a
+margin he is meant to lead. A face is a few hundred pixels inside a silhouette,
+and no face wins an argument the silhouette is losing. **Measure the thing that
+dominates before redrawing the thing that decorates.**
+
+Nothing available closes it on its own. His power is already the heaviest in the
+vocabulary, so every alternative makes him lighter. The best of three new hats
+buys 223px² against a 490px² gap. Growing him fails the margin guard, since his
+cluster holds 2px of headroom at 1280 before it meets the rail. What is left is
+trimming the figure that outweighs him, which is a decision about another
+member rather than about him, and it stands open.
+
+Two rules came out of the same pass and both are about transitions rather than
+states. **A tap escalates a face rather than replacing it**, which is what the
+sleeping member always did by waking surprised rather than waking as somebody
+else. And **which way a pair runs carries the meaning**: wide eyes settling to
+points reads as gathering, and points widening reads as being startled, so the
+same two faces say opposite things depending on which is at rest.
+
+The third is about the layer rather than the drawing. A power is a sibling drawn
+behind the member and it does not move when the member does, so a cell stopping
+at the silhouette tears open the moment a behavior displaces the body. It passes
+under instead, far enough to cover the furthest any behavior travels, **and
+inward only**: a bar crossing the whole body comes out of the far side and the
+member reads as caged, which is worse than the gap it closed. Both halves were
+needed and the first shipped alone.
+
+Measured at 1280, 1440, and 1920 across the seven members, where no two share an
+eye or a mouth, every power and gear cell fits its box and clears the 3px stroke
+floor, no power layer crosses the reading column, and the cast's eighteen guards
+pass.
 
 ### A landing-page figure sits inside the text column, and marks derive from type metrics
 

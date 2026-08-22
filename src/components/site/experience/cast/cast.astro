@@ -7,164 +7,72 @@
  * running 2067px at 390. The breakpoint matches the section rail's, which is
  * the other control that stands down for the same reason.
  *
- * Placement is by cluster rather than by member. A cluster anchors to the
- * reading column's own edge and every member inside it sits at an offset from
- * that origin, so a pair keeps its relationship to itself while the page
- * resizes. Six members holding six page positions could not express a pair at
- * all: two of them standing near each other would have been a coincidence of
- * two literals rather than a group, and nothing would have kept it true.
- *
- * A cluster fits inside the clear margin by construction. That margin is 141px
- * on the left at 1280 and 188px on the right, after the rail and the dock take
- * their share, and `e2e/cast.spec.ts` fails a cluster that outgrows it.
+ * Where every figure stands lives in `placement.ts`, so the guards can read it
+ * without rendering the page. This file owns the markup, the palette and the
+ * behavior wiring, and nothing about who is where.
  */
-import { renderMember, type HatId } from './cast.ts'
+import {
+  POWER_OVERHANG,
+  renderMember,
+  renderPet,
+  renderPower,
+} from './cast.ts'
 import { TEMPERAMENTS } from './behaviors.ts'
-import type { MoodId } from './faces.ts'
+import {
+  clusterGap,
+  clusters,
+  clusterWidth,
+  memberIndex,
+} from './placement.ts'
 import './motion.css'
-
-interface ClusterMember {
-  readonly hat: HatId
-  readonly seated: boolean
-  readonly mood: MoodId
-  readonly size: number
-  /** Offset from the cluster origin, outward and downward. */
-  readonly dx: number
-  readonly dy: number
-  readonly facing: 1 | -1
-  /** Shifts this member's whole clock, which is what makes a pair alternate. */
-  readonly phase: number
-  /**
-   * The mood a tap changes it to, held for as long as the reaction runs.
-   *
-   * A reaction alone answers a pointer with movement and leaves the face
-   * saying what it said before, so tapping the sleeping one shook a sleeping
-   * member. Changing the mood is what makes a tap an event rather than a
-   * gesture, and it is the only thing on this surface a reader can cause a
-   * state change with.
-   */
-  readonly tapMood?: MoodId
-}
-
-interface Cluster {
-  readonly side: 'left' | 'right'
-  /** Down the section, as a percentage of its height. */
-  readonly top: number
-  /** Outward from the column edge. */
-  readonly gap: number
-  readonly delay: number
-  /**
-   * Shifts every clock inside this cluster. Member phase alone pulls a pair out of
-   * step with itself and leaves the pairs in step with each other, which is the
-   * state the operator read as two groups moving as one.
-   */
-  readonly phase: number
-  readonly members: readonly ClusterMember[]
-}
-
-// Two pairs and three singles. A cast that is all pairs reads as staged and a
-// cast that is all singles is what the operator asked to move away from, so the
-// section carries both and a reader meets a pair twice rather than five times.
-//
-// No member names a behavior. What each one does follows from its mood, per
-// `TEMPERAMENTS`, because a placement free to pick its own motion produces a
-// happy face tilting like a disappointed one.
-//
-// Every mark in the cast appears once. A mood is a pairing of eyes, mouth, and
-// mark, and reusing one across members makes two of them answer a pointer with
-// the same gesture however different their faces are, which is what the shared
-// three dots did to five of them. `e2e/cast.spec.ts` fails a mark used more
-// than twice.
-//
-// The pairs read as beats rather than as states. Determined becomes unleashed,
-// working becomes triumphant, thinking becomes charged, frustrated becomes
-// exasperated, flustered becomes dizzy, and the sleeping one wakes surprised.
-const clusters: readonly Cluster[] = [
-  {
-    side: 'left', top: 15, gap: 8, delay: 0, phase: 0,
-    members: [
-      {
-        hat: 'antenna', seated: false, mood: 'determined', size: 72,
-        dx: 0, dy: 0, facing: 1, phase: 0, tapMood: 'unleashed',
-      },
-      {
-        hat: 'ears', seated: false, mood: 'playful', size: 54,
-        dx: 56, dy: 10, facing: -1, phase: 1500, tapMood: 'starstruck',
-      },
-    ],
-  },
-  {
-    side: 'right', top: 29, gap: 22, delay: 220, phase: 900,
-    members: [
-      {
-        hat: 'band', seated: false, mood: 'working', size: 64,
-        dx: 0, dy: 0, facing: -1, phase: 0, tapMood: 'triumphant',
-      },
-    ],
-  },
-  {
-    side: 'right', top: 50, gap: 12, delay: 480, phase: 2100,
-    members: [
-      // `horns` loses its step below 96px, so the one member carrying it is the
-      // one large member in the cast.
-      {
-        hat: 'horns', seated: false, mood: 'frustrated', size: 88,
-        dx: 0, dy: 0, facing: 1, phase: 0, tapMood: 'exasperated',
-      },
-      {
-        hat: 'none', seated: false, mood: 'flustered', size: 56,
-        dx: 76, dy: 36, facing: -1, phase: 1500, tapMood: 'dizzy',
-      },
-    ],
-  },
-  {
-    side: 'left', top: 66, gap: 30, delay: 700, phase: 3400,
-    members: [
-      {
-        hat: 'crown', seated: false, mood: 'thinking', size: 68,
-        dx: 0, dy: 0, facing: 1, phase: 0, tapMood: 'charged',
-      },
-    ],
-  },
-  {
-    // The idle one does the least, which is what the role is for.
-    side: 'right', top: 79, gap: 34, delay: 880, phase: 4700,
-    members: [
-      {
-        hat: 'ears', seated: true, mood: 'asleep', size: 64,
-        dx: 0, dy: 0, facing: -1, phase: 0, tapMood: 'surprised',
-      },
-    ],
-  },
-]
-
-/** A cluster is as wide as its furthest member reaches. */
-const clusterWidth = (cluster: Cluster) =>
-  Math.max(...cluster.members.map((member) => member.dx + member.size))
 ---
 
-<div class="cast-field" data-cast-field aria-hidden="true">
+<div
+  class="cast-field"
+  data-cast-field
+  aria-hidden="true"
+  style={`--power-overhang: ${POWER_OVERHANG}`}
+>
   {
     clusters.map((cluster) => (
       <div
         class:list={['cast-cluster', `is-${cluster.side}`]}
         data-cast-cluster
-        style={`--cluster-top: ${cluster.top}%; --cluster-gap: ${cluster.gap}px; --cluster-width: ${clusterWidth(cluster)}px`}
+        style={`--cluster-top: ${cluster.top}%; --cluster-gap: ${clusterGap(cluster)}px; --cluster-width: ${clusterWidth(cluster)}px`}
       >
         {cluster.members.map((member) => (
           <div
             class:list={['cast-member', member.seated && 'is-idle']}
             data-cast-member
+            data-member={memberIndex(cluster, member)}
+            data-tap-power={member.tapPower ? '' : undefined}
             data-idle={TEMPERAMENTS[member.mood].idle ?? undefined}
             data-react={TEMPERAMENTS[member.mood].react.join(' ')}
             data-react-tap={member.tapMood ? TEMPERAMENTS[member.tapMood].react.join(' ') : undefined}
             style={`--cast-dx: ${member.dx}px; --cast-dy: ${member.dy}px; --cast-size: ${member.size}px; --cast-delay: ${cluster.delay}ms; --cast-offset: ${-(cluster.phase + member.phase)}ms`}
           >
+            {/* Behind the body in its own layer, so it can carry a clock the
+                member does not. */}
+            {member.power && (
+              <span class="cast-power-layer" data-power={member.power}>
+                <Fragment set:html={renderPower(member.power, member.facing)} />
+              </span>
+            )}
+            {member.tapPower && (
+              <span
+                class="cast-power-layer is-tapped"
+                data-power={member.tapPower}
+              >
+                <Fragment
+                  set:html={renderPower(member.tapPower, member.facing)}
+                />
+              </span>
+            )}
             {/* Both faces are rendered and one is hidden. Swapping the drawing
                 at tap time would mean re-running the generator in the browser,
                 which is a second copy of it shipped to every reader for a state
                 two members ever reach. */}
-            <span class="cast-face">
+            <span class="cast-face" data-mood={member.mood}>
               <Fragment
                 set:html={renderMember({
                   hat: member.hat,
@@ -188,6 +96,28 @@ const clusterWidth = (cluster: Cluster) =>
                 />
               </span>
             )}
+          </div>
+        ))}
+        {(cluster.pets ?? []).map((pet) => (
+          <div
+            class="cast-member is-pet"
+            data-cast-pet
+            data-idle="breathe"
+            data-react="hop"
+            style={`--cast-dx: ${pet.dx}px; --cast-dy: ${pet.dy}px; --cast-size: ${pet.size}px; --cast-delay: ${cluster.delay}ms; --cast-offset: ${-cluster.phase}ms`}
+          >
+            <span class="cast-face">
+              <Fragment set:html={renderPet(pet.kind, pet.mood, pet.facing)} />
+            </span>
+            <span class="cast-face is-tapped">
+              <Fragment
+                set:html={renderPet(
+                  pet.kind,
+                  pet.mood === 'alert' ? 'resting' : 'alert',
+                  pet.facing,
+                )}
+              />
+            </span>
           </div>
         ))}
       </div>
@@ -214,8 +144,20 @@ const clusterWidth = (cluster: Cluster) =>
      was sound and the floor was wrong: 4.5:1 is a text threshold and nothing
      here is text. */
   .cast-field {
+    --cast-overhang: var(--power-overhang);
     --cast-body: #d4a574;
     --cast-eye: #2a1d14;
+    /* The body fill carrying alpha rather than a second hue, so the power layer
+       stays inside the one palette all three figures on the site share and
+       still separates from the silhouette it sits behind. Alpha rather than a
+       lighter tint because it resolves against both themes from one
+       declaration, where a tint would need a value per theme and the family
+       does not invert. */
+    --cast-aura: color-mix(in oklab, var(--cast-body) 52%, transparent);
+    /* The eye's own ink at a weight that stays behind the member. A standing
+       shadow drawn in the aura fill is lighter than the figure casting it,
+       which reads as a plate rather than as a second presence. */
+    --cast-shade: color-mix(in oklab, var(--cast-eye) 34%, transparent);
     position: absolute;
     inset: 0;
     pointer-events: none;
@@ -249,6 +191,11 @@ const clusterWidth = (cluster: Cluster) =>
      a scroll or a selection. The cursor stays a default: a member plays back
      rather than leading anywhere, and a pointer cursor would promise a
      destination that does not exist. */
+  /* A pet answers a pointer, with one gesture and the two faces it already
+     carries. Standing still beside six members that move it read as scenery,
+     which is worse than the risk it was held back for. What keeps it a pet
+     rather than a member with fewer legs is the size of what it does: no mood
+     system, no power, and a single term. */
   .cast-member {
     pointer-events: auto;
     position: absolute;
@@ -262,6 +209,34 @@ const clusterWidth = (cluster: Cluster) =>
     display: block;
     width: 100%;
     height: 100%;
+  }
+  /* Stacked under the member and grown by the reach its viewBox is padded
+     with, so the member's own grid still lands on the member's own pixels. The
+     inset is the reach as a share of the 12-cell grid, which is 25% at a reach
+     of 3, and it is negative because the box grows outward from the member
+     rather than the member shrinking inside it. */
+  /* Swapped by the same `data-woken` the tapped face answers to, so a tap
+     changes what a member emits and what it is feeling in one move. Only a tap
+     sets that mark: a hover and the scheduler both run the reaction without it,
+     which is what keeps a discharge something a reader causes. */
+  .cast-power-layer.is-tapped {
+    display: none;
+  }
+  /* Scoped to a member that actually carries a tap power. Unscoped, the first
+     rule hid the resting layer on every member a reader touched, and only one
+     of the seven has a replacement, so tapping any of the other six made its
+     power disappear and nothing took its place. */
+  .cast-member[data-woken][data-tap-power] .cast-power-layer:not(.is-tapped) {
+    display: none;
+  }
+  .cast-member[data-woken][data-tap-power] .cast-power-layer.is-tapped {
+    display: block;
+  }
+  .cast-power-layer {
+    position: absolute;
+    inset: calc(-1 * var(--cast-overhang) * 100%);
+    display: block;
+    pointer-events: none;
   }
   .cast-face.is-tapped {
     display: none;
@@ -330,7 +305,9 @@ const clusterWidth = (cluster: Cluster) =>
         )
       })
 
-    for (const member of field.querySelectorAll<HTMLElement>('[data-cast-member]')) {
+    for (const member of field.querySelectorAll<HTMLElement>(
+      '[data-cast-member], [data-cast-pet]',
+    )) {
       member.addEventListener('click', () => {
         if (member.dataset.reacting !== undefined) return
         const tapped = member.dataset.reactTap
@@ -385,5 +362,99 @@ const clusterWidth = (cluster: Cluster) =>
       // the field is decoration and a reader loses nothing by meeting it settled.
       field.dataset.arrived = ''
     }
+
+    /**
+     * One member acts on its own every few seconds, and never two at once.
+     *
+     * `.claude/ARCHITECTURE.md` records expressive motion being moved to a
+     * pointer on the reading that a margin full of characters performing at a
+     * reader who has not looked at them is the ambient motion problem
+     * restated. This does not reverse that. The band `.claude/DESIGN.md` bars
+     * is *sustained* motion with no fixed reference, at 4 to 11px per second,
+     * and every term here is a reaction that crosses it in a fraction of its
+     * own cycle. What changes is who triggers one, not what a trigger runs.
+     *
+     * So the whole of it is a scheduler over the reactions that already exist.
+     * It writes the same `data-reacting` a tap writes and the same
+     * `animationend` clears it, which is why no keyframe and no selector moved
+     * for this.
+     */
+    const SOLO_GAP_MS = 5200
+    /** Spread, so the cast never settles into a countable rhythm. */
+    const SOLO_JITTER_MS = 2600
+
+    const members = [
+      ...field.querySelectorAll<HTMLElement>('[data-cast-member]'),
+    ]
+
+    /**
+     * Whether the section is on screen. A member acting behind the reader is
+     * the ambient motion complaint with none of the payoff, and it is also the
+     * only part of this that costs anything when nobody is looking.
+     */
+    let watching = false
+    if ('IntersectionObserver' in window) {
+      const presence = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) watching = entry.isIntersecting
+        },
+        { threshold: 0 },
+      )
+      presence.observe(field)
+    }
+
+    const stillMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const actOnce = () => {
+      // A reader's own pointer outranks the schedule, and a member already
+      // moving is what the one-at-a-time rule is about. Both are read off the
+      // page rather than tracked, so nothing here can disagree with it.
+      if (!watching || document.hidden || stillMotion.matches) return
+      if (field.querySelector('[data-reacting]')) return
+      // Gated on the same pointer test the hover reactions answer to. WebKit
+      // applies `:hover` to a tapped element and holds it until something else
+      // is tapped, so ungated this silences the scheduler for the life of the
+      // page the moment a reader taps a member on a touch screen. The failure
+      // is silence, which is indistinguishable from a cast that is quiet on
+      // purpose.
+      if (
+        field.dataset.pointer !== undefined &&
+        field.querySelector('[data-cast-member]:hover')
+      )
+        return
+
+      const idle = members.filter(
+        (member) => member.dataset.reacting === undefined,
+      )
+      if (idle.length === 0) return
+
+      const chosen = idle[Math.floor(Math.random() * idle.length)]
+      chosen.dataset.reacting = ''
+
+      // A term that starts no animation is never ended by one, which is the
+      // trap the tap path already carries. Here it costs more, because a
+      // member left marked would take the scheduler's one slot for the life of
+      // the page and the cast would go quiet with nothing saying why.
+      window.setTimeout(() => {
+        if (!isReacting(chosen)) settle(chosen)
+      }, STILL_REACTION_MS)
+    }
+
+    // The handle is kept so the loop can be stopped. Nothing tears this page
+    // down in normal use, which is why it costs nothing to hold, and a timer
+    // that re-arms itself with no way to clear it is the shape the concurrency
+    // standard bars whatever the page does.
+    let pending = 0
+    const schedule = () => {
+      pending = window.setTimeout(
+        () => {
+          actOnce()
+          schedule()
+        },
+        SOLO_GAP_MS + Math.random() * SOLO_JITTER_MS,
+      )
+    }
+    schedule()
+    window.addEventListener('pagehide', () => window.clearTimeout(pending))
   }
 </script>

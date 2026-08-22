@@ -19,13 +19,20 @@
  * Those steps overlap rather than sitting side by side. A first pass spaced them
  * exactly and every chevron broke into three dots at the smallest size the cast
  * ships at, because a step measuring 0.35 of an eye box is 2.6px on a 60px
- * member. `e2e/cast.spec.ts` fails a face carrying a cell under 3px there.
+ * member. `cast.test.ts` fails a stepped figure whose cells stop touching.
+ *
+ * That guard is connectivity rather than size, and the distinction cost a pass
+ * to find. Reading the rule as a floor on every cell reports thirty of
+ * thirty-four parts broken, since a `closed` eye is one bar at 1.5px and has
+ * nothing beside it to separate from. What breaks a chevron is a gap between
+ * two cells, so a gap is what is measured.
  *
  * Nothing is deleted from here. It is an inventory a placement draws from, and
  * an unused entry costs a few bytes of a static build.
  */
 
 export type EyeId =
+  | 'keen'
   | 'sparkle'
   | 'fierce'
   | 'swirl'
@@ -39,6 +46,10 @@ export type EyeId =
   | 'cross'
 
 export type MouthId =
+  | 'beam'
+  | 'bared'
+  | 'smirk'
+  | 'grin'
   | 'tongue'
   | 'flat'
   | 'smile'
@@ -104,6 +115,14 @@ export function eyeCells(
         { x: -0.1, y: 0.34, w: 1.2, h: 0.34 },
         { x: 0.16, y: 0.16, w: 0.7, h: 0.7 },
       ]
+    // Taller than it is wide, which is the one proportion no other eye here
+    // uses: `open` is a square, `wide` a bigger square, `dot` a small one. A
+    // level gaze needs a shape rather than a brow, and a brow is what every
+    // intense eye in this set already is. One cell rather than a lid over an
+    // eye, because the eye box is 5.4px on the smallest member and a lid inside
+    // it lands near 1px.
+    case 'keen':
+      return [{ x: 0.22, y: -0.12, w: 0.56, h: 1.24, round: 3 }]
     // A brow stepping down toward the nose. Mirrored per side, which is the one
     // eye that needs to know which side it is on.
     case 'fierce':
@@ -191,6 +210,43 @@ export function mouthCells(
       return [{ x: 0.24, y: 0.12, w: 0.52, h: 0.62, round: 2 }]
     case 'wide':
       return [{ x: 0.06, y: 0.1, w: 0.88, h: 0.7, round: 2 }]
+    // Up on one side only. Symmetry is what makes `smile` read as friendly, so
+    // breaking it is the whole of what makes this read as pleased with itself.
+    // The one mouth in the set that is not mirrored about the centre.
+    case 'smirk':
+      return [
+        { x: 0.04, y: 0.44, w: 0.42, h: 0.34 },
+        { x: 0.38, y: 0.26, w: 0.34, h: 0.34 },
+        { x: 0.62, y: 0.1, w: 0.34, h: 0.32 },
+      ]
+    // Wider than `smile` and heavier along the bottom. A confident mouth is a
+    // broad one rather than a big one, so this spans past the mouth box on both
+    // sides where `wide` and `grin` grow upward into the face instead.
+    case 'beam':
+      return [
+        { x: -0.1, y: 0.02, w: 0.4, h: 0.4 },
+        { x: 0.18, y: 0.36, w: 0.64, h: 0.44 },
+        { x: 0.7, y: 0.02, w: 0.4, h: 0.4 },
+      ]
+    // Open with a stepped top edge, which reads as a mouth set against
+    // something rather than one enjoying itself. `open` is a plain box and
+    // `wide` is a bigger one, so neither can carry effort: what carries it is
+    // the break in the upper line.
+    case 'bared':
+      return [
+        { x: 0.1, y: 0.14, w: 0.34, h: 0.28 },
+        { x: 0.4, y: 0.06, w: 0.3, h: 0.36 },
+        { x: 0.66, y: 0.16, w: 0.32, h: 0.26 },
+        { x: 0.12, y: 0.36, w: 0.78, h: 0.42, round: 2 },
+      ]
+    // Open and stepped up at both corners. Wider than `smile` and taller than
+    // `wide`, so it carries at the smallest size where a thin arc does not.
+    case 'grin':
+      return [
+        { x: 0.06, y: 0.2, w: 0.34, h: 0.34 },
+        { x: 0.16, y: 0.34, w: 0.68, h: 0.42 },
+        { x: 0.6, y: 0.2, w: 0.34, h: 0.34 },
+      ]
     // A stepped tilde, which is the blocky reading of an unimpressed squiggle.
     case 'wave':
       return [
@@ -337,6 +393,7 @@ export function markCells(
 
 export const EYE_IDS: readonly EyeId[] = [
   'open',
+  'keen',
   'wide',
   'happy',
   'squint',
@@ -350,6 +407,10 @@ export const EYE_IDS: readonly EyeId[] = [
 ]
 export const MOUTH_IDS: readonly MouthId[] = [
   'flat',
+  'bared',
+  'beam',
+  'smirk',
+  'grin',
   'smile',
   'frown',
   'pout',
@@ -400,6 +461,64 @@ export const MOODS = {
   playful: { eyes: 'happy', mouth: 'tongue', mark: 'none' },
   determined: { eyes: 'fierce', mouth: 'flat', mark: 'aura' },
   unleashed: { eyes: 'fierce', mouth: 'wide', mark: 'impact' },
+  // The lead at rest. `determined` pairs a fierce brow with a flat mouth and
+  // both are hairlines, which measured 8.0% ink in the face region, second
+  // lowest in the cast and behind the member that is asleep. A brow that reads
+  // as effort over a mouth that reads as nothing is what made him read as glum
+  // rather than as capable.
+  smug: { eyes: 'fierce', mouth: 'smirk', mark: 'none' },
+  cocky: { eyes: 'happy', mouth: 'smirk', mark: 'spark' },
+  fired: { eyes: 'fierce', mouth: 'grin', mark: 'bolt' },
+  beaming: { eyes: 'sparkle', mouth: 'grin', mark: 'burst' },
+  // Open eyes over a grin. `working` shipped the same eyes over a flat mouth
+  // and read as blank, which is a mouth problem rather than an eye one: the
+  // eyes were already the only pair in the cast nothing else used. Reaching for
+  // `triumphant` instead spent that, since it shares `happy` eyes with the
+  // member standing in the next cluster and the two measured 4.8% apart, the
+  // closest pair the cast has ever held.
+  pumped: { eyes: 'open', mouth: 'grin', mark: 'burst' },
+  // Candidates for the lead. He measured as the member doing the least in the
+  // cast, reacting with a lean and a blink where everyone else jumps or shakes,
+  // and he carried no mark, so his face emitted nothing while he stood in
+  // flames. Each of these gives him something to throw.
+  driven: { eyes: 'fierce', mouth: 'smirk', mark: 'bolt' },
+  roused: { eyes: 'fierce', mouth: 'bared', mark: 'impact' },
+  stoked: { eyes: 'fierce', mouth: 'bared', mark: 'aura' },
+  // A candidate for the crowned member, who shares the cheerful register with
+  // the member two clusters above him. They are the only two in the cast whose
+  // eyes and mouth are both warm, so they pair off across the page however
+  // unique each feature is on its own.
+  composed: { eyes: 'dot', mouth: 'open', mark: 'note' },
+  // The lead, off the brow entirely. Every intense eye in this family is a brow
+  // and a brow over a closed mouth is what read as a villain, so these pair a
+  // level gaze with a broad smile instead.
+  assured: { eyes: 'keen', mouth: 'beam', mark: 'none' },
+  bold: { eyes: 'fierce', mouth: 'beam', mark: 'bolt' },
+  sunny: { eyes: 'keen', mouth: 'smirk', mark: 'spark' },
+  // What the lead becomes under a tap. It keeps his own eyes and opens his own
+  // smile, because the tap he had thrown both away: `unleashed` swaps the level
+  // gaze for the angled brow he was moved off and the broad smile for `wide`,
+  // which is a plain open box and the same mouth the angry member wears. From a
+  // confident rest that reads as dismay rather than as effort.
+  //
+  // A tap escalates a face rather than replacing it. That is the rule the
+  // sleeping member already followed, waking surprised rather than waking as
+  // somebody else.
+  surging: { eyes: 'keen', mouth: 'bared', mark: 'impact' },
+  // The crowned member. `rapt` is where he rests and `composed` is what a tap
+  // narrows him to, which is the opposite of how the pair was first placed.
+  // Wide eyes settling to points reads as a figure gathering itself, and points
+  // widening reads as one being startled, so the order carries the meaning
+  // rather than either face doing it alone.
+  //
+  // Neither is the cheerful register he was moved out of. That was `sparkle`
+  // over a `smile`, and what does the work here is the mouth staying `open`
+  // through both, so only the eyes change and the change is the whole event.
+  rapt: { eyes: 'sparkle', mouth: 'open', mark: 'spiral' },
+  // The worker under a tap. `charged` widened both his eyes and his mouth at
+  // once, which is why tapping him read as startled rather than as effort. His
+  // own eyes stay and the grin opens.
+  revved: { eyes: 'open', mouth: 'bared', mark: 'impact' },
 } as const satisfies Record<string, Face>
 
 export type MoodId = keyof typeof MOODS
