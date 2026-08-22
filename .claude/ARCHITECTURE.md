@@ -551,6 +551,30 @@ Two lines stay and neither is an exception left behind. The closing ask keeps th
 
 `.claude/DESIGN.md` § Borders carries the three tests a line has to pass to stay. Measured at 502da58 on 2026-08-20, at 1280, 1024, and 390.
 
+### The focus ring is the site's own, and its shape comes from the control
+
+The sweep above measured what a pointer does to 87 controls and never asked what a keyboard does to any of them. Measured the same way on 2026-08-22, across six pages and both themes, 222 focus probes returned exactly one ring and it was the component library's default blue. `--ring` and `--primary` hold one value, and `--primary` is painted only by the unreferenced React component two entries up, so **the only blue a visitor could ever see was the one a keyboard reached.**
+
+That is the general case rather than a fact about this token. A pointer response is met on every pass over the page and a focus ring takes a Tab, so a library default in that slot survives every visual review by construction. `e2e/focus-inventory.ts` exists so the question gets asked without anyone remembering to.
+
+The ring takes the accent, which measures 5.48:1 in light and 5.42:1 in dark against a 3:1 floor for a non-text indicator. Contrast was never the defect: the blue read 8.42:1 and 6.53:1 and cleared the floor comfortably. A ring can answer to the rule and still belong to another site.
+
+Shape was the other half and the larger one. An outline follows its element's own radius, and 40 of the controls declare none, so the ring drew a rectangle around the rounded chip sitting inside it. A radius floor in `@layer base` fixes that without a list of components: an unlayered component rule and a Tailwind utility both beat a layered declaration, so a control carrying a shape keeps it and only the shapeless ones take the floor. Measured, the rail row holds 999px and the dock and toggle hold their full round, while the chip hit, the hero links and the card links move from 0 to 8px. Raising that rule out of the layer squares off every round control on the site, and no assertion about the ring's color would report it, which is what `a control with a shape of its own keeps it when focused` guards.
+
+The glow lands by the same rule and that is the reason for choosing it. A control already answering with a shadow of its own keeps that answer and one that had none gains this, so focus and hover speak one language without either overwriting the other. Two candidates were served live from `src/components/dev/scenarios.astro` rather than composed into a sheet, because the still could not separate them: the question was what the glow does across a run of controls a reader tabs through, which only a reader tabbing can answer.
+
+The glow reaches an inline link, where the hover response deliberately does not, and the two-tier split above governs hover alone. That split exists because a ground behind a word reads as a highlighter and fights the sentence around it, which is an argument about a fill rather than about a shadow, and it can afford to be selective because a pointer is already over the thing it marks. A focus indicator cannot: it is the only thing telling a keyboard reader where they are, so it reaches every control or it fails the one it skipped. Read the tiers as answering different questions rather than as one rule two surfaces state differently.
+
+`--light-ring` now resolves to the light accent rather than holding a value of its own, so a control focused inside a chart plate carries the site's ring at 6.4:1 on the white that plate holds.
+
+The ring's floor is read against every ground it can sit on rather than against the page alone. It sits on the two bars, the rail's active row and the dock as well, and the branch below this one moves exactly those surfaces, so a reading taken against `body` would have gone on passing while the thing under the ring changed.
+
+Two instrument defects came out of writing the guard, and both are the same shape as the ones this file already collects. `outline: none` resets the width to `medium`, which engines report as 3px while drawing nothing, so a check reading `outlineWidth` sees a ring on a control that has none: read the style. And a rule added to strip a ring has to win a cascade against a layered declaration and a user-agent default, so the strip is written inline, where nothing outranks it.
+
+After the sweep, the same instrument reports 0 controls with a square ring against 40 before, 0 with no ring in either state, and one ring color across all 222 probes.
+
+Measured at 63bfea1 on 2026-08-22, at 1440x900 across chromium, firefox, and webkit.
+
 ### One ground for two bars, and the shape moves while the row does not
 
 The landing bar and a route's bar diverged the moment the first was rebuilt, so a reader crossing between them met a thinned ground with no rule on one side and a near-opaque ground under a hard line on the other. Both now render one shared ground rule rather than a copy per component.
@@ -640,6 +664,8 @@ An arm carries CSS where the decision is a treatment. Where it is a value the pa
 Two things about it are not obvious and both cost a debugging pass. Inside an Astro expression a script's children are parsed the way JSX children are, so every brace in the source reads as an interpolation and the body ships as an unevaluated literal with nothing reporting it. The source is held as a string and written with `set:html` for that reason. The switcher also sits bottom left rather than bottom centre, which is where Astro's dev toolbar sits and where it swallows every click aimed at whatever is underneath it.
 
 **It is unreferenced today, and that is the expected state.** It is scaffolding a visual decision reaches for and removes again, so a branch with no open visual decision holds no call site. Read it the way the React entry above should be read: a session auditing the tree for unused files finds it and should leave it alone.
+
+It has since served its sixth decision, and that run is the one that shows what it is for. The focus ring's last two candidates were composed into a sheet and the sheet could not separate them, because the glow reads almost identically on one still control and the question was what it does across a run of controls a reader tabs through. Mounted from the layout rather than from a section, since a ring reaches every control on every page, it was driven and removed inside one batch and the tree carries no trace of it.
 
 What makes it reachable rather than merely present is the `visual-batch` skill naming it, which is the half that shipped late. The skill described the workflow as steps to build by hand and named no component, so a session following it rebuilt the switcher and met the problem the component closes. An unreferenced component is only safe while something tells a session it exists, and for one commit nothing did.
 

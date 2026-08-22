@@ -312,7 +312,11 @@ body.surface-case-study > header[data-section='header'] {
      nothing keeps in step. */
   --light-card: oklch(1 0 0);
   --light-muted-foreground: oklch(0.532 0.016 62);
-  --light-ring: oklch(0.41 0.18 264);
+  /* The plate's ring reads the light accent rather than a value of its own, so
+     a control focused inside a chart plate carries the site's ring like every
+     other control. It measures 6.4:1 on the white the plate holds. */
+  --light-accent: oklch(0.513 0.135 43);
+  --light-ring: var(--light-accent);
 
   --background: oklch(0.968 0.01 82);
   --foreground: oklch(0.21 0.007 78);
@@ -344,12 +348,18 @@ body.surface-case-study > header[data-section='header'] {
   --secondary-foreground: oklch(0.21 0.007 78);
   --muted: oklch(0.945 0.012 82);
   --muted-foreground: var(--light-muted-foreground);
-  --accent: oklch(0.513 0.135 43);
+  --accent: var(--light-accent);
   --accent-foreground: oklch(0.954 0.013 82);
   --destructive: oklch(0.502 0.197 27.4);
   --border: oklch(0.905 0.012 82);
   --input: oklch(0.905 0.012 82);
-  --ring: var(--light-ring);
+  /* The ring is the accent the site already paints. It held the shadcn primary
+     until 2026-08-22, a blue nothing else on the site draws: measured across
+     six pages and both themes, 222 focus probes returned one ring and it was
+     that blue, so the only blue a visitor ever saw was the one a keyboard
+     reached. It clears the 3:1 a focus indicator answers to with room, at
+     5.48:1 in light and 5.42:1 in dark. */
+  --ring: var(--accent);
   --chart-1: oklch(0.41 0.18 264);
   --chart-2: oklch(0.51 0.144 152);
   --chart-3: oklch(0.535 0.143 60);
@@ -379,7 +389,7 @@ body.surface-case-study > header[data-section='header'] {
   --destructive: oklch(0.65 0.2 27);
   --border: oklch(0.954 0.013 82 / 12%);
   --input: oklch(0.954 0.013 82 / 17%);
-  --ring: oklch(0.7 0.15 264);
+  --ring: var(--accent);
   --chart-1: oklch(0.7 0.15 264);
   --chart-2: oklch(0.65 0.144 152);
   --chart-3: oklch(0.65 0.143 60);
@@ -403,8 +413,28 @@ body.surface-case-study > header[data-section='header'] {
   * {
     @apply border-border outline-ring/50;
   }
+  /* A control a keyboard reaches answers the way a control a pointer reaches
+     does, in the accent and with the site's own glow, rather than in a color
+     nothing else draws.
+
+     Two things beyond the color, and both are about shape.
+
+     The radius floor stops a ring boxing a pill. An outline follows its
+     element's own radius, and 40 of the site's controls declare none, so the
+     ring drew a rectangle around the rounded chip inside it. This sits in
+     `@layer base` on purpose: an unlayered component rule and a Tailwind
+     utility both beat it, so a control that already carries a shape keeps it
+     and only the shapeless ones take the floor. Measured, the rail row holds
+     999px and the dock and toggle hold their full round, while the chip hit,
+     the hero links and the card links go from 0 to 8px.
+
+     The glow is the same one a pointer raises, and it lands by the same rule:
+     a control already answering with a shadow of its own keeps that answer,
+     and one that had none gains this. */
   *:focus-visible {
     @apply outline-ring outline-2 outline-offset-2;
+    border-radius: 0.5rem;
+    box-shadow: var(--glow-shadow);
   }
   body {
     @apply bg-background text-foreground;
