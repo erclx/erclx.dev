@@ -121,17 +121,23 @@ The span column folds into the reading column and leads its own beat, still at l
 
 ## Margin cast
 
-Above 1280 the section carries small figures in both margins, in the tan the dog and the airliner already fill at. They sit in clusters anchored to the reading column's own edge rather than to the viewport, two of them as pairs and three alone, and the pairs face each other.
+Above 1280 the section carries small figures in both margins, in the tan the dog and the airliner already fill at. They sit in clusters anchored to the reading column's own edge rather than to the viewport, two of them as pairs and three alone, and the pairs face each other. A pair is offset down as well as across, since the margin has no room to separate one sideways.
+
+Every member emits something, drawn on its own layer behind it: the lead stands in flames, and the others carry lightning, trailing bars, a ring, a wind, water and loose points. Four of the five clusters also carry a companion, a smaller creature that is its own drawing rather than a member at half scale.
 
 ```plaintext
    [rail]        [ figures ]   |  reading column  |   [ figures ]   [dock]
-                  lead + child |                  |   working
-                               |                  |   frustrated + flustered
-                  thinking     |                  |
-                               |                  |   asleep
+                  lead         |                  |   worker
+                    playful    |                  |     spark
+                    ember      |                  |   horned + flustered
+                  crowned      |                  |
+                               |                  |   sleeping
+                               |                  |     dog
 ```
 
-At rest they hold still apart from a slow swell. Pointing at one runs the gesture its mood carries, and tapping one changes its face: the sleeping figure wakes surprised, the thinking one charges, the frustrated one gives up. A lit shape appears behind whichever is pointed at, so a reader can tell they answer.
+One member acts on its own every few seconds and never two at once, drawing from the same gestures a pointer runs. It stands down while the section is off screen, under reduced motion, and while a pointer sits on a member, so a reader's own hand outranks the schedule.
+
+Pointing at one runs the gesture its mood carries. Tapping one changes its face, and the change escalates rather than replaces: the sleeping figure wakes surprised, the crowned one narrows his eyes rather than widening them, and the lead swaps his flames for a discharge while a companion only perks up. A lit shape appears behind whichever is pointed at, so a reader can tell they answer.
 
 Below 1280 the section carries none. Both margins measure zero there, which is the same reason the rail stands down.
 
