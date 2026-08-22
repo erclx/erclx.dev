@@ -8,6 +8,11 @@ const paragraphs = [
 // Swept-wing airliner seen from above, pointing right, symmetric about y=30.
 // Drawn here rather than sourced, since the repository carries no icon set and
 // a single figure does not earn one.
+//
+// It draws at 78px wide, inside the 54 to 88px band the agent cast occupies a
+// section below. It sat at 50px until 2026-08-22, under every figure on the
+// page. The contrail's weight is set separately from the craft's scale, so the
+// two are held at the ratio they were tuned at rather than moving alone.
 const PLANE_PATH = [
   'M114 30',
   'C100 26 88 25 72 25',
@@ -24,6 +29,14 @@ const PLANE_PATH = [
 // their easings, which is what produced a glide followed by a dive. Both the
 // aircraft and its contrail read this string, so they cannot drift apart.
 const FLIGHT_PATH = 'M -70 8 C 190 12 430 26 690 41'
+
+// The craft's scale, and the trail's weight derived from it rather than written
+// beside it. The two were tuned together at 0.45 and 5, so the ratio is what
+// carries between them and a second literal drifts from it silently: written by
+// hand at 7.8 the pair sat 0.3% off while being described as held, which spent
+// two thirds of the guard's tolerance before anything moved.
+const CRAFT_SCALE = 0.7
+const TRAIL_STROKE = +(CRAFT_SCALE * (5 / 0.45)).toFixed(3)
 ---
 
 <section
@@ -105,7 +118,7 @@ const FLIGHT_PATH = 'M -70 8 C 190 12 430 26 690 41'
           fill="none"
           stroke="currentColor"
           stroke-opacity="0.4"
-          stroke-width="5"
+          stroke-width={TRAIL_STROKE}
           stroke-linecap="round"
           filter="url(#about-flight-blur)"
           mask="url(#about-flight-decay-mask)"></path>
@@ -114,7 +127,7 @@ const FLIGHT_PATH = 'M -70 8 C 190 12 430 26 690 41'
           <path
             d={PLANE_PATH}
             fill="currentColor"
-            transform="translate(-27 -13.5) scale(0.45)"></path>
+            transform={`translate(-27 -13.5) scale(${CRAFT_SCALE})`}></path>
         </g>
       </svg>
     </div>

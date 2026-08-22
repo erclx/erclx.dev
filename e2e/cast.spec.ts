@@ -564,4 +564,67 @@ test.describe('agent cast', () => {
       true,
     )
   })
+
+  // The airliner is not a cast member and shares no code with one, but it is
+  // drawn in the same family and a reader meets the two a section apart. It sat
+  // at 49.9px against a cast running 54 to 88, so it was smaller than every
+  // figure on the page, and nothing related the two numbers.
+  test('draws the airliner inside the band the cast occupies', async ({
+    page,
+  }) => {
+    await page.setViewportSize(WIDE)
+    await settleCast(page)
+
+    const sizes = await page.evaluate(
+      (selectors) => {
+        const members = [
+          ...document.querySelectorAll<HTMLElement>(selectors.member),
+        ].map((member) => member.getBoundingClientRect().width)
+        const craft = document.querySelector(selectors.craft)
+        if (!craft) throw new Error('the about surface draws no airliner')
+        if (members.length === 0) throw new Error('the cast draws no members')
+        return {
+          craft: craft.getBoundingClientRect().width,
+          smallest: Math.min(...members),
+          largest: Math.max(...members),
+        }
+      },
+      { member: MEMBER, craft: '.about-flight-craft path' },
+    )
+
+    // The band rather than the mean. The cast spans 34px across seven figures,
+    // and pinning the aircraft to one point inside that would be a number with
+    // nothing behind it.
+    expect(sizes.craft).toBeGreaterThanOrEqual(sizes.smallest)
+    expect(sizes.craft).toBeLessThanOrEqual(sizes.largest)
+  })
+
+  // The contrail's weight is set independently of the craft it trails, so a
+  // scale applied to one leaves the other where it was. They were 0.45 and 5px
+  // when that pairing was chosen, and the ratio is what has to survive.
+  test('keeps the contrail in step with the aircraft it trails', async ({
+    page,
+  }) => {
+    await page.setViewportSize(WIDE)
+    await settleCast(page)
+
+    const ratio = await page.evaluate(() => {
+      const craft = document.querySelector('.about-flight-craft path')
+      const trail = document.querySelector('.about-flight-trail')
+      if (!craft || !trail) throw new Error('the flight is missing a part')
+      const scale = Number(
+        /scale\(([\d.]+)\)/.exec(craft.getAttribute('transform') ?? '')?.[1],
+      )
+      const stroke = Number(trail.getAttribute('stroke-width'))
+      if (!scale || !stroke) throw new Error('the flight states no scale')
+      return stroke / scale
+    })
+
+    // 5 / 0.45, the pairing the drawing was tuned at. Held to two places rather
+    // than one, since the component derives the stroke from the scale and lands
+    // within 0.0004 of it. At one place the tolerance is 0.05 and a stroke
+    // written by hand beside the scale spends two thirds of it standing still,
+    // which is a guard that reports nothing until the drift is already large.
+    expect(ratio).toBeCloseTo(11.111, 2)
+  })
 })
