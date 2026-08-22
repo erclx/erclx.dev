@@ -13,12 +13,20 @@ It is decoration. Every figure is `aria-hidden`, carries no accessible name, and
 
 ## Layout
 
-- `src/components/site/experience/cast/` owns the whole domain: the generator, the two vocabularies, the shared stylesheet, and the placement component.
+- `src/components/site/experience/cast/` owns the whole domain: the generator, the four vocabularies, the shared stylesheet, and the placement component.
+- `faces.ts` holds what a face does, `powers.ts` what a member emits, and `gear.ts` what it holds. A face is three slots inside the head, and the other two are slots around the body.
 - `e2e/` owns the two instruments, `cast-motion.ts` and `cast-inventory.ts`, and the guards in `cast.spec.ts`.
 - `.claude/review/cast/` holds the generated inventory and is gitignored.
 
 ## Decisions
 
+- A power is a slot rather than another mark, and the reason is measured. A mark's box is 17.6px across on the smallest member and anchored to the head's top right corner, so nothing surrounding a body fits in it. An aura built there reads as a small comb beside the ear, which is what the lead shipped with.
+- Gear is a slot rather than a hat. A hat is the only signal separating a lead from a worker, so loading it with a sword spends that signal on flavour. Gear says what a member is doing, which the section could not say before.
+- The power is its own drawing stacked behind the member, not part of it. It needs its own clock, since an aura pulses while the body does something else and one SVG carrying both makes the two animations fight. Gear stays inside the member on the same test read the other way: it moves with the hand holding it, so it has no clock of its own to want.
+- A power draws in `--cast-aura`, the body fill at 52%. In the body's own fill it merges with the silhouette and reads as anatomy: the flanking tongues became a second pair of ears and the standing shadow became a lump on the back. `shadow` alone takes `--cast-shade`, the eye's ink at 34%, because a silhouette lighter than the figure casting it is not a shadow.
+- Gear held clear of the silhouette keeps the body fill. Gear crossing it takes a contrasting ink, since the keyboard sat across the chest in body ink and rendered as nothing at all.
+- The power layer reaches 2 cells past the member on every side, and that figure belongs to the placement rather than to the drawing. A cluster reserves it twice, once as clearance from the reading column and once in its own width, so the footprint grows by twice the overhang. At 3 cells the 88px member's cluster ran 12.6px past the margin the rail and dock leave at 1280. Both reservations derive from `POWER_OVERHANG` rather than sitting as literals, so a reach that changes cannot leave a power painting over prose with the guard still passing.
+- No two members share an eye or a mouth. That is the invariant behind the cast reading as seven characters, and it is what pairwise pixel difference could not see: four of the seven wore the same flat mouth while every pair still measured 8% to 12% apart.
 - A member is a rounded body on two feet with a face, arms below the mouth line, and a hat. Members differ by a feature or by whether they stand, never by width: a narrowed body reads as the same member squeezed rather than as a second one.
 - Two eyes on a block reads as a saucer. Either limbs or a mouth fixes it, and this family carries no limbs above the mouth line, so the mouth is what carries it. Apply that test to a figure nobody has drawn yet.
 - Three roles carry meaning and the hat carries flavour. A lead takes the antenna, a worker takes any hat from the pool, and an idle is seated. That split is what lets the pool hold six hats without the cast reading as six species.
@@ -40,6 +48,17 @@ It is decoration. Every figure is `aria-hidden`, carries no accessible name, and
 - Keyframes written for ambient looping put their movement at the end of a long cycle. Reused as a reaction that pays out seconds after the click and reads as a dead control.
 - A capture of an element taller than the viewport is stitched, and absolutely positioned children outside the first frame are dropped. That reads as the cast not rendering. Capture viewport frames instead.
 - `omitBackground` clears the page canvas and not the background the page paints, so an element capture comes back fully opaque and any coverage check reports success for an empty box.
+- A mood added to `MOODS` without an entry in `TEMPERAMENTS` fails the build at render, since the placement reads `TEMPERAMENTS[mood].idle`. That is the loud failure. The quiet one is binding `emote` to a mood carrying no mark, which fires a reaction that animates nothing.
+- Pairwise pixel difference between two faces saturates between 8% and 12% whatever the faces say, because a head is mostly body fill either way. It measures presence and not expression, so it reads the original problem and cannot be optimized against. Count members sharing a feature instead.
+- An SVG the generator emits is inline, so it carries no namespace and resolves its inks from the page. Loaded as a standalone image in a harness it has neither and decodes to nothing, which a comparison then reads as two identical empty grids.
+- A clearance measured by branching on which side of the column an element sits reports nonsense once the element overlaps. Take the signed larger of the two edge distances instead, which needs no branch. The branching form reported a 10px overlap as 890px.
+
+## Adding a power or a piece of gear
+
+1. Draw it in `powers.ts` or `gear.ts` on the 12 by 12 grid, stepped rather than tapered. A power may run from minus the reach to the grid plus it; gear is clipped to the member's own box.
+2. Keep every stroke 0.7 cells or wider. One cell is 4.5px on a 54px member, so a thinner stroke lands under 3px and stops holding its shape.
+3. Give a cell a contrasting ink where it crosses the body, and leave it in the default where it does not.
+4. Judge it at the size it ships rather than at inventory scale. That is the mistake the whole power slot exists to correct.
 
 ## Adding a behavior
 

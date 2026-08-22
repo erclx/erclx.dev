@@ -367,4 +367,13 @@ export const TEMPERAMENTS: Record<string, Temperament> = {
   done: { idle: 'breathe', react: ['slump', 'blink'] },
   surprised: { idle: 'breathe', react: ['hop', 'blink'] },
   asleep: { idle: 'breathe', react: ['blink', 'emote'] },
+  // No `emote` here, and the omission is load-bearing. It moves the mood's own
+  // mark and `smug` carries none, so binding it would fire a reaction that
+  // animates nothing, which no rate check can see because there is no rate to
+  // read. A lean is what a confident figure does instead.
+  smug: { idle: 'breathe', react: ['lean', 'blink'] },
+  cocky: { idle: 'breathe', react: ['hop', 'emote'] },
+  fired: { idle: 'breathe', react: ['power', 'emote'] },
+  beaming: { idle: 'breathe', react: ['hop', 'flail', 'emote'] },
+  pumped: { idle: 'breathe', react: ['hop', 'flail', 'emote'] },
 }

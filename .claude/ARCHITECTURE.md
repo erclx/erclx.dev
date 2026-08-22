@@ -377,6 +377,66 @@ Verified at 1280x800, 1440x900, and 390x844 across chromium, firefox, and
 webkit, where the full suite passes 183 and the cast's twelve guards pass on
 every engine.
 
+### A slot is decided by what it needs a clock for, and sameness is counted rather than compared
+
+The cast gained two slots and a face pass. What is worth keeping is why each
+slot sits where it does, and one instrument that answered a different question
+than the one asked.
+
+A power is a slot rather than another mark. A mark's box is 17.6px across on the
+smallest member and anchored to the head's top right corner, so nothing that
+surrounds a body fits in it, and the aura meant to power the lead up drew a
+small comb beside his ear. Gear is a slot rather than a hat, because a hat is
+the only signal separating a lead from a worker and loading it with a sword
+spends that signal on flavour.
+
+**What decides whether a slot joins the member's drawing or gets its own is
+whether it needs a clock.** A power pulses while the body does something else,
+so one SVG carrying both makes the two animations fight, and it draws behind on
+its own layer. Gear moves with the hand holding it and stays inside. The same
+test settles a slot nobody has drawn yet.
+
+That split then paid twice. Held inside the member's box a power cannot be
+larger than the figure emitting it, and served live at that size a blaze read as
+a fringe rather than as anything the lead was doing. Its own layer takes its own
+padded viewBox. And a candidate can be swapped without re-rendering the member,
+which is what let the whole vocabulary be driven from the running page.
+
+How far it reaches is a placement number rather than a drawing one. A cluster
+reserves the reach twice, once as clearance from the reading column and once in
+its own width, so its footprint grows by twice the overhang. At three cells the
+88px member's cluster ran 12.6px past the margin the rail and dock leave at
+1280, which the existing cluster guard caught. Two clears the column by 12px and
+the dock by 7px. A larger reach costs a placement change rather than a drawing
+change, since what does not fit is the cluster.
+
+**The instrument lesson is the one to carry.** The complaint was that the cast
+read as one face repeated, and pairwise pixel difference found it: five of seven
+members sat within 8.4% to 12.8% of each other. It is useless as a target.
+Every pair in this cast lands between 8% and 12% whatever the faces say, because
+a head is mostly body fill either way, so two rounds of work moved the mean from
+21.2% to 21.6% while the faces changed completely. Counting members sharing a
+feature is the measure that tracks what a reader sees, and it named the actual
+defect on its first run: four of seven wore the identical flat mouth. No
+pairwise figure pointed at it.
+
+A measure can be right about a problem and wrong as a target. Read the first
+number to find the defect and a different one to know whether it closed.
+
+Two errors on this branch are worth naming because both were made after the rule
+that forbids them had been written down. A candidate lead face was argued down
+for sharing `happy` eyes with the member standing beside him, and the next
+change gave a different member exactly that pairing, producing a 4.8% pair,
+closer than anything the cast had held. And a mood added to `MOODS` without a
+`TEMPERAMENTS` entry fails the build at render, which is loud, while binding
+`emote` to a mood carrying no mark is silent and fires a reaction that animates
+nothing.
+
+Measured at 1280, 1440, and 1920 across the seven members, where no two share an
+eye or a mouth, every power and gear cell fits its box and clears the 3px stroke
+floor, no power layer crosses the reading column, and the cast's fifteen guards
+pass.
+
 ### A landing-page figure sits inside the text column, and marks derive from type metrics
 
 A figure hanging into the page margin reads as an off-centre section even when the text column measures perfectly centred. The origin timeline shipped a graph in the right margin, measured centred at 672px with equal gaps at four widths, and the operator still read the section as offset because the section's visual mass sat right of its text. The graph is gone and the timeline carries a rail in its own row gutter instead, which also fixed what the figure could never do: the dots sit on their rows by construction rather than at hand-placed coordinates that could not track rows running 87 to 147 pixels apart.

@@ -18,9 +18,15 @@
  * on the left at 1280 and 188px on the right, after the rail and the dock take
  * their share, and `e2e/cast.spec.ts` fails a cluster that outgrows it.
  */
-import { renderMember, type HatId } from './cast.ts'
+import {
+  POWER_OVERHANG,
+  renderMember,
+  renderPower,
+  type HatId,
+} from './cast.ts'
 import { TEMPERAMENTS } from './behaviors.ts'
 import type { MoodId } from './faces.ts'
+import type { PowerId } from './powers.ts'
 import './motion.css'
 
 interface ClusterMember {
@@ -44,6 +50,8 @@ interface ClusterMember {
    * state change with.
    */
   readonly tapMood?: MoodId
+  /** What the member emits at rest. Drawn as its own layer behind the body. */
+  readonly power?: PowerId
 }
 
 interface Cluster {
@@ -84,11 +92,13 @@ const clusters: readonly Cluster[] = [
     side: 'left', top: 15, gap: 8, delay: 0, phase: 0,
     members: [
       {
-        hat: 'antenna', seated: false, mood: 'determined', size: 72,
+        hat: 'antenna', seated: false, mood: 'smug', size: 72,
+        power: 'blaze',
         dx: 0, dy: 0, facing: 1, phase: 0, tapMood: 'unleashed',
       },
       {
         hat: 'ears', seated: false, mood: 'playful', size: 54,
+        power: 'sparks',
         dx: 56, dy: 10, facing: -1, phase: 1500, tapMood: 'starstruck',
       },
     ],
@@ -97,8 +107,9 @@ const clusters: readonly Cluster[] = [
     side: 'right', top: 29, gap: 22, delay: 220, phase: 900,
     members: [
       {
-        hat: 'band', seated: false, mood: 'working', size: 64,
-        dx: 0, dy: 0, facing: -1, phase: 0, tapMood: 'triumphant',
+        hat: 'band', seated: false, mood: 'pumped', size: 64,
+        power: 'speed',
+        dx: 0, dy: 0, facing: -1, phase: 0, tapMood: 'charged',
       },
     ],
   },
@@ -109,10 +120,12 @@ const clusters: readonly Cluster[] = [
       // one large member in the cast.
       {
         hat: 'horns', seated: false, mood: 'frustrated', size: 88,
+        power: 'bolts',
         dx: 0, dy: 0, facing: 1, phase: 0, tapMood: 'exasperated',
       },
       {
         hat: 'none', seated: false, mood: 'flustered', size: 56,
+        power: 'gust',
         dx: 76, dy: 36, facing: -1, phase: 1500, tapMood: 'dizzy',
       },
     ],
@@ -121,8 +134,9 @@ const clusters: readonly Cluster[] = [
     side: 'left', top: 66, gap: 30, delay: 700, phase: 3400,
     members: [
       {
-        hat: 'crown', seated: false, mood: 'thinking', size: 68,
-        dx: 0, dy: 0, facing: 1, phase: 0, tapMood: 'charged',
+        hat: 'crown', seated: false, mood: 'starstruck', size: 68,
+        power: 'ring',
+        dx: 0, dy: 0, facing: 1, phase: 0, tapMood: 'humming',
       },
     ],
   },
@@ -132,39 +146,94 @@ const clusters: readonly Cluster[] = [
     members: [
       {
         hat: 'ears', seated: true, mood: 'asleep', size: 64,
+        power: 'tide',
         dx: 0, dy: 0, facing: -1, phase: 0, tapMood: 'surprised',
       },
     ],
   },
 ]
 
-/** A cluster is as wide as its furthest member reaches. */
+/**
+ * A flat index across every cluster, so a guard can name the member that failed
+ * and a candidate arm can address one. Placement is by cluster and both of
+ * those are by member, which are two questions about the same list. It stays
+ * whether or not an arm is being served: without it `.claude/.tmp` measurements
+ * fell back to counting position in a NodeList and reported nothing at all when
+ * the selector went stale.
+ */
+const memberIndex = (cluster: Cluster, member: ClusterMember) => {
+  let index = 0
+  for (const each of clusters) {
+    for (const one of each.members) {
+      if (each === cluster && one === member) return index
+      index += 1
+    }
+  }
+  return index
+}
+
+/** The widest a cluster's power layers reach past their members. */
+const clusterOverhang = (cluster: Cluster) =>
+  Math.max(...cluster.members.map((member) => member.size * POWER_OVERHANG))
+
+/**
+ * As wide as its furthest member reaches, that member's own power included.
+ * Taking the cluster's largest overhang and adding it to whichever member sits
+ * furthest out reserves space for a power on a member that is not there, which
+ * cost the 88px cluster 8px it did not need.
+ */
 const clusterWidth = (cluster: Cluster) =>
-  Math.max(...cluster.members.map((member) => member.dx + member.size))
+  Math.max(
+    ...cluster.members.map(
+      (member) => member.dx + member.size * (1 + POWER_OVERHANG),
+    ),
+  )
+
+/**
+ * The declared gap plus whatever the cluster's widest power reaches, so the gap
+ * states clearance from the reading column and the reach stays a property of
+ * the drawing. Held as two literals they drift the moment either moves, and the
+ * drift is a power painted over prose with the cluster guard still passing.
+ */
+const clusterGap = (cluster: Cluster) => cluster.gap + clusterOverhang(cluster)
+
 ---
 
-<div class="cast-field" data-cast-field aria-hidden="true">
+<div
+  class="cast-field"
+  data-cast-field
+  aria-hidden="true"
+  style={`--power-overhang: ${POWER_OVERHANG}`}
+>
   {
     clusters.map((cluster) => (
       <div
         class:list={['cast-cluster', `is-${cluster.side}`]}
         data-cast-cluster
-        style={`--cluster-top: ${cluster.top}%; --cluster-gap: ${cluster.gap}px; --cluster-width: ${clusterWidth(cluster)}px`}
+        style={`--cluster-top: ${cluster.top}%; --cluster-gap: ${clusterGap(cluster)}px; --cluster-width: ${clusterWidth(cluster)}px`}
       >
         {cluster.members.map((member) => (
           <div
             class:list={['cast-member', member.seated && 'is-idle']}
             data-cast-member
+            data-member={memberIndex(cluster, member)}
             data-idle={TEMPERAMENTS[member.mood].idle ?? undefined}
             data-react={TEMPERAMENTS[member.mood].react.join(' ')}
             data-react-tap={member.tapMood ? TEMPERAMENTS[member.tapMood].react.join(' ') : undefined}
             style={`--cast-dx: ${member.dx}px; --cast-dy: ${member.dy}px; --cast-size: ${member.size}px; --cast-delay: ${cluster.delay}ms; --cast-offset: ${-(cluster.phase + member.phase)}ms`}
           >
+            {/* Behind the body in its own layer, so it can carry a clock the
+                member does not. */}
+            {member.power && (
+              <span class="cast-power-layer" data-power={member.power}>
+                <Fragment set:html={renderPower(member.power, member.facing)} />
+              </span>
+            )}
             {/* Both faces are rendered and one is hidden. Swapping the drawing
                 at tap time would mean re-running the generator in the browser,
                 which is a second copy of it shipped to every reader for a state
                 two members ever reach. */}
-            <span class="cast-face">
+            <span class="cast-face" data-mood={member.mood}>
               <Fragment
                 set:html={renderMember({
                   hat: member.hat,
@@ -214,8 +283,20 @@ const clusterWidth = (cluster: Cluster) =>
      was sound and the floor was wrong: 4.5:1 is a text threshold and nothing
      here is text. */
   .cast-field {
+    --cast-overhang: var(--power-overhang);
     --cast-body: #d4a574;
     --cast-eye: #2a1d14;
+    /* The body fill carrying alpha rather than a second hue, so the power layer
+       stays inside the one palette all three figures on the site share and
+       still separates from the silhouette it sits behind. Alpha rather than a
+       lighter tint because it resolves against both themes from one
+       declaration, where a tint would need a value per theme and the family
+       does not invert. */
+    --cast-aura: color-mix(in oklab, var(--cast-body) 52%, transparent);
+    /* The eye's own ink at a weight that stays behind the member. A standing
+       shadow drawn in the aura fill is lighter than the figure casting it,
+       which reads as a plate rather than as a second presence. */
+    --cast-shade: color-mix(in oklab, var(--cast-eye) 34%, transparent);
     position: absolute;
     inset: 0;
     pointer-events: none;
@@ -262,6 +343,17 @@ const clusterWidth = (cluster: Cluster) =>
     display: block;
     width: 100%;
     height: 100%;
+  }
+  /* Stacked under the member and grown by the reach its viewBox is padded
+     with, so the member's own grid still lands on the member's own pixels. The
+     inset is the reach as a share of the 12-cell grid, which is 25% at a reach
+     of 3, and it is negative because the box grows outward from the member
+     rather than the member shrinking inside it. */
+  .cast-power-layer {
+    position: absolute;
+    inset: calc(-1 * var(--cast-overhang) * 100%);
+    display: block;
+    pointer-events: none;
   }
   .cast-face.is-tapped {
     display: none;

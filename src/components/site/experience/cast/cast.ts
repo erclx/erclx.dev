@@ -44,6 +44,8 @@ import {
   MOODS,
   mouthCells,
 } from './faces'
+import { gearCells, type GearId } from './gear'
+import { powerCells, type PowerId, REACH } from './powers'
 
 export interface Member {
   readonly hat: HatId
@@ -52,6 +54,8 @@ export interface Member {
   readonly seated: boolean
   /** A named pairing from the expression inventory. Defaults to neutral. */
   readonly mood?: MoodId
+  /** What the member holds, drawn in front of it. */
+  readonly gear?: GearId
   /**
    * Which way the member looks. Mirroring happens inside the drawing rather
    * than as a CSS transform, because the wrapper already carries the arrival
@@ -74,13 +78,20 @@ type PartName =
   | 'eye-r'
   | 'mouth'
   | 'mark'
+  | 'aura-l'
+  | 'aura-r'
+  | 'aura-t'
+  | 'aura-b'
+  | 'gear'
+  | 'gear-head'
+  | 'gear-grip'
 
 interface Shape {
   readonly x: number
   readonly y: number
   readonly w: number
   readonly h: number
-  readonly ink: 'body' | 'eye'
+  readonly ink: 'body' | 'eye' | 'aura' | 'shade'
   readonly part: PartName
   readonly round?: number
 }
@@ -269,6 +280,19 @@ export function renderMember(member: Member): string {
 
   shapes.push(...faceShapes(member.mood ?? 'neutral', center, bodyTop, left))
 
+  // Last, so a held item passes in front of the arm holding it.
+  shapes.push(
+    ...gearCells(member.gear ?? 'none').map((cell) => ({
+      x: cell.x,
+      y: cell.y,
+      w: cell.w,
+      h: cell.h,
+      ink: cell.ink ?? ('body' as const),
+      part: cell.part,
+      round: cell.round,
+    })),
+  )
+
   const drawn = shapes.map(drawShape).join('')
   const body =
     member.facing === -1
@@ -278,6 +302,63 @@ export function renderMember(member: Member): string {
   return (
     `<svg class="bn" viewBox="0 0 ${SIZE} ${SIZE}" aria-hidden="true" focusable="false">` +
     body +
+    `</svg>`
+  )
+}
+
+/**
+ * The power layer, drawn on the member's own grid and stacked behind it.
+ *
+ * Its own drawing rather than part of the member, for two reasons that are not
+ * about the shapes. A power needs its own clock, since an aura pulses while the
+ * body is doing something else, and a single SVG carrying both would make one
+ * animation fight the other. And a candidate power can then be swapped without
+ * re-rendering the member, which is what lets the whole vocabulary be served
+ * live for a pick.
+ *
+ * Gear stays inside the member for the same test read the other way: it moves
+ * with the hand that holds it, so it has no clock of its own to want.
+ *
+ * The ink is `aura` rather than the body's. Drawn in the body fill a power
+ * merges with the silhouette and reads as anatomy: the flanking tongues became
+ * a second pair of ears and the standing shadow became a lump on the back.
+ */
+/**
+ * How far the power layer reaches past the member, as a share of the member's
+ * own size. Placement adds it to a cluster's gap so a power cannot cross the
+ * reading column, and the stylesheet reads it to size the layer, so the two
+ * cannot disagree. Measured rather than assumed: the layer overlapped the
+ * column by 10px on the 88px member before the gap accounted for it.
+ */
+export const POWER_OVERHANG = REACH / GRID
+
+export function renderPower(power: PowerId, facing: 1 | -1 = 1): string {
+  const drawn = powerCells(power)
+    .map((cell) =>
+      drawShape({
+        x: cell.x,
+        y: cell.y,
+        w: cell.w,
+        h: cell.h,
+        ink: cell.ink ?? 'aura',
+        part: cell.part,
+        round: cell.round,
+      }),
+    )
+    .join('')
+
+  // The viewBox is padded by the reach on every side and the layer's own box
+  // grows to match, so the member's grid still maps to the member's own pixels.
+  // Scaling the drawing down inside a box with no padding would shrink the figure the
+  // power is drawn against, which is the one thing that has to stay fixed.
+  const pad = REACH * CELL
+  const span = SIZE + pad * 2
+
+  return (
+    `<svg class="bn bn-power" viewBox="${-pad} ${-pad} ${span} ${span}" aria-hidden="true" focusable="false">` +
+    (facing === -1
+      ? `<g transform="translate(${SIZE} 0) scale(-1 1)">${drawn}</g>`
+      : drawn) +
     `</svg>`
   )
 }

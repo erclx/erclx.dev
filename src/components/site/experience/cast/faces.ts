@@ -39,6 +39,8 @@ export type EyeId =
   | 'cross'
 
 export type MouthId =
+  | 'smirk'
+  | 'grin'
   | 'tongue'
   | 'flat'
   | 'smile'
@@ -191,6 +193,23 @@ export function mouthCells(
       return [{ x: 0.24, y: 0.12, w: 0.52, h: 0.62, round: 2 }]
     case 'wide':
       return [{ x: 0.06, y: 0.1, w: 0.88, h: 0.7, round: 2 }]
+    // Up on one side only. Symmetry is what makes `smile` read as friendly, so
+    // breaking it is the whole of what makes this read as pleased with itself.
+    // The one mouth in the set that is not mirrored about the centre.
+    case 'smirk':
+      return [
+        { x: 0.04, y: 0.44, w: 0.42, h: 0.34 },
+        { x: 0.38, y: 0.26, w: 0.34, h: 0.34 },
+        { x: 0.62, y: 0.1, w: 0.34, h: 0.32 },
+      ]
+    // Open and stepped up at both corners. Wider than `smile` and taller than
+    // `wide`, so it carries at the smallest size where a thin arc does not.
+    case 'grin':
+      return [
+        { x: 0.06, y: 0.2, w: 0.34, h: 0.34 },
+        { x: 0.16, y: 0.34, w: 0.68, h: 0.42 },
+        { x: 0.6, y: 0.2, w: 0.34, h: 0.34 },
+      ]
     // A stepped tilde, which is the blocky reading of an unimpressed squiggle.
     case 'wave':
       return [
@@ -350,6 +369,8 @@ export const EYE_IDS: readonly EyeId[] = [
 ]
 export const MOUTH_IDS: readonly MouthId[] = [
   'flat',
+  'smirk',
+  'grin',
   'smile',
   'frown',
   'pout',
@@ -400,6 +421,22 @@ export const MOODS = {
   playful: { eyes: 'happy', mouth: 'tongue', mark: 'none' },
   determined: { eyes: 'fierce', mouth: 'flat', mark: 'aura' },
   unleashed: { eyes: 'fierce', mouth: 'wide', mark: 'impact' },
+  // The lead at rest. `determined` pairs a fierce brow with a flat mouth and
+  // both are hairlines, which measured 8.0% ink in the face region, second
+  // lowest in the cast and behind the member that is asleep. A brow that reads
+  // as effort over a mouth that reads as nothing is what made him read as glum
+  // rather than as capable.
+  smug: { eyes: 'fierce', mouth: 'smirk', mark: 'none' },
+  cocky: { eyes: 'happy', mouth: 'smirk', mark: 'spark' },
+  fired: { eyes: 'fierce', mouth: 'grin', mark: 'bolt' },
+  beaming: { eyes: 'sparkle', mouth: 'grin', mark: 'burst' },
+  // Open eyes over a grin. `working` shipped the same eyes over a flat mouth
+  // and read as blank, which is a mouth problem rather than an eye one: the
+  // eyes were already the only pair in the cast nothing else used. Reaching for
+  // `triumphant` instead spent that, since it shares `happy` eyes with the
+  // member standing in the next cluster and the two measured 4.8% apart, the
+  // closest pair the cast has ever held.
+  pumped: { eyes: 'open', mouth: 'grin', mark: 'burst' },
 } as const satisfies Record<string, Face>
 
 export type MoodId = keyof typeof MOODS
