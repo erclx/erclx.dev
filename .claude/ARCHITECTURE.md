@@ -339,18 +339,36 @@ and the floor was wrong. 4.5:1 governs text and every figure here is decoration
 hidden from assistive technology, so the shipped pair at 2.03:1 was the
 precedent rather than the exception.
 
-Motion is bound to expression rather than assigned, and almost none of it runs
-unattended. One term rests, a scale rather than a travel so there is no speed
-for the ambient band to apply to, and everything expressive fires under a
-pointer or a tap. That split then decided how it is guarded. Shortening the
-reactions put twelve of them inside the barred band and it looked like twelve
-defects. It was the guard measuring the wrong population: the band bars motion
-with no fixed reference to judge it against, and a reaction has one, namely the
-pointer that caused it. Holding a gesture to the ambient ceiling would mean
-slowing twelve movements a reader asked for to satisfy a rule about surfaces
-nobody asked for. A behavior now declares its kind, an idle term answers to the
-band, and a reaction answers to being brief and visible, which is the defect its
-own class actually has.
+Motion is bound to expression rather than assigned, and what runs unattended is
+bounded rather than absent. One term rests, a scale rather than a travel so
+there is no speed for the ambient band to apply to. Everything expressive is a
+reaction, and a scheduler fires one of those every few seconds with nothing
+touched.
+
+That split decided how it is guarded. Shortening the reactions put twelve of
+them inside the barred band and it looked like twelve defects. It was the guard
+measuring the wrong population, and the reason is worth stating carefully
+because this entry stated it wrongly first. It said a reaction is exempt because
+it carries a fixed reference, namely the pointer that caused it. That was true
+of every reaction at the time and it was never the ground. **What exempts a
+reaction is that it is brief and ends on its own**, so it crosses the band
+rather than sitting inside it, and the band bars sustained movement rather than
+movement. A pointer is one thing that can start such a term and was never what
+made the term acceptable.
+
+Reading it the other way is what an unattended reaction breaks. One fired on a
+schedule has no pointer behind it, so an exemption grounded in the pointer does
+not reach it, and the record would say reactions are exempt because a reader
+caused them while some of them have no reader. The guard was already measuring
+the right thing: a behavior declares its kind, an idle term answers to the band,
+and a reaction answers to being brief and visible, which is the defect its own
+class actually has.
+
+A scheduled reaction owes two things the pointer used to supply. It never runs
+beside another, since two at once is a margin performing rather than a figure
+acting. And it stands down while the section is off screen, under reduced
+motion, and while a reader's own pointer rests on a member, so a hand present
+outranks the schedule.
 
 **Read the instrument failures as one class rather than five incidents.** Each
 was a measure that passed hardest when the thing it watched had failed. A

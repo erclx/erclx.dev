@@ -36,6 +36,20 @@ const SETTLE_MS = 1800
  * as silent.
  */
 const SCHEDULER_WATCH_MS = 20_000
+/**
+ * What a test watching that window needs, against Playwright's 30s default.
+ *
+ * These three observe a wall clock rather than wait on a condition, so the
+ * window is time the run genuinely spends and no amount of machine makes it
+ * shorter. Add the settle, the load and the tap's own reaction and 20s of
+ * watching does not fit 30s of budget: the schedule test took 35.1s on a CI
+ * runner and timed out three times while passing locally. Shortening the window
+ * to fit would have bought the same fit by watching fewer of the scheduler's
+ * own gaps, which is the thing under test.
+ */
+const SCHEDULER_TEST_MS = 60_000
+/** Long enough for a tap's own reaction to finish before the window opens. */
+const STILL_AFTER_TAP_MS = 2_500
 
 const WIDE = { width: 1440, height: 900 }
 
@@ -683,6 +697,7 @@ test.describe('agent cast', () => {
   // selector unless something proves it can still fire. And a member left
   // marked holds the scheduler's only slot for the life of the page.
   test('lets one member act on its own, and never two', async ({ page }) => {
+    test.setTimeout(SCHEDULER_TEST_MS)
     await page.setViewportSize(WIDE)
     await settleCast(page)
 
@@ -716,9 +731,58 @@ test.describe('agent cast', () => {
     expect(watched.mostAtOnce).toBe(1)
   })
 
+  // The scheduler stands down while a pointer rests on a member, and WebKit
+  // applies `:hover` to a tapped element and holds it. Ungated, one tap on a
+  // touch screen silences the cast for the life of the page, and silence is
+  // indistinguishable from a cast that is quiet on purpose. The tap is made
+  // through the touch path rather than by calling `hover()`, since the point is
+  // what a device without a hover pointer leaves behind.
+  test('goes on acting after a member is tapped on a touch screen', async ({
+    browser,
+  }) => {
+    test.setTimeout(SCHEDULER_TEST_MS)
+    const context = await browser.newContext({
+      ...WIDE,
+      hasTouch: true,
+      isMobile: false,
+    })
+    const page = await context.newPage()
+    await page.setViewportSize(WIDE)
+    await page.goto('/')
+    await page.locator(SECTION).scrollIntoViewIfNeeded()
+    await page.waitForTimeout(SETTLE_MS)
+
+    await page.locator(MEMBER).first().tap()
+    await page.waitForTimeout(STILL_AFTER_TAP_MS)
+
+    const acted = await page.evaluate(
+      async ({ member, watchMs }) => {
+        const members = [...document.querySelectorAll<HTMLElement>(member)]
+        let starts = 0
+        const wasActive = new Array<boolean>(members.length).fill(false)
+        const until = performance.now() + watchMs
+        while (performance.now() < until) {
+          members.forEach((one, index) => {
+            const on = one.dataset.reacting !== undefined
+            if (on && !wasActive[index]) starts += 1
+            wasActive[index] = on
+          })
+          await new Promise((resolve) => window.setTimeout(resolve, 50))
+        }
+        return starts
+      },
+      { member: MEMBER, watchMs: SCHEDULER_WATCH_MS },
+    )
+
+    await context.close()
+
+    expect(acted).toBeGreaterThan(0)
+  })
+
   test('holds the cast still for a reader who asked for less motion', async ({
     page,
   }) => {
+    test.setTimeout(SCHEDULER_TEST_MS)
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.setViewportSize(WIDE)
     await settleCast(page)

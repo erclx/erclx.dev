@@ -411,7 +411,17 @@ import './motion.css'
       // page rather than tracked, so nothing here can disagree with it.
       if (!watching || document.hidden || stillMotion.matches) return
       if (field.querySelector('[data-reacting]')) return
-      if (field.querySelector('[data-cast-member]:hover')) return
+      // Gated on the same pointer test the hover reactions answer to. WebKit
+      // applies `:hover` to a tapped element and holds it until something else
+      // is tapped, so ungated this silences the scheduler for the life of the
+      // page the moment a reader taps a member on a touch screen. The failure
+      // is silence, which is indistinguishable from a cast that is quiet on
+      // purpose.
+      if (
+        field.dataset.pointer !== undefined &&
+        field.querySelector('[data-cast-member]:hover')
+      )
+        return
 
       const idle = members.filter(
         (member) => member.dataset.reacting === undefined,
@@ -430,8 +440,13 @@ import './motion.css'
       }, STILL_REACTION_MS)
     }
 
+    // The handle is kept so the loop can be stopped. Nothing tears this page
+    // down in normal use, which is why it costs nothing to hold, and a timer
+    // that re-arms itself with no way to clear it is the shape the concurrency
+    // standard bars whatever the page does.
+    let pending = 0
     const schedule = () => {
-      window.setTimeout(
+      pending = window.setTimeout(
         () => {
           actOnce()
           schedule()
@@ -440,5 +455,6 @@ import './motion.css'
       )
     }
     schedule()
+    window.addEventListener('pagehide', () => window.clearTimeout(pending))
   }
 </script>

@@ -284,10 +284,6 @@ export const memberIndex = (cluster: Cluster, member: ClusterMember) => {
   return index
 }
 
-/** The widest a cluster's power layers reach past their members. */
-export const clusterOverhang = (cluster: Cluster) =>
-  Math.max(...cluster.members.map((member) => member.size * POWER_OVERHANG))
-
 /**
  * As wide as its furthest member reaches, that member's own power included.
  * Taking the cluster's largest overhang and adding it to whichever member sits
@@ -303,10 +299,22 @@ export const clusterWidth = (cluster: Cluster) =>
   )
 
 /**
- * The declared gap plus whatever the cluster's widest power reaches, so the gap
+ * The declared gap plus what the innermost member's power reaches, so the gap
  * states clearance from the reading column and the reach stays a property of
  * the drawing. Held as two literals they drift the moment either moves, and the
  * drift is a power painted over prose with the cluster guard still passing.
+ *
+ * The innermost member rather than the largest. Only the figure nearest the
+ * column reaches toward it, so taking the cluster's widest overhang reserves
+ * room for a power on a member that is not there, which is the same
+ * over-reservation `clusterWidth` was changed away from and which stayed on
+ * this axis. It costs nothing today because the innermost member is the largest
+ * in all five clusters, and that is a coincidence of the current placement
+ * rather than a property of one.
  */
-export const clusterGap = (cluster: Cluster) =>
-  cluster.gap + clusterOverhang(cluster)
+export const clusterGap = (cluster: Cluster) => {
+  const innermost = cluster.members.reduce((nearest, member) =>
+    member.dx < nearest.dx ? member : nearest,
+  )
+  return cluster.gap + innermost.size * POWER_OVERHANG
+}
