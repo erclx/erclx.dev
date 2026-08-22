@@ -137,7 +137,7 @@ const artifacts = [
               data-default-active={entry.current ? 'true' : undefined}
               aria-current={entry.current ? 'step' : undefined}
               style={`--fade-delay: ${500 + idx * 100}ms`}
-              class="experience-row text-body grid grid-cols-[1fr] items-start md:grid-cols-[11.5rem_3.25rem_1fr]"
+              class="experience-row text-body grid items-start"
             >
               <p class="experience-date tabular-nums">{entry.span}</p>
               <span class="experience-gutter" aria-hidden="true">
@@ -145,7 +145,7 @@ const artifacts = [
                   <span class="experience-marker"></span>
                 </span>
               </span>
-              <div>
+              <div class="experience-body">
                 <p class="experience-head">{entry.head}</p>
                 {entry.details.map((detail) => (
                   <p class="experience-detail text-label mt-2 font-sans">{detail}</p>
@@ -181,6 +181,51 @@ const artifacts = [
     padding-bottom: var(--experience-beat-gap);
     position: relative;
     isolation: isolate;
+    /* The rail leads and the span heads its own block. The three tiers below
+       exist because the rail is the one element saying the beats are a
+       sequence, and switching it off left six beats reading as stacked
+       paragraphs. Held here rather than as grid utilities on the element,
+       since the middle tier sits at 600 and the scale offers no step there. */
+    grid-template-columns: 1.75rem 1fr;
+  }
+  .experience-row .experience-date {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .experience-row .experience-gutter {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .experience-row .experience-body {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  /* From here the span earns a column of its own. It stays at the label step
+     until the widest of them, 177px at the body size, clears the column the
+     reading measure can spare. */
+  @media (width >= 37.5rem) {
+    .experience-row {
+      grid-template-columns: 9.5rem 2.5rem 1fr;
+    }
+    .experience-row .experience-date,
+    .experience-row .experience-gutter,
+    .experience-row .experience-body {
+      grid-row: 1;
+    }
+    .experience-row .experience-date {
+      grid-column: 1;
+    }
+    .experience-row .experience-gutter {
+      grid-column: 2;
+    }
+    .experience-row .experience-body {
+      grid-column: 3;
+    }
+  }
+  @media (width >= 48rem) {
+    .experience-row {
+      grid-template-columns: 11.5rem 3.25rem 1fr;
+    }
   }
   /* The beat a pointer is on lifts onto the site's glow, which is what every
      other bounded surface does and what the closing ask already carries.
@@ -255,14 +300,26 @@ const artifacts = [
   .experience-date {
     color: var(--muted-foreground);
   }
-  /* Below md the row is one column, so the date leads its own block rather
-     than sitting in a gutter the layout no longer has. */
-  @media (max-width: 767px) {
+  /* The span drops to the label step below the widest tier, which is what lets
+     its column narrow to 9.5rem in the middle one and what stops it reading as
+     a line of prose in the narrowest, where it sits directly above the head. */
+  @media (width < 48rem) {
+    .experience-date {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+  }
+  /* The dot centres inside a box one line tall, and in the narrowest tier the
+     line it has to meet is the span's rather than the head's. Matching the
+     gutter's own type to the span's is what keeps that derived, where a
+     measured offset would drift the moment either step moved. */
+  @media (width < 37.5rem) {
+    .experience-gutter {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
     .experience-date {
       margin-bottom: 0.25rem;
-    }
-    .experience-gutter {
-      display: none;
     }
   }
   .experience-detail {

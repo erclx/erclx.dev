@@ -63,11 +63,49 @@ Where that happened
 
 The list opened on `Newest first.` in Fraunces italic at label size until 2026-08-20. It was there because the spans sat inside the head sentences, separated by a middle dot, so the ordering was not visible without reading each row. The spans now hold a column of their own and a reader meets jan 2026 against jun to dec 2025 against jan 2024 down one edge, so the list states its own order and the line restated what was already on screen.
 
+## Tablet (600 to 767px)
+
+The same three parts, with the span column narrowed and the span itself set at label size. This width was the flat stack below until 2026-08-22, and it carried no wireframe at all, which is what let the rail disappear across the whole band with nothing describing what a reader was meant to see.
+
+```plaintext
+ jan 2026        ●  shipping independently, open to the
+ to present      │  next thing
+                 │    Each project below answers a problem I ran into.
+                 │    ( aitk ) ( Jobtriage ) ( Stackr ) ( Caret )
+                 │
+ jun to dec 2025 ○  working out what to build
+                 │    Took the time to learn TypeScript and web
+                 │    application development, and to work out where
+                 │    to point AI next.
+```
+
+## Phone (below 600px)
+
+The span column folds into the reading column and leads its own beat, still at label size. The rail moves to the section's left edge and runs the full height of each beat rather than sitting between two columns, so the beats still read as a sequence at a width that has no room for a column beside them.
+
+```plaintext
+ ● jan 2026 to present
+ │ shipping independently, open to
+ │ the next thing
+ │   Each project below answers a
+ │   problem I ran into.
+ │   ( aitk ) ( Jobtriage )
+ │   ( Stackr ) ( Caret ) ( diction )
+ │
+ ○ jun to dec 2025
+ │ working out what to build
+ │   Took the time to learn
+ │   TypeScript and web application
+ │   development, and to work out
+ │   where to point AI next.
+```
+
 ## Behavior
 
 - The section runs at the page measure, which every section holds below the widest breakpoint. The projects grid and the footer break out past it at that breakpoint and nothing else does. Nothing sits outside this column: a figure hanging into the margin left the text centered while the section read as offset, which is why the earlier diagram beside the list is gone.
 - The rail starts at the newest dot and fades to nothing under the oldest one, so the record reads as continuing behind the first entry rather than stopping at a dot.
 - Each row is a span in its own column, a dot in the gutter beside it, and a head with a supporting sentence under it. The dot aligns to the head rather than to the block. The spans set in tabular numerals so the column holds one edge down the list.
+- On a phone the span leads the beat instead of holding a column, and the dot aligns to the span, since that is the first line of the beat there. The dot meets whichever line leads at a given width rather than one fixed part of the row.
 - Nothing on this surface takes the monospace face. The heads carried it until 2026-08-17, which made them the largest text in the section and the reason it read louder than its neighbors. Mono now marks literal machine values alone, and no value on this surface is one.
 - Every dot sits exactly on its own row, which a fixed figure could never do once rows started running to different heights.
 - A span carries months rather than a year alone, because a year read as twelve months of work where the record held six. The newest beat holds `jan 2026 to present` for the same reason: a bare `2026` said less than every row under it on a list whose spans carry months.
