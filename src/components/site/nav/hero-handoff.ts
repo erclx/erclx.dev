@@ -222,12 +222,60 @@ export function initHeroHandoff(onArrive?: (arrived: boolean) => void): void {
   // translated for good. Waiting forever would spin a frame callback for the
   // life of the page and leave the bar's reserved slot empty, so the wait gives
   // up and places the control where it can read it.
-  const revealing = (toggle ?? source).closest<HTMLElement>('[data-fade]')
+  //
+  // Both anchors are watched rather than one. The toggle and the name reveal on
+  // separate delays, 190ms apart at 1280x800, so waiting on either alone can
+  // measure the other while it is still moving.
+  const revealing = [toggle, source]
+    .map((element) => element?.closest<HTMLElement>('[data-fade]'))
+    .filter(
+      (element): element is HTMLElement =>
+        element !== null && element !== undefined,
+    )
+
+  // A reveal reaches this in three states and only two of them are worth
+  // waiting on. Reading the transform alone sees one, because an element parked
+  // at its pre-reveal offset and one moving through that same offset report the
+  // same matrix.
+  //
+  // Marked and still transitioning is the state the wait was written for.
+  //
+  // Unmarked with the row still on screen is a reveal about to run, and placing
+  // through it pins the name at its settled position while the row around it is
+  // still rising. That is the doubled arrival a reader sees as the title
+  // correcting itself after everything else has landed.
+  //
+  // Unmarked with the row scrolled past is a reveal that can never run. A
+  // refresh restores the scroll, the hero lands above the viewport, and an
+  // IntersectionObserver only reports an element becoming intersecting, so
+  // nothing will ever mark it. Waiting there can only time out: measured at
+  // 1440x900, that held the bar's slots empty for 3057ms against 876ms on a
+  // fresh load. `settledBox` already discounts the parked offset, so the
+  // position is readable without the reveal ever running.
+  // `bottom > 0` rather than a share of the row's height, and `REVEAL_THRESHOLD`
+  // is deliberately not read here. That constant is the observer's `threshold`,
+  // which decides when a callback fires and not what `entry.isIntersecting`
+  // reports, and `initReveal` marks on `isIntersecting` alone. Measured on all
+  // three engines, a row lands marked at 0.006 of its own height visible. So any
+  // sliver on screen is a row the observer will mark, and the predicate that
+  // matches the marking is the one written here.
+  //
+  // Reading the threshold instead is the change to avoid. It would place through
+  // a row between 0 and 0.15 visible, which the observer still marks, and pin
+  // the name at its landed position while that row is about to rise. That is
+  // the doubled arrival the direction guard below exists to catch, reintroduced
+  // in a narrow band.
+  const stillArriving = (element: HTMLElement): boolean => {
+    if (element.getAttribute('data-visible') !== 'true') {
+      return element.getBoundingClientRect().bottom > 0
+    }
+    return getComputedStyle(element).transform !== 'none'
+  }
+
   const waitStartedAt = performance.now()
   const promote = () => {
     const styled = document.readyState === 'complete'
-    const resting =
-      !revealing || getComputedStyle(revealing).transform === 'none'
+    const resting = !revealing.some(stillArriving)
     const spent = performance.now() - waitStartedAt > PLACEMENT_WAIT_MS
     if (!spent && (!styled || !resting)) {
       window.requestAnimationFrame(promote)

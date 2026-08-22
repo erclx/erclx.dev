@@ -423,6 +423,12 @@ A `type="module"` script does not block on pending stylesheets the way a parser-
 
 The hero then reveals by translating its rows 16px into place, and a fixed copy placed at the settled position hangs off the row for the length of that. Placement waits for the transform to rest, which leaves the resize path as the one caller that can still land mid-reveal, so the reads discount the reveal's own offset.
 
+A reveal reaches that wait in three states and the transform distinguishes two of them. An element parked at its pre-reveal offset and one moving through that same offset report one matrix, so reading the transform alone cannot tell a reveal about to run from a reveal that will never run. The second is reachable: a refresh restores the scroll, the hero lands above the viewport, and an `IntersectionObserver` only ever reports an element becoming intersecting, so nothing will mark it for the life of the page. Waiting there can only expire. Measured at 1440x900, that held the bar's slots empty for 3057ms against 876ms on a fresh load, and 3582ms and 3435ms in Chromium and WebKit against the built page. Firefox does not restore the scroll under automation and never reproduced it.
+
+The state is read off the reveal marker with the row's position as the tiebreak, so an unmarked row still on screen is waited for and an unmarked row scrolled past is not. Treating every unmarked reveal as settled is the repair to avoid and it was built first: it takes the mid-page case to 210ms and places the name at its landed position while the row around it is still rising, which a reader sees as the title correcting itself after everything else has arrived. That is the defect the entry above this one records, arriving by a second route, and the guard against it asserts the hero has reached full opacity by the time placement announces itself rather than asserting any duration.
+
+The wait is also watched on both anchors rather than one. It read the toggle's reveal alone while measuring the name's box as well, and the two settle 190ms apart at 1280x800.
+
 The toggle's home slot holds no size of its own, so once the control is promoted away the slot collapses to a point and every re-measure after the first reads that empty box. The control is returned to its home for the reading rather than the slot being given a reserved size, so the control's own box stays the one source of the hero position.
 
 That home is the header's own corner rather than a text row. The greeting moved under the name on 2026-08-19, and the portrait floats flush to the column's right edge for 160px from the heading's top, so no row under the name has a free right side to centre a control against.
@@ -439,7 +445,7 @@ The toggle interpolates its position rather than riding the scroll. Riding it, a
 
 `measure` reads the name's geometry whether or not the name flies, and the visual takeover of the real name is a separate call. The two were one function, skipped together under reduced motion, which left the distance at its default of 1 once the toggle and the gate began reading it and snapped everything on the first pixel scrolled.
 
-Verified at 1280x800 and 390x844 across chromium, firefox, and webkit at f10cfb7 on 2026-08-19.
+Verified at 1280x800 and 390x844 across chromium, firefox, and webkit at f10cfb7 on 2026-08-19, and the placement-wait figures re-read at 1440x900 on all three engines on 2026-08-22.
 
 ### The merge gate runs every engine the suite defines, as a matrix rather than one job
 
