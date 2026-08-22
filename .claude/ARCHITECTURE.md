@@ -531,7 +531,7 @@ The hero opens with three destinations and nothing else on the page carried them
 
 An earlier draft of this entry said the footer closed with those three, and the dock stood down over the footer on that basis. The footer carries the resume alone, measured on 2026-08-20, so the gate removed three destinations and replaced one at the end of a page whose job is hiring. Both halves are corrected: the claim above, and the gate that rested on it.
 
-It sits opposite the section rail so the two margins read as a pair. The rail states position and the dock offers reach, which is the split `.claude/REQUIREMENTS.md` § Navigation already draws. That split is also why the pair breaks at the footer: the rail stands down there because no section remains to state, and the dock holds because reach is what a reader wants at the end.
+It sits opposite the section rail so the two margins read as a pair. The rail states position and the dock offers reach, which is the split `.claude/REQUIREMENTS.md` § Navigation already draws. Both hold to the bottom of the page rather than the pair breaking there: the rail's own footer gate never earned its complexity and came out rather than getting retuned a third time.
 
 The dock mounts from the layout, so all six surfaces carry it. A route is the longest read on the site and the one a shared link lands on, which is the arrival that skips the landing page and every contact link on it. A route also reveals it at once rather than gating: the gate watches the header for a hero to scroll past, and a route's header is its sticky bar, whose intersection ratio reads 1 for the whole page. A layout mount alone would therefore have shipped a control that never arrived on five surfaces of six.
 
@@ -672,6 +672,14 @@ What makes it reachable rather than merely present is the `visual-batch` skill n
 Its teardown is the arms and the call site rather than the seam. Deleting the parameter and the switcher with the pick is what a hand-rolled seam needs, and applying that to the harness deletes the harness.
 
 Verified at 1280x900.
+
+### The rail carries looking-for through the footer rather than hiding near it
+
+The rail's footer gate, an `IntersectionObserver` with no root margin watching `[data-section="footer"]`, fired the instant the footer's own border box touched the bottom of the viewport. That box carries close to 100px of empty top padding before any visible content, so the rail could hide while looking-for was still the section on screen. That was itself a regression from an earlier commit that had removed the observer's `rootMargin` to fix the opposite defect, where a footer short enough to never reach the shrunk root left the rail at full opacity for the whole footer beat.
+
+Two repairs are recorded here as the shape to avoid rather than as what shipped. Keying the hide to looking-for's own bottom crossing the same 30% anchor the active-row tracking already reads fixed the early-fire case and reopened the one the `rootMargin` removal had chased: measured at 1440x900 and 1920x1080, looking-for and the footer together barely clear one viewport, so the anchor crossing and the document's true end land on the same scroll step and the rail never got room to hide gracefully. A minimum-dwell hold, mirroring the click-intent lock already in this file, closed that too, at the cost of a fade timed to a fixed clock rather than to the reader's own scrolling, which read as the rail lingering on its own after the reader had already stopped moving.
+
+A capture of the rail forced visible over a fully-shown footer at 1280x800 and 1920x1080 settled it: the rail sits in the empty left margin at both widths, clear of the signature, the résumé link, and the colophon, so hiding it near the footer was never buying anything a reader would notice losing. The gate comes out rather than getting retuned a third time. The rail now behaves exactly as it always did on a project route, which never gated on the footer at all: revealed once the hero is scrolled past, visible through the rest of the page, and hidden again only on scrolling back into the hero. The operator confirmed against the running page rather than a capture, since the question was how the removal reads while scrolling through it rather than how it looks at rest.
 
 ## Risks / open questions
 

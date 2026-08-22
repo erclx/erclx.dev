@@ -52,10 +52,6 @@ const {
     opacity: 1;
     pointer-events: auto;
   }
-  .section-nav[data-near-footer='true'] {
-    opacity: 0;
-    pointer-events: none;
-  }
   /* Every link holds the pill's box whether or not it is filled, so the rail
      never changes height as the active item moves down the page. Only one of
      them is ever painted. */
@@ -161,6 +157,8 @@ const {
     let scrollFrame: number | null = null
     let clickLockUntil = 0
 
+    const isInstant = nav.dataset.instant === 'true'
+
     const computeActive = () => {
       scrollFrame = null
       if (performance.now() < clickLockUntil) return
@@ -194,31 +192,7 @@ const {
     window.addEventListener('resize', scheduleCompute)
     computeActive()
 
-    const isInstant = nav.dataset.instant === 'true'
     if (!isInstant) {
-      const footer = document.querySelector<HTMLElement>(
-        '[data-section="footer"]',
-      )
-      if (footer) {
-        const footerObserver = new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              if (entry.isIntersecting) {
-                nav.setAttribute('data-near-footer', 'true')
-              } else {
-                nav.removeAttribute('data-near-footer')
-              }
-            }
-          },
-          // No root margin. Shrinking the root to its top half never fires:
-          // the footer sits in the lower part of the last screen by
-          // definition, so the rail stayed at full opacity over the footer
-          // beat its own notes say it stands down for.
-          { threshold: 0 },
-        )
-        footerObserver.observe(footer)
-      }
-
       const hero = document.querySelector<HTMLElement>(
         '[data-section="header"]',
       )

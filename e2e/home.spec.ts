@@ -69,6 +69,41 @@ test('the rail tracks every section the page stacks', async ({ page }) => {
   ])
 })
 
+test('the rail cascades to looking-for and stays visible to the document end', async ({
+  page,
+}) => {
+  // looking-for and the footer together barely clear one viewport at 1920,
+  // so this is the height where a rail that stood down near the footer
+  // would have the least room to do it gracefully.
+  await page.setViewportSize({ width: 1920, height: 1080 })
+  await page.goto('/')
+  const rail = page.locator('[data-section-nav]')
+
+  const target = await page.evaluate(() => {
+    const lookingFor = document.getElementById('looking-for')
+    const top = (lookingFor?.getBoundingClientRect().top ?? 0) + window.scrollY
+    // 0.3 mirrors ANCHOR_RATIO in section-nav.astro's scroll handler. Landing
+    // 100px past the crossing puts looking-for well inside the active zone
+    // without landing at the document's own end.
+    const anchor = window.innerHeight * 0.3
+    return top - anchor + 100
+  })
+  await page.evaluate((y) => window.scrollTo(0, y), target)
+
+  await expect(
+    page.locator('.section-nav-link[data-active="true"]'),
+  ).toHaveText('Looking for')
+  await expect(rail).toHaveCSS('opacity', '1')
+
+  await page.evaluate(() =>
+    window.scrollTo(0, document.documentElement.scrollHeight),
+  )
+  await expect(
+    page.locator('.section-nav-link[data-active="true"]'),
+  ).toHaveText('Looking for')
+  await expect(rail).toHaveCSS('opacity', '1')
+})
+
 test('every rail label reads as its own heading rather than an anchor id', async ({
   page,
 }) => {
