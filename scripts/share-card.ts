@@ -18,7 +18,7 @@
  *
  * Run: bun scripts/share-card.ts, with the site served at CARD_BASE_URL.
  */
-import { writeFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 
 import { chromium } from '@playwright/test'
 
@@ -32,58 +32,60 @@ const HEIGHT = 630
 const SITE = process.env.CARD_BASE_URL ?? 'http://localhost:4400'
 const OUT = 'public/og.png'
 
-const MARK = `<svg viewBox="9.5 9.5 81 81" style="width:100%;height:100%">
-  <path d="M 67.5 50 A 25 25 0 1 0 56.84 70.48" fill="none" stroke="currentColor"
-    stroke-width="10" stroke-linecap="round"/>
-  <path d="M 17.5 50 L 67.5 50" fill="none" stroke="currentColor"
-    stroke-width="10" stroke-linecap="round"/>
-  <rect x="74.5" y="21" width="13" height="58" rx="1.5" fill="currentColor"/>
-</svg>`
+// Read from the one drawing rather than copied into this file, so the card
+// cannot drift from the tab, the home screen, and the avatar that
+// `scripts/brand.ts` renders from the same source. The mark carries no width or
+// height of its own, so the host sizes it.
+const MARK = await readFile('src/assets/brand/mark.svg', 'utf8')
 
 const browser = await chromium.launch()
 
-// The ground alone, at the card's own aspect so its contours are not stretched.
-// Every other element is hidden first: shooting the canvas while content sits
-// over it bakes the hero's own text into the image, which it once did.
-const fieldContext = await browser.newContext({
-  viewport: { width: WIDTH, height: HEIGHT },
-  deviceScaleFactor: 1,
-})
-const fieldPage = await fieldContext.newPage()
-await fieldPage.addInitScript(() => localStorage.setItem('theme', 'dark'))
-await fieldPage.goto(SITE, { waitUntil: 'networkidle' })
-await fieldPage.waitForTimeout(1600)
-await fieldPage.addStyleTag({
-  content: `body > *:not([data-page-ground]) { visibility: hidden !important }
+// A throw anywhere below leaves the browser running otherwise, and the ordinary
+// mistake reaches it: `goto` throws whenever CARD_BASE_URL is not being served.
+try {
+  // The ground alone, at the card's own aspect so its contours are not stretched.
+  // Every other element is hidden first: shooting the canvas while content sits
+  // over it bakes the hero's own text into the image, which it once did.
+  const fieldContext = await browser.newContext({
+    viewport: { width: WIDTH, height: HEIGHT },
+    deviceScaleFactor: 1,
+  })
+  const fieldPage = await fieldContext.newPage()
+  await fieldPage.addInitScript(() => localStorage.setItem('theme', 'dark'))
+  await fieldPage.goto(SITE, { waitUntil: 'networkidle' })
+  await fieldPage.waitForTimeout(1600)
+  await fieldPage.addStyleTag({
+    content: `body > *:not([data-page-ground]) { visibility: hidden !important }
             [data-page-ground] { visibility: visible !important }`,
-})
-await fieldPage.waitForTimeout(300)
-const fieldShot = await fieldPage.screenshot({ type: 'png' })
-await fieldContext.close()
-const field = `data:image/png;base64,${fieldShot.toString('base64')}`
+  })
+  await fieldPage.waitForTimeout(300)
+  const fieldShot = await fieldPage.screenshot({ type: 'png' })
+  await fieldContext.close()
+  const field = `data:image/png;base64,${fieldShot.toString('base64')}`
 
-const context = await browser.newContext({
-  viewport: { width: WIDTH, height: HEIGHT },
-  deviceScaleFactor: 1,
-})
-const page = await context.newPage()
-await page.addInitScript(() => localStorage.setItem('theme', 'dark'))
-// Navigated rather than set, so the head keeps the site's fonts and tokens.
-await page.goto(SITE, { waitUntil: 'networkidle' })
-await page.evaluate(
-  ({ markup }) => {
-    document.documentElement.classList.add('dark')
-    document.body.innerHTML = markup
-  },
-  {
-    markup: `
+  const context = await browser.newContext({
+    viewport: { width: WIDTH, height: HEIGHT },
+    deviceScaleFactor: 1,
+  })
+  const page = await context.newPage()
+  await page.addInitScript(() => localStorage.setItem('theme', 'dark'))
+  // Navigated rather than set, so the head keeps the site's fonts and tokens.
+  await page.goto(SITE, { waitUntil: 'networkidle' })
+  await page.evaluate(
+    ({ markup }) => {
+      document.documentElement.classList.add('dark')
+      document.body.innerHTML = markup
+    },
+    {
+      markup: `
+      <style>.card-mark > svg { display:block; width:100%; height:100% }</style>
       <div style="position:fixed;inset:0;background:var(--background);overflow:hidden">
         <img src="${field}"
           style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
         <div style="position:absolute;inset:0;padding:0 84px;display:flex;
           align-items:center;gap:64px">
-          <span style="width:210px;height:210px;flex:none;display:block;
-            color:var(--foreground)">${MARK}</span>
+          <span class="card-mark" style="width:210px;height:210px;flex:none;
+            display:block;color:var(--foreground)">${MARK}</span>
           <div style="display:flex;flex-direction:column;gap:22px">
             <p style="margin:0;font-family:var(--font-display);font-size:44px;
               line-height:1.2;color:var(--foreground);max-width:22ch">${CLAIM}</p>
@@ -91,12 +93,14 @@ await page.evaluate(
           </div>
         </div>
       </div>`,
-  },
-)
-await page.waitForTimeout(800)
-const card = await page.screenshot({ type: 'png' })
-await writeFile(OUT, card)
-await context.close()
-await browser.close()
+    },
+  )
+  await page.waitForTimeout(800)
+  const card = await page.screenshot({ type: 'png' })
+  await writeFile(OUT, card)
+  await context.close()
+} finally {
+  await browser.close()
+}
 
 console.log(`${OUT}  ${WIDTH}x${HEIGHT}`)
