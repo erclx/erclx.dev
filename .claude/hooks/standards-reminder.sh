@@ -38,8 +38,13 @@ matches() {
 #
 # The branch rows read the flag apart from the subcommand, since `checkout` and
 # `switch` both take flags before it and `git checkout --track -b feat/x` would
-# otherwise be missed. `git branch` takes a rename as well as a creation, which
-# is the form the worktree guidance names as the sanctioned one.
+# otherwise be missed.
+#
+# Each row takes every flag that names a branch rather than the one a session
+# happens to type, because two passes of naming them one at a time each left
+# forms behind: the short flag without its force twin, then the short pair
+# without their long forms. A rename and a copy name a branch as much as a
+# creation does, and `--orphan` names one on both subcommands.
 standard=""
 if matches '\bgh pr create\b'; then
   standard='pr'
@@ -47,11 +52,11 @@ elif matches '\bgh pr edit\b' && matches '[-][-](title|body)\b'; then
   standard='pr'
 elif matches '\bgit commit\b' && ! matches '[-][-]no-edit\b'; then
   standard='commit'
-elif matches '\bgit checkout\b' && matches ' -b\b'; then
+elif matches '\bgit checkout\b' && matches ' (-[bB]\b|--orphan\b)'; then
   standard='branch'
-elif matches '\bgit switch\b' && matches ' -c\b'; then
+elif matches '\bgit switch\b' && matches ' (-[cC]\b|--(create|force-create|orphan)\b)'; then
   standard='branch'
-elif matches '\bgit branch +(-m\b|--move\b|[^-])'; then
+elif matches '\bgit branch +(-[mMcC]\b|--(move|copy)\b|[^-])'; then
   standard='branch'
 fi
 
