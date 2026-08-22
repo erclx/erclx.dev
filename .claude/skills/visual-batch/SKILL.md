@@ -116,11 +116,26 @@ Page copy is canonical upstream at `career/assets/portfolio/` and is read across
 
 - Hold the tree uncommitted across every iteration within a batch. The operator is judging rendered output, and a commit between iterations is noise in a history they read later.
 - Commit at a batch boundary once the operator has judged it, rather than holding the whole run. A run spanning many batches otherwise carries hours of unsaved work, and the boundary is where the batch's own outcomes settle anyway.
-- Run `claude-docs` at that same boundary. Per commit is too often, since outcomes close per batch and not per commit, and at the end of the run is too late: the architecture entries then get written from a summary rather than from the measurements that produced them, which is how a record loses the failed attempts and the numbers that decided it.
 - Fold batches into one record entry where they are one story. Three batches that together gave the page one elevation language read as three unrelated styling changes when written up separately.
 - Keep one batch's commits contiguous. A later fix to an earlier batch goes on that batch's own commits, not on the end of the branch, since a batch interrupted by another cannot be lifted onto its own branch afterward. One run landed a fix to its ripple batch after the next batch's two commits and lost the split with that one commit.
 - Root `CLAUDE.md` § Shipping owns when a commit and a push are allowed. Follow it rather than a copy, and do not infer a shipping rule from this file.
 - Hand over to `stack-ship` on the ship signal. It cuts one branch per batch in commit order, opens the chain, and rebases it as each branch merges. Everything from that signal onward belongs to it, including the observability test a batch has to pass before it earns a branch of its own.
+
+## Closing a batch
+
+Every batch ends the same four ways. Run them in order once the operator has judged the batch, before the next one opens.
+
+1. Run `claude-docs`.
+2. Commit, per `## Holding the diff` above, carrying that record with the batch.
+3. Re-run `bun run screenshot` for the surfaces the batch touched.
+4. Hand over the address, per `.claude/rules/ui/445-screenshot.md` § Handoff.
+
+### Rules
+
+- Run `claude-docs` per batch rather than per commit or once at ship. Per commit is too often, since outcomes close per batch and not per commit. At the end of the run is too late: the architecture entries then get written from a summary rather than from the measurements that produced them, which is how a record loses the failed attempts and the numbers that decided it. A run that skipped this reported its early batches reading as unrelated changes afterward.
+- Run it ahead of the commit rather than behind it. It reads the working tree and untracked files as well as the committed diff, so it needs no commit to see the batch, and a record written afterward sits outside the commit that closes the batch. The next boundary then sweeps it up, and since `stack-ship` cuts one branch per slice in commit order, batch N's record ships on batch N+1's branch.
+- Render the address as a scannable code beside the link wherever the project ships a renderer for one. A link is what the operator opens on the machine they are already at, and the code is the only one of the two a phone can act on, so a handoff carrying the link alone cannot be judged on the device half the decisions are about.
+- Close the batch even when nothing about it looked wrong. The steps run on the batch being finished rather than on a session noticing it needs them, which is what makes them a sequence rather than a judgment.
 
 ## Voice
 
@@ -133,7 +148,7 @@ Cite these rather than restating them. A step reimplemented here rots against th
 - `claude-worktree` enters the worktree this runs in
 - `claude-tasks` writes and archives the task files phase 1 produces
 - `e2e/inventory.ts` reads every control on every page and groups them by treatment, which is what `## Sweeping` is measured with
-- `claude-docs` refreshes the record at ship
+- `claude-docs` refreshes the record at every batch boundary, per `## Closing a batch`
 - `stack-ship` cuts the batches into a chain of pull requests on the ship signal and rebases it behind each merge
 - `git-stage`, `git-pr`, and `git-followup` carry the commits and the pull request
 - `claude-review` and `claude-address-review` run the review pass
