@@ -195,33 +195,37 @@ async function readPreview(page: Page, route: string): Promise<Preview> {
 }
 
 const browser = await chromium.launch()
-const context = await browser.newContext({
-  viewport: { width: 1400, height: 900 },
-  deviceScaleFactor: 2,
-})
-const page = await context.newPage()
 
-await mkdir(OUT, { recursive: true })
+// A throw anywhere below leaves the browser running otherwise, and the ordinary
+// mistake reaches it: `goto` throws whenever SITE is not being served.
+try {
+  const context = await browser.newContext({
+    viewport: { width: 1400, height: 900 },
+    deviceScaleFactor: 2,
+  })
+  const page = await context.newPage()
 
-const previews: Preview[] = []
-for (const route of ROUTES) {
-  previews.push(await readPreview(page, route))
-}
+  await mkdir(OUT, { recursive: true })
 
-const sheet = await context.newPage()
+  const previews: Preview[] = []
+  for (const route of ROUTES) {
+    previews.push(await readPreview(page, route))
+  }
 
-for (const preview of previews) {
-  const slug = preview.route === '/' ? 'apex' : preview.route.slice(1)
-  const frames = HOSTS.map(
-    (host) => `
+  const sheet = await context.newPage()
+
+  for (const preview of previews) {
+    const slug = preview.route === '/' ? 'apex' : preview.route.slice(1)
+    const frames = HOSTS.map(
+      (host) => `
       <figure>
         <figcaption>${host.label}</figcaption>
         <div class="frame">${host.render(preview)}</div>
         <em>${host.caveat}</em>
       </figure>`,
-  ).join('')
+    ).join('')
 
-  await sheet.setContent(`<style>
+    await sheet.setContent(`<style>
       body { margin:0; padding:28px; background:#17150f; color:#f4efe6;
              font:13px/1.5 ${SANS} }
       h1 { font-size:15px; margin:0 0 4px }
@@ -242,10 +246,11 @@ og:image        ${preview.image}
 twitter:card    ${preview.card}</p>
     <div class="grid">${frames}</div>`)
 
-  await sheet.waitForTimeout(300)
-  const shot = await sheet.screenshot({ fullPage: true })
-  await writeFile(path.join(OUT, `${slug}.png`), shot)
-  console.log(path.join(OUT, `${slug}.png`))
+    await sheet.waitForTimeout(300)
+    const shot = await sheet.screenshot({ fullPage: true })
+    await writeFile(path.join(OUT, `${slug}.png`), shot)
+    console.log(path.join(OUT, `${slug}.png`))
+  }
+} finally {
+  await browser.close()
 }
-
-await browser.close()

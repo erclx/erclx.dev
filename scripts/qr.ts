@@ -69,19 +69,24 @@ function markup(url: string, matrix: boolean[][]): string {
 }
 
 const browser = await chromium.launch()
-const context = await browser.newContext({ deviceScaleFactor: 2 })
-const page = await context.newPage()
-await mkdir(OUT, { recursive: true })
 
-for (const [index, url] of urls.entries()) {
-  const matrix = encode(url)
-  await page.setContent(
-    `<body style="margin:0;background:#fff">${markup(url, matrix)}</body>`,
-  )
-  const shot = await page.locator('div').first().screenshot()
-  const file = path.join(OUT, `code-${index + 1}.png`)
-  await writeFile(file, shot)
-  console.log(`${file}  ${url}  (${matrix.length} modules)`)
+// A throw anywhere below leaves the browser running otherwise, and a headless
+// chromium nothing owns survives the script that started it.
+try {
+  const context = await browser.newContext({ deviceScaleFactor: 2 })
+  const page = await context.newPage()
+  await mkdir(OUT, { recursive: true })
+
+  for (const [index, url] of urls.entries()) {
+    const matrix = encode(url)
+    await page.setContent(
+      `<body style="margin:0;background:#fff">${markup(url, matrix)}</body>`,
+    )
+    const shot = await page.locator('div').first().screenshot()
+    const file = path.join(OUT, `code-${index + 1}.png`)
+    await writeFile(file, shot)
+    console.log(`${file}  ${url}  (${matrix.length} modules)`)
+  }
+} finally {
+  await browser.close()
 }
-
-await browser.close()

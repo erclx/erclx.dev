@@ -66,17 +66,20 @@ const source = await readFile('src/assets/brand/mark.svg', 'utf8')
 
 const browser = await chromium.launch()
 
-for (const raster of rasters) {
-  const context = await browser.newContext({
-    viewport: { width: raster.size, height: raster.size },
-    deviceScaleFactor: 1,
-  })
-  const page = await context.newPage()
+// A throw anywhere below leaves the browser running otherwise, and a headless
+// chromium nothing owns survives the script that started it.
+try {
+  for (const raster of rasters) {
+    const context = await browser.newContext({
+      viewport: { width: raster.size, height: raster.size },
+      deviceScaleFactor: 1,
+    })
+    const page = await context.newPage()
 
-  // The mark carries `currentColor`, so the ink is set on the host element and
-  // inherited rather than rewritten into the file.
-  await page.setContent(
-    `<style>
+    // The mark carries `currentColor`, so the ink is set on the host element and
+    // inherited rather than rewritten into the file.
+    await page.setContent(
+      `<style>
        html, body { margin:0; width:100%; height:100%; }
        body { display:flex; align-items:center; justify-content:center;
               background:${raster.ground ?? 'transparent'}; color:${raster.ink};
@@ -84,15 +87,16 @@ for (const raster of rasters) {
        svg { display:block; width:${raster.size * raster.scale}px;
              height:${raster.size * raster.scale}px; }
      </style>${source}`,
-  )
+    )
 
-  const buffer = await page.screenshot({
-    omitBackground: raster.ground === null,
-    type: 'png',
-  })
-  await writeFile(raster.file, buffer)
-  await context.close()
-  console.log(`${raster.file.padEnd(30)} ${raster.size}px  ${raster.note}`)
+    const buffer = await page.screenshot({
+      omitBackground: raster.ground === null,
+      type: 'png',
+    })
+    await writeFile(raster.file, buffer)
+    await context.close()
+    console.log(`${raster.file.padEnd(30)} ${raster.size}px  ${raster.note}`)
+  }
+} finally {
+  await browser.close()
 }
-
-await browser.close()
