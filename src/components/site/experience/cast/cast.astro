@@ -301,6 +301,35 @@ const clusterWidth = (cluster: Cluster) =>
     // A tap reaches what a hover cannot. It runs the same reaction on a class
     // the stylesheet already answers to, removed when the animation ends rather
     // than after a duration guessed here.
+    /**
+     * How long a tap holds when no animation carries it, which is every tap a
+     * reduced-motion reader makes. Long enough to read the face that arrived
+     * and short enough that the member is ready for the next tap.
+     */
+    const STILL_REACTION_MS = 1400
+
+    // Nothing is left running, so the member goes back to its resting mood.
+    const settle = (member: HTMLElement) => {
+      delete member.dataset.reacting
+      delete member.dataset.woken
+      if (member.dataset.restReact !== undefined) {
+        member.dataset.react = member.dataset.restReact
+        delete member.dataset.restReact
+      }
+    }
+
+    const isReacting = (member: HTMLElement) =>
+      member.getAnimations({ subtree: true }).some((animation) => {
+        const name = String(
+          (animation as unknown as { animationName?: string }).animationName ?? '',
+        )
+        return (
+          animation.playState === 'running' &&
+          name.startsWith('cast-') &&
+          name !== 'cast-breathe'
+        )
+      })
+
     for (const member of field.querySelectorAll<HTMLElement>('[data-cast-member]')) {
       member.addEventListener('click', () => {
         if (member.dataset.reacting !== undefined) return
@@ -311,6 +340,22 @@ const clusterWidth = (cluster: Cluster) =>
           member.dataset.woken = ''
         }
         member.dataset.reacting = ''
+
+        // A reaction that starts no animation is never ended by one, since
+        // `animationend` is the only thing that clears the mark. Every
+        // `cast-*` keyframe sits behind `prefers-reduced-motion: no-preference`,
+        // so a reader who asked for less motion is always in that state: the
+        // member kept its tapped face, held its aura lit, and refused every
+        // later tap for the life of the page.
+        //
+        // Held rather than released on the next frame. The face is the whole
+        // of what a tap says once the movement is gone, and reverting it inside
+        // a frame leaves that reader causing nothing they can see. The check
+        // reads the animations rather than the media query, so a behavior that
+        // ships without keyframes takes the same path.
+        window.setTimeout(() => {
+          if (!isReacting(member)) settle(member)
+        }, STILL_REACTION_MS)
       })
 
       // Restored when nothing is left running rather than after a duration
@@ -318,25 +363,8 @@ const clusterWidth = (cluster: Cluster) =>
       // and `animationend` arrives once per animation, so the first to finish
       // would cut the rest short.
       member.addEventListener('animationend', () => {
-        const running = member
-          .getAnimations({ subtree: true })
-          .some((animation) => {
-            const name = String(
-              (animation as unknown as { animationName?: string }).animationName ?? '',
-            )
-            return (
-              animation.playState === 'running' &&
-              name.startsWith('cast-') &&
-              name !== 'cast-breathe'
-            )
-          })
-        if (running) return
-        delete member.dataset.reacting
-        delete member.dataset.woken
-        if (member.dataset.restReact !== undefined) {
-          member.dataset.react = member.dataset.restReact
-          delete member.dataset.restReact
-        }
+        if (isReacting(member)) return
+        settle(member)
       })
     }
 

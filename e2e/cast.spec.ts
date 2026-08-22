@@ -457,4 +457,44 @@ test.describe('agent cast', () => {
 
     expect(Math.min(...shares)).toBeGreaterThan(0.05)
   })
+
+  test('releases a tapped member for a reader who asked for less motion', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize(WIDE)
+    await settleCast(page)
+
+    const sleeper = page.locator(MEMBER).last()
+    const resting = await sleeper.evaluate((member) => member.dataset.react)
+
+    await sleeper.click({ force: true })
+
+    // The face is the whole of what a tap says once the movement is gone, so it
+    // has to arrive and be readable rather than revert inside a frame.
+    expect(await sleeper.evaluate((member) => 'woken' in member.dataset)).toBe(
+      true,
+    )
+
+    // Every `cast-*` keyframe sits behind `no-preference`, so no animation runs
+    // and no `animationend` arrives. A member left marked here holds its aura
+    // lit and takes no further tap for the life of the page, which is a control
+    // that answers once and then reads as broken.
+    await expect
+      .poll(() => sleeper.evaluate((member) => 'reacting' in member.dataset), {
+        timeout: 5000,
+      })
+      .toBe(false)
+
+    expect(await sleeper.evaluate((member) => member.dataset.react)).toBe(
+      resting,
+    )
+
+    // Releasing the mark is only half of it. A second tap has to be answered,
+    // which is what a reader actually notices about the first one sticking.
+    await sleeper.click({ force: true })
+    expect(await sleeper.evaluate((member) => 'woken' in member.dataset)).toBe(
+      true,
+    )
+  })
 })
