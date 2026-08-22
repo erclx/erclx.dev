@@ -318,7 +318,7 @@ function resolveColumnDamp(frame: FieldFrame): number {
   const { content, width, columnTreatment } = frame
   if (!content) return 1
 
-  if (columnTreatment === 'share') {
+  if (columnTreatment === 'scaled') {
     // Reversed edges, so a narrow screen travels all the way to the floor and a
     // wide one stays where it was.
     const travel = smoothstep(
