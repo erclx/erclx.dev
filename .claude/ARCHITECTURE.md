@@ -136,6 +136,15 @@ the claim is not that. It is the same redundancy the description carried against
 the title until this batch, where a card opening on "Applied AI engineer in
 Gothenburg" sat under a title ending "Applied AI engineer".
 
+The description repeated the image the same way and it took a second instrument
+to see. Every host except LinkedIn prints the description beside the card, and
+the card draws the claim, so an apex description opening on that same sentence
+printed it twice in one unfurl. The guard in place compared the description
+against the title and could not reach it. `bun run unfurl` renders all six pages
+as five hosts compose them and showed it on its first run, which is what the
+harness is for. `scripts/card-copy.ts` now holds the claim as one declaration so
+the spec can assert against it without running the script that draws it.
+
 It is composed inside the served site rather than in a bare page, which is what
 gives it the real Fraunces and the shipped tokens. A card drawn in a fallback
 face is a card judged on the wrong letterforms. The field behind it is captured
@@ -164,7 +173,7 @@ words the title already used, and one fails a route title carrying `case study`,
 which `.claude/REQUIREMENTS.md` retired on 2026-08-18 and which had reached the
 visible labels without ever reaching the titles a shared link shows.
 
-Measured at e96e63c on 2026-08-22.
+Measured at ab160ee on 2026-08-22.
 
 ### Resume PDF served from `public/`
 

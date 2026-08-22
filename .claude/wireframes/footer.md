@@ -46,6 +46,7 @@ Nothing rules across the top. Space before it and the signature opening it are w
 - It runs nine words. `Designed and` opened it until 2026-08-20 and came out for reading prose-like on a line read in passing, and because the pair invites a reader to weigh two acts that are one act here. The closing turn is the half that cannot go: without it the line thanks a tool, which is the register the point above rules out.
 - The date is taken at build time and names a month rather than a year alone, so it states the last deploy. Within the current year a bare year carries almost no information, which is the ambiguity it replaced.
 - The city left this line rather than moving. The closing ask above already states it as a filter, so the footer was repeating it beside a year that read as a copyright with its symbol missing.
+- The Résumé link and the colophon arrive on scroll rather than being in place before a reader reaches them. They carried no reveal marker at all until 2026-08-22, which made the last surface on the page the one that never animated. The signature keeps its own wipe and takes no marker. Mechanism: `.claude/context/motion.md`.
 
 ## Why no rule
 
