@@ -1,12 +1,14 @@
 ---
 name: stack-address
-description: Answers a batch of review findings across a chain of stacked pull requests in one bottom-up pass, rebases and pushes every branch together, and posts a response on each branch it touched. Use when a stack handback arrives, or when asked to "address the stack review", "fix the findings across the chain", or "push the whole stack". Do NOT use for findings on a single pull request, which is `claude-address-review`, and do NOT use to open a chain, which is `stack-ship`.
+description: Answers a batch of review findings across a chain of stacked pull requests in one bottom-up pass, rebasing, pushing and answering each branch as the walk finishes it. Use when a stack handback arrives, or when asked to "address the stack review", "fix the findings across the chain", or "push the whole stack". Do NOT use for findings on a single pull request, which is `claude-address-review`, and do NOT use to open a chain, which is `stack-ship`.
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, Skill
 ---
 
 # Stack address
 
-A handback covers the whole chain, so the answer does too. Fixing one branch and handing it back leaves every branch above it based on a commit that no longer exists, which is the failure the batched handback exists to avoid.
+A handback covers the whole chain, so the walk does too. Answering one branch and stopping leaves every branch above it based on a commit that no longer exists, which is the failure this exists to avoid.
+
+Walking the whole chain is not the same as holding it. Each branch is pushed and answered as the walk finishes it, because the walk rebases the branch above onto it first and nothing after that reaches it.
 
 Read `.claude/context/stacked-shipping.md` before the first fix. It carries how git behaves under a stack and why the thread outranks the session channel.
 
@@ -24,14 +26,16 @@ Read `.claude/context/stacked-shipping.md` before the first fix. It carries how 
 
 ### Rules
 
-- Fix the whole chain before pushing any of it. Pushing the bottom mid-walk is the same defect as reviewing the bottom mid-read, from the other side.
+- Push and answer each branch as the walk finishes it, bottom to top, rather than holding the chain. The walk rebases branch N+1 onto a fixed branch N before touching it, so a branch the walk has left is final and a reviewer returning to it is reading something that has stopped moving. Holding them all leaves the reviewer idle through one gate run per branch, serialized behind work they could already be reading.
+- Read that as the one place this skill does not mirror `stack-review`. The reviewer holds every finding until the whole chain is read, because a cross-branch defect is invisible per branch and that is the only way to see one. A worker has no matching constraint: the handback is complete before the walk starts, so every finding is already known, and the walk order guarantees each branch stops changing before the next one moves.
+- A branch is finished when no outstanding finding can still reach it, which the walk order normally settles on its own. The case it does not is a fix on an upper branch turning out to need a change on a lower one, discovered while implementing rather than while reviewing. Reopen the lower branch, say so on its thread, and rebase the chain above it again. A branch announced as finished and then rewritten in silence is worse than one never announced.
 - Fix a finding on the branch that introduced it, never on the top of the chain. A repair landed above the branch it belongs to welds the two and the split is gone.
 - Re-read the fixed file against what the finding claimed. A fix that satisfies the description and not the defect reads as closed on both surfaces.
 - Re-verify the whole path when a fix uncovers a second defect, rather than the fix alone. One defect masks another whenever the first suppresses the conditions the second needs, so a run that ships after the first ships both.
 
 ## Phase 2: push and answer
 
-1. Force-push every branch in the chain together, bottom to top.
+1. Force-push each branch as the walk finishes it, bottom to top, and answer it in the same step rather than collecting the answers for the end.
 2. Post a response on every branch the walk touched, naming what changed on that branch.
 3. State for each push whether it was a pure rebase or one carrying edits. The reviewer checks that claim with `git diff <reviewed-oid> <new-head>` rather than re-reading the branch.
 4. Report the batch back through the channel the dispatch arrived on, naming every branch pushed and every finding withdrawn.
