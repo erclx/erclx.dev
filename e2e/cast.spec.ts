@@ -39,27 +39,43 @@ async function settleCast(page: Page): Promise<void> {
   await page.waitForTimeout(SETTLE_MS)
 }
 
-/** Share of a member's own box that differs from the page behind it. */
-async function inkShare(page: Page, index: number): Promise<number> {
-  // Every member carries `cast-breathe`, an ambient scale that runs forever, and
-  // an element screenshot waits for two consecutive frames to report the same
-  // box before it shoots. A scaling box gives it that only where the term passes
-  // through a slow point, so the wait is variable rather than fatal: measured on
-  // one member it ran 4499ms, then 873ms, then 666ms, against a flat 760ms with
-  // the animations frozen. Seven members at the long end of that reach the
-  // capture timeout on a loaded runner, which is why this failed in CI and
-  // passed here. Freezing costs the reading nothing, since the term is a scale
-  // rather than a travel and the drawing is the same at any phase of it.
-  const shot = await page
-    .locator(MEMBER)
-    .nth(index)
-    .screenshot({ animations: 'disabled' })
+/**
+ * The share of each member's box carrying ink, read from one capture of the
+ * whole field rather than one per member.
+ *
+ * Seven element captures cost seven actionability waits and seven encodes, and
+ * Playwright serializes actions on a page so they do not overlap. Measured at
+ * 5829ms for the seven against 989ms for one field capture plus 100ms to read
+ * every box in a single call, which is what took this past the case timeout on
+ * a loaded runner while passing here.
+ */
+async function inkShares(page: Page): Promise<number[]> {
+  const field = page.locator(FIELD)
+  const shot = await field.screenshot({ animations: 'disabled' })
+  const geometry = await field.evaluate((element) => {
+    const root = element.getBoundingClientRect()
+    return {
+      rootWidth: root.width,
+      members: [...element.querySelectorAll('[data-cast-member]')].map(
+        (member) => {
+          const box = member.getBoundingClientRect()
+          return {
+            x: box.x - root.x,
+            y: box.y - root.y,
+            width: box.width,
+            height: box.height,
+          }
+        },
+      ),
+    }
+  })
+
   return page.evaluate(
-    async ({ data }) => {
-      const context = document.createElement('canvas').getContext('2d')!
-      context.fillStyle = getComputedStyle(document.body).backgroundColor
-      context.fillRect(0, 0, 1, 1)
-      const [gr, gg, gb] = context.getImageData(0, 0, 1, 1).data
+    async ({ data, geometry: shape }) => {
+      const probe = document.createElement('canvas').getContext('2d')!
+      probe.fillStyle = getComputedStyle(document.body).backgroundColor
+      probe.fillRect(0, 0, 1, 1)
+      const [gr, gg, gb] = probe.getImageData(0, 0, 1, 1).data
 
       const image = new Image()
       await new Promise((resolve, reject) => {
@@ -67,23 +83,42 @@ async function inkShare(page: Page, index: number): Promise<number> {
         image.onerror = reject
         image.src = 'data:image/png;base64,' + data
       })
+
+      // Derived from the capture rather than read off the device, since the
+      // context's scale factor is what decides it and a caller may change it.
+      const scale = image.width / shape.rootWidth
       const canvas = document.createElement('canvas')
       canvas.width = image.width
       canvas.height = image.height
       const target = canvas.getContext('2d')!
       target.drawImage(image, 0, 0)
-      const pixels = target.getImageData(0, 0, canvas.width, canvas.height).data
-      let inked = 0
-      for (let offset = 0; offset < pixels.length; offset += 4) {
-        const distance =
-          Math.abs(pixels[offset] - gr) +
-          Math.abs(pixels[offset + 1] - gg) +
-          Math.abs(pixels[offset + 2] - gb)
-        if (distance > 60) inked += 1
-      }
-      return inked / (pixels.length / 4)
+
+      return shape.members.map((member) => {
+        const x = Math.max(0, Math.round(member.x * scale))
+        const y = Math.max(0, Math.round(member.y * scale))
+        const width = Math.min(
+          Math.round(member.width * scale),
+          canvas.width - x,
+        )
+        const height = Math.min(
+          Math.round(member.height * scale),
+          canvas.height - y,
+        )
+        if (width <= 0 || height <= 0) return 0
+
+        const pixels = target.getImageData(x, y, width, height).data
+        let inked = 0
+        for (let offset = 0; offset < pixels.length; offset += 4) {
+          const distance =
+            Math.abs(pixels[offset] - gr) +
+            Math.abs(pixels[offset + 1] - gg) +
+            Math.abs(pixels[offset + 2] - gb)
+          if (distance > 60) inked += 1
+        }
+        return inked / (pixels.length / 4)
+      })
     },
-    { data: shot.toString('base64') },
+    { data: shot.toString('base64'), geometry },
   )
 }
 
@@ -243,11 +278,11 @@ test.describe('agent cast', () => {
     await page.setViewportSize(WIDE)
     await settleCast(page)
 
-    const count = await page.locator(MEMBER).count()
-    const shares = await Promise.all(
-      Array.from({ length: count }, (_, index) => inkShare(page, index)),
-    )
+    const shares = await inkShares(page)
 
+    // Asserted non-empty before the minimum is read, since `Math.min` of no
+    // members returns Infinity and clears the floor below.
+    expect(shares.length).toBeGreaterThan(0)
     expect(Math.min(...shares)).toBeGreaterThan(0.05)
   })
 
@@ -262,7 +297,7 @@ test.describe('agent cast', () => {
       member.style.opacity = '0'
     })
 
-    const hidden = await inkShare(page, 2)
+    const hidden = (await inkShares(page))[2]
 
     expect(hidden).toBeLessThan(0.05)
   })
@@ -484,9 +519,8 @@ test.describe('agent cast', () => {
     await page.setViewportSize(WIDE)
     await settleCast(page)
 
-    const shares = await Promise.all(
-      [0, 5].map((index) => inkShare(page, index)),
-    )
+    const all = await inkShares(page)
+    const shares = [all[0], all[5]]
 
     expect(Math.min(...shares)).toBeGreaterThan(0.05)
   })
