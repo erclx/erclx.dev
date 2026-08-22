@@ -103,9 +103,14 @@ body.surface-case-study > header[data-section='header'] {
 
    Declared in `:root` rather than in the `@theme inline` block. A token in
    that block bakes its literal into the generated utility and cannot be
-   resolved per theme, which is the trap the type scale already fell into. */
+   resolved per theme, which is the trap the type scale already fell into.
+
+   Both fills read `--surface-elevated` rather than `--card`, because `--card`
+   also grounds the chart plates on a project route and those stay white under
+   charts drawn on white. See the palette below for what each theme puts in it
+   and why light cannot lift the way dark does. */
 :root {
-  --floating-fill: rgb(from var(--card) r g b / 0.88);
+  --floating-fill: rgb(from var(--surface-elevated) r g b / 0.88);
   --floating-blur: blur(24px);
   --floating-shadow:
     0 1px 2px rgb(from var(--foreground) r g b / 0.04),
@@ -123,7 +128,7 @@ body.surface-case-study > header[data-section='header'] {
      bounds takes this. A link sitting inline in a paragraph keeps its
      underline, because a ground behind a word reads as a highlighter and
      fights the sentence it is inside. */
-  --glow-fill: color-mix(in oklab, var(--card) 60%, transparent);
+  --glow-fill: color-mix(in oklab, var(--surface-elevated) 60%, transparent);
   --glow-shadow: 0 0 1.25rem 0
     color-mix(in oklab, var(--foreground) 7%, transparent);
   /* Asymmetric on purpose. Arriving is immediate, because a control answering
@@ -312,6 +317,24 @@ body.surface-case-study > header[data-section='header'] {
   --background: oklch(0.968 0.01 82);
   --foreground: oklch(0.21 0.007 78);
   --card: var(--light-card);
+  /* The ground every floating control draws, and the one token that decides
+     what floats. A control resolves this rather than picking a color, so the
+     two bars, the rail's active row and the dock cannot drift apart.
+
+     It keeps the page's own hue and moves only in lightness, which is what the
+     dark theme below already does and what light did not: `--card` is pure
+     white at chroma 0, so on a page at chroma 0.01 the bar was the only
+     colorless surface on the site and read as a sheet laid over it rather
+     than as an object on it.
+
+     Light has almost no room to lift. The page sits at 0.968 and white is
+     0.032 away, so measured off painted pixels a white ground separates by
+     1.038:1 against the dark theme's 1.105:1. The fill is therefore not what
+     makes this read as an object in either theme, and in light it never was:
+     the shadow carries it, and the edge is what carries it in dark. That is
+     what makes the warmth affordable at 1.023:1. Anything relying on the fill
+     alone to bound a control in light is relying on a tenth of a percent. */
+  --surface-elevated: oklch(0.988 0.012 82);
   --card-foreground: oklch(0.21 0.007 78);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.21 0.007 78);
@@ -339,6 +362,9 @@ body.surface-case-study > header[data-section='header'] {
   --background: oklch(0.21 0.007 78);
   --foreground: oklch(0.954 0.013 82);
   --card: oklch(0.248 0.009 74);
+  /* Dark's card already is the page lifted with its warmth kept, so the
+     elevated surface is that value rather than a second one beside it. */
+  --surface-elevated: var(--card);
   --card-foreground: oklch(0.954 0.013 82);
   --popover: oklch(0.248 0.009 74);
   --popover-foreground: oklch(0.954 0.013 82);
