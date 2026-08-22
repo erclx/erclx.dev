@@ -19,6 +19,23 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 - `REVEAL_THRESHOLD` and `REVEAL_ROOT_BOTTOM_INSET_PERCENT` are exported and the observer builds its `threshold` and `rootMargin` from them. `e2e/lazy-images.ts` imports the pair, because the walk a test runs has to wait on the elements this module is due to mark, and a walk holding its own copies drifts from these the moment either moves.
 - The cascade defeats a geometry assertion that reads too early. Two cards in one grid row report positions several pixels apart while the later one is still rising, which reads as a layout defect and is not one. A test comparing positions scrolls the surface into view and waits out the longest delay first. Heights are unaffected, since the reveal translates rather than scales, so a height comparison needs no wait.
 
+## A list reveals as a group
+
+- A container marked `data-fade-group` is watched instead of its rows, and its rows are stepped by their position in it at 220ms. Its rows are excluded from the batch path entirely, so the two never both write to one element.
+- The batch stagger above cannot produce a cascade, which is worth stating because it looks like it should. It orders whatever arrives in one observer callback, and a reader scrolling at reading pace delivers a six-row list as six callbacks of one element each: measured on the timeline, batch sizes ran 1,1,1,1,1,1,1,1,1,2 under a slow scroll against 3,6 under a fast one. A batch of one is stepped by zero, so the constant is inert in exactly the case a reader is in and raising it changes nothing anyone sees.
+- The group's step is scheduled with a timer per row rather than written as a `transition-delay`, because that longhand is reset by any `transition` shorthand a component declares on the same element.
+- The step is read against the 700ms fade rather than chosen freely. Rows closer than about a fifth of it overlap almost entirely and the list reads as one block. At 220ms the last of six starts at 1.1s and the list settles inside 1.8s, judged live against 90 and 140.
+- The threshold is 0 rather than a ratio, since a list taller than the viewport never reaches a share of itself.
+
+## A component can delete the reveal, and nothing reports it
+
+- `transition` is a shorthand, so a component declaring one on a `[data-fade]` element replaces the reveal's outright rather than adding to it. Specificity does not decide it: these rules sit in `@layer utilities` and Astro emits component styles unlayered, and an unlayered declaration beats a layered one at any specificity.
+- The experience rows shipped in that state. They declared a 150ms color and shadow transition for their active state and snapped from 0 to 1 with no fade at all, while carrying every marker a structural inventory reads. Six of the 35 faded elements on the page were affected and only those six.
+- `--reveal-transition` in `:root` is the repair. A component setting `transition` on a faded element opens its list with `var(--reveal-transition)`.
+- That token carries no delay and cannot. A nested `var()` inside an inherited custom property resolves where the property is declared rather than where it is used, so `var(--fade-delay)` written into it resolves against `:root`, falls back to its default, and every element inherits the same baked zero.
+- `e2e/home.spec.ts` guards both halves. One fails when any faded element has no opacity transition, and one fails unless a row is caught part-way through its fade. The second matters on its own: a spread measurement alone passes on a list that snaps at staggered times, which is exactly what shipped.
+- Read the general case rather than the CSS trivia. Three separate mechanisms each produced the same symptom, and a structural check reporting the markers present passed through all three. Watch the paint, not the attribute.
+
 ## Availability pulse
 
 - The status dot in the closing ask holds full opacity while a pseudo-element halo scales from its own size to 2.6 and fades, on a 2400ms loop with no end. It is the only always-on animation among the page's content, and it exists because a pulse states that availability is live now rather than printed.

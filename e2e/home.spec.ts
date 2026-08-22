@@ -530,6 +530,70 @@ test('no revealed surface waits out an authored delay', async ({ page }) => {
   expect(revealed.longestDelay).toBeLessThanOrEqual(MAX_REVEAL_DELAY_SECONDS)
 })
 
+test('every revealed element can actually animate its opacity', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  // `transition` is a shorthand, so a component declaring one on a faded
+  // element replaces the reveal's outright, and Astro emits component styles
+  // unlayered where the reveal sits in a layer, so the component wins whatever
+  // the specificity. The six timeline rows shipped in exactly that state:
+  // snapping from 0 to 1 while carrying every marker an inventory reads, which
+  // is why nothing caught it until the page was watched frame by frame.
+  const clobbered = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('[data-fade]'))
+      .filter(
+        (element) =>
+          !getComputedStyle(element).transitionProperty.includes('opacity'),
+      )
+      .map((element) => element.tagName.toLowerCase()),
+  )
+
+  expect(clobbered).toEqual([])
+})
+
+test('a grouped list staggers its rows rather than landing them together', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  // The batch stagger cannot do this. It orders whatever shares one observer
+  // callback, and a reader at reading pace delivers a list one row per
+  // callback, where the step multiplies by zero. The group schedules its own.
+  const reveal = await page.evaluate(async () => {
+    const group = document.querySelector('[data-fade-group]')
+    if (!group) return { spread: -1, everMidFade: false }
+    const rows = Array.from(group.querySelectorAll('[data-fade]'))
+    group.scrollIntoView({ behavior: 'instant', block: 'center' })
+
+    const lit = new Map<Element, number>()
+    let everMidFade = false
+    const start = performance.now()
+    while (performance.now() - start < 2600 && lit.size < rows.length) {
+      for (const row of rows) {
+        const opacity = Number(getComputedStyle(row).opacity)
+        if (opacity > 0.05 && opacity < 0.95) everMidFade = true
+        if (!lit.has(row) && opacity > 0.5) {
+          lit.set(row, performance.now() - start)
+        }
+      }
+      await new Promise((resolve) => requestAnimationFrame(resolve))
+    }
+    if (lit.size < rows.length) return { spread: -1, everMidFade }
+    const times = [...lit.values()]
+    return { spread: Math.max(...times) - Math.min(...times), everMidFade }
+  })
+
+  // Six rows stepped by 220ms separate by over a second. Anything under half
+  // the fade duration reads as one block arriving.
+  expect(reveal.spread).toBeGreaterThan(350)
+  // Spread alone passes on a list that snaps at staggered times, which is what
+  // shipped: the rows were scheduled apart and had no opacity transition to
+  // run. Catching a row part-way through its fade is what separates the two.
+  expect(reveal.everMidFade).toBe(true)
+})
+
 test('the experience section names the field of the degree', async ({
   page,
 }) => {

@@ -132,6 +132,17 @@ body.surface-case-study > header[data-section='header'] {
      gap between them. */
   --glow-in: 130ms;
   --glow-out: 520ms;
+  /* The scroll reveal's own transition, published so a component declaring a
+     transition on a faded element composes with it rather than replacing it.
+     A component that needs its own opens its list with this.
+
+     It carries no delay, and it cannot. A nested `var()` inside an inherited
+     custom property resolves where that property is declared rather than where
+     it is used, so `var(--fade-delay)` written here resolves against `:root`,
+     falls back to its default, and every element inherits the same baked zero.
+     A grouped list schedules its own stagger in `src/lib/reveal.ts` for that
+     reason, where nothing in the cascade can flatten it. */
+  --reveal-transition: opacity 700ms ease-out, transform 700ms ease-out;
 }
 
 /* One ground for both bars. The landing page and a route each render this
@@ -379,12 +390,25 @@ body.surface-case-study > header[data-section='header'] {
 
 @layer utilities {
   @media (prefers-reduced-motion: no-preference) {
+    /* The reveal's own transition is published as `--reveal-transition` in
+       `:root` so a component declaring a transition on a faded element can
+       compose with it rather than delete it.
+
+       `transition` is a shorthand, so a component's own replaces this outright.
+       Specificity does not decide it and raising it does not help: these rules
+       sit in `@layer utilities` and Astro emits component styles unlayered,
+       and an unlayered declaration beats a layered one at any specificity. The
+       experience row declares a 150ms color and shadow transition for its
+       active state, and its six rows were snapping from 0 to 1 with no fade at
+       all while still carrying every marker an inventory reads. Six of the 35
+       faded elements on the page were in that state and only those six.
+
+       A component setting `transition` on a `[data-fade]` element has to open
+       with `var(--reveal-transition)`. */
     [data-js='true'] [data-fade] {
       opacity: 0;
       transform: translateY(1rem);
-      transition:
-        opacity 700ms ease-out,
-        transform 700ms ease-out;
+      transition: var(--reveal-transition);
       transition-delay: var(--fade-delay, 0ms);
     }
     [data-js='true'] [data-fade][data-visible='true'] {
