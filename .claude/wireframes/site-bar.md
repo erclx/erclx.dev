@@ -48,7 +48,9 @@ The route name is absent while the route's own title is still on screen and fade
 
 - The bar holds the same column as the hero on every surface, so the chrome never resizes as a reader moves between the landing page and a route. That also lands the name where it started horizontally, so the travel reads as vertical.
 - The name is a control rather than a label. It returns the reader to the top, smoothly unless reduced motion is set. Hovering or focusing it underlines the name.
-- The mark and the name read as one lockup, grouped so the row's own spacing does not push them apart. The mark is decoration rather than a second control: it is hidden from assistive technology, since the name beside it already says the same thing, and it sits outside the name slot because that slot is the target the flying name is measured against.
+- The mark and the name are one control, not a mark beside one. Clicking either goes home, the control measures 79x44 on both bars, and the mark is hidden from assistive technology so the accessible name stays the name alone. A separate link on the mark was rejected as two adjacent controls on one destination.
+- The mark sits inside that control and outside the name slot, which are different boxes. The slot is the target the flying name is measured against, so the marker stays on the name rather than moving up to the group.
+- The bar switches on and its ground fades in under it. The name and the toggle arrive by riding the scroll and are fully opaque when they land, so a mark fading up beside them was a third timing on the row. The opacity stays on the bar rather than the row, because reduced motion gives the name slot its color back and an always-opaque bar would then show a second name through the whole hero.
 - The bar is `inert` until it is revealed, so nothing inside it takes focus while it is off screen.
 - A route's own bar is the sticky one rather than a second bar above it, so a reader deep in a long route always has a way home without stacking two bars.
 

@@ -212,11 +212,33 @@ The bar is the one surface that takes no ground, because it is the one surface
 this repository paints. A ground exists for a canvas nobody here controls, so
 inside the site's own chrome it would be a cream plate laid on the page, and the
 mark takes the theme's foreground instead. It renders at 24px, above the 20px at
-which this drawing resolves as a letter, and it sits beside the name rather than
-inside it: the landing bar's name slot is what the hero's flying name aims at,
-so a mark placed inside moves the landing target and drops the name onto the
-mark. Measured at 1280, the flyer lands 10px clear of the mark in both themes
-and the two centre to 0.0px.
+which this drawing resolves as a letter.
+
+The mark sits inside the way-home control and outside the name slot, which are
+two different boxes and only one of them is measured. A logo in a bar is a thing
+readers click, and a decorative mark against a live name is a dead 24px target
+beside a working one. Making it its own link would instead put two adjacent
+controls on one destination. The group is therefore the control, at 79x44 on
+both bars, with the mark `aria-hidden` inside it so the accessible name stays
+`Eric Le`. The name keeps its own marker because the flying name is measured
+against that box, and moving the marker up to the group would hand the handoff
+the lockup's left edge and land the name on the mark. Measured at 1280, the
+flyer still lands 10px clear of the mark in both themes and the two centre to
+0.0px.
+
+The bar switches on rather than fading, and its ground is what fades. The name
+and the toggle reach that row by riding the scroll, so both are placed and fully
+opaque the moment they arrive, and a mark fading up beside them was a third
+timing on a row that already had one: measured at 1280 it ramped 0, 0.84, 1
+across the same 40px in which the name had already landed and stopped. It now
+reads 0 then 1 with no step between, against a ground still passing 0.77.
+
+Moving the opacity off the bar and onto the row is the version to avoid, and it
+was built first. Reduced motion gives the name slot its color back, so a row
+held visible by an always-opaque bar carries a second name through the whole
+hero. Keeping the switch on the bar and the fade on the ground gets the same
+arrival with nothing revealed early, since the ground is drawn at zero, the name
+slot paints its text transparent, and the toggle slot is an empty box.
 
 Transparent and theme-adaptive shipped first and is not reliable. A favicon
 resolves `prefers-color-scheme` against the browser while the tab strip takes
@@ -277,8 +299,8 @@ nothing here, measuring 57 bright pixels against 48 for a direct draw. Each size
 is still drawn at its own dimensions, because that is what stays true if the
 mark ever gains detail a reduction would average away.
 
-Measured at e96e63c on 2026-08-22, where the bar figures were re-read and the
-luminance figures above were carried forward from 0b7e7bd unchanged.
+Measured on 2026-08-22 with the arrival and lockup figures read on this branch,
+and the luminance figures above carried forward from 0b7e7bd unchanged.
 
 ### A landing-page figure sits inside the text column, and marks derive from type metrics
 
