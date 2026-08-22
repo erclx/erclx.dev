@@ -299,8 +299,9 @@ nothing here, measuring 57 bright pixels against 48 for a direct draw. Each size
 is still drawn at its own dimensions, because that is what stays true if the
 mark ever gains detail a reduction would average away.
 
-Measured on 2026-08-22 with the arrival and lockup figures read on this branch,
-and the luminance figures above carried forward from 0b7e7bd unchanged.
+Measured at e8d1d97 on 2026-08-22, where the arrival and lockup figures were
+read and the luminance figures above were carried forward from 0b7e7bd
+unchanged.
 
 ### A landing-page figure sits inside the text column, and marks derive from type metrics
 

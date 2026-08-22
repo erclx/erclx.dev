@@ -19,7 +19,7 @@ Local dev workflow for this project.
 - `src/lib/` owns shared helpers
 - `src/styles/` owns the tailwind entry, the theme tokens, and the base layer
 - `src/test/` owns the vitest environment setup
-- `e2e/` owns the playwright specs and the screenshot script
+- `e2e/` owns the playwright specs, the screenshot script, and the standing instruments. `inventory.ts` groups every control by what it does under a pointer, and `reveal-inventory.ts` reports which blocks arrive and which were there all along, tracing the first screen frame by frame because the marker and the paint are different claims
 - `public/` owns files served verbatim at the domain root
 
 For the rationale behind these choices, such as Astro over Next, the shadcn install path, font preload, and the theme toggle as static Astro, see `.claude/ARCHITECTURE.md` § Key technical decisions.
