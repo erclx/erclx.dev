@@ -573,17 +573,35 @@ test('the footer arrives on a tall viewport, not only a short one', async ({
     await page.setViewportSize({ width: 1280, height })
     await page.goto('/')
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
-    await page.waitForTimeout(1800)
 
-    const hidden = await page.evaluate(() =>
-      Array.from(
-        document.querySelectorAll('[data-section="footer"] [data-fade]'),
+    // Settled on what the fade reached rather than on a duration. These rows
+    // are a group, so the second waits out a 220ms step before its own 700ms
+    // fade, and a fixed pause is a guess at how much of that a loaded runner
+    // will have finished. Measured under a 40x processor throttle the colophon
+    // read 0.90, 0.78, and 0.00 at the three heights with both rows already
+    // carrying `data-visible`, which is the fade caught in flight rather than a
+    // reveal that never fired.
+    //
+    // The assertion is unchanged: every row still has to reach 0.9, and a row
+    // that never reveals fails this on the timeout with the same list it
+    // reported before.
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() =>
+            Array.from(
+              document.querySelectorAll('[data-section="footer"] [data-fade]'),
+            )
+              .filter(
+                (element) => Number(getComputedStyle(element).opacity) < 0.9,
+              )
+              .map((element) =>
+                (element.textContent ?? '').trim().slice(0, 30),
+              ),
+          ),
+        { message: `hidden at ${height}px`, timeout: 10000 },
       )
-        .filter((element) => Number(getComputedStyle(element).opacity) < 0.9)
-        .map((element) => (element.textContent ?? '').trim().slice(0, 30)),
-    )
-
-    expect(hidden, `hidden at ${height}px`).toEqual([])
+      .toEqual([])
   }
 })
 
