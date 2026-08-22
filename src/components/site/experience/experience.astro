@@ -119,7 +119,10 @@ const artifacts = [
         states its own order. A line explaining what the reader can already see
         is the one kind of caption worth deleting. */}
     <div class="experience-stage mt-10 lg:mt-14">
-      <ol class="experience-list flex flex-col">
+      {/* The list reveals as one unit with its rows stepped by position, rather
+          than each row arriving on its own as it crosses the viewport edge. See
+          `src/lib/reveal.ts`. */}
+      <ol data-fade-group class="experience-list flex flex-col">
         {
           history.map((entry, idx) => (
             <li
@@ -310,7 +313,19 @@ const artifacts = [
     box-shadow: var(--glow-shadow);
   }
   @media (prefers-reduced-motion: no-preference) {
-    .experience-row,
+    /* The row is a faded element, so its list opens with the reveal's own
+       transition. `transition` is a shorthand and a component's replaces the
+       global one outright, which left these six rows snapping into place with
+       no fade while every marker said they had one. The marker is not faded and
+       needs no such opening. */
+    .experience-row {
+      transition:
+        var(--reveal-transition),
+        color 150ms ease-out,
+        background-color 150ms ease-out,
+        border-color 150ms ease-out,
+        box-shadow 200ms ease-out;
+    }
     .experience-marker {
       transition:
         color 150ms ease-out,

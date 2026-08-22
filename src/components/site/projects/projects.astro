@@ -107,6 +107,19 @@ const projects = [
     >
       Projects
     </h2>
+    {/* The section opened straight onto the grid, which was the only one on the
+        page with no line under its heading. A count opened it until 2026-08-14
+        and came out because a number small enough to count is one to leave
+        unstated, and nothing replaced it.
+
+        The second sentence names the routes rather than sorting the cards by
+        what they can prove. Every project owns one, which is what stops a card
+        with a live link and a card without reading as a ranking, and the routes
+        are otherwise reachable only by clicking a card's name. */}
+    <p data-fade class="text-muted-foreground text-body mt-6 max-w-2xl">
+      Some of these solved a problem for me first and other people second. Each
+      one has a page here on why it exists and how it works.
+    </p>
     {/* The gutter carries the separation the plate used to. It also has to
         clear the halo a hover raises: at a 24px gutter the halo's own box
         reached the neighboring card exactly, and its shadow crossed about
@@ -121,7 +134,10 @@ const projects = [
           // closes the section across both columns instead.
           const isWide = projects.length % 2 === 1 && index === projects.length - 1
           return (
-            <div class:list={['relative', isWide && 'lg:col-span-2']}>
+            <div
+              data-project-frame
+              class:list={['relative', isWide && 'lg:col-span-2']}
+            >
               <span
                 aria-hidden="true"
                 data-fade

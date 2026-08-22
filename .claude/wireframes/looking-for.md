@@ -47,7 +47,7 @@ The section pairs a display heading with the availability status and five short 
 
 ## Cascade reveal
 
-On scroll-in the heading and the four rows reveal in a top-to-bottom cascade. Mechanism: `.claude/context/motion.md`.
+On scroll-in the heading and the criteria rows reveal in a top-to-bottom cascade. The rows are watched as one list and step 220ms apart, so the cascade holds at any scroll speed rather than depending on which of them crossed the viewport edge together. Mechanism: `.claude/context/motion.md`.
 
 ## Row hover state
 

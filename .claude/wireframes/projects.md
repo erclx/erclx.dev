@@ -63,6 +63,8 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 
 ## Behavior
 
+- One line opens the section under its heading, saying that these came out of the author's own work and that each carries a page of its own. It landed on 2026-08-22, into the only section on the page that had opened straight onto its content. A count opened it until 2026-08-14 and came out because a number small enough to count is one to leave unstated.
+- That line names the routes rather than sorting the cards by what they can prove. Every project owns one, which is what stops a card with a live link and a card without reading as a ranking, and a route is otherwise reachable only by clicking a card's name. A draft splitting the cards on which carry measured results was rejected on both counts, the second being that it was false: all five have a route.
 - Cards stack in document order. No filtering and no sorting.
 - Every card owns a route and opens it from anywhere on the card. The card name is the link that says so, which is also the one a keyboard reaches: the full-card link is hidden from assistive technology and held out of the tab order.
 - The links inside a card keep their own destinations, including on a card that opens as a whole.
@@ -93,3 +95,5 @@ For the hover-play mechanism and the parallax tilt, see `.claude/context/project
 ## Editorial numerals
 
 Each project card carries a large Fraunces numeral (`01`, `02`, ...) dimmed so it reads as ambient typography rather than a label. On wide viewports the numeral hangs partly into the card's side margin so the visible portion has weight without becoming a label, alternating sides to follow the column the card sits in. On narrow viewports it sits faintly behind the card content. The numeral is decorative, hidden from assistive tech and non-interactive, so it never disrupts reading order.
+
+It also leads the card in. Each card is watched as its own group, so the numeral arrives and the card follows 220ms later. That lead already existed by accident, since the numeral sits above and outside the card and crosses the viewport edge first, but it ran 199, 198, 226, and 197ms on the four two-column cards and collapsed to 56ms on the wide one closing the section. Grouping per card evens it to 222 through 247ms, and it matters most on a phone, where one column makes every card the wide case. The grid itself is not a group: at 1477px against a 900px viewport, watching it lights the last card while that card is still off screen. Mechanism: `.claude/context/motion.md`.

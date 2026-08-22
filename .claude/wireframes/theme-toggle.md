@@ -19,6 +19,7 @@ Appears in the top-right of the header content column, anchored to the same row 
 - The chosen mode persists across loads. In `system` mode the page follows the OS color-scheme preference, including when it flips while the page is open.
 - The page resolves the theme before first paint, so there is no flash of the wrong icon or wrong scheme.
 - Hover or keyboard focus surfaces a native tooltip labelled `Cycle theme`. Screen readers receive the same generic action label rather than narrating every mode.
+- The control arrives with the hero rather than being in place before it. The marker sits on the button rather than on its slot in the header, because the handoff re-parents it into a fixed host on load and the slot it leaves collapses to a point. Verified at 1280x800: it fades in while rising 16px and still lands on the bar's slot at 0px in both axes. Mechanism: `.claude/context/motion.md`.
 
 ## Icons
 

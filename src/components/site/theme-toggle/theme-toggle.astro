@@ -2,9 +2,17 @@
 
 ---
 
+{/* Marked on the control rather than on its home in the hero, because the
+    handoff re-parents it into a fixed host on load and the home it leaves
+    behind collapses to a point. A marker there would fade an empty box.
+
+    Safe against the handoff's measurement, which reads the home's box rather
+    than this one and discounts a `[data-fade]` ancestor's transform when it
+    finds one. A transform on this control changes no parent's layout box. */}
 <button
   type="button"
   data-theme-toggle
+  data-fade
   aria-label="Cycle theme"
   title="Cycle theme"
   class="theme-toggle text-muted-foreground hover:text-foreground inline-flex size-11 cursor-pointer items-center justify-center rounded-full"
@@ -81,8 +89,11 @@
     box-shadow: var(--glow-shadow);
   }
   @media (prefers-reduced-motion: no-preference) {
+    /* Opens on the reveal's own transition, since this control is a faded
+       element and a `transition` shorthand replaces rather than extends. */
     .theme-toggle {
       transition:
+        var(--reveal-transition),
         color 150ms ease-out,
         background-color var(--glow-out) ease-out,
         box-shadow var(--glow-out) ease-out;
@@ -90,6 +101,7 @@
     .theme-toggle:hover,
     .theme-toggle:focus-visible {
       transition:
+        var(--reveal-transition),
         color 150ms ease-out,
         background-color var(--glow-in) ease-out,
         box-shadow var(--glow-in) ease-out;

@@ -530,6 +530,132 @@ test('no revealed surface waits out an authored delay', async ({ page }) => {
   expect(revealed.longestDelay).toBeLessThanOrEqual(MAX_REVEAL_DELAY_SECONDS)
 })
 
+test('every revealed element can actually animate its opacity', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  // `transition` is a shorthand, so a component declaring one on a faded
+  // element replaces the reveal's outright, and Astro emits component styles
+  // unlayered where the reveal sits in a layer, so the component wins whatever
+  // the specificity. The six timeline rows shipped in exactly that state:
+  // snapping from 0 to 1 while carrying every marker an inventory reads, which
+  // is why nothing caught it until the page was watched frame by frame.
+  const readClobbered = () =>
+    page.evaluate(() =>
+      Array.from(document.querySelectorAll('[data-fade]'))
+        .filter(
+          (element) =>
+            !getComputedStyle(element).transitionProperty.includes('opacity'),
+        )
+        .map((element) => element.tagName.toLowerCase()),
+    )
+
+  expect(await readClobbered()).toEqual([])
+
+  // A route carries its own components and its own utilities, so the landing
+  // page passing says nothing about it. The way home there sits under a
+  // `transition-colors` utility, which is the same shape of declaration.
+  await page.goto('/jobtriage')
+  expect(await readClobbered()).toEqual([])
+})
+
+test('the footer arrives on a tall viewport, not only a short one', async ({
+  page,
+}) => {
+  // The reveal root is inset from the bottom by a share of the viewport, and
+  // content at the document end sits a fixed distance from the page's bottom.
+  // Past some height the inset is deeper than that distance, so the footer
+  // lands in the excluded band with no scroll left to carry it out. It
+  // revealed at 1080 and never at 1200, which is why a check at one height
+  // proves nothing.
+  for (const height of [800, 1200, 1600]) {
+    await page.setViewportSize({ width: 1280, height })
+    await page.goto('/')
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+
+    // Settled on what the fade reached rather than on a duration. These rows
+    // are a group, so the second waits out a 220ms step before its own 700ms
+    // fade, and a fixed pause is a guess at how much of that a loaded runner
+    // will have finished. Measured under a 40x processor throttle the colophon
+    // read 0.90, 0.78, and 0.00 at the three heights with both rows already
+    // carrying `data-visible`, which is the fade caught in flight rather than a
+    // reveal that never fired.
+    //
+    // The assertion is unchanged: every row still has to reach 0.9, and a row
+    // that never reveals fails this on the timeout with the same list it
+    // reported before.
+    //
+    // Counted first, because an empty list of hidden rows reads the same
+    // whether every row revealed or the footer carries none to reveal, and the
+    // second is the state this branch exists to close.
+    const rows = await page.evaluate(
+      () =>
+        document.querySelectorAll('[data-section="footer"] [data-fade]').length,
+    )
+    expect(rows, `footer rows at ${height}px`).toBeGreaterThan(0)
+
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() =>
+            Array.from(
+              document.querySelectorAll('[data-section="footer"] [data-fade]'),
+            )
+              .filter(
+                (element) => Number(getComputedStyle(element).opacity) < 0.9,
+              )
+              .map((element) =>
+                (element.textContent ?? '').trim().slice(0, 30),
+              ),
+          ),
+        { message: `hidden at ${height}px`, timeout: 10000 },
+      )
+      .toEqual([])
+  }
+})
+
+test('a grouped list staggers its rows rather than landing them together', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  // The batch stagger cannot do this. It orders whatever shares one observer
+  // callback, and a reader at reading pace delivers a list one row per
+  // callback, where the step multiplies by zero. The group schedules its own.
+  const reveal = await page.evaluate(async () => {
+    const group = document.querySelector('[data-fade-group]')
+    if (!group) return { spread: -1, everMidFade: false }
+    const rows = Array.from(group.querySelectorAll('[data-fade]'))
+    group.scrollIntoView({ behavior: 'instant', block: 'center' })
+
+    const lit = new Map<Element, number>()
+    let everMidFade = false
+    const start = performance.now()
+    while (performance.now() - start < 2600 && lit.size < rows.length) {
+      for (const row of rows) {
+        const opacity = Number(getComputedStyle(row).opacity)
+        if (opacity > 0.05 && opacity < 0.95) everMidFade = true
+        if (!lit.has(row) && opacity > 0.5) {
+          lit.set(row, performance.now() - start)
+        }
+      }
+      await new Promise((resolve) => requestAnimationFrame(resolve))
+    }
+    if (lit.size < rows.length) return { spread: -1, everMidFade }
+    const times = [...lit.values()]
+    return { spread: Math.max(...times) - Math.min(...times), everMidFade }
+  })
+
+  // Six rows stepped by 220ms separate by over a second. Anything under half
+  // the fade duration reads as one block arriving.
+  expect(reveal.spread).toBeGreaterThan(350)
+  // Spread alone passes on a list that snaps at staggered times, which is what
+  // shipped: the rows were scheduled apart and had no opacity transition to
+  // run. Catching a row part-way through its fade is what separates the two.
+  expect(reveal.everMidFade).toBe(true)
+})
+
 test('the experience section names the field of the degree', async ({
   page,
 }) => {

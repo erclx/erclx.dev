@@ -105,7 +105,9 @@ A card added below earns a chip here, and a test compares the two lists so the p
 
 ## Cascade reveal
 
-On scroll-in the heading, then the rows, reveal in a top-to-bottom cascade. Mechanism: `.claude/context/motion.md`.
+On scroll-in the heading, then the rows, reveal in a top-to-bottom cascade. The list is watched as one unit and steps its rows 220ms apart, so the cascade holds at any scroll speed rather than depending on which rows happened to cross the viewport edge together. The last of six starts at 1.1s and the list settles inside 1.8s. Mechanism: `.claude/context/motion.md`.
+
+The cascade was absent until 2026-08-22 and the section still read as arriving in one block, twice over: the rows had no opacity transition at all, because the row's own `transition` for its active state replaced the reveal's, and the stagger they were given was computed per observer callback, which delivers one row per callback at reading pace.
 
 ## Claim annotation
 
