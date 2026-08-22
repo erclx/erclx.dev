@@ -1,12 +1,14 @@
 ---
 name: stack-address
-description: Answers a batch of review findings across a chain of stacked pull requests in one bottom-up pass, rebases and pushes every branch together, and posts a response on each branch it touched. Use when a stack handback arrives, or when asked to "address the stack review", "fix the findings across the chain", or "push the whole stack". Do NOT use for findings on a single pull request, which is `claude-address-review`, and do NOT use to open a chain, which is `stack-ship`.
+description: Answers a batch of review findings across a chain of stacked pull requests in one bottom-up pass, rebasing, pushing and answering each branch as the walk finishes it. Use when a stack handback arrives, or when asked to "address the stack review", "fix the findings across the chain", or "push the whole stack". Do NOT use for findings on a single pull request, which is `claude-address-review`, and do NOT use to open a chain, which is `stack-ship`.
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, Skill
 ---
 
 # Stack address
 
-A handback covers the whole chain, so the answer does too. Fixing one branch and handing it back leaves every branch above it based on a commit that no longer exists, which is the failure the batched handback exists to avoid.
+A handback covers the whole chain, so the walk does too. Answering one branch and stopping leaves every branch above it based on a commit that no longer exists, which is the failure this exists to avoid.
+
+Walking the whole chain is not the same as holding it. Each branch is pushed and answered as the walk finishes it, because the walk rebases the branch above onto it first and nothing after that reaches it.
 
 Read `.claude/context/stacked-shipping.md` before the first fix. It carries how git behaves under a stack and why the thread outranks the session channel.
 

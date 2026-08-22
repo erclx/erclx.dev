@@ -67,7 +67,7 @@ Cite these rather than restating them. A step reimplemented here rots against th
 
 - `.claude/context/stacked-shipping.md` carries the git behavior under a stack and the four-role model
 - `stack-review` reads the chain and states the merge order
-- `stack-address` answers findings across the chain and pushes every branch together
+- `stack-address` answers findings across the chain, pushing and answering each branch as its walk finishes it
 - `visual-batch` plans the slices and runs the eyeball loop when the work is visual
 - `git-stage` and `git-pr` carry the commits and the pull requests
 - Root `CLAUDE.md` § Shipping owns when a commit and a push are allowed
