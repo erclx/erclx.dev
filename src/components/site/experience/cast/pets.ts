@@ -31,12 +31,27 @@
  *
  * **Two creatures may not carry the same kind of feature.** A bulb on the back
  * and a shell on the back both read as a mass behind the head, so they were one
- * silhouette drawn twice however different the masses were, and both were cut
- * for a winged one. The four that ship differ by where the weight sits: a
- * quadruped with none, a tail, a pair of ears, and a wing.
+ * silhouette drawn twice however different the masses were. The three that ship
+ * differ by where the weight sits: a quadruped with none, an up-swept tail, and
+ * a pair of tall ears.
+ *
+ * **A creature defined by more than one appendage does not fit this grid, and a
+ * winged dragon is the proof.** It was drawn six times and cut. Each draft
+ * failed differently and the sequence is the finding: a one-sided fan read as
+ * the tail above, flat wings and a short snout read as a bird, a square head on
+ * a square body read as a totem pole, fourteen shapes answering that came out
+ * as a tangle, stripping back left the body a plain rectangle, and a taper with
+ * a rising tail put two shapes at the same height on one side where they merged
+ * into a slab.
+ *
+ * Two rules survive it. **Detail is not the cure for a shape that does not
+ * read**, and **two shapes at the same height on the same side become one
+ * shape**. What they add up to is that twelve cells hold a body, a head and one
+ * feature, and a dragon needs wings and a neck and a muzzle and a tail at once.
+ * The three that ship are compact creatures whose silhouette is a single idea.
  */
 
-export type PetId = 'dog' | 'ember' | 'spark' | 'dragon'
+export type PetId = 'dog' | 'ember' | 'spark'
 
 /** What the eyes do. A pet carries no mouth, so this is the whole of its face. */
 export type PetMood = 'alert' | 'resting'
@@ -306,137 +321,7 @@ export function petCells(id: PetId, mood: PetMood): readonly PetCell[] {
           { x: 6.0, y: 7.9 },
         ]),
       ]
-
-    // Wings spread on both sides, over a body that stands upright, with a horn
-    // and a muzzle. The first draft put one stepped fan on the back and it read
-    // as the bushy tail two creatures above, which is the same failure as the
-    // bulb and the shell: a one-sided mass behind the head is a silhouette this
-    // family already has.
-    //
-    // Flat wings and a short snout then read as a bird. A bird's wing is a
-    // smooth edge where a dragon's peaks at the tip, so each wing steps up at
-    // its outer end, and the head carries a horn swept back off the crown over
-    // a muzzle deeper than a beak.
-    //
-    // The stance is doing as much work as any of it. Every other creature here
-    // is long and low, so a tall body on two legs separates this one before the
-    // wings are resolved at all.
-    case 'dragon':
-      return [
-        {
-          x: 0.6,
-          y: 4.4,
-          w: 3.7,
-          h: 1.3,
-          round: 1,
-          ink: 'body',
-          part: 'pet-head',
-        },
-        {
-          x: 1.5,
-          y: 5.7,
-          w: 2.8,
-          h: 1.2,
-          round: 1,
-          ink: 'body',
-          part: 'pet-head',
-        },
-        {
-          x: 0.6,
-          y: 3.3,
-          w: 1.1,
-          h: 1.2,
-          round: 1,
-          ink: 'body',
-          part: 'pet-head',
-        },
-        {
-          x: 8.8,
-          y: 4.4,
-          w: 2.8,
-          h: 1.3,
-          round: 1,
-          ink: 'body',
-          part: 'pet-head',
-        },
-        {
-          x: 8.8,
-          y: 5.7,
-          w: 2.2,
-          h: 1.2,
-          round: 1,
-          ink: 'body',
-          part: 'pet-head',
-        },
-        {
-          x: 10.5,
-          y: 3.3,
-          w: 1.1,
-          h: 1.2,
-          round: 1,
-          ink: 'body',
-          part: 'pet-head',
-        },
-        {
-          x: 2.6,
-          y: 8.6,
-          w: 1.7,
-          h: 1.0,
-          round: 2,
-          ink: 'body',
-          part: 'pet-tail',
-        },
-        {
-          x: 4.3,
-          y: 6.6,
-          w: 3.4,
-          h: 3.2,
-          round: 2.4,
-          ink: 'body',
-          part: 'pet-body',
-        },
-        {
-          x: 4.6,
-          y: 4.0,
-          w: 3.2,
-          h: 2.8,
-          round: 2,
-          ink: 'body',
-          part: 'pet-head',
-        },
-        {
-          x: 4.2,
-          y: 2.9,
-          w: 1.0,
-          h: 1.4,
-          round: 1,
-          ink: 'body',
-          part: 'pet-head',
-        },
-        {
-          x: 7.8,
-          y: 4.9,
-          w: 1.2,
-          h: 1.4,
-          round: 1,
-          ink: 'body',
-          part: 'pet-head',
-        },
-        ...[4.4, 6.2].map((x) => ({
-          x,
-          y: GROUND - 1.2,
-          w: 1.4,
-          h: 1.2,
-          round: 1,
-          ink: 'body' as const,
-          part: 'pet-foot' as const,
-        })),
-        ...eyes(mood, [
-          { x: 5.0, y: 4.7 },
-          { x: 6.6, y: 4.7 },
-        ]),
-      ]
   }
 }
 
-export const PET_IDS: readonly PetId[] = ['dog', 'ember', 'spark', 'dragon']
+export const PET_IDS: readonly PetId[] = ['dog', 'ember', 'spark']
