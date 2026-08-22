@@ -1,6 +1,7 @@
 ---
 description: Enforce settled waits and falsifiable guards in end-to-end tests
 paths:
+  - 'e2e/*.ts'
   - 'e2e/**/*.ts'
 ---
 
