@@ -14,7 +14,7 @@ This is the surface that closes the navigation hole the rail could not. The rail
 ```plaintext
 ┌─[viewport]──────────────────────────────────────────────────┐
 │      ╭─[ground: elevated surface, blurred, detached]──╮     │
-│      │  Eric Le                                 [☾]   │     │  ← name returns to top,
+│      │  e▮ Eric Le                              [☾]   │     │  ← mark, name returns to top,
 │      ╰──────────────────────────────────────────────╯       │    toggle arrived from hero
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -37,7 +37,7 @@ The ground starts at the full width with square corners and contracts to a round
 ```plaintext
 ┌─[viewport]──────────────────────────────────────────────────┐
 │      ╭─[same ground, same column]───────────────────╮       │
-│      │  Eric Le          diction              [☾]   │       │  ← way home, route name, toggle
+│      │  e▮ Eric Le       diction              [☾]   │       │  ← mark, way home, route name, toggle
 │      ╰──────────────────────────────────────────────╯       │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -48,6 +48,7 @@ The route name is absent while the route's own title is still on screen and fade
 
 - The bar holds the same column as the hero on every surface, so the chrome never resizes as a reader moves between the landing page and a route. That also lands the name where it started horizontally, so the travel reads as vertical.
 - The name is a control rather than a label. It returns the reader to the top, smoothly unless reduced motion is set. Hovering or focusing it underlines the name.
+- The mark and the name read as one lockup, grouped so the row's own spacing does not push them apart. The mark is decoration rather than a second control: it is hidden from assistive technology, since the name beside it already says the same thing, and it sits outside the name slot because that slot is the target the flying name is measured against.
 - The bar is `inert` until it is revealed, so nothing inside it takes focus while it is off screen.
 - A route's own bar is the sticky one rather than a second bar above it, so a reader deep in a long route always has a way home without stacking two bars.
 

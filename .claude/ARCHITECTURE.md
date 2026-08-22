@@ -128,11 +128,13 @@ the Astro config is what makes `Astro.site` resolve them. `twitter:card` is
 `summary_large_image` for a similar reason: X shows a thumbnail beside the text
 without it, so the tag rather than the image decides the size.
 
-The card carries the claim, the mark, and the domain, and deliberately not the
-name. Every host prints the page title beside the image, so a name in both puts
-the same word twice in one unfurl. That is the same redundancy the description
-carried against the title until this batch, where a card opening on "Applied AI
-engineer in Gothenburg" sat under a title ending "Applied AI engineer".
+The mark leads at 210px, the claim sits beside it, and an attribution line
+carrying the name and the domain runs at 23px underneath. The name is
+deliberately not at display weight: every host prints the page title beside the
+image, so a name twice in one unfurl is the redundancy to avoid, and small under
+the claim is not that. It is the same redundancy the description carried against
+the title until this batch, where a card opening on "Applied AI engineer in
+Gothenburg" sat under a title ending "Applied AI engineer".
 
 It is composed inside the served site rather than in a bare page, which is what
 gives it the real Fraunces and the shipped tokens. A card drawn in a fallback
@@ -140,12 +142,21 @@ face is a card judged on the wrong letterforms. The field behind it is captured
 from the page with every other element hidden, after a first attempt shot the
 canvas while content sat over it and baked the hero's own text into the image.
 
-The text is capped at 17 characters to the line, which is a measure decision
-rather than a composition one, and the left weighting is its consequence. That
-weighting is safe only because hosts crop vertically: X renders this at 2:1,
-taking about 15px off the top and bottom against 88px of padding, where a
-horizontal crop would take the first word of every line. Read the empty right
-half as the field earning its place rather than as a layout to balance.
+The mark grew from a 64px corner element to a 210px lead, which retires the
+empty right half an earlier draft of this entry defended. With the composition
+spanning the width, the measure was re-settled at 22 characters to the line
+against a candidate at 28, judged downscaled rather than at 1200: a card is met
+at 400 to 600 in a feed and smaller in a compact unfurl, and at full size the
+longer line only looks fuller. At 340 it goes thin and 22 holds.
+
+A square crop takes the mark and the last word of every line, and that is
+accepted rather than designed around. Centring the group to survive it costs the
+feed and the compact unfurl, which is a certain price for an uncertain benefit,
+and a crop taken from the centre is close to the worst case rather than the
+typical one, since the hosts that square-crop mostly anchor left or letterbox. A
+separate 1:1 asset is the repair when one is wanted, and it waits on a consumer
+that asks for it: most hosts take the first `og:image` and ignore the rest, and
+`public/avatar.png` already ships as this project's square mark.
 
 `bun run share-card` redraws it, and `e2e/share-card.spec.ts` guards it. Two of
 its nine assertions are worth naming: one fails a description that opens on
@@ -153,7 +164,7 @@ words the title already used, and one fails a route title carrying `case study`,
 which `.claude/REQUIREMENTS.md` retired on 2026-08-18 and which had reached the
 visible labels without ever reaching the titles a shared link shows.
 
-Measured at f0fd385 on 2026-08-22.
+Measured at e96e63c on 2026-08-22.
 
 ### Resume PDF served from `public/`
 
@@ -172,7 +183,7 @@ The apex domain already lives in Cloudflare. Pages attaches the custom domain wi
 The mark is a lowercase e followed by a block cursor, drawn in this repository
 rather than synced from the parent checkout. `src/assets/brand/mark.svg` is the
 one drawing and `scripts/brand.ts` renders it to rasters, so the tab, the home screen,
-and the avatar cannot drift.
+the avatar, and the bar cannot drift.
 
 The vector leads the icon relation, which reverses a decision this file carried
 until 2026-08-22. That decision was correct about the artwork it measured: the
@@ -196,6 +207,16 @@ that ordering could protect.
 
 The vector carries its own cream ground with a dark mark, which is what every
 brand raster does, so all four assets agree.
+
+The bar is the one surface that takes no ground, because it is the one surface
+this repository paints. A ground exists for a canvas nobody here controls, so
+inside the site's own chrome it would be a cream plate laid on the page, and the
+mark takes the theme's foreground instead. It renders at 24px, above the 20px at
+which this drawing resolves as a letter, and it sits beside the name rather than
+inside it: the landing bar's name slot is what the hero's flying name aims at,
+so a mark placed inside moves the landing target and drops the name onto the
+mark. Measured at 1280, the flyer lands 10px clear of the mark in both themes
+and the two centre to 0.0px.
 
 Transparent and theme-adaptive shipped first and is not reliable. A favicon
 resolves `prefers-color-scheme` against the browser while the tab strip takes
@@ -256,7 +277,8 @@ nothing here, measuring 57 bright pixels against 48 for a direct draw. Each size
 is still drawn at its own dimensions, because that is what stays true if the
 mark ever gains detail a reduction would average away.
 
-Measured at 0b7e7bd on 2026-08-22.
+Measured at e96e63c on 2026-08-22, where the bar figures were re-read and the
+luminance figures above were carried forward from 0b7e7bd unchanged.
 
 ### A landing-page figure sits inside the text column, and marks derive from type metrics
 
