@@ -244,30 +244,44 @@ const links = [
     mask-image: radial-gradient(circle at 50% 50%, #000 15%, transparent 52%);
   }
 
-  /* One swell, then a rest for the back half of the cycle. A pulse that restarts
-     the moment it ends is presence rather than a signal, and this surface
-     already carries the field's own motion. Reduced motion keeps the rings and
-     drops the swell, which is the same information without the movement. */
+  /* One swell across the whole cycle. Reduced motion keeps the rings and drops
+     the swell, which is the same information without the movement.
+
+     The travel is what `.claude/DESIGN.md` § Motion constrains rather than the
+     duration. This is unattended and infinite, so it answers to the ambient
+     band and not to the reaction rule the cast members run on: the 4 to 11px
+     per second band pulls the eye without rewarding it, and a term above the
+     band is something to watch rather than something to live beside. The hero
+     field is the precedent at 0.13px per second.
+
+     An earlier setting swept 0.9 to 1.14 over 55% of the cycle with an
+     ease-out, which put the ring's edge at a peak of 15.1px/s at lg and
+     12.2px/s at md, inside the band for 28.6% and 38.0% of the cycle. The
+     ceiling a resting cast term answers to is 8%. Slowing that sweep alone
+     lands further inside the band rather than under it, so the travel came
+     down with it. 0.96 to 1.04 across the full 13s peaks at 3.5px/s at lg and
+     2.3px/s at md, and spends none of the cycle in the band at either. An
+     intermediate 0.95 to 1.05 was measured first and grazed its lower edge at
+     4.2px/s. */
   @media (prefers-reduced-motion: no-preference) {
     [data-portrait-frame]::after {
-      animation: portrait-swell 13s ease-out infinite;
+      animation: portrait-swell 13s ease-in-out infinite;
     }
   }
 
   @keyframes portrait-swell {
     0% {
-      transform: translate(-50%, -50%) scale(0.9);
+      transform: translate(-50%, -50%) scale(0.96);
       opacity: 0;
     }
-    14% {
+    18% {
       opacity: 1;
     }
-    55% {
-      transform: translate(-50%, -50%) scale(1.14);
-      opacity: 0;
+    82% {
+      opacity: 1;
     }
     100% {
-      transform: translate(-50%, -50%) scale(1.14);
+      transform: translate(-50%, -50%) scale(1.04);
       opacity: 0;
     }
   }
