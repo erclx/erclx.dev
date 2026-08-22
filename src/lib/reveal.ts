@@ -73,32 +73,39 @@ function revealAll(targets: readonly HTMLElement[]): void {
  * Watching the container instead makes the cascade a property of the list
  * rather than of how fast the page went by.
  */
-function observeGroup(group: HTMLElement): void {
+function observeGroup(group: HTMLElement, pending: (() => void)[]): void {
   const rows = [...group.querySelectorAll<HTMLElement>('[data-fade]')]
   if (rows.length === 0) return
+
+  let started = false
+  const start = () => {
+    if (started) return
+    started = true
+    // Scheduled rather than written as a `transition-delay`, because that
+    // longhand is reset by any `transition` shorthand a component declares
+    // on the same element, and the token carrying the reveal cannot hold
+    // the delay itself. Marking each row on its own timer puts the stagger
+    // out of the cascade's reach entirely.
+    for (const [index, row] of rows.entries()) {
+      // The authored `--fade-delay` is cleared rather than left alone. The
+      // batch path overwrites it on every element it marks, so a value in
+      // the markup has set nothing for a long time and several surfaces
+      // still carry one. Left in place here it would add to the timer
+      // rather than replace it, and the two together push the last row of
+      // a list past the ceiling `e2e/home.spec.ts` holds them to.
+      row.style.setProperty('--fade-delay', '0ms')
+      window.setTimeout(
+        () => row.setAttribute('data-visible', 'true'),
+        index * GROUP_STEP_MS,
+      )
+    }
+  }
 
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue
-        // Scheduled rather than written as a `transition-delay`, because that
-        // longhand is reset by any `transition` shorthand a component declares
-        // on the same element, and the token carrying the reveal cannot hold
-        // the delay itself. Marking each row on its own timer puts the stagger
-        // out of the cascade's reach entirely.
-        for (const [index, row] of rows.entries()) {
-          // The authored `--fade-delay` is cleared rather than left alone. The
-          // batch path overwrites it on every element it marks, so a value in
-          // the markup has set nothing for a long time and several surfaces
-          // still carry one. Left in place here it would add to the timer
-          // rather than replace it, and the two together push the last row of
-          // a list past the ceiling `e2e/home.spec.ts` holds them to.
-          row.style.setProperty('--fade-delay', '0ms')
-          window.setTimeout(
-            () => row.setAttribute('data-visible', 'true'),
-            index * GROUP_STEP_MS,
-          )
-        }
+        start()
         observer.disconnect()
       }
     },
@@ -110,6 +117,53 @@ function observeGroup(group: HTMLElement): void {
     },
   )
   observer.observe(group)
+  pending.push(start)
+}
+
+/**
+ * Reveals whatever the root inset can never deliver.
+ *
+ * The inset holds an element back until it is comfortably inside the viewport,
+ * and it is a share of that viewport rather than a length. Content sitting at
+ * the end of the document is a fixed distance from the page's bottom, so past
+ * some viewport height the inset is deeper than that distance and the element
+ * lands inside the excluded band with no scroll left to carry it out. Measured
+ * on the footer: revealed at 1080 and never revealed at 1200, where its top sat
+ * at 1108 against an edge at 1080.
+ *
+ * Reaching the end of the document is therefore the moment nothing may still be
+ * hidden, whatever any observer has decided. A group runs its own staggered
+ * reveal here rather than being marked flat, so the fallback costs the cascade
+ * nothing.
+ */
+function revealAtDocumentEnd(
+  pending: readonly (() => void)[],
+  loose: readonly HTMLElement[],
+): void {
+  const atEnd = () =>
+    window.scrollY + window.innerHeight >=
+    document.documentElement.scrollHeight - 2
+
+  let queued = false
+  const check = () => {
+    queued = false
+    if (!atEnd()) return
+    for (const start of pending) start()
+    for (const element of loose) {
+      if (!element.hasAttribute('data-visible')) {
+        element.setAttribute('data-visible', 'true')
+      }
+    }
+    window.removeEventListener('scroll', onScroll)
+  }
+
+  const onScroll = () => {
+    if (queued) return
+    queued = true
+    requestAnimationFrame(check)
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true })
 }
 
 export function initReveal(): void {
@@ -132,14 +186,20 @@ export function initReveal(): void {
     ...document.querySelectorAll<HTMLElement>('[data-fade-group]'),
   ]
   const grouped = new Set<HTMLElement>()
+  const pendingGroups: (() => void)[] = []
   for (const group of groups) {
     for (const row of group.querySelectorAll<HTMLElement>('[data-fade]')) {
       grouped.add(row)
     }
-    observeGroup(group)
+    observeGroup(group, pendingGroups)
   }
 
   const loose = targets.filter((target) => !grouped.has(target))
+
+  // Registered for every page, since the footer sits at the document end on
+  // all six and is the surface the root inset strands.
+  revealAtDocumentEnd(pendingGroups, loose)
+
   if (loose.length === 0) return
 
   // The authored per-element delay assumes its surface arrives alone. A fast

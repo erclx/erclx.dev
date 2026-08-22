@@ -560,6 +560,33 @@ test('every revealed element can actually animate its opacity', async ({
   expect(await readClobbered()).toEqual([])
 })
 
+test('the footer arrives on a tall viewport, not only a short one', async ({
+  page,
+}) => {
+  // The reveal root is inset from the bottom by a share of the viewport, and
+  // content at the document end sits a fixed distance from the page's bottom.
+  // Past some height the inset is deeper than that distance, so the footer
+  // lands in the excluded band with no scroll left to carry it out. It
+  // revealed at 1080 and never at 1200, which is why a check at one height
+  // proves nothing.
+  for (const height of [800, 1200, 1600]) {
+    await page.setViewportSize({ width: 1280, height })
+    await page.goto('/')
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await page.waitForTimeout(1800)
+
+    const hidden = await page.evaluate(() =>
+      Array.from(
+        document.querySelectorAll('[data-section="footer"] [data-fade]'),
+      )
+        .filter((element) => Number(getComputedStyle(element).opacity) < 0.9)
+        .map((element) => (element.textContent ?? '').trim().slice(0, 30)),
+    )
+
+    expect(hidden, `hidden at ${height}px`).toEqual([])
+  }
+})
+
 test('a grouped list staggers its rows rather than landing them together', async ({
   page,
 }) => {
