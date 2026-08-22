@@ -45,6 +45,7 @@ import {
   mouthCells,
 } from './faces'
 import { gearCells, type GearId } from './gear'
+import { petCells, type PetId, type PetMood } from './pets'
 import { powerCells, type PowerId, REACH } from './powers'
 
 export interface Member {
@@ -85,6 +86,11 @@ type PartName =
   | 'gear'
   | 'gear-head'
   | 'gear-grip'
+  | 'pet-body'
+  | 'pet-head'
+  | 'pet-foot'
+  | 'pet-tail'
+  | 'pet-eye'
 
 interface Shape {
   readonly x: number
@@ -323,6 +329,39 @@ export function renderMember(member: Member): string {
  * merges with the silhouette and reads as anatomy: the flanking tongues became
  * a second pair of ears and the standing shadow became a lump on the back.
  */
+/**
+ * A companion, drawn on the member family's own grid so the two read as one
+ * page. It takes no power layer and no gear: a pet that emits is a member, and
+ * the whole point of the family is that it is not one.
+ */
+export function renderPet(
+  pet: PetId,
+  mood: PetMood,
+  facing: 1 | -1 = 1,
+): string {
+  const drawn = petCells(pet, mood)
+    .map((cell) =>
+      drawShape({
+        x: cell.x,
+        y: cell.y,
+        w: cell.w,
+        h: cell.h,
+        ink: cell.ink,
+        part: cell.part,
+        round: cell.round,
+      }),
+    )
+    .join('')
+
+  return (
+    `<svg class="bn" viewBox="0 0 ${SIZE} ${SIZE}" aria-hidden="true" focusable="false">` +
+    (facing === -1
+      ? `<g transform="translate(${SIZE} 0) scale(-1 1)">${drawn}</g>`
+      : drawn) +
+    `</svg>`
+  )
+}
+
 /**
  * How far the power layer reaches past the member, as a share of the member's
  * own size. Placement adds it to a cluster's gap so a power cannot cross the

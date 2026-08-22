@@ -21,11 +21,13 @@
 import {
   POWER_OVERHANG,
   renderMember,
+  renderPet,
   renderPower,
   type HatId,
 } from './cast.ts'
 import { TEMPERAMENTS } from './behaviors.ts'
 import type { MoodId } from './faces.ts'
+import type { PetId, PetMood } from './pets.ts'
 import type { PowerId } from './powers.ts'
 import './motion.css'
 
@@ -64,6 +66,20 @@ interface ClusterMember {
   readonly tapPower?: PowerId
 }
 
+/**
+ * A companion standing near a member. It carries no mood, no power and no
+ * reaction: a pet that answers a pointer is a member, and the family exists to
+ * not be one.
+ */
+interface ClusterPet {
+  readonly kind: PetId
+  readonly mood: PetMood
+  readonly size: number
+  readonly dx: number
+  readonly dy: number
+  readonly facing: 1 | -1
+}
+
 interface Cluster {
   readonly side: 'left' | 'right'
   /** Down the section, as a percentage of its height. */
@@ -78,6 +94,7 @@ interface Cluster {
    */
   readonly phase: number
   readonly members: readonly ClusterMember[]
+  readonly pets?: readonly ClusterPet[]
 }
 
 // A pair is offset down as well as across, and the vertical figure is what
@@ -172,6 +189,12 @@ const clusters: readonly Cluster[] = [
         dx: 0, dy: 0, facing: -1, phase: 0, tapMood: 'surprised',
       },
     ],
+    // Below rather than beside, so the cluster's width does not move and its
+    // headroom against the dock is untouched. The pair fix learned the same
+    // thing: across is the axis with a margin at the end of it.
+    pets: [
+      { kind: 'dog', mood: 'resting', size: 44, dx: 26, dy: 72, facing: -1 },
+    ],
   },
 ]
 
@@ -209,6 +232,7 @@ const clusterWidth = (cluster: Cluster) =>
     ...cluster.members.map(
       (member) => member.dx + member.size * (1 + POWER_OVERHANG),
     ),
+    ...(cluster.pets ?? []).map((pet) => pet.dx + pet.size),
   )
 
 /**
@@ -291,6 +315,18 @@ const clusterGap = (cluster: Cluster) => cluster.gap + clusterOverhang(cluster)
             )}
           </div>
         ))}
+        {(cluster.pets ?? []).map((pet) => (
+          <div
+            class="cast-member is-pet"
+            data-cast-pet
+            data-idle="breathe"
+            style={`--cast-dx: ${pet.dx}px; --cast-dy: ${pet.dy}px; --cast-size: ${pet.size}px; --cast-delay: ${cluster.delay}ms; --cast-offset: ${-cluster.phase}ms`}
+          >
+            <span class="cast-face">
+              <Fragment set:html={renderPet(pet.kind, pet.mood, pet.facing)} />
+            </span>
+          </div>
+        ))}
       </div>
     ))
   }
@@ -362,6 +398,12 @@ const clusterGap = (cluster: Cluster) => cluster.gap + clusterOverhang(cluster)
      a scroll or a selection. The cursor stays a default: a member plays back
      rather than leading anywhere, and a pointer cursor would promise a
      destination that does not exist. */
+  /* A pet answers no pointer. It is scenery rather than a character a reader
+     plays back, and giving it a reaction would make it a member with fewer
+     legs. It keeps the shared class so the resting term reaches it. */
+  .cast-member.is-pet {
+    pointer-events: none;
+  }
   .cast-member {
     pointer-events: auto;
     position: absolute;

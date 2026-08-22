@@ -15,6 +15,7 @@ It is decoration. Every figure is `aria-hidden`, carries no accessible name, and
 
 - `src/components/site/experience/cast/` owns the whole domain: the generator, the four vocabularies, the shared stylesheet, and the placement component.
 - `faces.ts` holds what a face does, `powers.ts` what a member emits, and `gear.ts` what it holds. A face is three slots inside the head, and the other two are slots around the body.
+- `pets.ts` is a second family rather than a fourth slot. A pet belongs to a cluster, not to a member.
 - `e2e/` owns the two instruments, `cast-motion.ts` and `cast-inventory.ts`, and the guards in `cast.spec.ts`.
 - `.claude/review/cast/` holds the generated inventory and is gitignored.
 
@@ -37,6 +38,9 @@ It is decoration. Every figure is `aria-hidden`, carries no accessible name, and
 - One member acts on its own every few seconds and never two at once. The band bars sustained motion with no fixed reference, and every term here is a reaction crossing it in a fraction of its cycle, so what the scheduler changes is who pulls a trigger rather than what a trigger runs. It writes the same `data-reacting` a tap writes and the same `animationend` clears it, which is why no keyframe and no selector moved for it.
 - The scheduler stands down while the section is off screen, under reduced motion, and while a pointer sits on a member. All three are read off the page rather than tracked, so nothing can disagree with them. Measured over 45 seconds on screen: 7 acts, never more than one at once, the busiest member moving 6.8% of the window and the cast moving at all 18.1%.
 - A power is a state and a tap power is an event. Flames say a member is powerful whether or not anyone is looking, where bolts say it just did something and read as odd standing still. Only a tap sets `data-woken`, so a hover and the scheduler run the reaction without changing what the member emits.
+- A pet is its own drawing rather than a small member, because members differ by a feature and never by width: shrinking one reads as the same member squeezed. Four feet under a low body, ears and a tail, and no arms is what makes it a different creature.
+- A pet answers no pointer, carries no mood, no power and no reaction. One that answers is a member with fewer legs.
+- A pet is placed below its member rather than beside it, so a cluster's width and its headroom against the rail or the dock do not move.
 - A pair is offset down as well as across, and the vertical figure carries it. Separating across is not available: measured at 1280 the left cluster holds 2px of headroom before it meets the rail, so any `dx` clearing the bodies puts the cluster into it.
 - A tap changes the member's mood as well as moving it. Both faces are rendered and one is hidden, rather than shipping the generator to the browser for a state a few members reach.
 - Mirroring happens inside the drawing rather than as a CSS transform. The wrapper already carries arrival and the body carries a behavior, and a third transform silently overwrites one of them.
@@ -49,6 +53,7 @@ It is decoration. Every figure is `aria-hidden`, carries no accessible name, and
 - Speed measured off a bounding box scales with the target. Read the instrument at the smallest size the cast ships, since a comfortable size crosses the barred band faster for the same keyframes and reads laxer than the page it guards.
 - A rotation moves a small part's bounding box far more slowly than its angle suggests. An antenna turning 11 degrees measures 6px per second.
 - Every `dx` and `dy` in the placement was chosen when a member was its own box. A power layer reaches a sixth of the member past that box, so adding one moved both pairs into each other and nothing reported it: their bodies overlapped 16px and 12px and each pair read as one shape. A cluster guard reading the cluster's own box cannot see this, since the overlap is inside it.
+- A quadruped survives 44px because four feet under a low body is the whole of it. A bird needs a beak, a wing and a tail to read as one, and three features inside twelve cells at 3.7px each come out as one shape with a slot in it. It was drawn twice and cut. Its first draft also wore a crest, which read as the antenna marking the lead.
 - A scheduled act that starts no animation is never ended by one, and it costs more than the same trap on the tap path: a member left marked holds the scheduler's one slot for the life of the page and the cast goes quiet with nothing saying why.
 - Keyframes written for ambient looping put their movement at the end of a long cycle. Reused as a reaction that pays out seconds after the click and reads as a dead control.
 - A capture of an element taller than the viewport is stitched, and absolutely positioned children outside the first frame are dropped. That reads as the cast not rendering. Capture viewport frames instead.
