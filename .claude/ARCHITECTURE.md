@@ -312,6 +312,71 @@ Measured at e8d1d97 on 2026-08-22, where the arrival and lockup figures were
 read and the luminance figures above were carried forward from 0b7e7bd
 unchanged.
 
+### A figure joins the page's own family, and a guard answers to what it guards
+
+The experience section carries a cast of small figures in its margins. The
+decisions worth keeping are not about the drawing, which
+`.claude/context/agent-cast.md` holds, but about two things this run got wrong
+first and about a class of instrument defect it hit five times.
+
+The fill is the page's own. The dog fills at `#d4a574` and so does the
+airliner, neither inverts with the theme, and the standard already says the
+palette is derived from the artwork the site ships. The cast was the third
+figure and the only one outside that family, and four passes were spent picking
+a color for it before the answer turned out to be membership rather than a
+value. What made those passes go wrong is worth more than the result. A brand
+fill was rejected for matching the employer marks at 1.10:1 in dark, which was
+real, and the constraint was then carried into the light theme where it does not
+hold: measured in oklab the rejected fill sits 0.194 from those marks and every
+later candidate between 0.12 and 0.22, so all of them separate. A contrast ratio
+is a luminance comparison and cannot see hue, which makes it the wrong
+instrument for whether a reader tells two drawings apart and the right one for
+whether a shape separates from what it sits on.
+
+An inverting ink then replaced the brand fill on the reading that no fixed color
+clears 4.5:1 in both themes. The arithmetic was right, at a ceiling of 4.02:1,
+and the floor was wrong. 4.5:1 governs text and every figure here is decoration
+hidden from assistive technology, so the shipped pair at 2.03:1 was the
+precedent rather than the exception.
+
+Motion is bound to expression rather than assigned, and almost none of it runs
+unattended. One term rests, a scale rather than a travel so there is no speed
+for the ambient band to apply to, and everything expressive fires under a
+pointer or a tap. That split then decided how it is guarded. Shortening the
+reactions put twelve of them inside the barred band and it looked like twelve
+defects. It was the guard measuring the wrong population: the band bars motion
+with no fixed reference to judge it against, and a reaction has one, namely the
+pointer that caused it. Holding a gesture to the ambient ceiling would mean
+slowing twelve movements a reader asked for to satisfy a rule about surfaces
+nobody asked for. A behavior now declares its kind, an idle term answers to the
+band, and a reaction answers to being brief and visible, which is the defect its
+own class actually has.
+
+**Read the instrument failures as one class rather than five incidents.** Each
+was a measure that passed hardest when the thing it watched had failed. A
+coverage check counted file bytes and reported full coverage for an empty box. A
+second counted alpha from a capture that had none. A placement check read
+bounding boxes and passed on six members while five were unpainted. A rate check
+found no rate for a behavior whose selector matched nothing, and reported it as
+absent rather than as broken. A band check measured a grid at 132px while the
+cast ships at 54, which crosses the barred band faster and reads laxer than the
+page. The pattern is that an instrument reporting nothing wrong and an
+instrument reporting nothing at all are indistinguishable unless something
+proves it can still fail. `e2e/cast.spec.ts` therefore hides a member and
+asserts the coverage check reports it, and fails when any behavior in the
+vocabulary moved nothing.
+
+Two harness rules came out of it. Speed measured off a bounding box scales with
+the target, so an instrument reads at the smallest size that ships and a floor
+is expressed against the target's own width rather than as a flat number of
+pixels. And the harness reads the page's own stylesheet rather than restating
+it, because a copy of the keyframes drifts within a pass and the drift is
+invisible while both still animate.
+
+Verified at 1280x800, 1440x900, and 390x844 across chromium, firefox, and
+webkit, where the full suite passes 183 and the cast's twelve guards pass on
+every engine.
+
 ### A landing-page figure sits inside the text column, and marks derive from type metrics
 
 A figure hanging into the page margin reads as an off-centre section even when the text column measures perfectly centred. The origin timeline shipped a graph in the right margin, measured centred at 672px with equal gaps at four widths, and the operator still read the section as offset because the section's visual mass sat right of its text. The graph is gone and the timeline carries a rail in its own row gutter instead, which also fixed what the figure could never do: the dots sit on their rows by construction rather than at hand-placed coordinates that could not track rows running 87 to 147 pixels apart.

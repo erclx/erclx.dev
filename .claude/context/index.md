@@ -7,6 +7,7 @@ subtitle: Per-domain narrative loaded on demand
 
 Per-domain narrative loaded on demand
 
+- [Agent cast](agent-cast.md): The blocky figures in the experience margins, their expression and motion vocabularies, and the instruments that guard them
 - [Case study figures](case-study-figures.md): Native dialog that opens a route raster figures as a sequence, fitted then magnified, and why only one route carries it
 - [Case study navigation](case-study-navigation.md): How the way-home controls return a reader to the position on the landing page they left from
 - [CI](ci.md): GitHub Actions workflow triggers and checks
