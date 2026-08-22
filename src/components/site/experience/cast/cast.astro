@@ -141,6 +141,9 @@ const clusters: readonly Cluster[] = [
         dx: 56, dy: 88, facing: -1, phase: 1500, tapMood: 'starstruck',
       },
     ],
+    pets: [
+      { kind: 'ember', mood: 'alert', size: 44, dx: 20, dy: 155, facing: 1 },
+    ],
   },
   {
     side: 'right', top: 29, gap: 22, delay: 220, phase: 900,
@@ -150,6 +153,9 @@ const clusters: readonly Cluster[] = [
         power: 'speed',
         dx: 0, dy: 0, facing: -1, phase: 0, tapMood: 'charged',
       },
+    ],
+    pets: [
+      { kind: 'spark', mood: 'alert', size: 44, dx: 24, dy: 78, facing: -1 },
     ],
   },
   {
@@ -167,6 +173,9 @@ const clusters: readonly Cluster[] = [
         power: 'gust',
         dx: 76, dy: 100, facing: -1, phase: 1500, tapMood: 'dizzy',
       },
+    ],
+    pets: [
+      { kind: 'dragon', mood: 'alert', size: 44, dx: 30, dy: 170, facing: -1 },
     ],
   },
   {
@@ -189,9 +198,10 @@ const clusters: readonly Cluster[] = [
         dx: 0, dy: 0, facing: -1, phase: 0, tapMood: 'surprised',
       },
     ],
-    // Below rather than beside, so the cluster's width does not move and its
-    // headroom against the dock is untouched. The pair fix learned the same
-    // thing: across is the axis with a margin at the end of it.
+    // One per cluster, each a different creature. Below rather than beside, so
+    // no cluster's width moves and its headroom against the rail or the dock is
+    // untouched. The pair fix learned the same thing: across is the axis with a
+    // margin at the end of it.
     pets: [
       { kind: 'dog', mood: 'resting', size: 44, dx: 26, dy: 72, facing: -1 },
     ],
