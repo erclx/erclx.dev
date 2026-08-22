@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { CARD_CLAIM } from '../scripts/card-copy'
+
 const ROUTES = ['/', '/aitk', '/jobtriage', '/stackr', '/caret', '/diction']
 
 // What Google truncates a description at. Every host shows less than this, so a
@@ -54,6 +56,26 @@ test.describe('a shared link', () => {
     expect(title).not.toContain(opener)
 
     expect(description.length).toBeLessThanOrEqual(DESCRIPTION_CEILING)
+  })
+
+  test('says something the card does not already draw', async ({ page }) => {
+    // The card draws the claim, and every host except LinkedIn prints the
+    // description beside it, so a description carrying that same sentence
+    // prints it twice in one unfurl. The check above guards the description
+    // against the title and cannot see this: the apex shipped repeating the
+    // claim and `bun run unfurl` is what showed it.
+    const claim = CARD_CLAIM.toLowerCase().replace(/\.$/, '')
+
+    for (const route of ROUTES) {
+      await page.goto(route)
+      const description = (
+        (await page
+          .locator('meta[property="og:description"]')
+          .getAttribute('content')) ?? ''
+      ).toLowerCase()
+
+      expect(description).not.toContain(claim)
+    }
   })
 
   test('carries no retired wording in a route title', async ({ page }) => {

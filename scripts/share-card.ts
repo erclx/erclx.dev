@@ -22,6 +22,8 @@ import { writeFile } from 'node:fs/promises'
 
 import { chromium } from '@playwright/test'
 
+import { CARD_CLAIM as CLAIM } from './card-copy'
+
 // The size every host accepts. LinkedIn asks 1200x627 and X 1200x628, both of
 // which this covers, and Discord scales whatever it is given.
 const WIDTH = 1200
@@ -29,9 +31,6 @@ const HEIGHT = 630
 
 const SITE = process.env.CARD_BASE_URL ?? 'http://localhost:4400'
 const OUT = 'public/og.png'
-
-const CLAIM =
-  'I build the layer between a language model and the job it has to do.'
 
 const MARK = `<svg viewBox="9.5 9.5 81 81" style="width:100%;height:100%">
   <path d="M 67.5 50 A 25 25 0 1 0 56.84 70.48" fill="none" stroke="currentColor"
