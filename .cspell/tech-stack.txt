@@ -13,6 +13,7 @@ connectaddress
 connectport
 cutover
 dbaeumer
+domcontentloaded
 dotfolders
 elif
 errexit
@@ -73,6 +74,7 @@ regen
 RLENGTH
 RSTART
 scannability
+Segoe
 serviceworker
 shadcn
 shellcheck

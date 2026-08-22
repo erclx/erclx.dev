@@ -42,6 +42,7 @@ For the rationale behind these choices, such as Astro over Next, the shadcn inst
 | `bun run device`        | Serve the dev site to a phone or tablet on the same network, printing a QR to scan.                                    |
 | `bun run brand`         | Redraw every brand raster from the one mark source. Run after editing that mark and never by hand.                     |
 | `bun run share-card`    | Redraw the link preview card. Needs the site served, since it composes inside the built page to get its own type.      |
+| `bun run unfurl`        | Render every page's preview as five hosts compose it. Needs the site served, since it reads the tags off the document. |
 | `bun run build`         | Run `astro check` then build the static output.                                                                        |
 | `bun run preview`       | Serve the built site locally.                                                                                          |
 | `bun run astro`         | Expose the Astro CLI.                                                                                                  |
@@ -86,6 +87,16 @@ The port is fixed at 4400 rather than derived per worktree the way the other thr
 Three things the script cannot settle. A VPN on the phone may route local addresses away from the LAN, which shows as a scan that resolves and then times out, so turn it off before suspecting the forward. Several Windows adapters answer with link-local addresses that route nowhere, so the address is taken from the one holding a DHCP lease rather than the first one listed. And the firewall rule is needed once and never again, so it is printed only when no forward exists at all.
 
 A public tunnel was the alternative and is not installed. It needs no administrator and works from any network, which is genuinely better on both counts, but it puts the dev site on an address anyone holding the link can load, and it needs the Vite host check widened to accept a hostname that changes every run. The forward keeps the page on the local network, where a portfolio still under construction belongs.
+
+## Reading a link preview without pasting one
+
+`bun run unfurl` renders all six pages as Discord, LinkedIn, X, Slack, and a Notion bookmark compose them, one sheet per page under `.claude/review/unfurl/`. It reads the tags off the served document rather than out of the source, since a crawler reads the rendered page and that is the copy that can be wrong, and it fetches the declared image the same way and embeds it so a sheet survives the server going away.
+
+Three failures make it throw rather than draw. A page missing any of the five tags names them. A relative `og:image` is rejected outright, which is the defect the record already carries as the one that fails silently in production. An image the server will not return names the status.
+
+Read a sheet as evidence about this card and never as a screenshot of that app. The chrome is drawn to each host's published shape, so what the sheet proves is what the card does under a given crop and a given line clamp, which is the half that belongs to this repository. A host redesigning its own embed is the half it cannot see, and the caveat under each frame names what that host is known to vary on.
+
+The apex is where it pays. Every host except LinkedIn renders the description, and the card image draws the claim, so a description opening on that same claim prints one sentence twice in a single unfurl. The five route pages carry their own descriptions and never hit it. `e2e/share-card.spec.ts` guards the description against the title and does not guard it against the image, which is the gap this found.
 
 ## Reproduce a suite failure against the suite's own target
 

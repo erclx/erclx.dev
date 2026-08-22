@@ -10,6 +10,7 @@
     "device": "./scripts/device.sh",
     "brand": "bun scripts/brand.ts",
     "share-card": "bun scripts/share-card.ts",
+    "unfurl": "bun scripts/unfurl.ts",
     "build": "astro check && astro build",
     "preview": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) astro preview",
     "astro": "astro",
