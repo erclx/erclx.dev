@@ -9,6 +9,14 @@ const baseURL = `http://localhost:${port}`
 export default defineConfig({
   testDir: 'e2e',
   forbidOnly: isCI,
+  // `fullyParallel` stays off, and it was measured rather than assumed. Tests
+  // inside one file run serially without it, so `cast.spec.ts` sets the floor
+  // for the suite at 2.0 minutes on one engine. Turning it on took the full
+  // three-engine run from about 3:30 to 2:49 and failed two webkit tests, both
+  // timing assertions: more contexts on one machine is less processor each, and
+  // a reveal stagger measured against a wall clock starts reading zero. A fifth
+  // off the wall clock does not pay for a suite that reports failures nobody
+  // caused. Narrow the scope and the engines in the inner loop instead.
   retries: isCI ? 2 : 0,
   workers: isCI ? 1 : undefined,
   // The html report is what the failure artifact uploads. Under `list` alone
