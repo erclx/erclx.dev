@@ -92,7 +92,11 @@
   .cast-field[data-pointer][data-arrived]
     .cast-member[data-react~='nod']:hover
     .bn,
-  .cast-field[data-arrived] .cast-member[data-react~='nod'][data-reacting] .bn {
+  .cast-field[data-arrived] .cast-member[data-react~='nod'][data-reacting] .bn,
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='nod']:hover::after,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='nod'][data-reacting]::after {
     animation: cast-nod 900ms ease-in-out var(--cast-loops, 1);
   }
   @keyframes cast-nod {
@@ -135,7 +139,11 @@
   .cast-field[data-pointer][data-arrived]
     .cast-member[data-react~='hop']:hover
     .bn,
-  .cast-field[data-arrived] .cast-member[data-react~='hop'][data-reacting] .bn {
+  .cast-field[data-arrived] .cast-member[data-react~='hop'][data-reacting] .bn,
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='hop']:hover::after,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='hop'][data-reacting]::after {
     animation: cast-hop 820ms ease-out var(--cast-loops, 1);
   }
   @keyframes cast-hop {
@@ -160,7 +168,11 @@
     .bn,
   .cast-field[data-arrived]
     .cast-member[data-react~='shake'][data-reacting]
-    .bn {
+    .bn,
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='shake']:hover::after,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='shake'][data-reacting]::after {
     animation: cast-shake 700ms steps(1, end) var(--cast-loops, 1);
   }
   @keyframes cast-shake {
@@ -191,7 +203,11 @@
     .bn,
   .cast-field[data-arrived]
     .cast-member[data-react~='slump'][data-reacting]
-    .bn {
+    .bn,
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='slump']:hover::after,
+  .cast-field[data-arrived]
+    .cast-member[data-react~='slump'][data-reacting]::after {
     animation: cast-slump 1600ms cubic-bezier(0.3, 0, 0.2, 1)
       var(--cast-loops, 1);
   }
@@ -266,9 +282,11 @@
   .cast-field[data-pointer][data-arrived]
     .cast-member[data-react~='sway']:hover
     .bn,
+  .cast-field[data-arrived] .cast-member[data-react~='sway'][data-reacting] .bn,
+  .cast-field[data-pointer][data-arrived]
+    .cast-member[data-react~='sway']:hover::after,
   .cast-field[data-arrived]
-    .cast-member[data-react~='sway'][data-reacting]
-    .bn {
+    .cast-member[data-react~='sway'][data-reacting]::after {
     animation: cast-sway 1100ms ease-in-out var(--cast-loops, 1);
   }
   @keyframes cast-sway {
@@ -585,7 +603,22 @@
    accident. It takes the site's own response tokens rather than a value of its
    own, so it belongs to the same system as every other control that lights.
 
-   It is not the control glow. Those sit on things a reader operates, and a
+   It travels with the figure, and only on the terms that take the figure
+   somewhere. This marks the member rather than lighting the ground under it,
+   so a member that leaves it strands a glow over nothing: the aura reaches
+   about 9px past a 64px member at `inset: -14%`, against a jump measuring
+   11.9px, so the figure cleared its own light entirely. A limb term is
+   excluded for the opposite reason, since a flail or an ear flick moves a part
+   inside the silhouette and the member has not gone anywhere, and dragging the
+   aura around for those makes the margin restless.
+
+   `power` is excluded too, and it is the one whole-body term that is. It
+   scales rather than travels, so the figure stays centred whatever it does:
+   measured, it grows about 5.8px each side against the 9px the aura already
+   holds. An aura swelling beside it is a second thing pumping, which is the
+   reading the operator rejected when the power's own amplitude was served. */
+
+It is not the control glow. Those sit on things a reader operates, and a
    member is decoration that plays back: the shape is round, it carries no
    border, and the cursor stays a default rather than a pointer, so nothing
    promises a destination.

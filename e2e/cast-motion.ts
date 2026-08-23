@@ -90,7 +90,14 @@ async function readMotion(page: Page): Promise<MotionReading[]> {
         'animationName' in animation &&
         String(
           (animation as unknown as { animationName: string }).animationName,
-        ).startsWith('cast-')
+        ).startsWith('cast-') &&
+        // The aura rides the same terms so it travels with the figure, and it
+        // is painted by a pseudo-element. This reads a target's box to get a
+        // rate, and a pseudo has none of its own, so those readings come back
+        // at 0.0px/s and every term the aura copies reports as sluggish. The
+        // drawing is what carries the movement and is already measured here,
+        // so its shadow is not a second reading.
+        !(animation.effect as KeyframeEffect | null)?.pseudoElement
 
       const animations = document.getAnimations().filter(isCast)
       // Every cast animation pauses first. Seeking one while its siblings run

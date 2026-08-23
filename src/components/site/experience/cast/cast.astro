@@ -25,6 +25,18 @@ import {
   memberIndex,
 } from './placement.ts'
 import './motion.css'
+import type { MoodId } from './faces.ts'
+
+// `emote` raises the mood's mark, so a member drawing none fires a reaction
+// that animates nothing. That failure is silent, unlike a mood with no
+// temperament, which stops the build. Deriving the list from whether the mark
+// is actually drawn is what keeps the two in step without anyone remembering
+// to, since the alternative is a hand-kept pairing that drifts the moment a
+// member's mark is turned off.
+const reactionsFor = (mood: MoodId, hasMark: boolean) =>
+  TEMPERAMENTS[mood].react
+    .filter((behavior) => behavior !== 'emote' || hasMark)
+    .join(' ')
 ---
 
 <div
@@ -45,10 +57,9 @@ import './motion.css'
             class:list={['cast-member', member.seated && 'is-idle']}
             data-cast-member
             data-member={memberIndex(cluster, member)}
-            data-tap-power={member.tapPower ? '' : undefined}
             data-idle={TEMPERAMENTS[member.mood].idle ?? undefined}
-            data-react={TEMPERAMENTS[member.mood].react.join(' ')}
-            data-react-tap={member.tapMood ? TEMPERAMENTS[member.tapMood].react.join(' ') : undefined}
+            data-react={reactionsFor(member.mood, member.hasMark ?? false)}
+            data-react-tap={member.tapMood ? reactionsFor(member.tapMood, member.hasTapMark ?? false) : undefined}
             style={`--cast-dx: ${member.dx}px; --cast-dy: ${member.dy}px; --cast-size: ${member.size}px; --cast-delay: ${cluster.delay}ms; --cast-offset: ${-(cluster.phase + member.phase)}ms`}
           >
             {/* Behind the body in its own layer, so it can carry a clock the
@@ -56,16 +67,6 @@ import './motion.css'
             {member.power && (
               <span class="cast-power-layer" data-power={member.power}>
                 <Fragment set:html={renderPower(member.power, member.facing)} />
-              </span>
-            )}
-            {member.tapPower && (
-              <span
-                class="cast-power-layer is-tapped"
-                data-power={member.tapPower}
-              >
-                <Fragment
-                  set:html={renderPower(member.tapPower, member.facing)}
-                />
               </span>
             )}
             {/* Both faces are rendered and one is hidden. Swapping the drawing
@@ -79,6 +80,7 @@ import './motion.css'
                   arms: true,
                   seated: member.seated,
                   mood: member.mood,
+                  hasMark: member.hasMark,
                   facing: member.facing,
                 })}
               />
@@ -91,6 +93,7 @@ import './motion.css'
                     arms: true,
                     seated: member.seated,
                     mood: member.tapMood,
+                    hasMark: member.hasTapMark,
                     facing: member.facing,
                   })}
                 />
@@ -215,23 +218,6 @@ import './motion.css'
      inset is the reach as a share of the 12-cell grid, which is 25% at a reach
      of 3, and it is negative because the box grows outward from the member
      rather than the member shrinking inside it. */
-  /* Swapped by the same `data-woken` the tapped face answers to, so a tap
-     changes what a member emits and what it is feeling in one move. Only a tap
-     sets that mark: a hover and the scheduler both run the reaction without it,
-     which is what keeps a discharge something a reader causes. */
-  .cast-power-layer.is-tapped {
-    display: none;
-  }
-  /* Scoped to a member that actually carries a tap power. Unscoped, the first
-     rule hid the resting layer on every member a reader touched, and only one
-     of the seven has a replacement, so tapping any of the other six made its
-     power disappear and nothing took its place. */
-  .cast-member[data-woken][data-tap-power] .cast-power-layer:not(.is-tapped) {
-    display: none;
-  }
-  .cast-member[data-woken][data-tap-power] .cast-power-layer.is-tapped {
-    display: block;
-  }
   .cast-power-layer {
     position: absolute;
     inset: calc(-1 * var(--cast-overhang) * 100%);

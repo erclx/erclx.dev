@@ -57,6 +57,29 @@ async function settleCast(page: Page): Promise<void> {
   await page.goto('/')
   await page.locator(SECTION).scrollIntoViewIfNeeded()
   await page.waitForTimeout(SETTLE_MS)
+  // The arrival scales every member up from 0.7, so a box read while it runs
+  // is a fraction of the size that ships. Measured on webkit under the full
+  // suite, the largest member read 61.6px against the 72 it settles at, which
+  // is 0.855 of it, while the same read passed alone. A fixed pause is a guess
+  // at how much lead an engine needs and the engines disagree, so this waits on
+  // the arrival itself rather than on a duration.
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            document
+              .getAnimations()
+              .filter(
+                (animation) =>
+                  ((animation as unknown as { animationName?: string })
+                    .animationName ?? '') === 'cast-spawn' &&
+                  animation.playState === 'running',
+              ).length,
+        ),
+      { timeout: 5000 },
+    )
+    .toBe(0)
 }
 
 /**
@@ -200,9 +223,17 @@ async function readBandShares(page: Page): Promise<
           '',
       )
 
-    const animations = document
-      .getAnimations()
-      .filter((animation) => named(animation).startsWith('cast-'))
+    const animations = document.getAnimations().filter(
+      (animation) =>
+        named(animation).startsWith('cast-') &&
+        // The aura rides the traveling terms so it stays with the figure,
+        // and it is painted by a pseudo-element. A rate here is a distance
+        // over a target's own box, and a pseudo has none, so those readings
+        // come back at 0.0px/s and report every term the aura copies as
+        // moving nothing. The drawing carries the movement and is measured
+        // already, so its shadow is not a second reading.
+        !(animation.effect as KeyframeEffect | null)?.pseudoElement,
+    )
     for (const animation of animations) animation.pause()
 
     const seen = new Set<string>()

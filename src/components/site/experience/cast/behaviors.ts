@@ -350,11 +350,28 @@ export interface Temperament {
 export const TEMPERAMENTS: Record<string, Temperament> = {
   determined: { idle: 'breathe', react: ['power', 'emote'] },
   unleashed: { idle: 'breathe', react: ['power', 'float', 'emote'] },
-  playful: { idle: 'breathe', react: ['hop', 'wave'] },
+  // The third member split this way, and the mildest of them. `playful` rests
+  // and `starstruck` answers a tap, and both threw the same `hop`, so the jump
+  // a reader caused was the jump they had already seen by pointing. Sharing the
+  // dominant term is enough to read as a repeat even where the rest differs:
+  // the heart was the only thing the tap added.
+  //
+  // `twitch` flicks an ear, which this one wears, so the hover stays its own
+  // rather than borrowing a term from the member beside it.
+  playful: { idle: 'breathe', react: ['twitch', 'wave'] },
   starstruck: { idle: 'breathe', react: ['hop', 'emote'] },
   triumphant: { idle: 'breathe', react: ['hop', 'flail', 'emote'] },
   exasperated: { idle: 'breathe', react: ['slump', 'emote'] },
-  dizzy: { idle: 'breathe', react: ['shake', 'emote'] },
+  // `flustered` rests and this answers a tap, and the pair carried `shake` and
+  // `shake` plus a mark. Once that member stopped drawing marks the `emote`
+  // came off and the tap became a strict subset of the hover, so pressing it
+  // did less than pointing at it, which is backwards on the one member where a
+  // reader has done something deliberate.
+  //
+  // `sway` rather than a louder shake. A jitter is the frustrated member's term
+  // standing in the same cluster, and a slow drift side to side is what dizzy
+  // looks like, so pointing flusters this one and pressing it tips it over.
+  dizzy: { idle: 'breathe', react: ['sway'] },
   neutral: { idle: 'breathe', react: ['nod', 'blink'] },
   pleased: { idle: 'breathe', react: ['hop', 'blink'] },
   humming: { idle: 'breathe', react: ['hop', 'emote'] },
@@ -382,7 +399,20 @@ export const TEMPERAMENTS: Record<string, Temperament> = {
   composed: { idle: 'breathe', react: ['nod', 'emote'] },
   // No `emote` on `assured`: it moves the mood's own mark and this one carries
   // none, so binding it would fire a reaction that animates nothing.
-  assured: { idle: 'breathe', react: ['power', 'flail'] },
+  //
+  // No `power` either, and that is the whole point of this pairing. `assured`
+  // is the lead's resting mood and `surging` is his tapped one, so these two
+  // lists are what a hover and a tap say on the same figure. Both carried
+  // `power` and read as one act performed twice: a reader hovered, the body and
+  // its flames swelled, and the click replayed the identical term from the
+  // start. Measured, the reaction restarts on click, so nothing distinguished
+  // the deliberate act from the pointer resting there.
+  //
+  // The discharge belongs to the tap, which is the split this project already
+  // draws between a pointer being over something and a reader doing something.
+  // `wobble` is the answer here because it moves the antenna, and the lead is
+  // the one member wearing one, so his hover is his alone without a new term.
+  assured: { idle: 'breathe', react: ['wobble', 'flail'] },
   bold: { idle: 'breathe', react: ['power', 'flail', 'emote'] },
   sunny: { idle: 'breathe', react: ['power', 'flail', 'emote'] },
   // No `float` beside `power`. A scale and a rise together read as the figure
@@ -394,5 +424,17 @@ export const TEMPERAMENTS: Record<string, Temperament> = {
   cocky: { idle: 'breathe', react: ['hop', 'emote'] },
   fired: { idle: 'breathe', react: ['power', 'emote'] },
   beaming: { idle: 'breathe', react: ['hop', 'flail', 'emote'] },
-  pumped: { idle: 'breathe', react: ['hop', 'flail', 'emote'] },
+  // The same pairing `assured` and `surging` make, on the member drawn with
+  // `speed`. `pumped` is its resting mood and `revved` its tapped one, and both
+  // ran `hop` and `flail`, so a hover and a click threw the identical jump and
+  // the second read as the first repeating rather than as an answer to being
+  // pressed. The jump stays with the tap and the hover waves an arm, which is
+  // the smaller thing a pointer resting there deserves.
+  //
+  // Reading it as the power coming away from the figure is the mistake to
+  // avoid, and it is the natural reading because the two do look separate.
+  // They are not: the power's own drawing carries `bn`, so every whole-body
+  // term already reaches it, and measured through this jump the body and the
+  // power report the same offset at every frame.
+  pumped: { idle: 'breathe', react: ['wave'] },
 }
