@@ -206,7 +206,7 @@ at 248046b on 2026-08-23.
 
 ### Resume PDF served from `public/`
 
-The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source remains `assets/resumes/eric-le-resume.pdf` in the parent career repo. Updates land here as a binary copy via the sync queue rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
+The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source is `assets/resumes/eric-le-cv.pdf` in the parent career repo. It read `eric-le-resume.pdf` until 2026-08-23, by which point no file sat at that path, so the record named a source a session could not find. Upstream now keeps a Swedish `eric-le-cv-sv.pdf` beside it and this site serves the English one alone, since the page it sits on is written in English and the footer holds one résumé slot. Updates land here as a binary copy via the sync queue rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
 
 ### Cloudflare Pages over Vercel or GitHub Pages
 
