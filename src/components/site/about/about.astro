@@ -37,6 +37,19 @@ const FLIGHT_PATH = 'M -70 8 C 190 12 430 26 690 41'
 // two thirds of the guard's tolerance before anything moved.
 const CRAFT_SCALE = 0.7
 const TRAIL_STROKE = +(CRAFT_SCALE * (5 / 0.45)).toFixed(3)
+
+// The drawing spans x 6 to 114 and is symmetric about y=30, so this is its own
+// centre. The craft rides the flight path by its origin, which makes the origin
+// the one point the contrail leaves from, so it has to be that centre at every
+// scale. Derived rather than written, because the pair that stated it by hand
+// was correct at 0.45 and silently wrong the moment the scale moved: at 0.7 it
+// put the origin 15 units ahead of the fuselage and 7.5 below its centreline,
+// which is the trail leaving from beside the aircraft rather than behind it.
+const CRAFT_CENTRE = { x: 60, y: 30 }
+const CRAFT_ORIGIN = {
+  x: +(-CRAFT_CENTRE.x * CRAFT_SCALE).toFixed(3),
+  y: +(-CRAFT_CENTRE.y * CRAFT_SCALE).toFixed(3),
+}
 ---
 
 <section
@@ -127,7 +140,8 @@ const TRAIL_STROKE = +(CRAFT_SCALE * (5 / 0.45)).toFixed(3)
           <path
             d={PLANE_PATH}
             fill="currentColor"
-            transform={`translate(-27 -13.5) scale(${CRAFT_SCALE})`}></path>
+            transform={`translate(${CRAFT_ORIGIN.x} ${CRAFT_ORIGIN.y}) scale(${CRAFT_SCALE})`}
+          ></path>
         </g>
       </svg>
     </div>
@@ -249,8 +263,12 @@ const TRAIL_STROKE = +(CRAFT_SCALE * (5 / 0.45)).toFixed(3)
      linear, since the shape is already in the numbers.
 
      The head holds 6% of the flight behind the aircraft. Measured, the curve
-     runs 760.8 units and the aircraft renders 48.6 wide, so half of it is 3.2%
-     of the flight, and a head closer than that draws inside the tail. */
+     runs 760.8 units and the aircraft renders 75.6 wide, so half of it is 4.97%
+     of the flight, and a head closer than that draws inside the tail. That
+     leaves the drawn head 7.8 units behind the tail, close to the trail's own
+     7.8 stroke, which the blur closes. The figure read 48.6 and 3.2% until the
+     craft was centred on the curve, since a drawing hung off its own origin has
+     no half-length the trail can be held clear of. */
   @keyframes about-flight-draw {
     0% {
       stroke-dasharray: 0.0 100;
