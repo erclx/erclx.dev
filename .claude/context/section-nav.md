@@ -50,8 +50,21 @@ Pointing at a row is a separate claim from being inside one, so a hover adds the
 
 When the `instant` prop is set, the rail renders with `data-revealed` already true at server render, a `data-instant` marker disables the opacity-transition CSS, and the hero observer does not attach. Used on every project route, which are otherwise static, so the rail does not fade in alone.
 
+## The route's opening leads its rail
+
+A route's first row points at the section carrying the `h1`, labelled with the project name. Without it the rail named no row for the first 700 to 900px of every route, measured at 1440x900 across all five, because `instant` shows the rail from first paint while the first prose section starts 938 to 1135px down. A position indicator stating no position was the whole opening screen.
+
+Hiding the rail there instead was built and rejected. Copying the landing page's reveal gate does not reproduce the landing page's behavior, because a route's opening section is proportionally far larger than the landing hero: the rail would be absent for 9.3% of diction, 15.5% of jobtriage, and 34.6% and 37.1% of stackr and caret, against roughly 6% on the landing page. The two shortest routes would lose it for over a third of the read. The two rails also do different jobs, which is what makes the divergence deliberate rather than an oversight: the landing rail tracks position through sections a reader meets by scrolling, where a route's is a contents list for a long-form read usually arrived at from a shared link.
+
+Filling the empty state by lighting the first prose row was rejected for a second reason beyond claiming a section the reader has not reached. The row is then already lit when they arrive at it, so the rail's first handover never happens, and the step from row to row is the whole gesture.
+
+It is data rather than component behavior. Each route gives its opening section an `id` matching its label and adds one entry at the top of its own `navItems`, so the rail component is unchanged and carries no fallback: the opening section's top already sits above the 30% anchor at first paint, so the existing walk names it. The label is the heading it points at, which is the rule every other row follows, and `overview` was rejected against it as the one label on the site with no heading behind it.
+
+What it costs is the project name beside the `h1` on the opening screen, which is the pairing `[data-route-here]` hides itself to avoid. It is accepted because a rail row is a position mark in the margin at label size rather than a title in the same band, and because past the `h1` the bar's name fades in as the rail hands off, so the name is stated exactly once at every other scroll position.
+
 ## Gotchas
 
+- A rail row built with `document.createElement` takes none of this component's styles. Astro scopes them to a `data-astro-cid-*` attribute only server-rendered elements carry, so a row added at runtime paints no ground, no border, and no step while still reporting `data-active`. The lead row above was prototyped that way and shipped a row that was active and invisible at once. Read the paint, not the state: a check reading `data-active` reported that arm working, where one reading `backgroundColor`, `borderTopWidth`, and `transform` fails it. This is the same class as the instrument failures `.claude/ARCHITECTURE.md` collects, reached through a styling mechanism rather than through a measurement.
 - An earlier max-intersection-ratio `IntersectionObserver` drove active tracking. It flipped the active label to a taller preceding section when the visitor clicked the last, shorter rail item. The scroll-position handler replaced it.
 - No-JS path: the rail stays hidden and non-interactive because the reveal gate only flips under JS. The page reads correctly without it.
 - Click handling calls `e.preventDefault()` then `scrollIntoView({ behavior: 'smooth', block: 'start' })` with no URL hash side effect. Reduced-motion users get the native instant scroll.
