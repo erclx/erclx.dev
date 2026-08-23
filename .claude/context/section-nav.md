@@ -25,7 +25,11 @@ Clicking a rail link sets the clicked section active immediately and suppresses 
 
 ## Reveal gate
 
-The rail starts hidden and fades in once the hero is roughly half-scrolled past. An `IntersectionObserver` on the hero element with `rootMargin: '-50% 0px 0px 0px'` toggles `data-revealed`. Bidirectional: scrolling back into the hero hides the rail again.
+The rail starts hidden and fades in once the first section reaches the anchor. An `IntersectionObserver` on the hero element toggles `data-revealed`, with its `rootMargin` derived from `ANCHOR_RATIO` rather than written beside it. Bidirectional: scrolling back into the hero hides the rail again.
+
+One number places both lines, and the arithmetic is why. The hero holds the viewport height wherever this rail is visible, so a hero whose bottom edge sits at the anchor is the same moment the section under it crosses that anchor. A margin of half the viewport revealed the rail 0.2 viewport heights early, so it painted at full opacity naming no row for 150px at 1280, 170px at 1440, and 210px at 1920, a window that grew with the screen because both ends were fractions of it. `e2e/home.spec.ts` guards it by sampling either side of the crossing and counting positions where the rail is visible and no row is named.
+
+The bar arrives before the rail and always did, at 280px against 570px measured at 1280x800. It reveals on `byArrival || byHero`, and the arrival gate fires first, so a reading of the hero-ratio gate alone does not describe when the bar appears.
 
 Nothing hides the rail near the footer. Looking-for and the footer together barely clear one viewport, so any scroll-position trigger for a footer fade has little to no runway to fire on before the document runs out of scroll room, and forcing one in with a minimum-dwell hold read as a timer disconnected from the reader's own scrolling rather than a response to it. A capture of the rail held visible over a fully-shown footer at 1280x800 and 1920x1080 found no clutter or overlap, so the rail carries looking-for through the rest of the page instead: revealed once and visible until the reader scrolls back into the hero, the same as a project route always behaved. See `.claude/ARCHITECTURE.md` § The rail carries looking-for through the footer rather than hiding near it.
 

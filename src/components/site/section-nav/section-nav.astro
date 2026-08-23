@@ -206,7 +206,23 @@ const {
               }
             }
           },
-          { threshold: 0, rootMargin: '-50% 0px 0px 0px' },
+          // The rail arrives exactly where it gains something to say. A margin
+          // of half the viewport revealed it 0.2 viewport heights before the
+          // first section crossed the anchor, so it painted at full opacity
+          // naming no row for 150px at 1280, 170px at 1440, and 210px at 1920,
+          // a window that grows with the screen because both ends are
+          // fractions of it.
+          //
+          // Derived from the anchor rather than written beside it, and the
+          // arithmetic is why: the hero holds the viewport height wherever this
+          // rail is visible, so a hero whose bottom edge sits at the anchor is
+          // the same moment the section under it crosses that anchor. One
+          // number therefore places both lines, and a second literal would
+          // reopen the gap the moment either moved.
+          {
+            threshold: 0,
+            rootMargin: `-${ANCHOR_RATIO * 100}% 0px 0px 0px`,
+          },
         )
         heroObserver.observe(hero)
       }
