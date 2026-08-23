@@ -22,7 +22,11 @@ for (const route of CASE_STUDY_ROUTES) {
     await page.goto(route)
 
     const sections = await page.locator('main section[id]').count()
-    const headings = await page.locator('main section[id] h2').count()
+    // The route's opening carries the `h1` and every prose section an `h2`, so
+    // the heading level varies while the invariant does not: a section a reader
+    // can be sent to opens on a heading. This read `h2` alone until the opening
+    // gained an id, which held while that section was the one nothing linked to.
+    const headings = await page.locator('main section[id] :is(h1, h2)').count()
 
     expect(sections).toBeGreaterThan(0)
     expect(headings).toBe(sections)
@@ -35,7 +39,10 @@ for (const route of CASE_STUDY_ROUTES) {
 
     const sizes = await page.evaluate(() => {
       const heading = document.querySelector('main section[id] h2')
-      const body = document.querySelector('main section[id] p')
+      // Read from inside the heading's own section. Taken across the document
+      // these two now land in different ones, since the opening section leads
+      // and carries no `h2`, so the comparison would be against its eyebrow.
+      const body = heading?.closest('section')?.querySelector('p')
       if (!heading || !body) return { heading: 0, body: 0 }
       return {
         heading: parseFloat(getComputedStyle(heading).fontSize),
@@ -54,7 +61,7 @@ test('the aitk case study renders its claim and sections', async ({ page }) => {
   await expect(page.locator('main')).toContainText(
     'installs one set of agent rules, skills, and standards into every project',
   )
-  await expect(page.locator('main section[id]')).toHaveCount(5)
+  await expect(page.locator('main section[id]')).toHaveCount(6)
 })
 
 test('the aitk case study names the scoped package', async ({ page }) => {
@@ -72,7 +79,7 @@ test('the diction case study renders its claim and sections', async ({
   await expect(page.locator('main')).toContainText(
     'scores each sound against what a native speaker actually sounds like',
   )
-  await expect(page.locator('main section[id]')).toHaveCount(5)
+  await expect(page.locator('main section[id]')).toHaveCount(6)
 })
 
 test('the diction case study states the offline claim', async ({ page }) => {

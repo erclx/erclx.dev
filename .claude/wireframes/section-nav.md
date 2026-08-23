@@ -26,6 +26,8 @@ Only the active label is grounded. Grounding all four was built and rejected: fo
 
 A label reads as the heading it points at rather than as the anchor id behind it. `looking-for` rendered as a hyphenated slug until 2026-08-18, which was the one place on the site showing a reader an id. A project route passes its own labels, lowercase, because that surface sets its headings lowercase.
 
+A project route leads with a row for its own opening, labelled with the project name and active from first paint, so the rail names a row on arrival rather than for the first 700 to 900px naming none. The landing rail has no equivalent because it is hidden over its hero. See `.claude/context/section-nav.md` § The route's opening leads its rail.
+
 ## Below xl (≤1280px)
 
 Hidden. From md (768px) through lg (1024px) there is never a gutter wide enough for both the rail and content. At lg the projects section fills the viewport edge-to-edge, putting the rail on top of card content. Below xl the page is short enough that scroll-tracking adds marginal value, so the rail hides entirely.

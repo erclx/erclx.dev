@@ -855,6 +855,69 @@ ground, the same three files `scripts/brand.ts` has always drawn.
 
 Measured at 86be4f3 on 2026-08-24.
 
+### A route's rail leads with the route, and a runtime row takes no styles
+
+The rail is shown from first paint on a project route, and the first prose
+section starts 938 to 1135px down, so it named no row for the first 700 to 900px
+of every route. A position indicator stating no position was the whole opening
+screen, on the surface a shared link lands on.
+
+Hiding it there is the repair that looks obvious and it was measured and
+rejected. Copying the landing page's reveal gate does not reproduce the landing
+page's behavior, because a route's opening section is proportionally far larger
+than the landing hero: the rail would be absent for 9.3% of diction, 15.5% of
+jobtriage, and 34.6% and 37.1% of stackr and caret, against roughly 6% on the
+landing page. The two shortest routes lose it for over a third of the read.
+
+**Read the divergence as deliberate rather than as an oversight**, which is the
+part a consistency argument gets wrong. The landing rail tracks position through
+sections a reader meets by scrolling anyway. A route's is a contents list for a
+long-form read, and showing it on arrival says how long the read is and what is
+in it. Those are different jobs, so matching the two surfaces costs something on
+the one that needs the rail more.
+
+What ships is a first row pointing at the section carrying the `h1`, labelled
+with the project name. It is data rather than component behavior: each route
+gives its opening an `id` and adds one entry to its own `navItems`, and the
+component is unchanged because the opening section's top already sits above the
+30% anchor at first paint. `overview` was rejected as a label against the rail's
+own rule that a label reads as the heading it points at, being the one label on
+the site with no heading behind it. Lighting the first prose row instead was
+rejected twice over: it claims a section the reader has not reached, and the row
+is then already lit when they arrive, so the rail's first handover never
+happens and the step from row to row is the whole gesture.
+
+The cost is the project name beside the `h1` on the opening screen, which is the
+pairing `[data-route-here]` hides itself to avoid. Accepted, because a rail row
+is a position mark in the margin at label size rather than a title in the same
+band, and because past the `h1` the bar's name fades in as the rail hands off,
+so the name is stated exactly once at every other scroll position.
+
+**The instrument failure is the half worth carrying.** The row was prototyped
+with `document.createElement`, and Astro scopes a component's rules to a
+`data-astro-cid-*` attribute only server-rendered elements carry. The row
+therefore reported `data-active` while painting no ground, no border and no
+step, and the check written to verify it read `data-active` and passed. It was
+active and invisible at once, and the operator found it by looking. A check
+reading `backgroundColor`, `borderTopWidth` and `transform` fails it. This is
+the class this file already collects, reached through a styling mechanism rather
+than through a measurement: **a state a component sets and a treatment the
+stylesheet paints are two claims, and reading the first says nothing about the
+second.**
+
+Three guards moved with it, and one was worth reading rather than updating.
+`every section opens on a real heading` counted `main section[id] h2`, and the
+opening section opens on the `h1`, so the invariant held while its selector did
+not. It reads `:is(h1, h2)` now, against a measurement that every id'd section
+on all five routes carries exactly one heading. The heading-size guard also had
+to be scoped to one section, since across the document its heading and its prose
+now land in different ones.
+
+Read at 1440x900 across all five routes, where each rail names one painted row
+at first paint and hands off between 720 and 940px.
+
+Measured at 0159e9e on 2026-08-23 with this branch applied.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.

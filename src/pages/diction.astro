@@ -18,7 +18,9 @@ const artifactLinks = [
   { label: 'GitHub', href: 'https://github.com/erclx/diction' },
 ]
 
+// The route's opening leads the rail, per the note in `jobtriage.astro`.
 const navItems = [
+  { id: 'diction', label: 'diction' },
   { id: 'problem', label: 'problem' },
   { id: 'data', label: 'data' },
   { id: 'fix', label: 'fix' },
@@ -77,7 +79,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
   <RouteBar here="diction" />
 
   <main>
-    <section class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
+    <section id="diction" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
         <p data-fade class="text-muted-foreground text-label tracking-wide uppercase">
           Project
