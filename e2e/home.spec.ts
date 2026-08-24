@@ -251,7 +251,13 @@ test('the about figure is there for a reader who arrives from the rail', async (
   // A rail jump pins the section's top under the sticky bar, so the approach
   // cannot run in clear air. Scrolling on only carries the band further up and
   // out, so waiting for clear air means waiting forever.
-  await page.evaluate(() => document.querySelector('#about')?.scrollIntoView())
+  // Instant, because what this reproduces is the arrival rather than the
+  // travel. The root glides for a reader now, and a bare call inherits it, so
+  // the poll below caught a state part-way through the flight and read it as an
+  // end state. Verified against a real rail click, which still lands settled.
+  await page.evaluate(() =>
+    document.querySelector('#about')?.scrollIntoView({ behavior: 'instant' }),
+  )
   // Settled on the figure reaching an end state rather than paused for a span.
   // The gate runs off a scroll frame and a bar measurement, and 600ms was a
   // guess at how long a loaded engine needs to get there: on webkit under the
@@ -304,7 +310,7 @@ for (const width of ABOUT_FLIGHT_WIDTHS) {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
     await page.evaluate(() =>
-      document.querySelector('#about')?.scrollIntoView(),
+      document.querySelector('#about')?.scrollIntoView({ behavior: 'instant' }),
     )
     // Landing under the bar settles at once; landing in clear air runs the
     // 2000ms approach first and its `both` fill mode holds `data-flight` at
@@ -1178,4 +1184,89 @@ test('the controls land in the bar when the page opens mid-page', async ({
       { timeout: 5000 },
     )
     .toBeLessThanOrEqual(2)
+})
+
+// A chip's scroll is judged on the positions the page passes through rather
+// than on the declaration behind it. That reads the same on every engine, and
+// it survives the answer moving between a stylesheet and a script, which is
+// what a check reading `scroll-behavior` off the root cannot claim.
+const traceChipScroll = async (
+  page: Page,
+  frames: number,
+): Promise<{ start: number; landed: number; passedThrough: boolean }> =>
+  page.evaluate(async (count) => {
+    const chip = document.querySelector<HTMLAnchorElement>('#experience ul a')
+    if (!chip) throw new Error('the experience section carries no chip')
+
+    const start = window.scrollY
+    const samples: number[] = []
+    chip.click()
+
+    await new Promise<void>((resolve) => {
+      let seen = 0
+      const tick = () => {
+        samples.push(window.scrollY)
+        seen += 1
+        if (seen < count) requestAnimationFrame(tick)
+        else resolve()
+      }
+      requestAnimationFrame(tick)
+    })
+
+    const landed = samples.at(-1) ?? start
+    return {
+      start,
+      landed,
+      passedThrough: samples.some((at) => at > start && at < landed),
+    }
+  }, frames)
+
+// Holding a position strictly between where the page started and where it
+// landed is the whole difference between the two tests below, and it is the
+// strongest claim every engine can answer.
+//
+// Two thresholds were tried before this and each encoded one engine. A fraction
+// of the distance failed webkit, whose automation build collapses the glide
+// into two frames and opens at 1895 of 2833 where chromium holds 23 distinct
+// positions and firefox 29. A frame-exact arrival then failed firefox, which
+// does not commit a fragment scroll synchronously: it still reports the
+// starting position on the first frame after the click and the landing on the
+// second, which is a jump arriving late rather than a glide.
+test('a chip glides to the card it names rather than jumping there', async ({
+  page,
+}) => {
+  await page.goto('/')
+
+  const scroll = await traceChipScroll(page, 90)
+
+  expect(scroll.landed).toBeGreaterThan(scroll.start)
+  expect(scroll.passedThrough).toBe(true)
+})
+
+test('a chip jumps under a reduced-motion preference', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+
+  const scroll = await traceChipScroll(page, 30)
+
+  expect(scroll.landed).toBeGreaterThan(scroll.start)
+  expect(scroll.passedThrough).toBe(false)
+})
+
+test('the card a chip lands on clears the sticky bar', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+
+  await traceChipScroll(page, 20)
+
+  const clearance = await page.evaluate(() => {
+    const card = document.querySelector('#aitk')
+    const ground = document.querySelector('[data-bar-ground]')
+    if (!card || !ground) throw new Error('no card, or no bar to clear')
+    return (
+      card.getBoundingClientRect().top - ground.getBoundingClientRect().bottom
+    )
+  })
+
+  expect(clearance).toBeGreaterThanOrEqual(0)
 })

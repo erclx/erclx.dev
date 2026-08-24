@@ -783,6 +783,23 @@ test.describe('agent cast', () => {
     await page.locator(SECTION).scrollIntoViewIfNeeded()
     await page.waitForTimeout(SETTLE_MS)
 
+    // Bringing the section into view leaves the first member 61px above the
+    // viewport at this size, so the tap below was relying on the driver to
+    // scroll it in, and a minimal scroll lands it under the sticky bar. The
+    // driver's own scroll is not instant now that the root glides for a reader,
+    // so that hit test was being taken while the page was still traveling.
+    // Centring the member is what the tap actually needs, and it needs no
+    // driver scroll at all.
+    await page.evaluate((selector) => {
+      const member = document.querySelector(selector)
+      if (!member) throw new Error('no cast member to tap')
+      const box = member.getBoundingClientRect()
+      window.scrollTo({
+        top: window.scrollY + box.top - (window.innerHeight - box.height) / 2,
+        behavior: 'instant',
+      })
+    }, MEMBER)
+
     await page.locator(MEMBER).first().tap()
     await page.waitForTimeout(STILL_AFTER_TAP_MS)
 

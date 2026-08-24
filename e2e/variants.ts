@@ -118,8 +118,10 @@ const shoot = async (
   // After the variant's own styles land, since a treatment that changes a
   // surface's height moves where the join sits.
   if (run.clip === 'viewport' && run.scrollOffset) {
+    // Instant, since the root glides for a reader and a capture taken during
+    // that glide shoots a surface part-way to where it was asked to sit.
     await page.evaluate(
-      (offset) => window.scrollBy(0, -offset),
+      (offset) => window.scrollBy({ top: -offset, behavior: 'instant' }),
       run.scrollOffset,
     )
   }

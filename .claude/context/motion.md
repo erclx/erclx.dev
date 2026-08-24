@@ -9,6 +9,13 @@ description: Scroll-reveal cascade primitive and the per-surface animations on t
 
 How the landing page's scroll-triggered animation works. Layout and interaction intent for each surface live in its `.claude/wireframes/<surface>.md` file. This entry covers the shared mechanism.
 
+## Traveling to a target
+
+- The root declares `scroll-behavior: smooth` under `prefers-reduced-motion: no-preference`, and every control that scrolls resolves it rather than naming a behavior. That covers the rail, the bar's home control, and the timeline chips, which had answered the same question three different ways. `.claude/ARCHITECTURE.md` § One declaration decides how the page travels, and every caller resolves it carries the reasoning and what it cost.
+- The curve is the engine's. CSSOM-View requires the smooth scroll and defines no timing function, so there is nothing here to tune and no duration to match. Measured over a 3013px trip on 2026-08-24, chromium runs an ease-in-out with a long decay taking 949ms, reaching 82% of the distance by half time, and grows to 1134ms over 4202px. Firefox runs a spring decay at 64% inside the first quarter and holds near 745ms whatever the distance.
+- A caller that means to arrive rather than to travel says `behavior: 'instant'`. Every test harness that walks the page is in that group, and so is the figure dialog. The failure is silent, which is why it is stated here as a rule rather than left to each caller.
+- Read a claim about the glide off the positions the page occupies rather than off a fraction of the distance or a frame count. Both were tried and each described one engine: webkit's automation build collapses the glide into two frames, and firefox does not commit a fragment scroll until the frame after the click.
+
 ## Cascade reveal primitive
 
 - Elements that animate in on scroll carry a `data-fade` attribute and an optional `--fade-delay` CSS custom property.

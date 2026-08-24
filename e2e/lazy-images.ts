@@ -103,12 +103,16 @@ export async function scrollThroughPage(page: Page): Promise<void> {
         )
       }
 
+      // Every step states `instant`. The root carries `scroll-behavior: smooth`
+      // for a reader, and a walk inheriting it is still traveling while it
+      // measures, so each step would settle against a viewport that has not
+      // arrived and the images it was waiting on would never be asked for.
       const step = Math.max(1, window.innerHeight * stepRatio)
       for (let y = 0; y < document.body.scrollHeight; y += step) {
-        window.scrollTo(0, y)
+        window.scrollTo({ top: y, behavior: 'instant' })
         await settleViewport()
       }
-      window.scrollTo(0, 0)
+      window.scrollTo({ top: 0, behavior: 'instant' })
 
       return performance.now() > walkDeadline
     },

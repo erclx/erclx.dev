@@ -83,6 +83,10 @@ A step now holds until the images standing in the viewport report themselves loa
 
 The reveal case is the same defect rather than a second one. `a route reveals its prose as the reader arrives at it` reads a marker `src/lib/reveal.ts` writes on intersection, which is driven off the viewport and equally unrecoverable once the walk has gone past. A step waits on the markers its own geometry says are due, so one change repairs all three cases.
 
+Every step of that walk states `behavior: 'instant'`, and the walk breaks silently without it. The root carries `scroll-behavior: smooth` for a reader, and a bare `scrollTo` inherits it, so a step settles against a viewport still in transit and the images it is waiting on are never the ones a reader can see. That reintroduces exactly the outrunning this section repaired, by a route no engine figure above would show, and the capture still reports success because an image that was never asked for is indistinguishable from one the walk correctly skipped. The same reading covers the capture harness in `e2e/variants.ts`, which otherwise shoots its frame part-way to the offset it asked for.
+
+Playwright's own scroll is the case with nothing to pass. It brings an off-screen target into view before it can be clicked or tapped, a minimal scroll puts that target at the top of the viewport under the sticky bar, and the hit test then lands on the bar. Bring the element the interaction is about into view explicitly, rather than leaving the driver to do it.
+
 Verified 2026-08-21 at one worker, the count `playwright.config.ts` pins under CI: three consecutive green webkit legs, plus chromium and firefox. Run a local leg one engine at a time at `--workers=1` when the question is whether something is broken, because the default count adds contention this repair does not remove. The shader paint case fails under a three-engine parallel run and passes at one worker, which is that contention rather than a defect in the surface it reads.
 
 ## The pull request trigger carries no branch filter

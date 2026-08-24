@@ -271,7 +271,11 @@ const {
         e.preventDefault()
         setActive(id)
         clickLockUntil = performance.now() + CLICK_LOCK_MS
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        // No behavior named, so the root's own `scroll-behavior` decides.
+        // Naming `smooth` here forced a glide on a reader who had asked for
+        // none, which is the branch the bar was carrying by hand and this rail
+        // was missing outright.
+        target.scrollIntoView({ block: 'start' })
       })
     }
   }
