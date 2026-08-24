@@ -47,7 +47,13 @@ const {
 </nav>
 
 <style>
-  .section-nav {
+  /* Hidden until revealed only where a script can do the revealing. Gated on
+     `[data-js='true']`, the same escape `[data-fade]` uses in global.css, so a
+     route with no script running keeps the rail at its native opacity rather
+     than parking it invisible forever: nothing after this ever sets
+     `data-revealed` without JS, and the rail was the one piece of chrome on a
+     route's longest reads that a no-JS visitor could lose entirely. */
+  :global([data-js='true']) .section-nav {
     opacity: 0;
     pointer-events: none;
   }
