@@ -147,9 +147,13 @@ the spec can assert against it without running the script that draws it.
 
 It is composed inside the served site rather than in a bare page, which is what
 gives it the real Fraunces and the shipped tokens. A card drawn in a fallback
-face is a card judged on the wrong letterforms. The field behind it is captured
-from the page with every other element hidden, after a first attempt shot the
-canvas while content sat over it and baked the hero's own text into the image.
+face is a card judged on the wrong letterforms. The field behind it is a margin
+crop of the hero's own live canvas rather than a whole-page capture of the
+still `page-ground` copy, which is what lets a pointer-proximity gradient into
+the frame at all: `page-ground` mounts with `animate: false` and never redraws
+after its first paint, so no simulated pointer could ever reach it. An early
+whole-page attempt shot the canvas while content sat over it and baked the
+hero's own text into the image.
 
 The mark grew from a 64px corner element to a 210px lead, which retires the
 empty right half an earlier draft of this entry defended. With the composition
@@ -162,10 +166,12 @@ A square crop takes the mark and the last word of every line, and that is
 accepted rather than designed around. Centring the group to survive it costs the
 feed and the compact unfurl, which is a certain price for an uncertain benefit,
 and a crop taken from the centre is close to the worst case rather than the
-typical one, since the hosts that square-crop mostly anchor left or letterbox. A
-separate 1:1 asset is the repair when one is wanted, and it waits on a consumer
-that asks for it: most hosts take the first `og:image` and ignore the rest, and
-`public/avatar.png` already ships as this project's square mark.
+typical one, since the hosts that square-crop mostly anchor left or letterbox.
+Most hosts take the first `og:image` and ignore the rest regardless of what
+else exists. A separate 1:1 asset was the repair queued for whichever consumer
+asked for one, and `public/avatar/` is that consumer now: six sized, themed
+square rasters replacing the single `public/avatar.png` this paragraph once
+named.
 
 `bun run share-card` redraws it, and `e2e/share-card.spec.ts` guards it. Two of
 its nine assertions are worth naming: one fails a description that opens on
@@ -299,9 +305,10 @@ drawing is actually built around: `e2e/favicon.spec.ts` counts enclosed holes in
 the rendered pixels, so a letter with no eye fails whatever its coverage, and it
 found this on its first run.
 
-`public/avatar.png` is served at the domain root and no visitor navigates to it.
-It sits there because a profile host wants a file to upload rather than a URL to
-embed, and `public/resume.pdf` already sets that precedent.
+`public/avatar/` is served at the domain root and no visitor navigates to it.
+It sits there because a profile host wants a file to upload rather than a URL
+to embed, and `public/resume.pdf` already sets that precedent. What the folder
+now holds and why is its own entry below.
 
 The reduction path the earlier entry barred also turns out to cost almost
 nothing here, measuring 57 bright pixels against 48 for a direct draw. Each size
@@ -789,6 +796,62 @@ Two repairs are recorded here as the shape to avoid rather than as what shipped.
 A capture of the rail forced visible over a fully-shown footer at 1280x800 and 1920x1080 settled it: the rail sits in the empty left margin at both widths, clear of the signature, the résumé link, and the colophon, so hiding it near the footer was never buying anything a reader would notice losing. The gate comes out rather than getting retuned a third time. The rail now behaves exactly as it always did on a project route, which never gated on the footer at all: revealed once the hero is scrolled past, visible through the rest of the page, and hidden again only on scrolling back into the hero. The operator confirmed against the running page rather than a capture, since the question was how the removal reads while scrolling through it rather than how it looks at rest.
 
 Measured at f2da68b on 2026-08-22.
+
+### The avatar answers to a host, and the OG card answers to the same field it always should have
+
+`public/avatar.png`, a single flat 512px raster, is now six files under
+`public/avatar/`: a naked light and dark pair and a streamline dark pair, each
+at 1024 and 2048px. Discord's own cropper renders a 512px source visibly soft
+at the sizes it displays an avatar, and 512 was also the whole vocabulary: no
+dark counterpart existed for a host whose own chrome the light-only cream
+ground was never designed to sit near.
+
+The dark ground is the site's own `--card` in dark, `oklch(0.248 0.009 74)`,
+lifted one step from `--background` rather than the mark's near-black ink
+inverted. The reasoning above about dark hosts swallowing a dark ground
+(Discord ~`#313338`, GitHub dark ~`#0d1117`) applies exactly here: a literal
+invert would read as flat black on flat black on both.
+
+The streamline variant is drawn from the hero's own live `[data-shader-field]`
+rather than from `page-ground`, which `og.png` had always used. `page-ground`
+mounts with `animate: false` and draws exactly once at mount, so a pointer
+simulated against it cannot produce the accent-gradient reveal a real hover
+shows, whatever the wait: only the hero's canvas ticks a render loop and
+tracks the cursor. `og.png` carried the identical defect and is regenerated
+from the hero field too, which is what exposed the whole thing. Neither card
+had ever shown the warm mix toward `--accent` a reader sees live, because
+nothing before this had asked `page-ground` to.
+
+Placing the pointer took two findings rather than one guess. The header's
+`pointermove` listener attaches from an `IntersectionObserver` callback rather
+than synchronously on load, so a single synthetic move fired right after
+navigation can land before that listener exists and be lost outright. A
+settle, a nudge, then the real move is what reaches a listener that is
+actually attached. And the site's own reveal radius, 230px, is smaller than
+the avatar mark's half-width at any scale worth shipping (281px at 0.55), so a
+cursor centred under the mark sits entirely behind it and the glow it would
+cast is invisible by construction. Both the avatar's candidates and the card's
+were served live and judged rather than guessed: the avatar's placement leans
+toward a corner, clear of the mark's silhouette, and the card's, small enough
+that the reveal mostly clears it, still moved off the mark into the frame's
+open corner over three other placements read live.
+
+Two sizes come from one CSS-pixel geometry captured at `deviceScaleFactor` 1
+and 2 rather than from two different capture widths. The field's own spatial
+scale, `uFieldScale = fieldCyclesAcross / canvas width`, is driven by the
+canvas's CSS width alone and not by device pixels, so widening the capture
+viewport for a "2x" pass would have changed the field's density along with
+the physical resolution. Holding the CSS geometry fixed and only raising the
+device pixel ratio renders the identical composition twice, once supersampled.
+
+A page that never navigates crashes the screenshot protocol once it holds a
+large embedded image, in this environment, whatever the markup. The working
+shape navigates to a real page first and injects the composed markup with
+`page.evaluate`, which `scripts/lib/capture-field.ts` now does for both
+scripts rather than each holding its own copy.
+
+The favicon and the home-screen icon are untouched: no streamline, no new
+ground, the same three files `scripts/brand.ts` has always drawn.
 
 ## Risks / open questions
 

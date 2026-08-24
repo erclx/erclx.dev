@@ -18,6 +18,11 @@ import { chromium } from '@playwright/test'
 
 const INK = '#1A1815'
 const CREAM = '#F4EFE6'
+// The site's own `--card` in dark: `--background` dark lifted one step
+// rather than the mark's near-black ink inverted, so the ground separates
+// from Discord's (~#313338) and GitHub dark's (~#0d1117) chrome instead of
+// reading as flat black against flat black.
+const DARK_GROUND = 'oklch(0.248 0.009 74)'
 
 interface Raster {
   readonly file: string
@@ -52,13 +57,40 @@ const rasters: readonly Raster[] = [
     note: 'home screen, which applies its own mask, so the ground stays square',
   },
   {
-    file: 'public/avatar.png',
-    size: 512,
+    file: 'public/avatar/light.png',
+    size: 1024,
     ground: CREAM,
     ink: INK,
     scale: 0.62,
     radius: 0,
-    note: 'profile avatar, cropped to a circle by the hosts that show one',
+    note: 'naked light avatar, cropped to a circle by the hosts that show one',
+  },
+  {
+    file: 'public/avatar/light@2x.png',
+    size: 2048,
+    ground: CREAM,
+    ink: INK,
+    scale: 0.62,
+    radius: 0,
+    note: 'naked light avatar, @2x',
+  },
+  {
+    file: 'public/avatar/dark.png',
+    size: 1024,
+    ground: DARK_GROUND,
+    ink: CREAM,
+    scale: 0.62,
+    radius: 0,
+    note: 'naked dark avatar',
+  },
+  {
+    file: 'public/avatar/dark@2x.png',
+    size: 2048,
+    ground: DARK_GROUND,
+    ink: CREAM,
+    scale: 0.62,
+    radius: 0,
+    note: 'naked dark avatar, @2x',
   },
 ]
 
