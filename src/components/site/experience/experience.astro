@@ -378,9 +378,10 @@ const artifacts = [
 
      It sits above the hover rule on purpose. Both selectors weigh the same, an
      attribute and a pseudo-class each counting once, so source order is what
-     decides them and the pointer has to win. The module also refuses to light
-     anything while a pointer is on the row, which makes the pair belt and
-     braces rather than a single guard. */
+     decides them and the pointer has to win. Source order is the whole guard:
+     the module carries no pointer code of its own and lights a chip whether or
+     not one is resting on the row, on the same reasoning the cast member a few
+     pixels away stands down under a hand and this control does not. */
   .experience-chip-hit[data-lit] .experience-chip {
     border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
     color: var(--foreground);

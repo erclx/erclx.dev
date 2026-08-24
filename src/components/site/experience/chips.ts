@@ -49,20 +49,36 @@ export function initChipLife(): void {
 
   let isArmed = true
 
+  // Every timer a wave has in flight: one per chip still waiting to light, one
+  // per chip already lit and waiting to go out. darken() clears all of them, so
+  // a wave cut short by the preference or by scrolling away cannot still land a
+  // light on a chip nobody asked for.
+  const pendingTimers = new Set<number>()
+
   const darken = () => {
+    for (const timer of pendingTimers) window.clearTimeout(timer)
+    pendingTimers.clear()
     for (const chip of chips) delete chip.dataset.lit
   }
 
   /** A chip's whole term: it lights, and it puts itself out. */
   const light = (chip: HTMLElement) => {
     chip.dataset.lit = 'true'
-    window.setTimeout(() => delete chip.dataset.lit, LIT_MS)
+    const extinguish = window.setTimeout(() => {
+      pendingTimers.delete(extinguish)
+      delete chip.dataset.lit
+    }, LIT_MS)
+    pendingTimers.add(extinguish)
   }
 
   const wave = () => {
-    chips.forEach((chip, index) =>
-      window.setTimeout(() => light(chip), index * STEP_MS),
-    )
+    chips.forEach((chip, index) => {
+      const arrival = window.setTimeout(() => {
+        pendingTimers.delete(arrival)
+        light(chip)
+      }, index * STEP_MS)
+      pendingTimers.add(arrival)
+    })
   }
 
   // The motion preference is the only thing that suppresses the wave, and it is
