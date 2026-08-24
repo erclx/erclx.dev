@@ -128,7 +128,10 @@ const memberMarkup = (inner: string, behaviors = '') =>
 async function shootMoods(browser: Browser, theme: Theme): Promise<string> {
   const cells = MOOD_IDS.map(
     (mood) =>
-      `<figure>${memberMarkup(renderMember({ hat: 'ears', arms: true, seated: false, mood }))}` +
+      // A mood is a pairing of eyes, mouth, and mark, so the expression
+      // inventory draws the mark whatever the members shipping that mood do
+      // with it. This documents the vocabulary rather than the cast.
+      `<figure>${memberMarkup(renderMember({ hat: 'ears', arms: true, seated: false, mood, hasMark: true }))}` +
       `<figcaption>${mood}</figcaption></figure>`,
   ).join('')
 
@@ -174,6 +177,7 @@ async function stripBehaviors(browser: Browser, theme: Theme): Promise<string> {
           arms: true,
           seated: false,
           mood: behavior.mood,
+          hasMark: behavior.target.includes('mark'),
         }),
         id,
       ),
@@ -281,7 +285,7 @@ async function recordBehaviors(
   const cells = BEHAVIOR_IDS.map((id) => {
     const behavior = BEHAVIORS[id]
     return (
-      `<figure>${memberMarkup(renderMember({ hat: behavior.hat, arms: true, seated: false, mood: behavior.mood }), id)}` +
+      `<figure>${memberMarkup(renderMember({ hat: behavior.hat, arms: true, seated: false, mood: behavior.mood, hasMark: behavior.target.includes('mark') }), id)}` +
       `<figcaption>${id}</figcaption>` +
       `<div class="note">${behavior.summary}</div></figure>`
     )
@@ -328,8 +332,20 @@ export function behaviorGrid(
 ): string {
   const cells = BEHAVIOR_IDS.map(
     (id) =>
-      `<figure>${memberMarkup(renderMember({ hat: BEHAVIORS[id].hat, arms: true, seated: false, mood: BEHAVIORS[id].mood }), id)}` +
-      `<figcaption>${id}</figcaption></figure>`,
+      `<figure>${memberMarkup(
+        renderMember({
+          hat: BEHAVIORS[id].hat,
+          arms: true,
+          seated: false,
+          mood: BEHAVIORS[id].mood,
+          // A mark is drawn per member now rather than by every mood handing
+          // one to every figure, so a behavior aimed at the mark has nothing
+          // to move unless this asks for it. Read off the behavior's own
+          // target, so one added later is covered without this changing.
+          hasMark: BEHAVIORS[id].target.includes('mark'),
+        }),
+        id,
+      )}` + `<figcaption>${id}</figcaption></figure>`,
   ).join('')
   return shell(
     theme,

@@ -43,18 +43,24 @@ interface ClusterMember {
    * state change with.
    */
   readonly tapMood?: MoodId
-  /** What the member emits at rest. Drawn as its own layer behind the body. */
-  readonly power?: PowerId
   /**
-   * What it emits while a tap is running, held as long as the reaction is.
+   * Whether this member draws its resting mood's mark, and its tap mood's.
    *
-   * A power is a state and a discharge is an event, and the two want opposite
-   * treatments: flames say a member is powerful whether or not anyone is
-   * looking, where bolts say it just did something and read as odd standing
-   * still. Splitting them is what lets one member carry both without either
-   * being wrong.
+   * Both default off. Every mood in the vocabulary declares a mark, so binding
+   * one to a member used to hand it that mark whether or not it said anything:
+   * seven of seven emitted one on tap and five of seven standing still, which
+   * is what made the margin read as one gesture repeated rather than as a cast.
+   * Three are drawn now, on three different members, in one state each.
    */
-  readonly tapPower?: PowerId
+  readonly hasMark?: boolean
+  readonly hasTapMark?: boolean
+  /**
+   * What the member emits. Drawn as its own layer behind the body, and the
+   * same drawing whether the member is resting or reacting: a power is what a
+   * member is rather than what it just did, so swapping it on a tap read as
+   * the figure becoming somebody else for a second.
+   */
+  readonly power?: PowerId
 }
 
 /**
@@ -130,7 +136,6 @@ export const clusters: readonly Cluster[] = [
         mood: 'assured',
         size: 72,
         power: 'blaze',
-        tapPower: 'bolts',
         dx: 0,
         dy: 0,
         facing: 1,
@@ -148,6 +153,9 @@ export const clusters: readonly Cluster[] = [
         facing: -1,
         phase: 1500,
         tapMood: 'starstruck',
+        // Sparkle eyes over a smile read as warm and not as smitten, so the
+        // heart is the only thing naming what this one is actually feeling.
+        hasTapMark: true,
       },
     ],
     pets: [
@@ -231,6 +239,9 @@ export const clusters: readonly Cluster[] = [
         facing: 1,
         phase: 0,
         tapMood: 'composed',
+        // Dot eyes over an open mouth read as blank on their own. The note is
+        // what turns that into humming.
+        hasTapMark: true,
       },
     ],
   },
@@ -252,6 +263,11 @@ export const clusters: readonly Cluster[] = [
         dy: 0,
         facing: -1,
         phase: 0,
+        // Closed eyes alone could be a member that is content, so this is the
+        // one mark carrying a state the face cannot. It is also the only one
+        // drawn at rest, and the tap takes it away rather than replacing it,
+        // which is what waking up looks like.
+        hasMark: true,
         tapMood: 'surprised',
       },
     ],

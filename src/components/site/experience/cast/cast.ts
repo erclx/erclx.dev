@@ -58,6 +58,19 @@ export interface Member {
   readonly seated: boolean
   /** A named pairing from the expression inventory. Defaults to neutral. */
   readonly mood?: MoodId
+  /**
+   * Whether the mood's mark is drawn beside the head. Off by default, so a
+   * mark is something a member is given rather than something every mood
+   * carries into every figure using it.
+   *
+   * A mark earns its place when it says what the face cannot. Closed eyes
+   * alone could be a member that is content, so `zzz` is what makes one
+   * asleep. Wide eyes over a bared mouth already say startled, so `exclaim`
+   * beside them is the same claim twice, and a margin where every figure
+   * emits something reads as one repeated gesture rather than as seven
+   * characters.
+   */
+  readonly hasMark?: boolean
   /** What the member holds, drawn in front of it. */
   readonly gear?: GearId
   /**
@@ -336,7 +349,15 @@ export function renderMember(member: Member): string {
     round: RADIUS * 2.4,
   })
 
-  shapes.push(...faceShapes(member.mood ?? 'neutral', center, bodyTop, left))
+  shapes.push(
+    ...faceShapes(
+      member.mood ?? 'neutral',
+      center,
+      bodyTop,
+      left,
+      member.hasMark ?? false,
+    ),
+  )
 
   // Last, so a held item passes in front of the arm holding it.
   shapes.push(
@@ -479,6 +500,7 @@ function faceShapes(
   center: number,
   bodyTop: number,
   left: number,
+  hasMark: boolean,
 ): Shape[] {
   const face: Face = MOODS[mood]
   const shapes: Shape[] = []
@@ -526,7 +548,7 @@ function faceShapes(
   const markScale = BODY_WIDTH * 0.56
   const markX = left + BODY_WIDTH - markScale * 0.18
   const markY = bodyTop - markScale * 0.42
-  for (const cell of markCells(face.mark)) {
+  for (const cell of hasMark ? markCells(face.mark) : []) {
     shapes.push({
       x: markX + cell.x * markScale,
       y: markY + cell.y * markScale,
