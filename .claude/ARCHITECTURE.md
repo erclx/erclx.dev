@@ -1147,6 +1147,24 @@ five instruments that reported nothing wrong while reporting nothing at all.
 Measured at 8004095 on 2026-08-24 with this branch applied, where the full suite
 passes 705 across chromium, firefox, and webkit.
 
+### Visitor analytics runs at the edge, with no code in this repository
+
+Cloudflare Web Analytics already tracked erclx.dev before this branch existed.
+The zone was added to Cloudflare on 2026-04-11, and Web Analytics ran on
+automatic setup the whole time: the edge injects the tracking beacon into every
+HTML response for the proxied zone, and no script tag lives anywhere in this
+repository. The task that reached this branch assumed the opposite, that no
+analytics existed and a manual `<script>` beacon needed adding to the layout,
+and it was filed without anyone checking the dashboard first.
+
+Automatic setup already delivers what the task asked for, a visit recorded with
+a timestamp and a rough country, with no cookies and no backend of this
+project's own. Switching to a manual snippet would add a script this repository
+has to maintain for no capability automatic setup lacks, so the code change
+dropped out of scope on 2026-08-24 rather than shipping as unnecessary rework.
+`.claude/REQUIREMENTS.md` records why analytics left the non-goals list on the
+same date.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
