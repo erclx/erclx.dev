@@ -1,6 +1,9 @@
 import { defineConfig, devices } from '@playwright/test'
 
 const isCI = !!process.env.CI
+// Set by the CI e2e job alone, once build-verify's dist/ has been downloaded.
+// Unset everywhere else, so a local run always builds its own output.
+const isDistPrebuilt = !!process.env.DIST_PREBUILT
 
 // Own band, clear of dev at 4321 and screenshot at 4173 across every worktree offset.
 const port = 4250 + (Number(process.env.WORKTREE_PORT_OFFSET) || 0)
@@ -33,7 +36,9 @@ export default defineConfig({
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
-    command: `bun run build && bun run preview -- --port ${port}`,
+    command: isDistPrebuilt
+      ? `bun run preview -- --port ${port}`
+      : `bun run build && bun run preview -- --port ${port}`,
     url: baseURL,
     reuseExistingServer: false,
   },

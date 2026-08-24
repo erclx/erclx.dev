@@ -7,6 +7,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # main deploys on green, so a run there is never interrupted mid-flight.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   static-checks:
     name: 🔍 Static Checks
@@ -92,6 +97,13 @@ jobs:
       - name: Build
         run: bun run build
 
+      - name: Upload Build Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
   e2e-tests:
     name: 🎭 E2E Tests (${{ matrix.browser }})
     runs-on: ubuntu-latest
@@ -125,6 +137,12 @@ jobs:
       - name: Install Dependencies
         run: bun install --frozen-lockfile
 
+      - name: Download Build Output
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
       - name: Cache Playwright Browsers
         id: playwright-cache
         uses: actions/cache@v4
@@ -146,6 +164,10 @@ jobs:
 
       - name: Run E2E Tests
         run: ${{ matrix.wrapper }} bun run test:e2e --project=${{ matrix.browser }}
+        env:
+          # Tells the webServer command to serve the downloaded dist/ rather
+          # than building its own. Unset locally, where a build always runs.
+          DIST_PREBUILT: 'true'
 
       - name: Upload E2E Report
         uses: actions/upload-artifact@v4
@@ -169,21 +191,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Download Build Output
+        uses: actions/download-artifact@v4
         with:
-          node-version: '22'
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Install Dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build
-        run: bun run build
+          name: dist
+          path: dist
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3

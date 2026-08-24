@@ -7,7 +7,7 @@ description: Cloudflare Pages deploy pipeline, domain setup, and secret rotation
 
 ## Overview
 
-erclx.dev runs on Cloudflare Pages, project name `erclx-dev`. Every push to `main` builds in GitHub Actions and uploads `./dist/` to the project via `cloudflare/wrangler-action`. The apex domain `erclx.dev` and `www.erclx.dev` are both attached as custom domains on the same Pages project.
+erclx.dev runs on Cloudflare Pages, project name `erclx-dev`. Every push to `main` builds once in GitHub Actions and uploads `./dist/` to the project via `cloudflare/wrangler-action`. The apex domain `erclx.dev` and `www.erclx.dev` are both attached as custom domains on the same Pages project.
 
 The reasoning behind Cloudflare Pages and behind deploying from Actions rather than the Cloudflare Git integration lives in `.claude/ARCHITECTURE.md` § Key technical decisions.
 
@@ -18,7 +18,7 @@ The reasoning behind Cloudflare Pages and behind deploying from Actions rather t
 
 ## Deploy job
 
-Defined in `.github/workflows/verify.yml`. Triggered only on `push: main` and gated on the four verify jobs (`static-checks`, `unit-tests`, `build-verify`, `e2e-tests`). The job runs `bun run build` and then:
+Defined in `.github/workflows/verify.yml`. Triggered only on `push: main` and gated on the four verify jobs (`static-checks`, `unit-tests`, `build-verify`, `e2e-tests`). `build-verify` is the only job that runs `bun run build`. `deploy` downloads that same `dist/` artifact rather than building its own, so the bytes every engine leg tested are the bytes that ship. See `.claude/context/ci.md` for the mechanism. Then:
 
 ```bash
 wrangler pages deploy ./dist --project-name=erclx-dev --branch=main
