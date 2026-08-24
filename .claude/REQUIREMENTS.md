@@ -13,9 +13,11 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 ## Non-goals
 
 - Blog posts, a dated post feed, or a content management system
-- Authentication, comments, analytics dashboards, or any backend
+- Authentication, comments, a dashboard, or a backend, except a hosted, cookie-free analytics script
 - Routes beyond the apex and one per shipped project
 - Hand-written copy that diverges from canonical career sources
+
+Analytics stopped being a non-goal on 2026-08-24. Cloudflare Web Analytics already runs on erclx.dev, enabled through the zone's own dashboard rather than through any code in this repository, and had been recording visits for months before the operator noticed. The line still bars every other dashboard or backend, hosted or built here, so the exception stays scoped to analytics rather than opening the door to any third-party service. A visitor count sourced from the host that already proxies the domain costs nothing here to build or maintain.
 
 ## MVP features
 
