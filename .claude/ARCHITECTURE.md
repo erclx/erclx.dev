@@ -853,6 +853,8 @@ scripts rather than each holding its own copy.
 The favicon and the home-screen icon are untouched: no streamline, no new
 ground, the same three files `scripts/brand.ts` has always drawn.
 
+Measured at 86be4f3 on 2026-08-24.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
