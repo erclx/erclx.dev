@@ -31,7 +31,7 @@ Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merg
 | E2E       | `bun run test:e2e`      | Playwright passes on one engine per job |
 | Deploy    | `wrangler pages deploy` | Uploads `./dist/` to Cloudflare Pages   |
 
-For the deploy mechanism, custom domain wiring, and secrets, see `.claude/context/deployment.md`.
+For the deploy mechanism, custom domain wiring, and secrets, see `.claude/context/deployment.md`. The build runs once, in `build-verify`: every e2e leg and `deploy` download that output rather than repeating it, covered below.
 
 ## Runtime
 
@@ -96,6 +96,20 @@ Verified 2026-08-21 at one worker, the count `playwright.config.ts` pins under C
 The filter is off. `push` keeps its `branches: [main]`, since the deploy job gates on that ref and a push to any other branch has its pull request run already.
 
 Read the cost of this change and the matrix as one number rather than two. The matrix takes a gated pull request from four legs to six, and removing the filter takes a four-deep stack from one gated pull request to four, so the two multiply: that stack goes from six legs to twenty-four. Both halves are worth it and the product is what a later reader weighs, since pricing the matrix alone understates the bill by the depth of the deepest stack.
+
+## Build once, in `build-verify`, and download it everywhere else
+
+Each engine leg ran its own `bun run build` inside Playwright's `webServer` step, and `deploy` ran a fifth. `build-verify` now uploads `dist/` as an artifact, and the three e2e legs and `deploy` download it instead of rebuilding. `playwright.config.ts` reads `DIST_PREBUILT`, an env var the e2e job sets and nothing else does, and skips `bun run build` in the `webServer` command only when it is set. An unset var means build, so a local run and any leg that skips the download both fail loud at server start against a missing `dist/`, rather than serving stale output.
+
+Consuming the same artifact in `deploy` is the larger reason for the change: the bytes an engine tested become the bytes that ship, rather than a separate build that could silently diverge from them. The timing is the smaller reason. Removing the copy inside each engine leg saves about 63 runner-seconds against the chromium leg's 719s mean, read from the Actions API on 2026-08-24, which is 3.7% of a run.
+
+`build-verify`'s build already runs `astro check` first, since `bun run build` is `astro check && astro build`. `static-checks` runs the same check through `bun run typecheck`, so dropping the redundant build from each engine leg costs nothing today. A later edit that lets `build` and `typecheck` diverge breaks that equivalence silently, since nothing asserts it.
+
+## A concurrency group cancels a superseded run, except on `main`
+
+The workflow declared no concurrency group, so a force-push during a rebase cascade left the previous run to finish in full rather than yielding to the one that replaced it. `verify.yml` now groups runs by `${{ github.ref }}` and cancels the losing one, except on `refs/heads/main`, the ref `deploy` gates on, where a run is never voluntarily interrupted.
+
+Measured against the last 100 runs on 2026-08-24, six non-main runs overlapped their own predecessor for 1343 seconds total. The cancellation clears that at the cost of the losing run's partial results, which nothing was reading before the winner replaced them either.
 
 ## Running CI locally
 
