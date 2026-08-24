@@ -21,15 +21,36 @@ for (const route of CASE_STUDY_ROUTES) {
   }) => {
     await page.goto(route)
 
-    const sections = await page.locator('main section[id]').count()
     // The route's opening carries the `h1` and every prose section an `h2`, so
     // the heading level varies while the invariant does not: a section a reader
     // can be sent to opens on a heading. This read `h2` alone until the opening
     // gained an id, which held while that section was the one nothing linked to.
-    const headings = await page.locator('main section[id] :is(h1, h2)').count()
+    //
+    // Counted per section rather than as a document-wide total, since a total
+    // is satisfied by a section carrying two headings offsetting one carrying
+    // none, in either level.
+    const headingCounts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('main section[id]')).map(
+        (section) => section.querySelectorAll(':is(h1, h2)').length,
+      ),
+    )
 
-    expect(sections).toBeGreaterThan(0)
-    expect(headings).toBe(sections)
+    expect(headingCounts.length).toBeGreaterThan(0)
+    expect(headingCounts).toEqual(headingCounts.map(() => 1))
+  })
+
+  test(`the rail on ${route} leads with the route itself`, async ({ page }) => {
+    await page.goto(route)
+
+    // The rail is shown from first paint here, and the opening section's own
+    // id is the top row in navItems, so a route with no lead row would leave
+    // the rail naming nothing for the whole opening screen: no active class
+    // rather than a wrong one, since the loop in section-nav.astro's
+    // computeActive only lights a row once some section's top clears the
+    // anchor.
+    const active = page.locator('.section-nav-link[data-active="true"]')
+    await expect(active).toHaveCount(1)
+    await expect(active).toHaveAttribute('data-target', route.slice(1))
   })
 
   test(`a section heading on ${route} outsizes the prose under it`, async ({
