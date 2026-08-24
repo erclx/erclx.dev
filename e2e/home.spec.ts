@@ -1,6 +1,7 @@
 import { expect, type Page, test } from '@playwright/test'
 
 import { REVEAL_THRESHOLD } from '../src/lib/reveal'
+import { ANCHOR_RATIO } from '../src/lib/section-nav'
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 
 // One per beat. The three counts below read the same number on purpose, so a
@@ -79,15 +80,18 @@ test('the rail cascades to looking-for and stays visible to the document end', a
   await page.goto('/')
   const rail = page.locator('[data-section-nav]')
 
-  const target = await page.evaluate(() => {
-    const lookingFor = document.getElementById('looking-for')
-    const top = (lookingFor?.getBoundingClientRect().top ?? 0) + window.scrollY
-    // 0.3 mirrors ANCHOR_RATIO in section-nav.astro's scroll handler. Landing
-    // 100px past the crossing puts looking-for well inside the active zone
-    // without landing at the document's own end.
-    const anchor = window.innerHeight * 0.3
-    return top - anchor + 100
-  })
+  const target = await page.evaluate(
+    ([anchorRatio]) => {
+      const lookingFor = document.getElementById('looking-for')
+      const top =
+        (lookingFor?.getBoundingClientRect().top ?? 0) + window.scrollY
+      // Landing 100px past the crossing puts looking-for well inside the active
+      // zone without landing at the document's own end.
+      const anchor = window.innerHeight * anchorRatio
+      return top - anchor + 100
+    },
+    [ANCHOR_RATIO] as const,
+  )
   await page.evaluate((y) => window.scrollTo(0, y), target)
 
   await expect(
@@ -102,6 +106,58 @@ test('the rail cascades to looking-for and stays visible to the document end', a
     page.locator('.section-nav-link[data-active="true"]'),
   ).toHaveText('Looking for')
   await expect(rail).toHaveCSS('opacity', '1')
+})
+
+test('the rail never shows a reader a column naming no row', async ({
+  page,
+}) => {
+  // The reveal keyed to half the viewport while the first row lit at the 30%
+  // anchor, so the rail painted at full opacity naming nothing across 0.2
+  // viewport heights: 150px at 1280, 170px at 1440, 210px at 1920. Both ends
+  // are fractions of the screen, so the window grew with it.
+  await page.setViewportSize({ width: 1920, height: 1080 })
+  await page.goto('/')
+
+  const naked = await page.evaluate(
+    async ([anchorRatio]) => {
+      const nav = document.querySelector<HTMLElement>('[data-section-nav]')
+      const about = document.getElementById('about')
+      const links = Array.from(
+        document.querySelectorAll<HTMLAnchorElement>('.section-nav-link'),
+      )
+      if (!nav || !about || links.length === 0) return -1
+
+      // Sampled around the one boundary rather than walked across the band. The
+      // rail can only name nothing above the first section's crossing, and the
+      // reveal is the only other event in that stretch, so a spread either side
+      // of the crossing covers it. Walking it at 40px took 16s alone and timed
+      // out under the full suite, and a guard that fails on load rather than on
+      // the defect reports nothing either way.
+      const crossing =
+        about.getBoundingClientRect().top +
+        window.scrollY -
+        window.innerHeight * anchorRatio
+      const from = crossing - window.innerHeight * 0.4
+      const step = (window.innerHeight * 0.5) / 11
+
+      let count = 0
+      for (let index = 0; index <= 11; index += 1) {
+        window.scrollTo(0, Math.max(0, Math.round(from + step * index)))
+        await new Promise((done) => requestAnimationFrame(() => done(null)))
+        await new Promise((done) => requestAnimationFrame(() => done(null)))
+        // Read the painted opacity rather than `data-revealed`, so a rail caught
+        // part way through its fade still counts as one a reader can see.
+        const visible = Number(getComputedStyle(nav).opacity) > 0.05
+        if (visible && !links.some((link) => link.dataset.active === 'true')) {
+          count += 1
+        }
+      }
+      return count
+    },
+    [ANCHOR_RATIO] as const,
+  )
+
+  expect(naked).toBe(0)
 })
 
 test('every rail label reads as its own heading rather than an anchor id', async ({
