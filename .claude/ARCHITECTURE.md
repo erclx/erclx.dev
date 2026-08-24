@@ -662,6 +662,88 @@ Three tuning defects are recorded in that entry rather than here, because each i
 
 Measured at 502da58 on 2026-08-20, at 1280x800 and 390x844 across chromium, firefox, and webkit.
 
+### The portrait sits in the field rather than under a drawing of it
+
+The rings around the header portrait were a `repeating-radial-gradient` in one
+flat ink at one thickness, tuned to match the field's peak contour weight and
+swelling once every 13 seconds. They are contours of a mound the shader adds to
+its own stream function now, so the field's lines close around the photo and
+open back into the terrain where the mound runs out.
+
+The placement is the decision and it is the one the click ripple already made.
+Contours are extracted after the term is added, so the relief lighting, the
+height tint, the sheen, and the pointer's reveal all reach the rings for free.
+Nothing was written to make them bend where the terrain bends, or to make them
+crowd where the mound falls fastest and part as it levels. A ring drawn over the
+field gets none of that and needs each of them coded, and then needs to be kept
+in step with a field it cannot read.
+
+**Two CSS arms were built to the opposite thesis and both were driven and
+rejected.** Each shaded a conic gradient masked by the ring lines, which is the
+exact translation rather than an approximation: the mound is radially symmetric,
+so its normal runs straight out from the centre and Lambert shading reduces to
+the cosine of the angle from the light, which is purely angular. They imitate
+relief convincingly. What they cannot do is read the field, so a later retune
+leaves them behind with nothing reporting it.
+
+Capping their lit arc at the flat ink's own value is the mistake that nearly
+settled this, and the reasoning that produced it is in this file. The flat ink
+was tuned against the field's peak, which is the right comparison for an ink
+that never varies and the wrong one the moment it does. Peak against peak cost
+28% of the mean and handed the operator two arms that were dimmer than the
+baseline before they were anything else. Held to the mean instead they measure
+0.97 and 1.05 in light, 0.93 and 1.06 in dark.
+
+Weight is a separate question from the drawing and one arm confounded them. The
+column damp exists so the field never competes with the name and the photo sits
+inside the box it covers, so some lift is what makes the rings visible at all.
+At full lift the annulus carries 2.10 times the retired ink in light and 2.13 in
+dark, which is louder beside the name than this surface has ever been, and an
+arm rejected there says nothing about whether the drawing is right. A second arm
+at 0.30 holds 1.65 and 1.39, and the pick came from driving the two rather than
+comparing stills, since weight is what a still is worst at separating.
+
+The 13s swell is gone rather than moved. It was a second clock over a surface
+that already has one, and the field now evolves under the rings so they breathe
+with it. Reduced motion needs no special case for the same reason.
+
+What it costs is warmth. The rings take the field's tone where the retired ink
+took `--accent`, measuring 12.6 of red over blue against 17.7, so about 71%
+survives rather than all or none. Tinting the ring contours back toward the
+accent is queued rather than built.
+
+**Three guards were written for this and two of them passed against a page with
+the rings switched off.** That is the class this file already collects, reached
+twice in one sitting. The first compared ink in the annulus against a patch of
+plain field and was reading the reading column's damp: the annulus sits inside
+the column at 0.4 and the only nearby patch wide enough to sample sits outside
+it at 1.0, and no control patch escapes that because the photo sits against the
+column's right edge by construction. The second counted turns in the radial
+profile, where averaging around a circle leaves fluctuations that are each a
+local extremum, so the count cleared any floor worth setting either way.
+
+What works is amplitude at the ring scale. Averaging luminance around a circle
+keeps a line that follows it and washes out one that crosses it, and detrending
+against a window wider than the ring spacing leaves the ripple alone. It reads
+0.6336 against 0.0355 in light and 0.8007 against 0.0301 in dark with the mound
+zeroed, an eighteen to twenty-seven fold separation where the two failed guards
+had none. **Zero the thing and watch the guard fail before trusting it**, which
+is what caught both.
+
+That guard skips WebKit and says why. Headless WebKit composites this page
+without the canvas: a patch of pure field returns a luminance spread of 0 there
+against 57.1 and 56.1 in the other two, so every pixel a WebKit capture carries
+is the CSS layer alone. It looked like a page defect first, two arms coming back
+byte identical and below baseline, until a probe found WebGL available, the
+canvas visible, and the fallback not shown.
+
+One cost this entry asserted and then measured away: the rings drawing under the
+content column rather than over it. Across six widths from 390 to 1920 they
+never reach the name at all, closest at 181px against a 94px reach.
+
+Measured at 1280x900 on 2026-08-24, with the full landing suite passing 188 and
+skipping 1 across chromium, firefox, and webkit.
+
 ### Contact travels with the reader, in the margin opposite the rail
 
 The hero opens with three destinations and nothing else on the page carried them. A dock in the right margin carries them plus the resume, arriving on the same half-hero gate the sticky bar uses and holding to the bottom of the page.

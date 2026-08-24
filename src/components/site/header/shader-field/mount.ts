@@ -4,6 +4,7 @@ import type {
   ColumnTreatment,
   ContentBox,
   FieldSpec,
+  PortraitBox,
   Rgb,
   UniformLocations,
 } from './field'
@@ -183,6 +184,11 @@ export interface MountOptions {
   readonly alphaScale?: number
   /** Defaults to one damping fraction at every width. */
   readonly columnTreatment?: ColumnTreatment
+  /**
+   * The photo a field may bend its contours around. Absent on every surface
+   * that floats none, which leaves the field reading exactly as it does today.
+   */
+  readonly portrait?: HTMLElement | null
 }
 
 export function mountShaderField(
@@ -192,7 +198,12 @@ export function mountShaderField(
   field: FieldSpec,
   options: MountOptions,
 ): () => void {
-  const { animate, alphaScale = 1, columnTreatment = 'flat' } = options
+  const {
+    animate,
+    alphaScale = 1,
+    columnTreatment = 'flat',
+    portrait = null,
+  } = options
   const maybeGl = canvas.getContext('webgl', {
     alpha: true,
     antialias: false,
@@ -229,6 +240,7 @@ export function mountShaderField(
   let width = 0
   let height = 0
   let contentBox: ContentBox | null = null
+  let portraitBox: PortraitBox | null = null
   let time = 0
   let tone = readToneRgb()
   let accent = readToken(accentToken)
@@ -266,6 +278,34 @@ export function mountShaderField(
     }
   }
 
+  // The photo is a circle inscribed in a square box, so its radius is half of
+  // either side. Reading the width alone would report an ellipse's semi-axis
+  // the moment the frame stops being square.
+  //
+  // The portrait sits inside a `[data-fade]` row that holds a translateY
+  // offset until the reveal marks it visible, and `getBoundingClientRect`
+  // reports that transformed box. Discounting the transform yields the
+  // settled position whenever this runs, matching the reveal-aware read
+  // `hero-handoff.ts` already does for the same reason.
+  function measurePortrait(canvasRect: DOMRect): void {
+    if (!portrait) {
+      portraitBox = null
+      return
+    }
+    const box = portrait.getBoundingClientRect()
+    const revealing = portrait.closest<HTMLElement>('[data-fade]')
+    const transform = revealing ? getComputedStyle(revealing).transform : 'none'
+    const offset =
+      transform === 'none' ? { e: 0, f: 0 } : new DOMMatrix(transform)
+    const top = box.top - offset.f
+    const left = box.left - offset.e
+    portraitBox = {
+      radius: Math.min(box.width, box.height) / 2,
+      centerX: left - canvasRect.left + box.width / 2,
+      centerY: height - (top - canvasRect.top + box.height / 2),
+    }
+  }
+
   function resize(): void {
     const rect = canvas.getBoundingClientRect()
     width = Math.max(1, Math.floor(rect.width))
@@ -274,6 +314,7 @@ export function mountShaderField(
     canvas.height = Math.floor(height * pixelRatio)
     gl.viewport(0, 0, canvas.width, canvas.height)
     measureContent(rect)
+    measurePortrait(rect)
   }
 
   function draw(): void {
@@ -300,6 +341,7 @@ export function mountShaderField(
       cursorStrength,
       ripples,
       content: contentBox,
+      portrait: portraitBox,
       tone,
       accent,
       isDark: dark,

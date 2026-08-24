@@ -37,6 +37,23 @@ export interface Ripple {
  */
 export type ColumnTreatment = 'flat' | 'scaled'
 
+/**
+ * The photo the header floats inside its heading, as the field sees it.
+ *
+ * Only the landing page carries one, so a field reading this answers for its
+ * absence rather than assuming the surface it was written for.
+ */
+export interface PortraitBox {
+  readonly centerX: number
+  readonly centerY: number
+  /**
+   * The photo's own radius, in CSS pixels. How far past it a field reaches is
+   * that field's decision rather than the mount's, so only the photo is
+   * reported here.
+   */
+  readonly radius: number
+}
+
 /** The per-frame state the mount owns and every field reads. */
 export interface FieldFrame {
   readonly time: number
@@ -53,6 +70,8 @@ export interface FieldFrame {
   readonly ripples: readonly Ripple[]
   /** Null where the reading column could not be measured, which lifts damping. */
   readonly content: ContentBox | null
+  /** Null on every surface that floats no portrait inside its heading. */
+  readonly portrait: PortraitBox | null
   readonly tone: Rgb
   readonly accent: Rgb
   readonly isDark: boolean

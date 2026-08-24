@@ -67,13 +67,18 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 
 ## Portrait rings
 
-- The portrait carries concentric contour rings on a frame element, since an image is replaced content and generates no pseudo-element of its own. The frame draws nothing at rest and holds the float and the size, so it is markup a treatment can use rather than a treatment.
-- One swell every 13s, then a rest for the back half of the cycle. A pulse restarting the moment it ends reads as presence rather than as a signal, and this surface already carries the field's own motion under it.
-- Reduced motion keeps the rings and drops the swell, which is the same drawing without the movement.
-- The ink is one hue at two weights rather than two colors. `--accent` is already theme-aware, so what needs splitting is how much of it to use: the same ink over cream carries far more than over near-black.
-- Both weights are set against the field's own contour lines in the annulus the rings occupy, where the field peaks at 10.73 in light and 12.65 in dark. Light saturates at 12% and lands on 10.87, dark takes 22% and lands on 12.79, so the rings join the field rather than sitting on top of it. Measured as added ink the two match within 4%, at 0.126 and 0.131 of mean deviation.
-- The 30% that looked right in dark measured 20.32 in light, nearly twice the weight of the lines it was meant to join. A single alpha across both themes is the mistake to avoid.
-- Rings are drawn with a repeating radial gradient rather than stacked box shadows. A box shadow is a filled disc, so the visible ring is the gap between two of them and the weight lands in the band, which read as a grey donut in light at every alpha tried.
+- The rings are contours of a mound the shader adds to its own stream function, centred on the photo. Nothing draws a ring: a radially falling term makes the field's level sets circles where it dominates, so the lines a reader counts are the field's own, bending where the terrain does and dissolving back into it where the mound runs out.
+- That placement is the whole decision, and it is the one the click ripple already made. Contours are extracted after the term is added, so the relief lighting, the height tint, the sheen, and the pointer's reveal all reach the rings without a second drawing existing to keep in step with the first.
+- `portraitDepth` times `lineCount` is the ring count, the same arithmetic the ripple answers to. 0.62 at 13 draws eight.
+- The mound falls on a smoothstep rather than a straight ramp, so its slope is steepest mid-annulus and flattens at both ends. The rings crowd where it falls fastest and part as it levels, which is spacing a stack of evenly-spaced rings has no way to state.
+- `portraitReach` is 2.35 times the photo's radius, 188px against an 80px photo at `lg`. It carries over from the CSS rings this replaced, so what changed is what the rings are rather than how far they go.
+- The column damp is lifted across the annulus, because the damp exists so the field never competes with the name and the photo sits inside the box it covers. Rings drawn there and then damped are rings drawn where the field is quietest.
+- `portraitLift` is 0.30 rather than full. At 0.75 the annulus carries 2.10 times the retired CSS rings' ink in light and 2.13 in dark, read off painted pixels, which is louder beside the name than this surface has ever been. 0.30 holds 1.65 and 1.39. Both were served live and driven, since two arms differing only in weight are what a still is worst at separating.
+- The 13s swell is gone rather than moved. It was a second clock over a surface that already has one: the field evolves under the rings now, so they breathe with it instead of pulsing against it. Reduced motion needs no special case for the same reason, since the field already holds one drawn frame under it.
+- The rings take the field's own tone where the retired ink took `--accent`. Measured as red over blue across ink pixels, they run 12.6 against 17.7, so about 71% of the warmth survives rather than all or none of it. The field's light tone is already a warm cream, which is why the loss is milder than it looks in a capture.
+- Two CSS arms were built and rejected, both shading a conic gradient masked by the ring lines. They imitate relief convincingly and stay imitations, and a later retune of the field leaves them behind with nothing reporting it. Held to the shipped mean they measured 0.97 and 1.05 in light, 0.93 and 1.06 in dark.
+- Capping the shaded arms' lit arc at the flat ink's own value is the mistake that nearly settled this. The flat ink was tuned against the field's peak contour weight, which is the right comparison for an ink that never varies and the wrong one once it does: peak-to-peak cost 28% of the mean and made both arms dimmer than the baseline before they were anything else.
+- The rings never reach the name at any width. Measured across six from 390 to 1920, the closest approach is 181px against a 94px reach at 390, so drawing them under the content column rather than over it costs nothing. That cost was asserted and then measured away.
 
 ## Experience timeline
 
