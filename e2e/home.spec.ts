@@ -1426,3 +1426,84 @@ test('the card a chip lands on clears the sticky bar', async ({ page }) => {
 
   expect(clearance).toBeGreaterThanOrEqual(0)
 })
+
+// Counts the rising edges of every chip's light over a window, which is what
+// separates one wave from a loop and from nothing at all. Reading a lit chip
+// once cannot tell those apart, since a wave and a schedule both show one.
+const watchChipLights = (page: Page, ms: number): Promise<number[]> =>
+  page.evaluate(async (windowMs) => {
+    const chips = [...document.querySelectorAll<HTMLElement>('[data-chip]')]
+    if (chips.length === 0) throw new Error('the timeline carries no chips')
+
+    const lits = new Array<number>(chips.length).fill(0)
+    const wasLit = new Array<boolean>(chips.length).fill(false)
+    const until = performance.now() + windowMs
+
+    while (performance.now() < until) {
+      chips.forEach((chip, index) => {
+        const on = chip.dataset.lit !== undefined
+        if (on && !wasLit[index]) lits[index] += 1
+        wasLit[index] = on
+      })
+      await new Promise((done) => requestAnimationFrame(() => done(null)))
+    }
+    return lits
+  }, ms)
+
+const showChipRow = (page: Page) =>
+  page.evaluate(() =>
+    document
+      .querySelector('[data-chip-row]')
+      ?.scrollIntoView({ block: 'center', behavior: 'instant' }),
+  )
+
+const hideChipRow = (page: Page) =>
+  page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
+
+test('the chip row lights once as it arrives', async ({ page }) => {
+  await page.goto('/')
+  await showChipRow(page)
+
+  const lits = await watchChipLights(page, 3_000)
+
+  expect(lits).toEqual(lits.map(() => 1))
+})
+
+test('the chip row stays quiet once it has arrived', async ({ page }) => {
+  await page.goto('/')
+  await showChipRow(page)
+  // Spend the arrival first, so this window watches a row a reader is sitting
+  // in. The claim is that reading the section is never interrupted.
+  await watchChipLights(page, 3_000)
+
+  const lits = await watchChipLights(page, 12_000)
+
+  expect(lits).toEqual(lits.map(() => 0))
+})
+
+test('the chip row lights again when a reader comes back to it', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await showChipRow(page)
+  await watchChipLights(page, 3_000)
+
+  await hideChipRow(page)
+  await page.waitForTimeout(400)
+  await showChipRow(page)
+  const lits = await watchChipLights(page, 3_000)
+
+  expect(lits).toEqual(lits.map(() => 1))
+})
+
+test('the chip row holds still for a reader who asked for less motion', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  await showChipRow(page)
+
+  const lits = await watchChipLights(page, 4_000)
+
+  expect(lits).toEqual(lits.map(() => 0))
+})

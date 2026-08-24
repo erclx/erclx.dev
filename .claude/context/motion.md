@@ -16,6 +16,14 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 - A caller that means to arrive rather than to travel says `behavior: 'instant'`. Every test harness that walks the page is in that group, and so is the figure dialog. The failure is silent, which is why it is stated here as a rule rather than left to each caller.
 - Read a claim about the glide off the positions the page occupies rather than off a fraction of the distance or a frame count. Both were tried and each described one engine: webkit's automation build collapses the glide into two frames, and firefox does not commit a fragment scroll until the frame after the click.
 
+## The chip row's arrival
+
+- The timeline's project chips light in one wave as the row reaches 60% visible, stepped 90ms apart, and the section is then still for the rest of the read. It re-arms only once the row has left the viewport entirely, so the dead band between those two thresholds absorbs a reader parked at the edge of the screen.
+- It is an arrival rather than a schedule because a chip is a control. `.claude/ARCHITECTURE.md` § A control gets an arrival where decoration gets a schedule carries the split and the four candidates that were driven before it was settled, and it is the rule to apply to any surface asking for a life of its own.
+- This is why the agent cast may act every few seconds in the same section without the two competing. The cast is scenery in the margin and the chips are links in the reading column, so only one of them is ever performing.
+- The light is weaker than the chip's own hover, at 55% of the accent with no fill, so a pointer still has an answer to give. Source order is what makes hover win, since the two selectors weigh the same.
+- A pointer resting on the row does not suppress the wave, which is the one place this diverges from the cast. Standing down under a hand answers a schedule interrupting a reader repeatedly, and a wave that runs once has nothing to repeat.
+
 ## Cascade reveal primitive
 
 - Elements that animate in on scroll carry a `data-fade` attribute and an optional `--fade-delay` CSS custom property.

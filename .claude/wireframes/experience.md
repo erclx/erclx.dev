@@ -163,6 +163,12 @@ Each chip links to its own card rather than to the section, so a reader lands on
 
 A card added below earns a chip here, and a test compares the two lists so the pair cannot drift.
 
+The row lights once as it comes into view, each chip 90ms after the one before it, and then holds still for the rest of the read. The wave says the five are one set, in order, and reachable, which is the thing a static row of pills does not say. It runs again whenever the row is scrolled back into view, and never while a reader is sitting in front of it.
+
+Clicking a chip glides to its card rather than jumping there, which the whole site now does from one declaration. See `.claude/context/motion.md` § Traveling to a target.
+
+A loop was driven and rejected, and the reason bounds anything proposed here later. A chip is a control, so a light that repeats claims something happened at a destination and makes a reader check it before deciding it meant nothing, where the agent cast in the margins can act on a schedule because it is `aria-hidden`, leads nowhere, and reads as scenery. The row also sits inside the reading column rather than beside it. Four candidates were served live: one chip at intervals, a wave on a loop, a light traveling continuously through the row, and this one.
+
 ## Cascade reveal
 
 On scroll-in the heading, then the rows, reveal in a top-to-bottom cascade. The list is watched as one unit and steps its rows 220ms apart, so the cascade holds at any scroll speed rather than depending on which rows happened to cross the viewport edge together. The last of six starts at 1.1s and the list settles inside 1.8s. Mechanism: `.claude/context/motion.md`.
