@@ -21,11 +21,36 @@ for (const route of CASE_STUDY_ROUTES) {
   }) => {
     await page.goto(route)
 
-    const sections = await page.locator('main section[id]').count()
-    const headings = await page.locator('main section[id] h2').count()
+    // The route's opening carries the `h1` and every prose section an `h2`, so
+    // the heading level varies while the invariant does not: a section a reader
+    // can be sent to opens on a heading. This read `h2` alone until the opening
+    // gained an id, which held while that section was the one nothing linked to.
+    //
+    // Counted per section rather than as a document-wide total, since a total
+    // is satisfied by a section carrying two headings offsetting one carrying
+    // none, in either level.
+    const headingCounts = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('main section[id]')).map(
+        (section) => section.querySelectorAll(':is(h1, h2)').length,
+      ),
+    )
 
-    expect(sections).toBeGreaterThan(0)
-    expect(headings).toBe(sections)
+    expect(headingCounts.length).toBeGreaterThan(0)
+    expect(headingCounts).toEqual(headingCounts.map(() => 1))
+  })
+
+  test(`the rail on ${route} leads with the route itself`, async ({ page }) => {
+    await page.goto(route)
+
+    // The rail is shown from first paint here, and the opening section's own
+    // id is the top row in navItems, so a route with no lead row would leave
+    // the rail naming nothing for the whole opening screen: no active class
+    // rather than a wrong one, since the loop in section-nav.astro's
+    // computeActive only lights a row once some section's top clears the
+    // anchor.
+    const active = page.locator('.section-nav-link[data-active="true"]')
+    await expect(active).toHaveCount(1)
+    await expect(active).toHaveAttribute('data-target', route.slice(1))
   })
 
   test(`a section heading on ${route} outsizes the prose under it`, async ({
@@ -35,7 +60,10 @@ for (const route of CASE_STUDY_ROUTES) {
 
     const sizes = await page.evaluate(() => {
       const heading = document.querySelector('main section[id] h2')
-      const body = document.querySelector('main section[id] p')
+      // Read from inside the heading's own section. Taken across the document
+      // these two now land in different ones, since the opening section leads
+      // and carries no `h2`, so the comparison would be against its eyebrow.
+      const body = heading?.closest('section')?.querySelector('p')
       if (!heading || !body) return { heading: 0, body: 0 }
       return {
         heading: parseFloat(getComputedStyle(heading).fontSize),
@@ -54,7 +82,7 @@ test('the aitk case study renders its claim and sections', async ({ page }) => {
   await expect(page.locator('main')).toContainText(
     'installs one set of agent rules, skills, and standards into every project',
   )
-  await expect(page.locator('main section[id]')).toHaveCount(5)
+  await expect(page.locator('main section[id]')).toHaveCount(6)
 })
 
 test('the aitk case study names the scoped package', async ({ page }) => {
@@ -72,7 +100,7 @@ test('the diction case study renders its claim and sections', async ({
   await expect(page.locator('main')).toContainText(
     'scores each sound against what a native speaker actually sounds like',
   )
-  await expect(page.locator('main section[id]')).toHaveCount(5)
+  await expect(page.locator('main section[id]')).toHaveCount(6)
 })
 
 test('the diction case study states the offline claim', async ({ page }) => {

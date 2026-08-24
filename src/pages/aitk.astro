@@ -13,7 +13,9 @@ const artifactLinks = [
   { label: 'npm', href: 'https://www.npmjs.com/package/@erclx/aitk' },
 ]
 
+// The route's opening leads the rail, per the note in `jobtriage.astro`.
 const navItems = [
+  { id: 'aitk', label: 'aitk' },
   { id: 'problem', label: 'problem' },
   { id: 'thesis', label: 'thesis' },
   { id: 'taxonomy', label: 'taxonomy' },
@@ -60,7 +62,7 @@ const prescriptions = [
   <RouteBar here="aitk" />
 
   <main>
-    <section class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
+    <section id="aitk" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
         <p data-fade class="text-muted-foreground text-label tracking-wide uppercase">
           Project

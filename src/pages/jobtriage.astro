@@ -19,7 +19,13 @@ const artifactLinks = [
 // against 43KB for the webp, on the first image the route paints.
 const triagePoster = await getImage({ src: triageCanvas, format: 'webp' })
 
+// The route's opening leads the rail. Without it the rail names no row for the
+// first 700 to 900px of every route, since it is shown from first paint here
+// and the first prose section starts that far down, so a position indicator
+// states no position for the whole opening screen. The label is the heading it
+// points at, which is the rule every other row already follows.
 const navItems = [
+  { id: 'jobtriage', label: 'jobtriage' },
   { id: 'problem', label: 'problem' },
   { id: 'system', label: 'system' },
   { id: 'retrieval', label: 'retrieval' },
@@ -74,7 +80,7 @@ const toolPairings = [
   <RouteBar here="Jobtriage" />
 
   <main>
-    <section class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
+    <section id="jobtriage" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
         <p data-fade class="text-muted-foreground text-label tracking-wide uppercase">
           Project

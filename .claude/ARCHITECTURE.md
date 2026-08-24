@@ -145,6 +145,28 @@ as five hosts compose them and showed it on its first run, which is what the
 harness is for. `scripts/card-copy.ts` now holds the claim as one declaration so
 the spec can assert against it without running the script that draws it.
 
+That left the three parts saying three things rather than one. The split is
+that **the image carries the claim and the description says what the claim
+covers**, since the image is the boldest element in an unfurl and should hold
+the strongest sentence, and a description elaborating rather than repeating
+makes the pair read as one statement. The apex therefore runs
+`Eric Le · AI Engineer` over a description naming agents, the tooling around
+them, and the full-stack work of making either usable by someone else.
+
+Naming an employer in that description is the version to avoid, and it shipped
+until 2026-08-23. `Agents at Volvo` made a role that ended in June 2025 the
+identity, where metadata says who someone is and the timeline on the page says
+where they have been. The credential is one click away and a share card is the
+most compressed surface the site owns, so an employer costs more room than it
+buys. `Applied AI engineer` was retired separately, settled upstream as
+`AI Engineer` on every surface at 4517ee6, and the page carried both the retired
+form and a lowercase `engineer` against it.
+
+Read the whole change on `bun run unfurl` rather than on the tags. Its default
+base is port 4400, so pass `UNFURL_BASE_URL` when reading against a dev server
+on another port. X truncates the description around 70 characters, which the
+106 here survives with the load-bearing half intact.
+
 It is composed inside the served site rather than in a bare page, which is what
 gives it the real Fraunces and the shipped tokens. A card drawn in a fallback
 face is a card judged on the wrong letterforms. The field behind it is a margin
@@ -179,7 +201,8 @@ words the title already used, and one fails a route title carrying `case study`,
 which `.claude/REQUIREMENTS.md` retired on 2026-08-18 and which had reached the
 visible labels without ever reaching the titles a shared link shows.
 
-Measured at ab160ee on 2026-08-22.
+Measured at ab160ee on 2026-08-22, with the apex copy re-read across five hosts
+at 248046b on 2026-08-23.
 
 ### Resume PDF served from `public/`
 
@@ -854,6 +877,69 @@ The favicon and the home-screen icon are untouched: no streamline, no new
 ground, the same three files `scripts/brand.ts` has always drawn.
 
 Measured at 86be4f3 on 2026-08-24.
+
+### A route's rail leads with the route, and a runtime row takes no styles
+
+The rail is shown from first paint on a project route, and the first prose
+section starts 938 to 1135px down, so it named no row for the first 700 to 900px
+of every route. A position indicator stating no position was the whole opening
+screen, on the surface a shared link lands on.
+
+Hiding it there is the repair that looks obvious and it was measured and
+rejected. Copying the landing page's reveal gate does not reproduce the landing
+page's behavior, because a route's opening section is proportionally far larger
+than the landing hero: the rail would be absent for 9.3% of diction, 15.5% of
+jobtriage, and 34.6% and 37.1% of stackr and caret, against roughly 6% on the
+landing page. The two shortest routes lose it for over a third of the read.
+
+**Read the divergence as deliberate rather than as an oversight**, which is the
+part a consistency argument gets wrong. The landing rail tracks position through
+sections a reader meets by scrolling anyway. A route's is a contents list for a
+long-form read, and showing it on arrival says how long the read is and what is
+in it. Those are different jobs, so matching the two surfaces costs something on
+the one that needs the rail more.
+
+What ships is a first row pointing at the section carrying the `h1`, labelled
+with the project name. It is data rather than component behavior: each route
+gives its opening an `id` and adds one entry to its own `navItems`, and the
+component is unchanged because the opening section's top already sits above the
+30% anchor at first paint. `overview` was rejected as a label against the rail's
+own rule that a label reads as the heading it points at, being the one label on
+the site with no heading behind it. Lighting the first prose row instead was
+rejected twice over: it claims a section the reader has not reached, and the row
+is then already lit when they arrive, so the rail's first handover never
+happens and the step from row to row is the whole gesture.
+
+The cost is the project name beside the `h1` on the opening screen, which is the
+pairing `[data-route-here]` hides itself to avoid. Accepted, because a rail row
+is a position mark in the margin at label size rather than a title in the same
+band, and because past the `h1` the bar's name fades in as the rail hands off,
+so the name is stated exactly once at every other scroll position.
+
+**The instrument failure is the half worth carrying.** The row was prototyped
+with `document.createElement`, and Astro scopes a component's rules to a
+`data-astro-cid-*` attribute only server-rendered elements carry. The row
+therefore reported `data-active` while painting no ground, no border and no
+step, and the check written to verify it read `data-active` and passed. It was
+active and invisible at once, and the operator found it by looking. A check
+reading `backgroundColor`, `borderTopWidth` and `transform` fails it. This is
+the class this file already collects, reached through a styling mechanism rather
+than through a measurement: **a state a component sets and a treatment the
+stylesheet paints are two claims, and reading the first says nothing about the
+second.**
+
+Three guards moved with it, and one was worth reading rather than updating.
+`every section opens on a real heading` counted `main section[id] h2`, and the
+opening section opens on the `h1`, so the invariant held while its selector did
+not. It reads `:is(h1, h2)` now, against a measurement that every id'd section
+on all five routes carries exactly one heading. The heading-size guard also had
+to be scoped to one section, since across the document its heading and its prose
+now land in different ones.
+
+Read at 1440x900 across all five routes, where each rail names one painted row
+at first paint and hands off between 720 and 940px.
+
+Measured at 0159e9e on 2026-08-23 with this branch applied.
 
 ## Risks / open questions
 

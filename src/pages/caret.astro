@@ -21,7 +21,9 @@ const artifactLinks = [
 // source file unless something derives the optimized one.
 const demoPoster = await getImage({ src: caretPoster, format: 'webp' })
 
+// The route's opening leads the rail, per the note in `jobtriage.astro`.
 const navItems = [
+  { id: 'caret', label: 'caret' },
   { id: 'problem', label: 'problem' },
   { id: 'trigger', label: 'trigger' },
   { id: 'adapters', label: 'adapters' },
@@ -38,7 +40,7 @@ const navItems = [
   <RouteBar here="Caret" />
 
   <main>
-    <section class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
+    <section id="caret" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
         <p
           data-fade
