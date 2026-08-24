@@ -384,6 +384,144 @@ for (const width of ABOUT_FLIGHT_WIDTHS) {
   })
 }
 
+// The scenarios harness serves candidate treatments from the running page
+// while a visual decision is open, and the rule is that the arms and the call
+// site are deleted in the change that applies the pick. A variant left behind a
+// flag is a second design nobody maintains, and the parameter is a surface a
+// reader can reach.
+//
+// This is that rule made mechanical rather than remembered. It fails on a
+// branch that ships a page still carrying a switcher, which is the one state
+// nobody notices: an arm left mounted renders nothing until the parameter is
+// named, so it survives every capture and every read of the page.
+test('the landing page ships no open visual decision', async ({ page }) => {
+  await page.goto('/')
+
+  await expect(page.locator('[data-scenario-switcher]')).toHaveCount(0)
+})
+
+// The rings are contours of a mound the shader adds to its stream function, so
+// nothing in the DOM says whether they drew. A state a component sets and a
+// treatment the page paints are two claims, and reading the first says nothing
+// about the second, so this reads painted pixels.
+//
+// It tests the one property the drawing claims, which is that the contours near
+// the photo are concentric about it. Averaging luminance around a circle keeps
+// a line that follows that circle and washes out one that crosses it, so a
+// radial profile built from those averages ripples once per ring where the
+// contours are centred here and runs flat where they are not. Detrending
+// against a window wider than the ring spacing drops the slow falloff from the
+// photo's edge outward and leaves the ripple alone.
+//
+// Two earlier versions of this guard passed against a page with the rings
+// switched off, which is the defect class this project keeps finding rather
+// than a pair of slips.
+//
+// The first compared ink in the annulus against a patch of plain field. It was
+// reading the reading column's damp rather than the rings: the annulus sits
+// inside the column at 0.4 and the only nearby patch wide enough to sample sits
+// outside it at 1.0, so the two differed by a damp fraction before the mound was
+// considered at all. No control patch escapes that here, because the photo sits
+// against the column's right edge by construction.
+//
+// The second counted turns in the radial profile. Averaging around a circle
+// leaves small fluctuations, every one of them is a local extremum, and the
+// count cleared any floor worth setting either way. Amplitude at the ring scale
+// separates cleanly where a count of turns does not: measured at 1280 with the
+// mound at 0.62 against the same page with it at 0, the ripple runs 0.6336
+// against 0.0355 in light and 0.8007 against 0.0301 in dark.
+test('the portrait sits on a mound the field draws contours around', async ({
+  page,
+  browserName,
+}) => {
+  // Headless WebKit composites this page without its WebGL canvas: a patch of
+  // pure field in the hero margin returns a luminance spread of 0 there against
+  // 57.1 in chromium and 56.1 in firefox. Every pixel read from a WebKit
+  // screenshot is therefore a reading of the CSS layer alone, which cannot see
+  // a shader at all. The rings do render in a real WebKit.
+  test.skip(
+    browserName === 'webkit',
+    'headless webkit screenshots omit the WebGL canvas',
+  )
+
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/')
+
+  const box = await page.locator(PORTRAIT_SELECTOR).boundingBox()
+  expect(box).not.toBeNull()
+
+  // Polled rather than read once behind a pause, because the field mounts from
+  // an observer and compiles a program before it draws anything, so any fixed
+  // wait is a guess at how long that takes on the machine running it.
+  const rippleAmplitude = async (): Promise<number | null> => {
+    const shot = await page.screenshot()
+    return page.evaluate(
+      async ({ src, center, radius }) => {
+        const img = new Image()
+        img.src = src
+        await img.decode()
+        const canvas = document.createElement('canvas')
+        canvas.width = img.width
+        canvas.height = img.height
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return null
+        ctx.drawImage(img, 0, 0)
+        const { data } = ctx.getImageData(0, 0, img.width, img.height)
+
+        const meanOnCircle = (r: number): number => {
+          let sum = 0
+          let count = 0
+          const steps = Math.max(180, Math.round(2 * Math.PI * r))
+          for (let i = 0; i < steps; i++) {
+            const angle = (i / steps) * 2 * Math.PI
+            const x = Math.round(center.x + r * Math.cos(angle))
+            const y = Math.round(center.y + r * Math.sin(angle))
+            if (x < 0 || y < 0 || x >= img.width || y >= img.height) continue
+            const at = (y * img.width + x) * 4
+            sum +=
+              0.2126 * data[at] + 0.7152 * data[at + 1] + 0.0722 * data[at + 2]
+            count++
+          }
+          return count === 0 ? Number.NaN : sum / count
+        }
+
+        const profile: number[] = []
+        for (let r = radius.inner; r <= radius.outer; r += 1) {
+          profile.push(meanOnCircle(r))
+        }
+
+        const half = Math.floor(radius.window / 2)
+        let energy = 0
+        let counted = 0
+        for (let i = half; i < profile.length - half; i++) {
+          let local = 0
+          for (let k = i - half; k <= i + half; k++) local += profile[k]
+          const residual = profile[i] - local / radius.window
+          energy += residual * residual
+          counted++
+        }
+
+        return counted === 0 ? null : Math.sqrt(energy / counted)
+      },
+      {
+        src: `data:image/png;base64,${shot.toString('base64')}`,
+        center: {
+          x: Math.round((box?.x ?? 0) + (box?.width ?? 0) / 2),
+          y: Math.round((box?.y ?? 0) + (box?.height ?? 0) / 2),
+        },
+        // The window is wider than the widest gap between two rings, so the
+        // detrend removes the falloff and never the ripple it measures.
+        radius: { inner: 85, outer: 185, window: 25 },
+      },
+    )
+  }
+
+  // Sits between the two measured states rather than on either: seven times
+  // what the same page draws with the mound at zero, and well under the 0.63
+  // the lighter theme reaches with it.
+  await expect.poll(rippleAmplitude, { timeout: 8000 }).toBeGreaterThan(0.25)
+})
+
 test('the header portrait loads its image', async ({ page }) => {
   await page.goto('/')
 

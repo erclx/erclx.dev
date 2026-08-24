@@ -36,6 +36,10 @@ Adding it to the stream function rather than to the drawn output is the whole de
 
 Four can be in flight. The count is fixed in the source because WebGL1 needs a constant loop bound, and the mount displaces the oldest, so a reader clicking repeatedly always gets an answer. An unused slot carries a negative age, which the shader reads through a masked term rather than a branch, since an empty slot has to cost what a full one costs for every fragment on the surface.
 
+The header portrait is a third term added at the same place, and a standing one rather than a response. A radially falling mound centred on the photo makes the level sets circles where it dominates the noise, so the contours close around the portrait and open back into the terrain as it runs out. Everything the surface already does then reaches those rings, which is what the placement buys and what a ring drawn over the field could never have. `.claude/context/motion.md` § Portrait rings carries the values and what they were measured against.
+
+The mount reports the photo's centre and radius and nothing else. How far past it a field reaches is that field's decision, so a surface carrying no portrait writes zero depth and the shader skips the term entirely. Every page but the landing one reaches it that way.
+
 ## Decisions
 
 - Authored rather than installed. `.claude/DESIGN.md` § Personality rejects the shortcut rather than the medium, and states what separates the two.
@@ -58,6 +62,8 @@ Four can be in flight. The count is fixed in the source because WebGL1 needs a c
 - A click anywhere in the document drops one, since the listener sits on the window. Off the hero it costs a term nobody sees, and the hero band is the whole first viewport, so a click on the portrait ripples as readily as one beside it. Only links and buttons are excluded.
 - The page ground's `animate: false` means it draws exactly once at mount and never again, so a pointer simulated against it for a capture script cannot ever produce the accent-gradient reveal, however long the simulation waits. Only the hero's own canvas ticks a render loop and tracks the cursor live.
 - The hero's `pointermove` listener attaches from an `IntersectionObserver` callback rather than synchronously on load, so a single synthetic move fired right after navigation can land before that listener exists and be lost outright. A capture script settles first, moves once off-target, then moves onto it, so at least one event reaches a listener that is actually attached.
+- Headless WebKit composites this page without the canvas. A patch of pure field in the hero margin returns a luminance spread of 0 under it against 57.1 in chromium and 56.1 in firefox, so every pixel a WebKit screenshot carries is the CSS layer alone. Anything measuring this surface from a capture skips that engine and says why, rather than reading a flat plate as a quiet field. The surface itself renders there.
+- That gap is the reason a WebKit reading can look like a defect in the page. Two arms differing only in weight came back byte identical and below the baseline, which is what an arm that never drew looks like, while a probe found WebGL available, the canvas visible, and the fallback not shown.
 - `uFieldScale = fieldCyclesAcross / canvas width` is driven by the canvas's CSS width alone, not by device pixels. Capturing the same CSS-pixel geometry at `deviceScaleFactor` 1 and 2 renders one composition at two physical resolutions. Widening the CSS capture viewport for a "2x" pass instead would change the field's density along with the resolution.
 
 ## Hidden contracts

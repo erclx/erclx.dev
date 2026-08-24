@@ -92,6 +92,34 @@ export const streamsConfig = {
   // every ridge running that way vanish, which reads as a rendering fault.
   lightDirection: [-0.55, 0.68, 0.48] as const,
 
+  /**
+   * How far past the photo's own edge the rings reach, as a multiple of its
+   * radius, and how far the mound falls across that span.
+   *
+   * The reach carries over from the CSS rings this replaced, 188px against an
+   * 80px photo at `lg`, so the change is what the rings are rather than how far
+   * they go. Depth times `lineCount` is the ring count, the same arithmetic a
+   * click's disturbance answers to, so 0.62 at 13 draws eight against the seven
+   * the CSS stack cleared the photo with.
+   */
+  portraitReach: 2.35,
+  portraitDepth: 0.62,
+  /**
+   * How much of the column damp is lifted across that annulus.
+   *
+   * The damp exists so the field never competes with the name, and the photo
+   * sits inside the box it covers, so some lift is what makes the rings visible
+   * at all. Full lift is not it: at 0.75 the annulus carries 2.10 times the
+   * retired CSS rings' ink in light and 2.13 in dark, read off painted pixels,
+   * which is louder beside the name than this surface has ever been. 0.30 holds
+   * 1.65 and 1.39.
+   *
+   * Both were served live and driven rather than compared in a still, because
+   * the two arms differ only in weight and a weight is what a still is worst at
+   * settling.
+   */
+  portraitLift: 0.3,
+
   // Cream on near-black reads dimmer than near-black on cream at one alpha, so
   // each theme carries its own rather than deriving from the other.
   lightAlpha: 0.62,
@@ -142,6 +170,11 @@ uniform vec3 uAccent;
 uniform float uAlpha;
 uniform float uContentDamp;
 uniform float uContentRevealDamp;
+// Centre in pixels, then the radius the rings start at and the radius they
+// reach. Zero depth leaves the field exactly as it draws with no portrait.
+uniform vec4 uPortrait;
+uniform float uPortraitDepth;
+uniform float uPortraitLift;
 
 ${noiseBlock}
 ${noise3Block}
@@ -154,6 +187,26 @@ float streamFunction(vec2 px) {
 
   float r = distance(px, uCursor) / uCursorRadius;
   sum += uBumpDepth * uCursorStrength * exp(-r * r);
+
+  // The portrait sits on a mound in the stream function rather than under
+  // rings laid over it. Contours of a radially falling term are circles, so
+  // the field's own lines close around the photo and the relief, the height
+  // tint, the sheen, and the pointer's reveal all reach them without a second
+  // drawing existing to keep in step.
+  //
+  // How many a reader counts is the term's depth times uLineCount, the same
+  // arithmetic a click's disturbance answers to. Its slope is steepest
+  // mid-annulus and flattens at both ends, so the rings crowd where the mound
+  // falls fastest and part as it levels, which is the spacing a flat ring
+  // stack has no way to state.
+  if (uPortraitDepth > 0.0) {
+    float t = clamp(
+      (distance(px, uPortrait.xy) - uPortrait.z) / (uPortrait.w - uPortrait.z),
+      0.0,
+      1.0
+    );
+    sum += uPortraitDepth * (1.0 - t * t * (3.0 - 2.0 * t));
+  }
 
   // Each live click contributes a wave packet: an oscillation held inside a
   // traveling envelope. The envelope's centre is the wavefront, so at the
@@ -239,6 +292,15 @@ void main() {
 
   float column = columnWeight(px);
 
+  // The damp exists so the field never competes with the name, and the photo
+  // is inside the box it covers. Rings drawn there and then damped by the same
+  // fraction are rings drawn where the field is quietest, so the damp is lifted
+  // across the annulus they occupy and holds everywhere else.
+  if (uPortraitDepth > 0.0) {
+    float reach = 1.0 - smoothstep(uPortrait.z, uPortrait.w, distance(px, uPortrait.xy));
+    column *= 1.0 - uPortraitLift * reach;
+  }
+
   // The resting field and the reveal damp by different amounts. One value for
   // both leaves a lit line dimmer than the ambient field around it, so the
   // reveal disappears exactly where a reader's pointer spends its time.
@@ -290,6 +352,9 @@ const uniformNames = [
   'uContentFeather',
   'uContentDamp',
   'uContentRevealDamp',
+  'uPortrait',
+  'uPortraitDepth',
+  'uPortraitLift',
 ] as const
 
 function smoothstep(edge0: number, edge1: number, value: number): number {
@@ -333,6 +398,31 @@ function resolveColumnDamp(frame: FieldFrame): number {
   }
 
   return streamsConfig.contentDamp
+}
+
+/**
+ * A surface carrying no portrait writes zero depth, which is the value the
+ * shader skips the whole term on, so the field draws exactly as it did before
+ * the portrait existed. Every other page reaches this that way.
+ */
+function writePortraitUniforms(
+  gl: WebGLRenderingContext,
+  uniforms: UniformLocations,
+  frame: FieldFrame,
+): void {
+  const radius = frame.portrait?.radius ?? 0
+  gl.uniform4f(
+    uniforms.uPortrait ?? null,
+    frame.portrait?.centerX ?? 0,
+    frame.portrait?.centerY ?? 0,
+    radius,
+    radius * streamsConfig.portraitReach,
+  )
+  gl.uniform1f(
+    uniforms.uPortraitDepth ?? null,
+    frame.portrait ? streamsConfig.portraitDepth : 0,
+  )
+  gl.uniform1f(uniforms.uPortraitLift ?? null, streamsConfig.portraitLift)
 }
 
 export const streamsField: FieldSpec = {
@@ -414,6 +504,8 @@ export const streamsField: FieldSpec = {
         ? streamsConfig.darkRevealAlpha
         : streamsConfig.lightRevealAlpha,
     )
+    writePortraitUniforms(gl, uniforms, frame)
+
     gl.uniform3f(uniforms.uColor ?? null, ...frame.tone)
     gl.uniform3f(uniforms.uAccent ?? null, ...frame.accent)
     gl.uniform1f(

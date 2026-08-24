@@ -13,6 +13,7 @@ export function initShaderField(): () => void {
     '[data-shader-field-fallback]',
   )
   const content = document.querySelector<HTMLElement>('[data-shader-content]')
+  const portrait = document.querySelector<HTMLElement>('header [data-portrait]')
   const animate = !window.matchMedia(reducedMotionQuery).matches
 
   // A still surface is drawn on arrival like a moving one, so the observer
@@ -29,6 +30,7 @@ export function initShaderField(): () => void {
           // reading column would empty the band behind the name.
           cleanup = mountShaderField(canvas, fallback, content, streamsField, {
             animate,
+            portrait,
           })
           observer.disconnect()
           break
