@@ -281,16 +281,28 @@ export function mountShaderField(
   // The photo is a circle inscribed in a square box, so its radius is half of
   // either side. Reading the width alone would report an ellipse's semi-axis
   // the moment the frame stops being square.
+  //
+  // The portrait sits inside a `[data-fade]` row that holds a translateY
+  // offset until the reveal marks it visible, and `getBoundingClientRect`
+  // reports that transformed box. Discounting the transform yields the
+  // settled position whenever this runs, matching the reveal-aware read
+  // `hero-handoff.ts` already does for the same reason.
   function measurePortrait(canvasRect: DOMRect): void {
     if (!portrait) {
       portraitBox = null
       return
     }
     const box = portrait.getBoundingClientRect()
+    const revealing = portrait.closest<HTMLElement>('[data-fade]')
+    const transform = revealing ? getComputedStyle(revealing).transform : 'none'
+    const offset =
+      transform === 'none' ? { e: 0, f: 0 } : new DOMMatrix(transform)
+    const top = box.top - offset.f
+    const left = box.left - offset.e
     portraitBox = {
       radius: Math.min(box.width, box.height) / 2,
-      centerX: box.left - canvasRect.left + box.width / 2,
-      centerY: height - (box.top - canvasRect.top + box.height / 2),
+      centerX: left - canvasRect.left + box.width / 2,
+      centerY: height - (top - canvasRect.top + box.height / 2),
     }
   }
 
