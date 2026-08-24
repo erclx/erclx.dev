@@ -1085,6 +1085,68 @@ paying the fragment and the focus landing for it.
 Measured at 573bf45 on 2026-08-24 with this branch applied, at 1280x900 across
 chromium, firefox, and webkit.
 
+### A control gets an arrival where decoration gets a schedule
+
+The timeline's project chips sat inert, and the ask was to give them a life:
+a cascade, an occasional chip lighting, something looping. What ships is one
+wave across the row as it comes into view, re-armed whenever the row is scrolled
+back, and nothing at all while a reader sits in front of it.
+
+**The rule that decided it is what a thing is, not how much it moves.** The
+agent cast acts every few seconds a few pixels away, and that is correct there
+for reasons that do not reach these chips. A cast member is `aria-hidden`, leads
+nowhere, and lives in the margin, so a reader classifies it as scenery and stops
+tracking it. A chip is a link. A control that lights itself on a schedule claims
+something happened at its destination, and the reader has to check it before
+deciding it meant nothing. The row also sits inside the reading column rather
+than beside it, so a repeat competes with the sentence around it in a way a
+margin figure never does.
+
+Apply that split to a surface nobody has built yet. Decoration may be given a
+schedule, and a control is given an arrival.
+
+The gesture is spent where it costs nothing and says something true. The row
+entering view is the moment attention is already moving, and a wave stepping
+five chips 90ms apart states that they are one set, in order, and reachable,
+which a static row of pills does not state. Past that the section is quiet.
+
+Re-arming is hysteresis rather than a repeat. The wave runs when the row is 60%
+visible and cannot run again until the row has left entirely, so the dead band
+between those two covers a reader parked with the row at the edge of the
+viewport, where a single threshold would re-fire on scroll jitter alone.
+
+The light is deliberately weaker than the hover it sits under, carrying the
+accent at 55% and a faint shadow against hover's full glow and fill. A row that
+lights itself as hard as a pointer does takes the pointer's answer away, and the
+control then reads as dead to anyone who points at it. Both selectors weigh the
+same, an attribute and a pseudo-class counting once each, so source order is
+what makes the pointer win.
+
+**A pointer resting on the row deliberately does not suppress the wave, and the
+first build had it doing so.** Standing down under a hand is the cast's rule and
+it exists to stop a schedule interrupting a reader repeatedly. A wave that runs
+once has nothing to repeat, so the same rule here only costs that reader the
+gesture outright with nothing to say it was spent. Read the cast's rule as
+answering repetition rather than answering presence.
+
+Four candidates were served live through `src/components/dev/scenarios.astro`
+and driven by the operator, because the question was how a repeat feels while
+reading, which no capture answers. One chip at intervals and a wave on a loop
+both read as a notification on a control. A light traveling continuously through
+the row lit the row's ground rather than the controls on it and sat closest to
+the band `.claude/DESIGN.md` bars. The arms and the call site came out with the
+pick, and the harness stays.
+
+Every guard was run against the defect it exists to catch before it was trusted.
+Disabling the wave fails the two positive guards and leaves the two negative
+ones passing. Removing the re-arm fails the return guard alone. Adding a three
+second loop fails the quiet guard and the reduced-motion guard together. That
+sequence is the point rather than the count, since this file already collects
+five instruments that reported nothing wrong while reporting nothing at all.
+
+Measured at 8004095 on 2026-08-24 with this branch applied, where the full suite
+passes 705 across chromium, firefox, and webkit.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
