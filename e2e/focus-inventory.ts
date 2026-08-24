@@ -85,7 +85,9 @@ async function probePage(
   await page.evaluate((mode) => {
     document.documentElement.classList.toggle('dark', mode === 'dark')
   }, theme)
-  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.4))
+  await page.evaluate(() =>
+    window.scrollTo({ top: window.innerHeight * 1.4, behavior: 'instant' }),
+  )
   await page.waitForTimeout(900)
   await page.evaluate(() => {
     for (const element of document.querySelectorAll(

@@ -7,7 +7,10 @@ async function scrollPastHero(page: import('@playwright/test').Page) {
   await page.evaluate(() => {
     const hero = document.querySelector('[data-section="header"]')
     if (!hero) return
-    window.scrollTo(0, hero.getBoundingClientRect().height)
+    window.scrollTo({
+      top: hero.getBoundingClientRect().height,
+      behavior: 'instant',
+    })
   })
   await page.waitForTimeout(SETTLE_MS)
 }
@@ -35,7 +38,10 @@ test('the dock holds to the end of the page, where the footer carries one of its
 }) => {
   await page.goto('/')
   await page.evaluate(() =>
-    window.scrollTo(0, document.documentElement.scrollHeight),
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'instant',
+    }),
   )
   await page.waitForTimeout(SETTLE_MS)
 

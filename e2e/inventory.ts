@@ -81,7 +81,9 @@ function readTreatment(element: Element, keys: string[]) {
 async function probePage(page: Page, route: string): Promise<Probe[]> {
   await page.goto(BASE + route, { waitUntil: 'networkidle' })
   // Everything gated on a scroll is off-screen and inert until the page moves.
-  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.4))
+  await page.evaluate(() =>
+    window.scrollTo({ top: window.innerHeight * 1.4, behavior: 'instant' }),
+  )
   await page.waitForTimeout(900)
   await page.evaluate(() => {
     for (const el of document.querySelectorAll(

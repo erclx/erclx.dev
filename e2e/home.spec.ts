@@ -92,7 +92,10 @@ test('the rail cascades to looking-for and stays visible to the document end', a
     },
     [ANCHOR_RATIO] as const,
   )
-  await page.evaluate((y) => window.scrollTo(0, y), target)
+  await page.evaluate(
+    (y) => window.scrollTo({ top: y, behavior: 'instant' }),
+    target,
+  )
 
   await expect(
     page.locator('.section-nav-link[data-active="true"]'),
@@ -100,7 +103,10 @@ test('the rail cascades to looking-for and stays visible to the document end', a
   await expect(rail).toHaveCSS('opacity', '1')
 
   await page.evaluate(() =>
-    window.scrollTo(0, document.documentElement.scrollHeight),
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'instant',
+    }),
   )
   await expect(
     page.locator('.section-nav-link[data-active="true"]'),
@@ -142,7 +148,10 @@ test('the rail never shows a reader a column naming no row', async ({
 
       let count = 0
       for (let index = 0; index <= 11; index += 1) {
-        window.scrollTo(0, Math.max(0, Math.round(from + step * index)))
+        window.scrollTo({
+          top: Math.max(0, Math.round(from + step * index)),
+          behavior: 'instant',
+        })
         await new Promise((done) => requestAnimationFrame(() => done(null)))
         await new Promise((done) => requestAnimationFrame(() => done(null)))
         // Read the painted opacity rather than `data-revealed`, so a rail caught
@@ -867,7 +876,12 @@ test('the footer arrives on a tall viewport, not only a short one', async ({
   for (const height of [800, 1200, 1600]) {
     await page.setViewportSize({ width: 1280, height })
     await page.goto('/')
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await page.evaluate(() =>
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'instant',
+      }),
+    )
 
     // Settled on what the fade reached rather than on a duration. These rows
     // are a group, so the second waits out a 220ms step before its own 700ms
@@ -1019,9 +1033,11 @@ const PLACEMENT_GAP_TOLERANCE_MS = 1000
 
 async function landMidPage(page: Page): Promise<void> {
   await page.addInitScript((top) => {
-    addEventListener('DOMContentLoaded', () => window.scrollTo(0, top), {
-      once: true,
-    })
+    addEventListener(
+      'DOMContentLoaded',
+      () => window.scrollTo({ top, behavior: 'instant' }),
+      { once: true },
+    )
   }, MID_PAGE_LANDING)
 }
 
@@ -1054,9 +1070,11 @@ async function landUnderRevealThreshold(page: Page): Promise<void> {
   }, 0.05)
 
   await page.addInitScript((top) => {
-    addEventListener('DOMContentLoaded', () => window.scrollTo(0, top), {
-      once: true,
-    })
+    addEventListener(
+      'DOMContentLoaded',
+      () => window.scrollTo({ top, behavior: 'instant' }),
+      { once: true },
+    )
   }, target)
 }
 
