@@ -145,6 +145,28 @@ as five hosts compose them and showed it on its first run, which is what the
 harness is for. `scripts/card-copy.ts` now holds the claim as one declaration so
 the spec can assert against it without running the script that draws it.
 
+That left the three parts saying three things rather than one. The split is
+that **the image carries the claim and the description says what the claim
+covers**, since the image is the boldest element in an unfurl and should hold
+the strongest sentence, and a description elaborating rather than repeating
+makes the pair read as one statement. The apex therefore runs
+`Eric Le · AI Engineer` over a description naming agents, the tooling around
+them, and the full-stack work of making either usable by someone else.
+
+Naming an employer in that description is the version to avoid, and it shipped
+until 2026-08-23. `Agents at Volvo` made a role that ended in June 2025 the
+identity, where metadata says who someone is and the timeline on the page says
+where they have been. The credential is one click away and a share card is the
+most compressed surface the site owns, so an employer costs more room than it
+buys. `Applied AI engineer` was retired separately, settled upstream as
+`AI Engineer` on every surface at 4517ee6, and the page carried both the retired
+form and a lowercase `engineer` against it.
+
+Read the whole change on `bun run unfurl` rather than on the tags. Its default
+base is port 4400, so pass `UNFURL_BASE_URL` when reading against a dev server
+on another port. X truncates the description around 70 characters, which the
+106 here survives with the load-bearing half intact.
+
 It is composed inside the served site rather than in a bare page, which is what
 gives it the real Fraunces and the shipped tokens. A card drawn in a fallback
 face is a card judged on the wrong letterforms. The field behind it is a margin
@@ -179,7 +201,8 @@ words the title already used, and one fails a route title carrying `case study`,
 which `.claude/REQUIREMENTS.md` retired on 2026-08-18 and which had reached the
 visible labels without ever reaching the titles a shared link shows.
 
-Measured at ab160ee on 2026-08-22.
+Measured at ab160ee on 2026-08-22, with the apex copy re-read across five hosts
+at 248046b on 2026-08-23.
 
 ### Resume PDF served from `public/`
 
