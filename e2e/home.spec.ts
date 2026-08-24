@@ -224,10 +224,12 @@ test('the about flight renders nothing when motion is not wanted', async ({
   await expect(page.locator('.about-flight')).toBeHidden()
 })
 
-test('the aircraft settles centred on the trail it flies, at every scale the curve renders', async ({
-  page,
-}) => {
-  for (const width of [1280, 1024, 390]) {
+const ABOUT_FLIGHT_WIDTHS = [1280, 1024, 390]
+
+for (const width of ABOUT_FLIGHT_WIDTHS) {
+  test(`the aircraft settles centred on the trail it flies, at ${width}px`, async ({
+    page,
+  }) => {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
     await page.evaluate(() =>
@@ -303,13 +305,13 @@ test('the aircraft settles centred on the trail it flies, at every scale the cur
 
     // The origin is derived from the drawing's own centre, so the painted
     // craft has to land on the trail's own head, not somewhere beside it.
-    expect(measured?.offset, `at ${width}px`).toBeLessThan(0.5)
+    expect(measured?.offset).toBeLessThan(0.5)
     // Past about 0.90 the craft's half-width outgrows the clearance the trail
     // head holds for it, per .claude/context/motion.md, and the nose draws
     // inside its own trail.
-    expect(measured?.scale, `at ${width}px`).toBeLessThanOrEqual(0.9)
-  }
-})
+    expect(measured?.scale).toBeLessThanOrEqual(0.9)
+  })
+}
 
 test('the header portrait loads its image', async ({ page }) => {
   await page.goto('/')
