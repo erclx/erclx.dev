@@ -2,6 +2,8 @@ import { execFileSync } from 'node:child_process'
 
 import { chromium, type Page } from '@playwright/test'
 
+import { WATCHED_SELECTORS } from './reveal-selectors'
+
 // Walks every page and reports which blocks a reader sees arrive and which are
 // simply there, then traces what the first screen actually does frame by frame.
 //
@@ -147,61 +149,62 @@ async function readCoverage(page: Page, route: string): Promise<Coverage> {
  * separated from one that actually animates.
  */
 async function readTrace(page: Page, route: string): Promise<Trace[]> {
-  await page.addInitScript((limit) => {
-    const samples = new Map<string, { t: number; opacity: number }[]>()
-    const start = performance.now()
+  await page.addInitScript(
+    ({ limit, watched }) => {
+      const samples = new Map<string, { t: number; opacity: number }[]>()
+      const start = performance.now()
 
-    const describe = (element: Element) => {
-      if (element.hasAttribute('data-bar-mark')) return 'bar mark'
-      if (element.hasAttribute('data-toggle-host')) return 'theme toggle host'
-      if (element.closest('[data-theme-toggle]')) return 'theme toggle'
-      const text = (element.textContent ?? '').trim().replace(/\s+/g, ' ')
-      return `${element.tagName.toLowerCase()}: ${text.slice(0, 40)}`
-    }
+      const describe = (element: Element) => {
+        if (element.hasAttribute('data-bar-mark')) return 'bar mark'
+        if (element.hasAttribute('data-toggle-host')) return 'theme toggle host'
+        if (element.closest('[data-theme-toggle]')) return 'theme toggle'
+        const text = (element.textContent ?? '').trim().replace(/\s+/g, ' ')
+        return `${element.tagName.toLowerCase()}: ${text.slice(0, 40)}`
+      }
 
-    const tick = () => {
-      const t = performance.now() - start
-      if (t > limit) return
-      const onFirstScreen = [
-        ...document.querySelectorAll<HTMLElement>(
-          'h1, h2, p, img, [data-fade], [data-bar-mark], [data-theme-toggle], [data-section-nav] li',
-        ),
-      ].filter((element) => {
-        const box = element.getBoundingClientRect()
-        return (
-          box.top < window.innerHeight &&
-          box.bottom > 0 &&
-          box.width * box.height > 240
-        )
-      })
+      const tick = () => {
+        const t = performance.now() - start
+        if (t > limit) return
+        const onFirstScreen = [
+          ...document.querySelectorAll<HTMLElement>(watched.join(', ')),
+        ].filter((element) => {
+          const box = element.getBoundingClientRect()
+          return (
+            box.top < window.innerHeight &&
+            box.bottom > 0 &&
+            box.width * box.height > 240
+          )
+        })
 
-      // The reveal sets opacity on a wrapper, and a child inside it computes
-      // its own opacity as 1 for the whole fade. Reading the element alone
-      // therefore reports every heading and paragraph on the page as already
-      // there while the reader watches it arrive. What a reader sees is the
-      // product up the chain.
-      const effectiveOpacity = (element: Element) => {
-        let opacity = 1
-        let node: Element | null = element
-        while (node && node !== document.documentElement) {
-          opacity *= Number(getComputedStyle(node).opacity)
-          node = node.parentElement
+        // The reveal sets opacity on a wrapper, and a child inside it computes
+        // its own opacity as 1 for the whole fade. Reading the element alone
+        // therefore reports every heading and paragraph on the page as already
+        // there while the reader watches it arrive. What a reader sees is the
+        // product up the chain.
+        const effectiveOpacity = (element: Element) => {
+          let opacity = 1
+          let node: Element | null = element
+          while (node && node !== document.documentElement) {
+            opacity *= Number(getComputedStyle(node).opacity)
+            node = node.parentElement
+          }
+          return opacity
         }
-        return opacity
+
+        for (const element of onFirstScreen) {
+          const key = describe(element)
+          const series = samples.get(key) ?? []
+          series.push({ t, opacity: effectiveOpacity(element) })
+          samples.set(key, series)
+        }
+        requestAnimationFrame(tick)
       }
 
-      for (const element of onFirstScreen) {
-        const key = describe(element)
-        const series = samples.get(key) ?? []
-        series.push({ t, opacity: effectiveOpacity(element) })
-        samples.set(key, series)
-      }
       requestAnimationFrame(tick)
-    }
-
-    requestAnimationFrame(tick)
-    Object.defineProperty(window, '__revealTrace', { get: () => samples })
-  }, TRACE_MS)
+      Object.defineProperty(window, '__revealTrace', { get: () => samples })
+    },
+    { limit: TRACE_MS, watched: [...WATCHED_SELECTORS] },
+  )
 
   await page.goto(BASE + route, { waitUntil: 'commit' })
   await page.waitForTimeout(TRACE_MS + 300)

@@ -24,7 +24,15 @@ const { here } = Astro.props
   {/* No rule under the bar, matching the landing page's. The blur behind it is
       what separates the chrome from the prose passing under it, and a line as
       well as a blur states the same boundary twice. */}
+  {/* The row arrives with the prose rather than ahead of it. The mark, the
+      name and the toggle were the only things on a route already painted while
+      everything under them faded up, which read as the chrome belonging to a
+      different page than its content. The landing bar is deliberately not
+      marked: its name and toggle fly in from the hero on measured positions,
+      and an opacity transition there reopens the three placement defects
+      `.claude/ARCHITECTURE.md` records. Same arrival, different mechanism. */}
   <div
+    data-fade
     data-bar-row
     class="relative mx-auto flex max-w-3xl items-center justify-between py-4"
   >

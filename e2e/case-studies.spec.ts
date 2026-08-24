@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { contrastRatio, paintedColor, relativeLuminance } from './colors'
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
+import { WATCHED_SELECTORS } from './reveal-selectors'
 
 const FIGURE_SELECTOR = 'main figure img'
 // Six charts plus the still the route opens on, added 2026-08-20 so the route
@@ -201,6 +202,183 @@ test('each case study carries one way home in the bar and one at the foot', asyn
   await expect(page.locator('header a[data-way-home]')).toHaveCount(1)
   await expect(page.locator('footer a[data-way-home]')).toHaveCount(1)
   await expect(page.locator('a[data-way-home]')).toHaveCount(2)
+})
+
+test('a route brings its chrome in with its prose rather than ahead of it', async ({
+  page,
+}) => {
+  // Sampled from first paint, because the defect is a surface already placed
+  // while everything around it arrives, and a settled read cannot see it. An
+  // opacity strictly between 0 and 1 is proof of a fade; a placed surface never
+  // holds one.
+  await page.addInitScript(() => {
+    const seen: Record<string, number[]> = {}
+    const start = performance.now()
+    const TRACKED = [
+      ['rail', '[data-section-nav]'],
+      ['bar', '[data-bar-row]'],
+      ['prose', 'main [data-fade]'],
+    ] as const
+    // Sampled until every tracked surface has settled rather than for a fixed
+    // span. A window measured from this script's own start expired before the
+    // page had loaded on webkit under the full suite, so the fade ran after
+    // sampling stopped and all three reported as placed. The cap is a backstop
+    // against a surface that never settles, not the measurement.
+    const settled = () =>
+      TRACKED.every(([key]) => {
+        const values = seen[key]
+        return values && values.length > 2 && values.at(-1) === 1
+      })
+    const read = () => {
+      if (performance.now() - start > 8000) return
+      for (const [key, selector] of TRACKED) {
+        const element = document.querySelector(selector)
+        if (element) {
+          ;(seen[key] ??= []).push(Number(getComputedStyle(element).opacity))
+        }
+      }
+      if (settled()) {
+        ;(window as unknown as { __settled: boolean }).__settled = true
+        return
+      }
+      requestAnimationFrame(read)
+    }
+    requestAnimationFrame(read)
+    ;(window as unknown as { __arrival: typeof seen }).__arrival = seen
+  })
+
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/jobtriage', { waitUntil: 'load' })
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            (window as unknown as { __settled?: boolean }).__settled === true,
+        ),
+      { timeout: 10_000 },
+    )
+    .toBe(true)
+
+  const arrival = await page.evaluate(() => {
+    const seen = (window as unknown as { __arrival: Record<string, number[]> })
+      .__arrival
+    // Read the first sample and the last rather than hunting a mid-transition
+    // frame. The rail's fade runs 300ms against the prose's 700, so a loaded
+    // engine steps over it and reports a surface that faded as one that was
+    // placed. Starting hidden and ending shown is the claim, and the init
+    // script runs before paint, so one early sample settles it.
+    return Object.fromEntries(
+      Object.entries(seen).map(([key, values]) => [
+        key,
+        { start: values[0], end: values.at(-1) },
+      ]),
+    )
+  })
+
+  expect(arrival).toEqual({
+    rail: { start: 0, end: 1 },
+    bar: { start: 0, end: 1 },
+    prose: { start: 0, end: 1 },
+  })
+})
+
+test('the rail places its first row rather than sliding it into place', async ({
+  page,
+}) => {
+  // A route marks a row active on the first frame, so the step's easing sent it
+  // traveling out of the column on load. That easing is for a handover between
+  // two rows, and an arrival is not one.
+  await page.addInitScript(() => {
+    const steps: number[] = []
+    const start = performance.now()
+    // The clock runs from the row appearing rather than from this script. Timed
+    // from the script, a loaded engine spent the window waiting for the page
+    // and sampled once, failing a non-emptiness floor for a reason that has
+    // nothing to do with the step. The span past first sight covers the 260ms a
+    // slide would take.
+    let firstSeen: number | null = null
+    const read = () => {
+      if (performance.now() - start > 8000) return
+      const active = document.querySelector(
+        '.section-nav-link[data-active="true"]',
+      )
+      if (active) {
+        firstSeen ??= performance.now()
+        steps.push(new DOMMatrix(getComputedStyle(active).transform).m41)
+        // Gated on how many samples were taken rather than how long was spent
+        // taking them. A 500ms window returned 3 frames on a loaded engine
+        // running near 6fps, so any floor over the sample count was really a
+        // floor on the frame rate. Eight frames span 133ms at 60fps, inside the
+        // 260ms a slide would take, and longer than it on anything slower.
+        if (steps.length >= 8) {
+          ;(window as unknown as { __stepsDone: boolean }).__stepsDone = true
+          return
+        }
+      }
+      requestAnimationFrame(read)
+    }
+    requestAnimationFrame(read)
+    ;(window as unknown as { __steps: number[] }).__steps = steps
+  })
+
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/jobtriage', { waitUntil: 'load' })
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            (window as unknown as { __stepsDone?: boolean }).__stepsDone ===
+            true,
+        ),
+      { timeout: 10_000 },
+    )
+    .toBe(true)
+
+  const steps = await page.evaluate(
+    () => (window as unknown as { __steps: number[] }).__steps,
+  )
+
+  // The collection above stops at eight, so anything short of that means the
+  // cap expired and nothing was really measured. A distinct-value assertion
+  // over an empty sample passes hardest when the sample is empty.
+  expect(steps.length).toBe(8)
+  expect([...new Set(steps.map((step) => Math.round(step)))]).toHaveLength(1)
+  expect(Math.round(steps[0])).toBeGreaterThan(0)
+})
+
+test('every selector the reveal instrument watches still finds something', async ({
+  page,
+}) => {
+  // One clause read the rail as `li` and the rail renders `a`, so it matched
+  // nothing on every run and reported nothing wrong, which is the same output
+  // as a rail arriving correctly. This is what makes that state loud.
+  await page.setViewportSize({ width: 1440, height: 900 })
+
+  const counts: Record<string, number> = {}
+  for (const route of ['/', '/jobtriage']) {
+    await page.goto(route)
+    const found = await page.evaluate(
+      (selectors) =>
+        Object.fromEntries(
+          selectors.map((selector) => [
+            selector,
+            document.querySelectorAll(selector).length,
+          ]),
+        ),
+      [...WATCHED_SELECTORS],
+    )
+    for (const [selector, count] of Object.entries(found)) {
+      counts[selector] = (counts[selector] ?? 0) + (count as number)
+    }
+  }
+
+  const dead = Object.entries(counts)
+    .filter(([, count]) => count === 0)
+    .map(([selector]) => selector)
+
+  expect(dead, `matched nothing on any surface: ${dead.join(', ')}`).toEqual([])
 })
 
 test('each case study links back to the landing page from the top bar', async ({
