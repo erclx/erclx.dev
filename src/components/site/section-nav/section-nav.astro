@@ -128,6 +128,8 @@ const {
 </style>
 
 <script>
+  import { ANCHOR_RATIO } from '@/lib/section-nav'
+
   const nav = document.querySelector<HTMLElement>('[data-section-nav]')
   if (nav && 'IntersectionObserver' in window) {
     const links = Array.from(
@@ -152,7 +154,6 @@ const {
       }
     }
 
-    const ANCHOR_RATIO = 0.3
     const CLICK_LOCK_MS = 700
     let scrollFrame: number | null = null
     let clickLockUntil = 0

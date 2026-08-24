@@ -82,7 +82,7 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `.claud
 
 ## Margin controls
 
-Two controls sit in the page margins, one per side, and both arrive on the same gate: once the reader has passed half the hero.
+Two controls sit in the page margins, one per side, each revealed once the reader has scrolled far enough into the page to need it. Each answers to its own gate. See `.claude/context/section-nav.md` and `.claude/context/contact-dock.md`.
 
 - The section rail sits left, from 1280px, and states position. See `.claude/wireframes/section-nav.md`.
 - The contact dock sits right, at every width, and offers reach. See `.claude/wireframes/contact-dock.md`.
