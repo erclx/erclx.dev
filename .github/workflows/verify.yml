@@ -102,7 +102,9 @@ jobs:
         with:
           name: dist
           path: dist/
-          retention-days: 1
+          # A week, not a day: 3.3MB costs nothing to keep, and it's what lets
+          # deploy retry against this same artifact after a transient failure.
+          retention-days: 7
 
   e2e-tests:
     name: 🎭 E2E Tests (${{ matrix.browser }})
