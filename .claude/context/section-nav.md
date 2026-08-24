@@ -52,7 +52,13 @@ Pointing at a row is a separate claim from being inside one, so a hover adds the
 
 ## instant prop
 
-When the `instant` prop is set, the rail renders with `data-revealed` already true at server render, a `data-instant` marker disables the opacity-transition CSS, and the hero observer does not attach. Used on every project route, which are otherwise static, so the rail does not fade in alone.
+The `instant` prop names the absence of a scroll gate and nothing else. It stamps `data-instant`, which stops the hero observer attaching, and the script reveals the rail on the frame after the first paint so the opacity transition runs.
+
+It also painted the rail at server render until 2026-08-24, and disabled the transition with it, on the reading that a route is otherwise static and a rail fading alone would look odd. Routes carry the page-wide reveal now, so the rail was the one piece of chrome opting out of a fade that exists around it: measured at first paint on a route, the rail read opacity 1 while the prose beside it read 0.
+
+The step's duration is withheld until the rail has placed its first row, through `--rail-step` switched on by `data-settled`. A route marks a row active on the first frame, so a duration standing in the rule sent that row traveling out of the column on load, sampled as `0, 3, 6, 8, 10, 11, 12, 13, 14`. The easing is for a handover between two rows and an arrival is not one. Placing it costs the gesture nothing: a real handover still ramps through 13 values.
+
+Without JS the rail stays hidden on a route as it always has on the landing page, since the reveal is what paints it.
 
 ## The route's opening leads its rail
 

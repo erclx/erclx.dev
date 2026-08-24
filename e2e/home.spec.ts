@@ -252,7 +252,22 @@ test('the about figure is there for a reader who arrives from the rail', async (
   // cannot run in clear air. Scrolling on only carries the band further up and
   // out, so waiting for clear air means waiting forever.
   await page.evaluate(() => document.querySelector('#about')?.scrollIntoView())
-  await page.waitForTimeout(600)
+  // Settled on the figure reaching an end state rather than paused for a span.
+  // The gate runs off a scroll frame and a bar measurement, and 600ms was a
+  // guess at how long a loaded engine needs to get there: on webkit under the
+  // full suite it read `unset` twice while passing alone. Both end states are
+  // accepted here because the assertion below is what decides which is correct.
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            document.querySelector<HTMLElement>('.about-flight')?.dataset
+              .flight ?? 'unset',
+        ),
+      { timeout: 8000 },
+    )
+    .not.toBe('unset')
 
   const state = await page.evaluate(() => {
     const band = document.querySelector<HTMLElement>('.about-flight')
