@@ -32,28 +32,41 @@ For the rationale behind these choices, such as Astro over Next, the shadcn inst
 
 ## Scripts
 
-| Command                 | Purpose                                                                                                                |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `bun run check`         | Full verification. Auto-formats, then asserts clean.                                                                   |
-| `bun run format`        | Auto-fix prettier and shfmt formatting.                                                                                |
-| `bun run clean`         | Wipe `node_modules/`, clear bun cache, reinstall.                                                                      |
-| `bun run update`        | Interactive `bun update` followed by verification.                                                                     |
-| `bun run dev`           | Start the Astro dev server on port 4321.                                                                               |
-| `bun run device`        | Serve the dev site to a phone or tablet on the same network, printing a QR to scan.                                    |
-| `bun run brand`         | Redraw every brand raster from the one mark source. Run after editing that mark and never by hand.                     |
-| `bun run share-card`    | Redraw the link preview card. Needs the site served, since it composes inside the built page to get its own type.      |
-| `bun run unfurl`        | Render every page's preview as five hosts compose it. Needs the site served, since it reads the tags off the document. |
-| `bun run build`         | Run `astro check` then build the static output.                                                                        |
-| `bun run preview`       | Serve the built site locally.                                                                                          |
-| `bun run astro`         | Expose the Astro CLI.                                                                                                  |
-| `bun run typecheck`     | Run `astro check`.                                                                                                     |
-| `bun run lint`          | Run ESLint with zero warnings allowed.                                                                                 |
-| `bun run lint:fix`      | Auto-fix ESLint issues.                                                                                                |
-| `bun run test`          | Run Vitest in watch mode.                                                                                              |
-| `bun run test:run`      | Run Vitest once with verbose reporter.                                                                                 |
-| `bun run test:coverage` | Run Vitest with coverage.                                                                                              |
-| `bun run test:e2e`      | Run Playwright E2E tests.                                                                                              |
-| `bun run screenshot`    | Build, preview, then capture screenshots. Pass `SCREENSHOT_FILTER=<term>[,<term>]` to limit capture to named surfaces. |
+| Command                    | Purpose                                                                                                                |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `bun run check`            | Full verification. Auto-formats, then asserts clean.                                                                   |
+| `bun run format`           | Auto-fix prettier and shfmt formatting.                                                                                |
+| `bun run clean`            | Wipe `node_modules/`, clear bun cache, reinstall.                                                                      |
+| `bun run update`           | Interactive `bun update` followed by verification.                                                                     |
+| `bun run dev`              | Start the Astro dev server on port 4321.                                                                               |
+| `bun run device`           | Serve the dev site to a phone or tablet on the same network, printing a QR to scan.                                    |
+| `bun run brand`            | Redraw every brand raster from the one mark source. Run after editing that mark and never by hand.                     |
+| `bun run share-card`       | Redraw the link preview card. Needs the site served, since it composes inside the built page to get its own type.      |
+| `bun run unfurl`           | Render every page's preview as five hosts compose it. Needs the site served, since it reads the tags off the document. |
+| `bun run build`            | Run `astro check` then build the static output.                                                                        |
+| `bun run preview`          | Serve the built site locally.                                                                                          |
+| `bun run astro`            | Expose the Astro CLI.                                                                                                  |
+| `bun run typecheck`        | Run `astro check`.                                                                                                     |
+| `bun run lint`             | Run ESLint with zero warnings allowed.                                                                                 |
+| `bun run lint:fix`         | Auto-fix ESLint issues.                                                                                                |
+| `bun run test`             | Run Vitest in watch mode.                                                                                              |
+| `bun run test:run`         | Run Vitest once with verbose reporter.                                                                                 |
+| `bun run test:coverage`    | Run Vitest with coverage.                                                                                              |
+| `bun run test:e2e`         | Run Playwright E2E tests. Takes a spec path or `-g '<name>'` to narrow the run.                                        |
+| `bun run test:e2e:changed` | Run the specs the import graph ties to the working tree, across every engine.                                          |
+| `bun run screenshot`       | Build, preview, then capture screenshots. Pass `SCREENSHOT_FILTER=<term>[,<term>]` to limit capture to named surfaces. |
+
+## What an end-to-end run costs
+
+Scope and engines look like two ways to make a run cheaper and only one of them is. Measured on this suite, `cast.spec.ts` runs 19 tests on chromium alone in 2.0 minutes and 57 across all three engines in 2.2, so three times the tests cost a tenth more wall clock. Locally the engines fill workers that were otherwise idle.
+
+What costs is the serial chain inside one spec, since `fullyParallel` is off. `cast.spec.ts` holds a 20-second scheduler watch and several full-field captures, which is why it sets the floor for the whole suite at roughly 2 minutes however the run is sliced. The full three-engine suite runs about 3.5 minutes against that floor.
+
+Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/lib/306-test-scope.md` states the resulting directive, and `.claude/ARCHITECTURE.md` § The merge gate runs every engine the suite defines carries why the matrix exists at all.
+
+Turning `fullyParallel` on was measured rather than assumed. It took the full run from about 3:30 to 2:49 and failed two webkit tests, both timing assertions: more contexts on one machine is less processor each, and a reveal stagger read against a wall clock came back at zero. A fifth off the clock does not pay for a suite reporting failures nobody caused.
+
+A question about the running page is answered faster by a script against `bun run dev` than by any suite invocation, since that path pays no build. The suite rebuilds the site and starts a fresh server on every run, because `webServer` runs `bun run build` under `reuseExistingServer: false`.
 
 ## Visual verification
 
