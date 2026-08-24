@@ -1023,6 +1023,68 @@ at first paint and hands off between 720 and 940px.
 
 Measured at 0159e9e on 2026-08-23 with this branch applied.
 
+### One declaration decides how the page travels, and every caller resolves it
+
+The site answered one question three ways. The rail eased to a section, the
+bar's home control eased to the top and branched on the motion preference by
+hand, and a timeline chip teleported to the card it names. The chip is a plain
+anchor and nothing had ever set `scroll-behavior`, so the default stood: read on
+the first frame after a click, it arrived at 2833 of 2833.
+
+The root carries `scroll-behavior: smooth` under
+`prefers-reduced-motion: no-preference`, and the two script callers pass no
+behavior at all. What that buys beyond agreement is that the preference is read
+in one place. The rail had named `smooth` outright and carried no reduced-motion
+branch of any kind, so a reader who asked for no motion got a glide from the one
+control that most looks like navigation.
+
+Native rather than a click handler per surface. An anchor keeps the fragment a
+reader can copy, keeps focus landing on the card rather than on the body, and
+covers an anchor nobody has written yet. Scripting the same scroll would also
+have retired the bar's fragment-clearing, which exists precisely because a chip
+leaves one behind.
+
+**The cost is that the declaration reaches every unqualified scroll in the
+repository, and three of them meant "be there" rather than "travel there".**
+The lazy-image walk in `e2e/lazy-images.ts` is the one that matters, since the
+screenshot capture depends on it: each step settles where it stands, and a
+gliding walk settles against a viewport still in transit, so the images it waits
+for are never asked for. `e2e/variants.ts` shot its frame mid-scroll. Both say
+`instant` now, as `figure-zoom.ts` already did.
+
+The driver's own scroll is the case with no `behavior` to pass. Playwright
+scrolls an off-screen target into view before it can tap it, and a minimal
+scroll lands that target at the top of the viewport, under the sticky bar. The
+cast's tap test had been relying on exactly that, with the first member sitting
+61px above the viewport after the section was brought in, so the hit test was
+taken against a page still moving and the bar took the tap. It centres the
+member itself now, which is what the tap always needed and what removes the
+driver scroll from the path.
+
+**Two assertions about the glide were written before it was measured, and each
+encoded one engine.** A threshold at half the distance failed webkit, whose
+automation build collapses the whole glide into two frames and opens at 1895 of
+2833 where chromium holds 23 distinct positions and firefox 29. A frame-exact
+arrival then failed firefox, which does not commit a fragment scroll
+synchronously: it reports the starting position on the first frame after the
+click and the landing on the second, which is a jump arriving late rather than a
+glide. What holds on all three is whether the page ever occupies a position
+strictly between where it started and where it landed, which is true of a glide
+and false of a jump by construction rather than by threshold.
+
+The curve is the engine's and not the site's, because CSSOM-View requires the
+smooth scroll and defines no timing function for it. Measured on the same chip,
+chromium runs an ease-in-out with a long decay, reaching 82% of the distance by
+half time and taking 949ms over 3013px and 1134ms over 4202px, so its duration
+grows with distance sub-linearly. Firefox runs a spring decay instead, 64% of
+the distance inside the first quarter and flat at about 745ms whatever the
+distance. A reader on firefox therefore meets a noticeably more front-loaded
+version of the same gesture, and closing that gap means scripting the scroll and
+paying the fragment and the focus landing for it.
+
+Measured at 573bf45 on 2026-08-24 with this branch applied, at 1280x900 across
+chromium, firefox, and webkit.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.

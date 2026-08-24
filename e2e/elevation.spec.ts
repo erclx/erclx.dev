@@ -25,7 +25,7 @@ const SURFACES = [
 
 async function settleChrome(page: Page): Promise<void> {
   await page.goto('/')
-  await page.evaluate(() => window.scrollTo(0, 1700))
+  await page.evaluate(() => window.scrollTo({ top: 1700, behavior: 'instant' }))
   await page.evaluate(() => {
     for (const element of document.querySelectorAll(
       '[data-contact-dock],[data-section-nav],[data-site-bar]',

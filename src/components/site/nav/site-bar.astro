@@ -202,8 +202,9 @@ import BarMark from '@/components/site/nav/bar-mark.astro'
   toTop?.addEventListener('blur', () => setHot(false))
 
   toTop?.addEventListener('click', () => {
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    window.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' })
+    // The root's own `scroll-behavior` decides, so the motion preference is
+    // read in the one place the whole site reads it rather than here as well.
+    window.scrollTo({ top: 0 })
 
     // The fragment a timeline chip left behind names a project card the reader
     // is no longer at, and nothing else clears it: this control scrolls rather

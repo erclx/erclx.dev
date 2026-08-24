@@ -70,9 +70,11 @@ async function readCoverage(page: Page, route: string): Promise<Coverage> {
   await page.goto(BASE + route, { waitUntil: 'networkidle' })
   // Everything below the fold has to have been observed, or the count reads the
   // reader's scroll position rather than the page.
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+  await page.evaluate(() =>
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }),
+  )
   await page.waitForTimeout(1200)
-  await page.evaluate(() => window.scrollTo(0, 0))
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
   await page.waitForTimeout(400)
 
   return page.evaluate(

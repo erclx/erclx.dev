@@ -442,6 +442,29 @@ body.surface-case-study > header[data-section='header'] {
   html {
     @apply font-sans;
   }
+  /* One declaration decides how the whole site travels to a target, and every
+     caller resolves it rather than restating it.
+
+     The site carried three answers to one question. The rail eased, the bar's
+     home control eased and branched on the motion preference itself, and a
+     timeline chip teleported, because it is a plain anchor and nothing here had
+     ever set this. Measured on the first frame after a click, the chip arrived
+     at 2833 while a glide is still near where it started.
+
+     Native rather than a click handler per surface. An anchor keeps the
+     fragment a reader can copy, keeps focus landing on the card, and reaches an
+     anchor nobody has written yet. Preventing the default to script the same
+     scroll would also have retired the bar's fragment-clearing, which exists
+     because a chip leaves one behind.
+
+     The preference is honoured by the query rather than inside each caller:
+     under `reduce` this rule never applies, the property stays `auto`, and a
+     `scrollTo` passing no behavior resolves to an instant jump. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
 }
 
 @layer utilities {
