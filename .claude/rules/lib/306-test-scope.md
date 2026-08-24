@@ -14,7 +14,7 @@ paths:
 - Run one surface while iterating on that surface: `bun run test:e2e -- e2e/<area>.spec.ts`.
 - Run `bun run test:e2e:changed` to select specs from the import graph.
 - Run the whole suite before pushing.
-- Pass `--project` only to reproduce a failure that engine has already reported.
+- Pass `--project` in a local run only to reproduce a failure that engine has already reported. The CI matrix passes it on every job, one engine per leg, which is the gate rather than a narrowed run.
 - Do not add a script that pins a default run to one engine.
 
 ## Instruments

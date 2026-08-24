@@ -16,7 +16,7 @@ export default defineConfig({
   // timing assertions: more contexts on one machine is less processor each, and
   // a reveal stagger measured against a wall clock starts reading zero. A fifth
   // off the wall clock does not pay for a suite that reports failures nobody
-  // caused. Narrow the scope and the engines in the inner loop instead.
+  // caused. Narrow the scope in the inner loop instead.
   retries: isCI ? 2 : 0,
   workers: isCI ? 1 : undefined,
   // The html report is what the failure artifact uploads. Under `list` alone
