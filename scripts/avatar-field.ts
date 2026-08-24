@@ -39,6 +39,9 @@ const CAPTURE_H = 1600
 const columnRight = CAPTURE_W - (CAPTURE_W - COLUMN_MAX) / 2
 const cropX = columnRight + MARGIN_BUFFER
 const cropY = (CAPTURE_H - FRAME) / 2
+if (cropX + FRAME + MARGIN_BUFFER > CAPTURE_W) {
+  throw new Error('avatar crop reaches the capture edge: widen CAPTURE_W')
+}
 
 // Toward the lower-left (inward, toward the column) at 420px, judged against
 // three other distances and two other angles served live. 230px is the

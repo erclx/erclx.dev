@@ -41,6 +41,16 @@ export interface CaptureFieldPlateOptions {
   readonly deviceScaleFactor?: number
 }
 
+/**
+ * Hides nothing before shooting `options.crop`, unlike the whole-page capture
+ * this replaced, which hid every element outside `[data-page-ground]` to keep
+ * a fixed control from baking into the still. That guard is unneeded here only
+ * because this function never scrolls: the section rail and the contact dock
+ * both gate off at scroll 0, so a crop taken from either margin at the top of
+ * the page is clear of both by construction. A caller cropping anywhere the
+ * gate has already opened, or scrolling before it shoots, needs the guard
+ * back.
+ */
 export async function captureFieldPlate(
   browser: Browser,
   options: CaptureFieldPlateOptions,
