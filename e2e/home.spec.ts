@@ -224,6 +224,93 @@ test('the about flight renders nothing when motion is not wanted', async ({
   await expect(page.locator('.about-flight')).toBeHidden()
 })
 
+test('the aircraft settles centred on the trail it flies, at every scale the curve renders', async ({
+  page,
+}) => {
+  for (const width of [1280, 1024, 390]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+    await page.evaluate(() =>
+      document.querySelector('#about')?.scrollIntoView(),
+    )
+    // Landing under the bar settles at once; landing in clear air runs the
+    // 2000ms approach first and its `both` fill mode holds `data-flight` at
+    // `true` rather than advancing it to `settled`, so the offset the craft
+    // rides is what the geometry below actually needs to reach 100%.
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const craft = document.querySelector<HTMLElement>(
+            '.about-flight-craft',
+          )
+          return craft
+            ? parseFloat(getComputedStyle(craft).offsetDistance)
+            : null
+        }),
+      )
+      .toBe(100)
+
+    const measured = await page.evaluate(() => {
+      const craft = document.querySelector<SVGGElement>('.about-flight-craft')
+      const craftPath = craft?.querySelector<SVGPathElement>('path')
+      const trail = document.querySelector<SVGPathElement>(
+        '.about-flight-trail',
+      )
+      const svg = document.querySelector<SVGSVGElement>('.about-flight-stage')
+      if (!craft || !craftPath || !trail || !svg) return null
+
+      const toScreenPoint = (
+        element: SVGGraphicsElement,
+        local: { x: number; y: number },
+      ) => {
+        const ctm = element.getScreenCTM()
+        if (!ctm) return null
+        const point = svg.createSVGPoint()
+        point.x = local.x
+        point.y = local.y
+        const screen = point.matrixTransform(ctm)
+        return { x: screen.x, y: screen.y }
+      }
+
+      // The craft's own drawing centres on the group's local origin, so its
+      // painted bounding box, read in the group's local space, has to centre
+      // there too. Mapping that centre through the group's own screen matrix
+      // is what puts the painted craft and the trail's endpoint on the same
+      // axis for comparison below.
+      const box = craft.getBBox()
+      const craftCentre = toScreenPoint(craft, {
+        x: box.x + box.width / 2,
+        y: box.y + box.height / 2,
+      })
+
+      const trailEnd = trail.getPointAtLength(trail.getTotalLength())
+      const trailHead = toScreenPoint(trail, trailEnd)
+
+      if (!craftCentre || !trailHead) return null
+
+      const scaleMatch = craftPath
+        .getAttribute('transform')
+        ?.match(/scale\(([\d.]+)\)/)
+
+      return {
+        offset: Math.hypot(
+          craftCentre.x - trailHead.x,
+          craftCentre.y - trailHead.y,
+        ),
+        scale: scaleMatch ? Number(scaleMatch[1]) : null,
+      }
+    })
+
+    // The origin is derived from the drawing's own centre, so the painted
+    // craft has to land on the trail's own head, not somewhere beside it.
+    expect(measured?.offset, `at ${width}px`).toBeLessThan(0.5)
+    // Past about 0.90 the craft's half-width outgrows the clearance the trail
+    // head holds for it, per .claude/context/motion.md, and the nose draws
+    // inside its own trail.
+    expect(measured?.scale, `at ${width}px`).toBeLessThanOrEqual(0.9)
+  }
+})
+
 test('the header portrait loads its image', async ({ page }) => {
   await page.goto('/')
 
