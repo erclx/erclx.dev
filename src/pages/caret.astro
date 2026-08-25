@@ -161,8 +161,18 @@ const navItems = [
         <p
           data-fade          class="text-foreground text-lede mt-6"
         >
+          The palette is the same everywhere. What happens when you pick a
+          prompt is not: each site handles its input differently.
+        </p>
+        <p
+          data-fade          class="text-muted-foreground text-body mt-6"
+        >
           Three sites, two editor models. Claude and ChatGPT render their inputs
-          through ProseMirror, Gemini uses a plain <code class="font-mono"
+          through <a
+            href="https://prosemirror.net/"
+            {...getLinkTargetAttributes('https://prosemirror.net/')}
+            class="text-accent underline underline-offset-[3px] decoration-[1px]"
+          >ProseMirror</a>, Gemini uses a plain <code class="font-mono"
             >contenteditable</code
           >.
         </p>

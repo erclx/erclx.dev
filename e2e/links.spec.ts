@@ -57,11 +57,18 @@ for (const route of ROUTES) {
     await page.setViewportSize(PHONE)
     await page.goto(route)
 
+    // A link sitting inline in a sentence is exempt: WCAG's own target-size
+    // criterion carries the same exception, since inflating a word inside a
+    // paragraph to 44px breaks the line it sits in. Every control on this site
+    // built to hit the minimum declares `inline-flex` or a block display for
+    // that reason, so reading the computed display is the same "does it have
+    // its own box" test the focus-ring and hover treatments already use.
     const undersized = await page
       .locator('a:visible, button:visible')
       .evaluateAll(
         (elements, minimum) =>
           elements
+            .filter((element) => getComputedStyle(element).display !== 'inline')
             .map((element) => {
               const box = element.getBoundingClientRect()
               const label =

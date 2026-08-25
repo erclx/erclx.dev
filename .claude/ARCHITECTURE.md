@@ -1296,6 +1296,41 @@ Measured at 10c511a on 2026-08-25 with this branch applied, at 390, 768, 1024,
 1280, 1440, and 1920, where the full suite passes 719 and skips 7 across
 chromium, firefox, and webkit.
 
+### A case-study prose link takes the site's accent, and the tap-target guard learns what an inline link is
+
+No route on the site carried a link inside flowing body prose until the
+Jobtriage, Caret, and diction case studies each needed one, so the treatment
+had no precedent to inherit. Four candidates were served live from
+`/diction` through `src/components/dev/scenarios.astro`, then a composed
+sheet of seven read the two front-runners against three heavier variants.
+Shipped: accent-colored text with an always-on underline, applied as
+Tailwind utilities per link (`text-accent underline underline-offset-[3px]
+decoration-[1px]`) rather than a named CSS class, matching how the header
+and footer links are styled directly rather than through a shared component
+class.
+
+Bold variants lost on the sheet for introducing a weight this site's body
+prose carries nowhere else, headings excepted. A pointer-hover-only
+underline lost for failing the same bar an accessible link within a
+paragraph has to clear at rest: WCAG's target-size criterion and its own
+color-alone caution both point at a link a reader can identify without
+hovering or without relying on color perception, and a link that only
+declares itself under a cursor fails a keyboard or touch reader outright.
+
+The four new links then failed `e2e/links.spec.ts`'s phone tap-target guard,
+which asserted every `a`/`button` clears 44px on both axes. A word sized to
+its own text inside a sentence cannot clear that without inflating the line
+it sits in, which is exactly the case WCAG's own criterion exempts. The
+guard now skips an element whose computed `display` resolves to `inline`,
+checked against every other link on the site before trusting it: each one
+built to hit the minimum already declares `flex` or `inline-flex`, which is
+what makes the exemption a test for "does this control have its own box"
+rather than a blanket carve-out that could swallow a real regression.
+
+Measured at a7b1c04 on 2026-08-25 with this branch applied, where
+`e2e/links.spec.ts` passes 60 and `e2e/case-studies.spec.ts` passes 141
+across chromium, firefox, and webkit.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.

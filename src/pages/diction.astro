@@ -180,7 +180,13 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
         <p
           data-fade          class="text-foreground text-lede mt-6"
         >
-          speechocean762 supplies 5,000 English clips from non-native speakers,
+          <a
+            href="https://www.openslr.org/101/"
+            {...getLinkTargetAttributes('https://www.openslr.org/101/')}
+            class="text-accent underline underline-offset-[3px] decoration-[1px]"
+          >
+            speechocean762
+          </a> supplies 5,000 English clips from non-native speakers,
           each phoneme scored 0 to 2 by five human experts. That per-sound score
           is the ground truth a threshold can be fit against, and the corpus is
           Apache-2.0, so it ships.
@@ -188,7 +194,15 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
         >
-          The acoustic model ran over 2,500 of those clips to read off its
+          <a
+            href="https://huggingface.co/facebook/wav2vec2-xlsr-53-espeak-cv-ft"
+            {...getLinkTargetAttributes(
+              'https://huggingface.co/facebook/wav2vec2-xlsr-53-espeak-cv-ft',
+            )}
+            class="text-accent underline underline-offset-[3px] decoration-[1px] font-mono"
+          >
+            wav2vec2-xlsr-53-espeak-cv-ft
+          </a> ran over 2,500 of those clips to read off its
           confidence in each sound, a measure called Goodness of Pronunciation.
           Transcription was skipped: the words being read are known in advance,
           so only the acoustic model has to run, which cut an hours-long sweep

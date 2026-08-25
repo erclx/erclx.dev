@@ -26,6 +26,7 @@ errexit
 esac
 esbenp
 esbuild
+espeak
 evenodd
 firefoxUserPrefs
 fontsource
@@ -114,3 +115,4 @@ wireframes
 worktree
 worktrees
 xlink
+xlsr

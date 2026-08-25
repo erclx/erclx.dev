@@ -36,5 +36,6 @@ telematics
 undercount
 ungated
 Värnamo
+WCAG
 woah
 wordmark

@@ -325,8 +325,8 @@ const prescriptions = [
           self-review asks whether it built the plan and whether it passes, and
           it is blind to its own misreadings, because the same misreading wrote
           both the code and the review. The orchestrator's review is a fresh
-          session carrying every sibling branch in flight, so it can question
-          the plan itself.
+          session carrying the roadmap and every sibling branch in flight, so
+          it can question the plan itself.
         </p>
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
@@ -346,6 +346,12 @@ const prescriptions = [
         </h2>
         <p
           data-fade          class="text-foreground text-lede mt-6"
+        >
+          That only works if agents can drive the same tooling without a
+          person sitting at the keyboard.
+        </p>
+        <p
+          data-fade          class="text-muted-foreground text-body mt-6"
         >
           Every command has a non-interactive path, every listing emits JSON on
           stdout, and the framed terminal UI goes to stderr. A skill shelling
