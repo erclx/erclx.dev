@@ -8,9 +8,11 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  # main deploys on green, so a run there is never interrupted mid-flight.
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  # Event in the key: a push cannot cancel a dispatch that is mid-upload, since
+  # the queued run decides cancellation and a push would always decide yes.
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  # Never interrupt a run carrying a deploy: main, or a dispatch on any ref.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
 
 jobs:
   static-checks:
@@ -187,7 +189,9 @@ jobs:
   deploy:
     name: 🚀 Deploy
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # A dispatch reaches this job from any ref, which is the only way to run it
+    # before it merges. What keeps that safe is the ref itself, below.
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: [static-checks, unit-tests, build-verify, e2e-tests]
     steps:
       - name: Checkout
@@ -219,4 +223,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ./dist --project-name=erclx-dev --branch=main
+          # Ref-derived, so only main reaches the apex. Every other ref lands on
+          # a preview host, which is what makes a dispatch safe to fire early.
+          command: pages deploy ./dist --project-name=erclx-dev --branch=${{ github.ref_name }}

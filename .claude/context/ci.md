@@ -13,11 +13,11 @@ GitHub Actions workflow for this project.
 
 - Pull requests targeting any branch (verify only)
 - Push to `main` (verify, then deploy on green)
-- `workflow_dispatch` (manual run from the Actions tab)
+- `workflow_dispatch` from the Actions tab (verify, then deploy on green, on whichever ref it is fired from)
 
 ## Checks
 
-Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merge. The `deploy` job runs only on `push: main` and gates on every verify job, which is six legs across four definitions once the e2e matrix fans out.
+Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merge. The `deploy` job runs on a push to `main` and on a manual dispatch from any ref, and gates on every verify job either way, which is six legs across four definitions once the e2e matrix fans out.
 
 | Check     | Command                 | What it asserts                         |
 | --------- | ----------------------- | --------------------------------------- |
@@ -107,13 +107,29 @@ Consuming the same artifact in `deploy` is the larger reason for the change: the
 
 `deploy` keeps `Setup Node` and `Setup Bun` even though it builds nothing, and reading those as leftovers is the mistake to avoid. `cloudflare/wrangler-action` looks for wrangler, does not find it, and installs it with whatever package manager the checked-out workspace points at. `bun.lock` sits at the repo root and `wrangler` is not a dependency in `package.json`, so the action picks bun every time and needs it on PATH. The change that first shared the artifact removed all four of deploy's steps together, which was right for the install and the build and wrong for the two setup steps, and every push to `main` after it failed on `Unable to locate executable file: bun`.
 
-What that costs is about three runner-seconds. The install work moves rather than disappearing, which is worth knowing before anyone prices this job again, and the size of it is projected rather than measured: with no install step ahead of it, the action's own `bun i wrangler@<version>` has to populate the whole tree rather than add to a `node_modules` another step built. No run has executed that state, since the one deploy reaching it failed before installing anything. What the log does hold is the shape it replaces, from the deploy job of run `32766897378`, where `bun install --frozen-lockfile` took 1101 packages in 3.90s and the action's own install added 50 packages in 1.40s underneath it. The build is where the saving actually sits, near 15 seconds of it, and that survives intact. The alternative is pinning `packageManager` on the action and letting it use the runner's preinstalled npm, which is the smaller diff and puts a second package manager in a repository that deliberately runs one. That trade is worth re-opening once a deploy change can be exercised before it merges, and today it cannot: `deploy` is gated on a push to `refs/heads/main`, so no pull request run and no `workflow_dispatch` reaches it and every change to it first executes against production. The failure direction is safe, since a broken deploy fails the job and nothing reaches Cloudflare, but nothing announces that `main` is sitting un-deployed either.
+What that costs is about three runner-seconds. The install work moves rather than disappearing, which is worth knowing before anyone prices this job again, and the size of it is projected rather than measured: with no install step ahead of it, the action's own `bun i wrangler@<version>` has to populate the whole tree rather than add to a `node_modules` another step built. No run has executed that state, since the one deploy reaching it failed before installing anything. What the log does hold is the shape it replaces, from the deploy job of run `32766897378`, where `bun install --frozen-lockfile` took 1101 packages in 3.90s and the action's own install added 50 packages in 1.40s underneath it. The build is where the saving actually sits, near 15 seconds of it, and that survives intact. The alternative is pinning `packageManager` on the action and letting it use the runner's preinstalled npm, which is the smaller diff and puts a second package manager in a repository that deliberately runs one. Re-opening that trade is cheap now, since a dispatch runs the real job against Cloudflare from a feature branch and the section below covers how.
 
-## A concurrency group cancels a superseded run, except on `main`
+## A concurrency group cancels a superseded run, except where a deploy is riding on it
 
-The workflow declared no concurrency group, so a force-push during a rebase cascade left the previous run to finish in full rather than yielding to the one that replaced it. `verify.yml` now groups runs by `${{ github.ref }}` and cancels the losing one, except on `refs/heads/main`, the ref `deploy` gates on, where a run is never voluntarily interrupted.
+The workflow declared no concurrency group, so a force-push during a rebase cascade left the previous run to finish in full rather than yielding to the one that replaced it. `verify.yml` now groups runs by `${{ github.ref }}` and cancels the losing one, except where the run carries a deploy: a push to `refs/heads/main`, and a dispatch on whatever ref it was fired from.
+
+The event sits in the group key rather than in the exemption alone, and the reason is the one thing about this setting that is easy to get backwards. GitHub reads `cancel-in-progress` off the run being queued, never off the run already in flight, so a dispatch cannot protect itself by declaring anything. A push landing on the branch mid-dispatch evaluates its own expression, gets `true`, and cancels the upload, leaving whatever Cloudflare had already accepted. Putting `github.event_name` in the group is what separates the two, since a dispatch and a push on one ref then hold different groups and neither can reach the other.
+
+Exempting the dispatch from cancellation still earns its place beside that. It stops a second dispatch on the same ref from killing the first, which shares a group with it, and a queued run waits for the upload to finish rather than replacing it.
 
 Measured against the last 100 runs on 2026-08-24, six non-main runs overlapped their own predecessor for 1343 seconds total. The cancellation clears that at the cost of the losing run's partial results, which nothing was reading before the winner replaced them either.
+
+## A dispatch runs the deploy job before it merges, and the ref is the fence
+
+`deploy` gated on `github.event_name == 'push' && github.ref == 'refs/heads/main'`, so no pull request run and no dispatch reached it and every change to that job first executed against production. That gap collected on 2026-08-24: #84 removed the job's two toolchain steps, merged green on every other leg, and failed on `main` until #85 restored them. The condition now admits a dispatch from any ref, which is the only trigger that can run the real job against the real endpoint ahead of a merge.
+
+Widening the trigger and keeping `--branch=main` would hand anyone a one-command production deploy of unmerged work, so the two changes are one change. `--branch` reads `${{ github.ref_name }}`, and Cloudflare treats only `main` as production, so the fence is the ref rather than a second condition somebody has to remember to write. A dispatch from a feature branch runs all five steps and lands on `<hash>.erclx-dev.pages.dev`. A dispatch from `main` publishes to the apex, which is the existing behavior and has to survive.
+
+A preview host does put unfinished work on an address anyone holding the link can load, which is the property `.claude/ARCHITECTURE.md` § A touch decision is judged on a device rejected a public tunnel over. What separates this from the per-pull-request preview arm that decision bars is that no address is minted unless somebody fires the dispatch, so the exposure is one deliberate act rather than a standing URL on every branch.
+
+Read what this does not close, because it bounds what the trigger is worth. The only thing standing in for a pre-merge run last time was reading the failure log, and that worked because the error named a missing binary. A deploy failing on credentials, on a project name, or on a Cloudflare-side change gives a far less legible log, and none of those surface any earlier than production unless somebody fires the dispatch. What ships here is the run being available rather than anybody being made to take it.
+
+Do not close any of this by asserting something about the workflow file's contents. A check reading that `deploy` carries a setup step passes on a job that cannot run, which is the instrument class `.claude/ARCHITECTURE.md` collects five instances of and which shipped again this week. The instrument here is somebody firing the dispatch and reading the deployment URL out of the run log.
 
 ## Running CI locally
 
