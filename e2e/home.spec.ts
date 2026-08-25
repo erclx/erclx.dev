@@ -1,4 +1,4 @@
-import { expect, type Page, test } from '@playwright/test'
+import { expect, type Locator, type Page, test } from '@playwright/test'
 
 import { REVEAL_THRESHOLD } from '../src/lib/reveal'
 import { ANCHOR_RATIO } from '../src/lib/section-nav'
@@ -1583,4 +1583,79 @@ test('the rule spends more curve where there is room for it', async ({
 
   // A fixed amplitude cannot satisfy both ends, so the two must differ.
   expect(wide.peakToPeak).toBeGreaterThan(narrow.peakToPeak * 2)
+})
+
+// One accent across every bounded control, read off the painted color rather
+// than off the declaration. Both of these guard a treatment the stylesheet
+// paints rather than a state a script sets, which is the distinction that once
+// let a rail row report itself active while painting nothing.
+// Reads the element a locator already resolved rather than re-finding it by a
+// selector carrying `:hover`. Firefox and WebKit do apply the hover treatment
+// to a synthetically pointed-at element while `querySelector(':hover')` finds
+// nothing, so the selector form passed on Chromium and threw on the other two.
+const paintedEdge = (target: Locator) =>
+  target.evaluate((element) => {
+    const context = document.createElement('canvas').getContext('2d')
+    if (!context) throw new Error('Canvas 2D context is unavailable')
+    context.fillStyle = getComputedStyle(element).borderTopColor
+    context.fillRect(0, 0, 1, 1)
+    const [red, green, blue] = context.getImageData(0, 0, 1, 1).data
+    return `${red},${green},${blue}`
+  })
+
+const paintedAccent = (page: Page) =>
+  page.evaluate(() => {
+    const context = document.createElement('canvas').getContext('2d')
+    if (!context) throw new Error('Canvas 2D context is unavailable')
+    context.fillStyle = getComputedStyle(
+      document.documentElement,
+    ).getPropertyValue('--accent')
+    context.fillRect(0, 0, 1, 1)
+    const [red, green, blue] = context.getImageData(0, 0, 1, 1).data
+    return `${red},${green},${blue}`
+  })
+
+// Both states cross to their edge over a transition, and a computed style read
+// on the frame the state changes reports the value being left rather than the
+// one being taken. Longer than the slowest of the two, which is the arrival's
+// own 260ms swell.
+const EDGE_SETTLE_MS = 500
+
+test('a chip wears the same edge arriving as it does under a pointer', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await showChipRow(page)
+  const chip = page.locator('[data-chip]').first()
+  const edge = chip.locator('.experience-chip')
+
+  await chip.evaluate((element) => element.setAttribute('data-lit', 'true'))
+  await page.waitForTimeout(EDGE_SETTLE_MS)
+  const arriving = await paintedEdge(edge)
+
+  await chip.evaluate((element) => element.removeAttribute('data-lit'))
+  await page.waitForTimeout(EDGE_SETTLE_MS)
+  await chip.hover()
+  await page.waitForTimeout(EDGE_SETTLE_MS)
+  const pointed = await paintedEdge(edge)
+
+  expect(arriving).toBe(pointed)
+})
+
+test('a pointed-at rail row takes the accent edge the chip and dock take', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.evaluate(() =>
+    window.scrollTo({ top: window.innerHeight * 1.4, behavior: 'instant' }),
+  )
+  // The rail holds `pointer-events: none` until it reveals, so a pointer sent
+  // before that lands on the page behind it and the row reports its resting
+  // edge. Waiting on the attribute rather than on a duration.
+  await page.waitForSelector('[data-section-nav][data-revealed="true"]')
+  const row = page.locator('.section-nav-link:not([data-active])').first()
+  await row.hover()
+  await page.waitForTimeout(EDGE_SETTLE_MS)
+
+  expect(await paintedEdge(row)).toBe(await paintedAccent(page))
 })
