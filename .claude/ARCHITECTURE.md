@@ -1330,21 +1330,40 @@ rather than a blanket carve-out that could swallow a real regression.
 That skip reads computed display, which drops every inline element from the
 survey rather than recording which ones it dropped, so a control regressing
 from `inline-flex` to plain `inline` would go uncounted rather than fail.
-Computed display cannot catch that regression either: a flex or grid parent
-blockifies a child's display regardless of what the child itself declares,
-so every `min-h-11`/`min-w-11` control on this site reads as a box at
-runtime whatever class it carries, verified by regressing one to `inline`
-and reading its computed style rather than assuming the blockification
-applied. The guard now asserts the exempt set directly instead, reading the
-class list of every element carrying `min-h-11` or `min-w-11` and failing
-if none of `flex`, `inline-flex`, `block`, `inline-block`, `grid`, or
-`inline-grid` is present, which is immune to what a parent's layout mode
-does to the computed value. Verified against the same regression before
-trusting it: reverting the class list check reintroduces the failure.
+Whether computed display can still catch that regression turns on what sits
+between the control and its flex parent, checked control by control rather
+than assumed from one. `footer.astro:48`, `site-bar.astro:92`'s button, and
+`route-bar.astro:46` are direct children of their own flex row, so a flex
+parent blockifies their display and they read as a box whatever class they
+carry, the same as the résumé link this was first verified against. Every
+other control, `header.astro:154`, `project-card.astro:143`, `route-foot.astro:34`,
+and the five route-page links including `jobtriage.astro:107`, sits inside an
+`<li>` or a plain block container instead, so the anchor itself is never a
+flex item and nothing blockifies it: a class regression there computes
+exactly as declared, and the prior computed-display check would have caught
+it. The class-list assertion is load-bearing on most of these controls
+rather than on a few, which is the reverse of what an earlier version of
+this entry claimed. The guard now asserts the exempt set directly, reading
+the class list of every element carrying `min-h-11` or `min-w-11` and
+failing if none of `flex`, `inline-flex`, `block`, `inline-block`, `grid`,
+or `inline-grid` is present, which does not depend on what a parent's
+layout mode does to the computed value. Verified against the same
+regression before trusting it: reverting the class list check reintroduces
+the failure.
 
-Measured at 051f402 on 2026-08-26 with this branch applied, where
+The assertion still selects what it checks by the same two classes a
+regression could remove together. A control that drops `min-h-11` and
+`inline-flex` in the same edit matches neither the class-list assertion nor
+the computed-display one, and falls back to the size check alone, where an
+`<li>`-nested control now computing `inline` is exempted again. Left as a
+gap rather than closed with more code, since every current call site keeps
+the two classes together and nothing has needed them to move independently.
+
+Measured at a7b1c04 on 2026-08-25 with this branch applied, where
 `e2e/links.spec.ts` passes 60 and `e2e/case-studies.spec.ts` passes 141
-across chromium, firefox, and webkit.
+across chromium, firefox, and webkit. Re-verified against `3120b0a` on
+2026-08-26, where the corrected finding above and the class-list guard both
+held.
 
 ## Risks / open questions
 

@@ -88,13 +88,15 @@ for (const route of ROUTES) {
 
     expect(undersized).toEqual([])
 
-    // The filter above reads computed display, which a flex or grid parent
-    // blockifies for every child regardless of what that child declares, so an
-    // element that regresses from `inline-flex` to `inline` still measures as
-    // a box and the filter above cannot see the regression. Every element
-    // built to hit the minimum has to keep declaring one of the classes that
-    // gives it a box on its own, read from the class list rather than from
-    // the computed style a parent can distort.
+    // The filter above reads computed display, which only a control sitting
+    // as a direct child of its own flex row (the footer resume link, the
+    // site-bar button, the route-bar home link) gets blockified into a box
+    // regardless of what it declares. Every other control here sits inside an
+    // `<li>` or a plain block container, so nothing blockifies it and a
+    // regression from `inline-flex` to `inline` computes exactly as declared.
+    // The class-list check below is what catches that on those controls,
+    // read from the class list rather than from a computed style a parent
+    // sometimes distorts and sometimes does not.
     const boxDisplayClasses = [
       'flex',
       'inline-flex',
