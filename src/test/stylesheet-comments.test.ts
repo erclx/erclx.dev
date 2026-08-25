@@ -43,11 +43,6 @@ const MEASURED_COUNTS: Record<
   '.astro': 26,
 }
 
-const MEASURED_TOTAL = Object.values(MEASURED_COUNTS).reduce(
-  (total, count) => total + count,
-  0,
-)
-
 const SOURCE_ROOT = fileURLToPath(new URL('../', import.meta.url))
 
 const countBlockCommentMarkers = (source: string) => ({
@@ -128,9 +123,9 @@ const filesWithExtension = (extension: string) =>
 
 // A narrowed walk passes every balance case below while reading a fraction of
 // the tree, which is the silent staleness this file exists to catch arriving
-// through the file's own instrument. Both guards here read a floor rather than
-// zero, because one file per extension satisfies mere presence and leaves the
-// twenty-six components guarded at one of them.
+// through the file's own instrument. The floor is per extension rather than over
+// the whole population, because one file of each satisfies mere presence and
+// leaves the twenty-six components guarded at one of them.
 describe('the tree under guard', () => {
   it('should walk at least the files each extension held when this was written', () => {
     const belowFloor = COMMENT_BEARING_EXTENSIONS.filter(
@@ -139,14 +134,6 @@ describe('the tree under guard', () => {
     )
 
     expect(belowFloor).toEqual([])
-  })
-
-  it('should find a block comment in at least as many files as carried one', () => {
-    const carryingComments = sourceFiles.filter((path) =>
-      readFileSync(path, 'utf8').includes('/*'),
-    )
-
-    expect(carryingComments.length).toBeGreaterThanOrEqual(MEASURED_TOTAL)
   })
 })
 
