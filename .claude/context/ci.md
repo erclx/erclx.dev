@@ -131,6 +131,12 @@ Read what this does not close, because it bounds what the trigger is worth. The 
 
 Do not close any of this by asserting something about the workflow file's contents. A check reading that `deploy` carries a setup step passes on a job that cannot run, which is the instrument class `.claude/ARCHITECTURE.md` collects five instances of and which shipped again this week. The instrument here is somebody firing the dispatch and reading the deployment URL out of the run log.
 
+Exercised on 2026-08-25 from `ci/deploy-verifiable` rather than reasoned about. Run `32796334703` reached `deploy` after all six verify legs, ran its five steps green, and reported `pages deploy ./dist --project-name=erclx-dev --branch=ci/deploy-verifiable` landing on `5e65eb97.erclx-dev.pages.dev` with an alias at `ci-deploy-verifiable.erclx-dev.pages.dev`. The apex was fetched either side of it and did not move.
+
+Normalize Cloudflare's email obfuscation before comparing two fetches of one page. It rotates `data-cfemail` and the `email-protection#` fragment per request, so the apex hashed differently across an upload that never touched it, and the raw comparison reads as a production change on every run. Byte length is the tell, holding at 130131 across both.
+
+Re-running that job alone answers the retention question the seven-day artifact window was widened for, and it is a recovery path rather than a rebuild. The re-run downloaded the retained `dist` and republished it in roughly ten seconds with no verify leg re-executing, which is the first time anything has confirmed that path works.
+
 ## Running CI locally
 
 `bun run check` runs the static and unit asserts plus auto-formats first. `bun run check:full` runs verify plus `test:e2e`. If CI fails on format, run `bun run check` locally and commit the diff.
