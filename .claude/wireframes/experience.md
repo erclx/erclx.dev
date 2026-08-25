@@ -20,8 +20,9 @@ Experience
 I build the layer between a language model and the job it has to do.
   ← the claim, display face, one phrase carrying an annotation underline
 
-In practice that means agents, and the developer tools around them...
-  ...I came to it from engineering physics and complex adaptive
+In practice that means agents, the developer tooling around them,
+  and the full-stack work of making either usable by someone else...
+  I came to it from engineering physics and complex adaptive
   systems at Chalmers.
 I spend most of my working day with coding agents...
   ← two body paragraphs, muted, the first closing on the degrees
@@ -33,8 +34,7 @@ Where that happened
   ← employer marks, one tone, sized so each reads rather than matching heights
 
  jan 2026 to        ●  shipping independently, open to the next thing
- present            │     Each project below answers a problem I ran into.
-                    │     ( aitk ) ( Jobtriage ) ( Stackr ) ( Caret ) ( diction )
+ present            │     ( aitk ) ( Jobtriage ) ( Stackr ) ( Caret ) ( diction )
                     │
  jun to dec 2025    ○  working out what to build
                     │     Took the time to learn TypeScript and web application
@@ -70,7 +70,6 @@ The same three parts, with the span column narrowed and the span itself set at l
 ```plaintext
  jan 2026        ●  shipping independently, open to the
  to present      │  next thing
-                 │    Each project below answers a problem I ran into.
                  │    ( aitk ) ( Jobtriage ) ( Stackr ) ( Caret )
                  │
  jun to dec 2025 ○  working out what to build
@@ -87,8 +86,6 @@ The span column folds into the reading column and leads its own beat, still at l
  ● jan 2026 to present
  │ shipping independently, open to
  │ the next thing
- │   Each project below answers a
- │   problem I ran into.
  │   ( aitk ) ( Jobtriage )
  │   ( Stackr ) ( Caret ) ( diction )
  │

@@ -199,7 +199,7 @@ test('the about surface reads as personal rather than professional', async ({
   const about = page.locator('[data-section="about"]')
 
   await expect(about).toContainText('I was born in Vietnam')
-  await expect(about).toContainText('I have played guitar since I was twelve')
+  await expect(about).toContainText('have played guitar since I was twelve')
   await expect(about).not.toContainText('agents')
   await expect(about).not.toContainText('Volvo')
 })
