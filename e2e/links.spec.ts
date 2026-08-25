@@ -87,6 +87,50 @@ for (const route of ROUTES) {
       )
 
     expect(undersized).toEqual([])
+
+    // The filter above reads computed display, which a flex or grid parent
+    // blockifies for every child regardless of what that child declares, so an
+    // element that regresses from `inline-flex` to `inline` still measures as
+    // a box and the filter above cannot see the regression. Every element
+    // built to hit the minimum has to keep declaring one of the classes that
+    // gives it a box on its own, read from the class list rather than from
+    // the computed style a parent can distort.
+    const boxDisplayClasses = [
+      'flex',
+      'inline-flex',
+      'block',
+      'inline-block',
+      'grid',
+      'inline-grid',
+    ]
+    const sizedWithoutOwnBox = await page
+      .locator('a:visible, button:visible')
+      .evaluateAll(
+        (elements, boxClasses) =>
+          elements
+            .filter((element) =>
+              Array.from(element.classList).some(
+                (className) =>
+                  className === 'min-h-11' || className === 'min-w-11',
+              ),
+            )
+            .filter(
+              (element) =>
+                !Array.from(element.classList).some((className) =>
+                  boxClasses.includes(className),
+                ),
+            )
+            .map((element) => {
+              const label =
+                element.getAttribute('aria-label') ??
+                element.textContent?.trim().slice(0, 40) ??
+                ''
+              return `${label} (${element.className})`
+            }),
+        boxDisplayClasses,
+      )
+
+    expect(sizedWithoutOwnBox).toEqual([])
   })
 }
 

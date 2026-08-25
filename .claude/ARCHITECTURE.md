@@ -1312,9 +1312,9 @@ class.
 Bold variants lost on the sheet for introducing a weight this site's body
 prose carries nowhere else, headings excepted. A pointer-hover-only
 underline lost for failing the same bar an accessible link within a
-paragraph has to clear at rest: WCAG's target-size criterion and its own
-color-alone caution both point at a link a reader can identify without
-hovering or without relying on color perception, and a link that only
+paragraph has to clear at rest: WCAG's caution against color as the only
+visual means of conveying information points at a link a reader can
+identify without relying on color perception alone, and a link that only
 declares itself under a cursor fails a keyboard or touch reader outright.
 
 The four new links then failed `e2e/links.spec.ts`'s phone tap-target guard,
@@ -1327,7 +1327,22 @@ built to hit the minimum already declares `flex` or `inline-flex`, which is
 what makes the exemption a test for "does this control have its own box"
 rather than a blanket carve-out that could swallow a real regression.
 
-Measured at a7b1c04 on 2026-08-25 with this branch applied, where
+That skip reads computed display, which drops every inline element from the
+survey rather than recording which ones it dropped, so a control regressing
+from `inline-flex` to plain `inline` would go uncounted rather than fail.
+Computed display cannot catch that regression either: a flex or grid parent
+blockifies a child's display regardless of what the child itself declares,
+so every `min-h-11`/`min-w-11` control on this site reads as a box at
+runtime whatever class it carries, verified by regressing one to `inline`
+and reading its computed style rather than assuming the blockification
+applied. The guard now asserts the exempt set directly instead, reading the
+class list of every element carrying `min-h-11` or `min-w-11` and failing
+if none of `flex`, `inline-flex`, `block`, `inline-block`, `grid`, or
+`inline-grid` is present, which is immune to what a parent's layout mode
+does to the computed value. Verified against the same regression before
+trusting it: reverting the class list check reintroduces the failure.
+
+Measured at 051f402 on 2026-08-26 with this branch applied, where
 `e2e/links.spec.ts` passes 60 and `e2e/case-studies.spec.ts` passes 141
 across chromium, firefox, and webkit.
 

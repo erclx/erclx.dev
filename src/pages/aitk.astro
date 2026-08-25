@@ -244,7 +244,7 @@ const prescriptions = [
           a surface the project never asked for, and a seed that merges rather
           than replaces cannot discard the edits a team made to it. The cost of
           pulling the toolkit forward drops to a command, which is the only
-          version of this a team actually runs.
+          version of this that a team actually runs.
         </p>
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
@@ -371,7 +371,7 @@ const prescriptions = [
           Verification runs on sandbox scenarios rather than unit tests. Each
           scenario provisions an isolated project state anchored to a baseline
           git ref, and a disposable GitHub remote lets the skills that depend on
-          the GitHub CLI run end to end, including opening a pull request,
+          <code class="font-mono">gh</code> run end to end, including opening a pull request,
           merging it, and editing its body. Naming a scenario through an
           environment variable routes it non-interactively, so CI and an agent
           exercise the same path a person would.
