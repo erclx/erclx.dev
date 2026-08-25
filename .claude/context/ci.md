@@ -26,7 +26,7 @@ Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merg
 | Shell     | `bun run check:shell`   | shellcheck passes at warning level      |
 | Typecheck | `bun run typecheck`     | `astro check` passes                    |
 | Lint      | `bun run lint`          | ESLint passes with zero warnings        |
-| Tests     | `bun run test:coverage` | Vitest passes with coverage thresholds  |
+| Tests     | `bun run test:coverage` | Vitest passes and coverage is reported  |
 | Build     | `bun run build`         | `astro build` succeeds                  |
 | E2E       | `bun run test:e2e`      | Playwright passes on one engine per job |
 | Deploy    | `wrangler pages deploy` | Uploads `./dist/` to Cloudflare Pages   |
@@ -36,6 +36,24 @@ For the deploy mechanism, custom domain wiring, and secrets, see `.claude/contex
 ## Runtime
 
 The workflow installs Node 22 via `actions/setup-node` before Bun. cspell v10 and several dev tools require Node ≥22.18. Bun does not satisfy this requirement on its own because it ships its own runtime, not a system Node.
+
+## The unit lane guards a comment block that never closes
+
+A comment in `src/components/site/experience/cast/motion.css` closed one line early, which left the prose after it as live stylesheet source. A parser reads that prose as a selector, consumes to the next brace, and swallows the rule behind it whole. The swallowed rule carried the positioning ancestor and the stacking context a shipped feature depended on, and every check stayed green, because nothing in the pipeline parses CSS and a stylesheet error-recovers rather than failing. The defect survived four branches, and a person running a parser by hand during review is what found it.
+
+`src/test/stylesheet-comments.test.ts` counts openers against terminators across every `.css` and `.astro` file under `src/` and fails when a file does not balance. Twenty-eight files carry block comments, two stylesheets and twenty-six components, and all of them balance. The walk enumerates the tree rather than reading a list, since a list goes stale the first time somebody adds a stylesheet and going stale is silent, which is the failure this check is about.
+
+Counting is the narrow check for the defect that shipped rather than a general parse guard. A general one has nothing to compare a parse against except the file itself, the testing standard bars a snapshot, and a heuristic rejecting a selector for looking like prose carries a false-positive risk on every stylesheet written after it. A unit test rather than a linter, because a dedicated stylesheet linter brings a configuration surface for one assertion.
+
+Five holes are accepted and written down beside the fixtures. An opener inside a string or a `url()` is counted and is not one, the same hazard reaches JavaScript and regular expressions in a component file, a line comment has no terminator and cannot be covered at all, a block closed early and reopened later still balances, and a bare three-character opener whose closing slash doubles as its own terminator balances while closing nothing.
+
+Cases exist beyond the balance check because the check has to be able to fail. One walks the tree and asserts every file balances, and one hands the counter the shape the defect actually had and asserts it reports the imbalance. A third guards the walk itself, since a narrowed walk passes every balance case while reading a fraction of the tree.
+
+That third one reads a floor per extension rather than zero, and the difference is the whole guard. A walk narrowed to one stylesheet and one component satisfies mere presence on both extensions and leaves the balance check reading two files of twenty-eight, which is where the twenty-six components sit guarded at one of them. The floors carry the count each extension held when the guard was written, so a file added passes and a walk that quietly narrows fails. They are written out rather than derived, because the walk is the thing under guard and a floor read from it would move with every narrowing it exists to report. Raise a floor once the tree outgrows it, and lower one only alongside the deletion that earned it.
+
+A floor over the commented subset rather than the walked population is the version to avoid, and it shipped for one commit. Counting files that contain an opener and flooring that at twenty-eight left no headroom, since all twenty-eight carry one today, so deleting the last comment from a component failed a check about comment balance on a change that balanced fine. The per-extension floors already sum to that same twenty-eight, which left the subset floor asserting only that no file ever loses its comments. Floor what the walk reaches rather than what the files happen to contain.
+
+`bun run test:coverage` reports coverage and gates on nothing. `vitest.config.ts` declares no thresholds, so the `Tests` row above states what the command asserts rather than a threshold that would be a policy decision about every future file in the lane.
 
 ## The e2e job is a matrix over the three engines the config defines
 
