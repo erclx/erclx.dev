@@ -324,7 +324,10 @@ test.describe('elevated surfaces', () => {
         // Bounded rather than open, so a bar that never transitions fails here
         // instead of hanging until the whole spec times out.
         const deadline = Date.now() + 2000
-        while (seen.size === 0 && Date.now() < deadline)
+        while (
+          !(seen.has('left') && seen.has('border-top-left-radius')) &&
+          Date.now() < deadline
+        )
           await new Promise((settle) => setTimeout(settle, 50))
         return [...seen]
       }, condensed)
