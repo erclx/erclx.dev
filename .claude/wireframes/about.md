@@ -21,13 +21,13 @@ About me
                                             aircraft come to rest, nose
                                             down, at the column's edge
 
-I was born in Vietnam and came to Sweden in 2006, when I was six. First
-Borås, then south to Värnamo, which is where I grew up before Gothenburg.
+I was born in Vietnam and came to Sweden in 2006, when I was six. I
+grew up in Värnamo before moving to Gothenburg.
 
-Outside work I listen to a lot of music, enough that one year it added up
-to over 4,000 hours, and I have played guitar since I was twelve.
-Otherwise I try to get some calisthenics in, or play tennis and badminton
-when the weather allows.
+Outside work I listen to a lot of music and have played guitar since I
+was twelve. I once spent over 4,000 hours listening to music in a
+year. Otherwise I try to get some calisthenics in or play tennis and
+badminton.
 
 Most summers I travel, lately London, Copenhagen, Prague, and Hanoi.
   ← three body paragraphs, muted, at the page measure
