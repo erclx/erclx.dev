@@ -93,7 +93,7 @@ const toolPairings = [
         <p
           data-fade          class="text-muted-foreground text-lede mt-4"
         >
-          Live agent triages Swedish job ads against any profile.
+          A live agent that triages Swedish job ads against any profile.
         </p>
         <ul
           data-fade          class="mt-6 flex flex-wrap gap-x-6"
@@ -151,9 +151,9 @@ const toolPairings = [
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
         >
-          Job boards rank for the platform's monetization, not the candidate's
-          fit. Profile-driven match should be a first-class operation, not a
-          retrieval-as-a-feature bolt-on.
+          Job boards rank for what the platform earns from rather than for
+          what fits the candidate. Profile-driven match is a first-class
+          operation here rather than a filter bolted onto a search box.
         </p>
       </div>
     </section>
@@ -166,7 +166,7 @@ const toolPairings = [
         <p
           data-fade          class="text-foreground text-lede mt-6"
         >
-          Two postures share one agent shell. Same prompt, same tools,
+          Two postures share one agent shell: same prompt, same tools,
           different data path.
         </p>
 
@@ -231,9 +231,9 @@ const toolPairings = [
         <p
           data-fade          class="text-muted-foreground text-body mt-8"
         >
-          Deploy runs against the JobTech taxonomy and JobSearch APIs. Local
-          CLI and local dev run the hybrid retrieval stack against a SQLite
-          corpus.
+          The deployed posture runs against the JobTech taxonomy and
+          JobSearch APIs. The local CLI and local dev run the hybrid
+          retrieval stack against a SQLite corpus.
         </p>
 
         <dl
@@ -252,9 +252,9 @@ const toolPairings = [
         <p
           data-fade          class="text-muted-foreground text-body mt-8"
         >
-          The mock-replay path lets a recruiter try the surface in five
-          seconds. BYOK lets a technical visitor drive the agent with their
-          own key. Most agent demos punt on both.
+          Two entry paths carry the surface. Mock replay lets a recruiter
+          drive the agent in five seconds with no key. BYOK lets a technical
+          visitor drive it with their own. Most agent demos offer neither.
         </p>
       </div>
     </section>
@@ -267,10 +267,31 @@ const toolPairings = [
         <p
           data-fade          class="text-foreground text-lede mt-6"
         >
-          50-query Swedish golden set against a 59-ad corpus from Spotify,
+          Both paths depend on the same thing underneath: finding the right
+          ad. That was measured rather than assumed.
+        </p>
+        <p
+          data-fade          class="text-muted-foreground text-body mt-6"
+        >
+          Measured on a 50-query Swedish golden set against a 59-ad corpus
+          drawn from Spotify,
           Klarna, Volvo Group, Volvo Cars, Ericsson, HT Engineering, Stig
           Ericsson Bil, Montico, and Isaksson Rekrytering. Embeddings from
-          <code class="font-mono">intfloat/multilingual-e5-base</code>.
+          <a
+            href="https://huggingface.co/intfloat/multilingual-e5-base"
+            {...getLinkTargetAttributes(
+              'https://huggingface.co/intfloat/multilingual-e5-base',
+            )}
+            class="text-accent underline underline-offset-[3px] decoration-[1px] font-mono"
+          >intfloat/multilingual-e5-base</a>.
+        </p>
+
+        <p
+          data-fade          class="text-muted-foreground text-body mt-6"
+        >
+          Three numbers repeat through this section: P@1 asks whether the
+          top result is right, R@10 asks whether the right one is somewhere
+          in the top ten, and p95 ms is the 95th-percentile query latency.
         </p>
 
         <figure
@@ -310,9 +331,10 @@ const toolPairings = [
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
         >
-          Dense alone wins P@1 by 6 points over hybrid on this corpus. Hybrid
-          earns its place on adversarial queries where exact keyword matches
-          dominate (model names, employer jargon). An RRF score floor at
+          Dense alone takes P@1 by 6 points over hybrid on this corpus.
+          Hybrid earns its place on adversarial queries where an exact
+          keyword carries the match, such as a model name or employer
+          jargon. An RRF score floor at
           <code class="font-mono">JOBTRIAGE_RRF_FLOOR=0.025</code>
           suppresses low-relevance noise at the API boundary.
         </p>
@@ -352,13 +374,13 @@ const toolPairings = [
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
         >
-          English-only MiniLM loses 11 points of recall@10 against e5-base on
-          the Swedish golden set. e5-large lifts P@1 by another 8 points over
-          e5-base but gives back two points of recall@10, so e5-base ships as
-          the balanced default. The MiniLM dense numbers run slightly
-          suppressed because the e5 prefix tokens it never trained on read as
-          noise. The multilingual encoder choice was load-bearing, not
-          aesthetic.
+          English-only MiniLM gives up 11 points of recall@10 against
+          e5-base on the Swedish set. e5-large lifts P@1 by another 8 points
+          over e5-base and hands back two points of recall@10, so e5-base
+          ships as the balanced default. The MiniLM dense numbers run
+          slightly suppressed because the e5 prefix tokens it never trained
+          on read as noise. The encoder choice carries the result rather
+          than decorating it.
         </p>
       </div>
     </section>
@@ -371,9 +393,15 @@ const toolPairings = [
         <p
           data-fade          class="text-foreground text-lede mt-6"
         >
-          Spatial tool pairings are pinned in the system prompt. After every
-          data tool the agent fires a spatial tool. The canvas is the answer,
-          not a decoration.
+          Retrieval finds the right ad. What the agent does with it once
+          found is a separate problem.
+        </p>
+        <p
+          data-fade          class="text-muted-foreground text-body mt-6"
+        >
+          Spatial tool pairings are pinned in the system prompt, so the
+          agent fires a spatial tool after every data tool and the canvas
+          answers the question rather than illustrating it.
         </p>
 
         <dl
@@ -399,8 +427,8 @@ const toolPairings = [
           data-fade          class="text-muted-foreground text-body mt-8"
         >
           React Flow surfaces four canonical views: triage clusters, deadline
-          timeline, side-by-side compare, and pinned shortlist. Custom nodes
-          per view, not the React Flow defaults.
+          timeline, side-by-side compare, and pinned shortlist. Each view
+          carries custom nodes rather than the React Flow defaults.
         </p>
 
       </div>

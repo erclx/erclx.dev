@@ -3,6 +3,9 @@ backticked
 BHSoft
 blocklist
 blocklists
+blockification
+blockified
+blockifies
 borderless
 Borås
 BYOK
@@ -36,5 +39,6 @@ telematics
 undercount
 ungated
 Värnamo
+WCAG
 woah
 wordmark

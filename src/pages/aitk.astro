@@ -244,7 +244,7 @@ const prescriptions = [
           a surface the project never asked for, and a seed that merges rather
           than replaces cannot discard the edits a team made to it. The cost of
           pulling the toolkit forward drops to a command, which is the only
-          version of this a team actually runs.
+          version of this that a team actually runs.
         </p>
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
@@ -325,8 +325,8 @@ const prescriptions = [
           self-review asks whether it built the plan and whether it passes, and
           it is blind to its own misreadings, because the same misreading wrote
           both the code and the review. The orchestrator's review is a fresh
-          session carrying every sibling branch in flight, so it can question
-          the plan itself.
+          session carrying the roadmap and every sibling branch in flight, so
+          it can question the plan itself.
         </p>
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
@@ -347,6 +347,12 @@ const prescriptions = [
         <p
           data-fade          class="text-foreground text-lede mt-6"
         >
+          That only works if agents can drive the same tooling without a
+          person sitting at the keyboard.
+        </p>
+        <p
+          data-fade          class="text-muted-foreground text-body mt-6"
+        >
           Every command has a non-interactive path, every listing emits JSON on
           stdout, and the framed terminal UI goes to stderr. A skill shelling
           out to the CLI can treat stdout as data without parsing around a
@@ -365,7 +371,7 @@ const prescriptions = [
           Verification runs on sandbox scenarios rather than unit tests. Each
           scenario provisions an isolated project state anchored to a baseline
           git ref, and a disposable GitHub remote lets the skills that depend on
-          the GitHub CLI run end to end, including opening a pull request,
+          <code class="font-mono">gh</code> run end to end, including opening a pull request,
           merging it, and editing its body. Naming a scenario through an
           environment variable routes it non-interactively, so CI and an agent
           exercise the same path a person would.

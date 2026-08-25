@@ -57,11 +57,18 @@ for (const route of ROUTES) {
     await page.setViewportSize(PHONE)
     await page.goto(route)
 
+    // A link sitting inline in a sentence is exempt: WCAG's own target-size
+    // criterion carries the same exception, since inflating a word inside a
+    // paragraph to 44px breaks the line it sits in. Every control on this site
+    // built to hit the minimum declares `inline-flex` or a block display for
+    // that reason, so reading the computed display is the same "does it have
+    // its own box" test the focus-ring and hover treatments already use.
     const undersized = await page
       .locator('a:visible, button:visible')
       .evaluateAll(
         (elements, minimum) =>
           elements
+            .filter((element) => getComputedStyle(element).display !== 'inline')
             .map((element) => {
               const box = element.getBoundingClientRect()
               const label =
@@ -80,6 +87,52 @@ for (const route of ROUTES) {
       )
 
     expect(undersized).toEqual([])
+
+    // The filter above reads computed display, which only a control sitting
+    // as a direct child of its own flex row (the footer resume link, the
+    // site-bar button, the route-bar home link) gets blockified into a box
+    // regardless of what it declares. Every other control here sits inside an
+    // `<li>` or a plain block container, so nothing blockifies it and a
+    // regression from `inline-flex` to `inline` computes exactly as declared.
+    // The class-list check below is what catches that on those controls,
+    // read from the class list rather than from a computed style a parent
+    // sometimes distorts and sometimes does not.
+    const boxDisplayClasses = [
+      'flex',
+      'inline-flex',
+      'block',
+      'inline-block',
+      'grid',
+      'inline-grid',
+    ]
+    const sizedWithoutOwnBox = await page
+      .locator('a:visible, button:visible')
+      .evaluateAll(
+        (elements, boxClasses) =>
+          elements
+            .filter((element) =>
+              Array.from(element.classList).some(
+                (className) =>
+                  className === 'min-h-11' || className === 'min-w-11',
+              ),
+            )
+            .filter(
+              (element) =>
+                !Array.from(element.classList).some((className) =>
+                  boxClasses.includes(className),
+                ),
+            )
+            .map((element) => {
+              const label =
+                element.getAttribute('aria-label') ??
+                element.textContent?.trim().slice(0, 40) ??
+                ''
+              return `${label} (${element.className})`
+            }),
+        boxDisplayClasses,
+      )
+
+    expect(sizedWithoutOwnBox).toEqual([])
   })
 }
 

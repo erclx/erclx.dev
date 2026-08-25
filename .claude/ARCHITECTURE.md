@@ -1296,9 +1296,79 @@ Measured at 10c511a on 2026-08-25 with this branch applied, at 390, 768, 1024,
 1280, 1440, and 1920, where the full suite passes 719 and skips 7 across
 chromium, firefox, and webkit.
 
+### A case-study prose link takes the site's accent, and the tap-target guard learns what an inline link is
+
+No route on the site carried a link inside flowing body prose until the
+Jobtriage, Caret, and diction case studies each needed one, so the treatment
+had no precedent to inherit. Four candidates were served live from
+`/diction` through `src/components/dev/scenarios.astro`, then a composed
+sheet of seven read the two front-runners against three heavier variants.
+Shipped: accent-colored text with an always-on underline, applied as
+Tailwind utilities per link (`text-accent underline underline-offset-[3px]
+decoration-[1px]`) rather than a named CSS class, matching how the header
+and footer links are styled directly rather than through a shared component
+class.
+
+Bold variants lost on the sheet for introducing a weight this site's body
+prose carries nowhere else, headings excepted. A pointer-hover-only
+underline lost for failing the same bar an accessible link within a
+paragraph has to clear at rest: WCAG's caution against color as the only
+visual means of conveying information points at a link a reader can
+identify without relying on color perception alone, and a link that only
+declares itself under a cursor fails a keyboard or touch reader outright.
+
+The four new links then failed `e2e/links.spec.ts`'s phone tap-target guard,
+which asserted every `a`/`button` clears 44px on both axes. A word sized to
+its own text inside a sentence cannot clear that without inflating the line
+it sits in, which is exactly the case WCAG's own criterion exempts. The
+guard now skips an element whose computed `display` resolves to `inline`,
+checked against every other link on the site before trusting it: each one
+built to hit the minimum already declares `flex` or `inline-flex`, which is
+what makes the exemption a test for "does this control have its own box"
+rather than a blanket carve-out that could swallow a real regression.
+
+That skip reads computed display, which drops every inline element from the
+survey rather than recording which ones it dropped, so a control regressing
+from `inline-flex` to plain `inline` would go uncounted rather than fail.
+Whether computed display can still catch that regression turns on what sits
+between the control and its flex parent, checked control by control rather
+than assumed from one. `footer.astro:48`, `site-bar.astro:92`'s button, and
+`route-bar.astro:46` are direct children of their own flex row, so a flex
+parent blockifies their display and they read as a box whatever class they
+carry, the same as the résumé link this was first verified against. Every
+other control, `header.astro:154`, `project-card.astro:143`, `route-foot.astro:34`,
+and the five route-page links including `jobtriage.astro:107`, sits inside an
+`<li>` or a plain block container instead, so the anchor itself is never a
+flex item and nothing blockifies it: a class regression there computes
+exactly as declared, and the prior computed-display check would have caught
+it. The class-list assertion is load-bearing on most of these controls
+rather than on a few, which is the reverse of what an earlier version of
+this entry claimed. The guard now asserts the exempt set directly, reading
+the class list of every element carrying `min-h-11` or `min-w-11` and
+failing if none of `flex`, `inline-flex`, `block`, `inline-block`, `grid`,
+or `inline-grid` is present, which does not depend on what a parent's
+layout mode does to the computed value. Verified against the same
+regression before trusting it: reverting the class list check reintroduces
+the failure.
+
+The assertion still selects what it checks by the same two classes a
+regression could remove together. A control that drops `min-h-11` and
+`inline-flex` in the same edit matches neither the class-list assertion nor
+the computed-display one, and falls back to the size check alone, where an
+`<li>`-nested control now computing `inline` is exempted again. Left as a
+gap rather than closed with more code, since every current call site keeps
+the two classes together and nothing has needed them to move independently.
+
+Measured at a7b1c04 on 2026-08-25 with this branch applied, where
+`e2e/links.spec.ts` passes 60 and `e2e/case-studies.spec.ts` passes 141
+across chromium, firefox, and webkit. Re-verified against `3120b0a` on
+2026-08-26, where the corrected finding above and the class-list guard both
+held.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
 - `.claude/aitk.json` records a governance commit that lives only on an unmerged toolkit branch, because the Astro glob fix was synced from a local checkout rather than a release. Running `aitk gov sync` against released 0.98.0 before erclx/aitk#1006 merges reverts all four `ui/` globs and rewrites the four hashes to match, so the record stays internally consistent while the fix disappears with nothing reporting it. Re-sync from a released build once that pull request ships, and check the four `paths:` blocks carry `'**/*.astro'` before trusting a sync run in the meantime.
 - The governance install carried two stack members short until 2026-08-15: `556-groundwork` and `557-intake`, both shipped by the base stack and both named in `.claude/aitk.json` while absent from disk. `aitk gov sync` refreshes rules already present and adds none, so the gap survived every sync and closed only under `aitk gov install`. A sync alone does not prove the install is complete, and the signal to read is a recorded path with no file behind it rather than the rule count on its own. A recorded path whose file exists with a different hash is a separate state and not that signal: `.claude/standards/context.md`, `prose.md`, and `wireframes.md` all mismatch today, which is the project customization § Agent context split by load cost describes rather than a defect.
 - `aitk gov install` re-adds `440-surface-capture` every time it runs, and the decision below declines it. No mechanism exists to opt a project out of one rule its stack ships, so the decline holds only while each install is followed by removing that file and its record entry. Check for it after any install.
+- `caret.astro` and `stackr.astro` sync against `career/assets/portfolio/caret.md` and `stackr.md`, which do not exist on the career repository's `main` today. Both files, along with the two opening sentences and the `Fix Session Timeout` example they carry, are added by `erclx/career#210`, still open. Until that pull request merges, the sync target for those two routes can still move, and a reword to either file on its branch arrives as fresh drift here with nothing reporting it. Re-check both files against `main` once `erclx/career#210` lands, and until then read the branch it ships from rather than assuming it is `main`.
