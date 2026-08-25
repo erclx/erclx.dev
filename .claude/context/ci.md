@@ -107,6 +107,16 @@ Playwright's own scroll is the case with nothing to pass. It brings an off-scree
 
 Verified 2026-08-21 at one worker, the count `playwright.config.ts` pins under CI: three consecutive green webkit legs, plus chromium and firefox. Run a local leg one engine at a time at `--workers=1` when the question is whether something is broken, because the default count adds contention this repair does not remove. The shader paint case fails under a three-engine parallel run and passes at one worker, which is that contention rather than a defect in the surface it reads.
 
+## The landing page runs at a third of a route's frame rate
+
+The landing page mounts the hero shader and a project route does not, so the two pages do not share a frame budget under a headless composite. Measured on 2026-08-25 with a bare `requestAnimationFrame` loop carrying no style reads, `/` holds a 44.9ms mean frame against `/jobtriage` at 16.7ms, which is 22fps against 60. The worst frame runs 66.6ms on the landing page and 16.8ms on the route.
+
+Two things follow for anything measured on the landing page. Any scroll-driven state coalesced to a frame lands about one frame later there than on a route, which is roughly 45ms rather than 17ms, so a timing figure calibrated on a route is too tight when carried across. And any assertion sampling a value at a fixed elapsed time is betting on that budget: a `border-radius` read 120ms into the site bar's 320ms shape transition returned 0 on WebKit for both surfaces and 705 on Chromium for one, while every engine was easing correctly.
+
+Read a landing-page animation off an event the platform emits, or off an invariant that holds whatever the cadence, rather than off a frame count or a fixed pause. `transitionrun` registered before the trigger is the form that held across all three engines. Arm it against a settled starting state, since a trigger sent while the opposite leg still runs is a reversal, and WebKit performs one in place and fires nothing.
+
+This is a fact about a headless software composite rather than about a visitor's machine, where the shader runs on the GPU. It has not been measured on real hardware, so treat it as a constraint on the harness rather than as a performance claim about the page.
+
 ## The pull request trigger carries no branch filter
 
 `on: pull_request:` with a `branches: [main]` filter fires no job at all on a pull request targeting anything else. Measured 2026-08-21 against a four-deep stack: the bottom pull request reported five jobs and the three above it reported no checks on their branches, so two of the four could be merged having never been checked until their base landed. The filter also serialized every run in the stack behind a merge.
