@@ -1624,9 +1624,9 @@ test('a chip wears the same edge arriving as it does under a pointer', async ({
   const edge = chip.locator('.experience-chip')
 
   // The row's own arrival wave lights this chip once as it enters view, so
-  // spend that window before reading a resting value rather than racing a
-  // manual data-lit toggle against it.
-  await watchChipLights(page, 2_000)
+  // wait for it to finish before reading a resting value rather than racing
+  // a manual data-lit toggle against it.
+  await expect.poll(() => page.locator('[data-chip][data-lit]').count()).toBe(0)
 
   const resting = await paintedEdge(edge)
   const accent = await paintedAccent(page)
@@ -1641,9 +1641,6 @@ test('a chip wears the same edge arriving as it does under a pointer', async ({
   await expect.poll(() => paintedEdge(edge)).toBe(resting)
   await chip.hover()
   await expect.poll(() => paintedEdge(edge)).toBe(arriving)
-  const pointed = await paintedEdge(edge)
-
-  expect(arriving).toBe(pointed)
 })
 
 test('a pointed-at rail row takes the accent edge the chip and dock take', async ({
