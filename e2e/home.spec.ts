@@ -1615,12 +1615,6 @@ const paintedAccent = (page: Page) =>
     return `${red},${green},${blue}`
   })
 
-// Both states cross to their edge over a transition, and a computed style read
-// on the frame the state changes reports the value being left rather than the
-// one being taken. Longer than the slowest of the two, which is the arrival's
-// own 260ms swell.
-const EDGE_SETTLE_MS = 500
-
 test('a chip wears the same edge arriving as it does under a pointer', async ({
   page,
 }) => {
@@ -1629,14 +1623,24 @@ test('a chip wears the same edge arriving as it does under a pointer', async ({
   const chip = page.locator('[data-chip]').first()
   const edge = chip.locator('.experience-chip')
 
+  // The row's own arrival wave lights this chip once as it enters view, so
+  // spend that window before reading a resting value rather than racing a
+  // manual data-lit toggle against it.
+  await watchChipLights(page, 2_000)
+
+  const resting = await paintedEdge(edge)
+  const accent = await paintedAccent(page)
+
   await chip.evaluate((element) => element.setAttribute('data-lit', 'true'))
-  await page.waitForTimeout(EDGE_SETTLE_MS)
+  await expect.poll(() => paintedEdge(edge)).toBe(accent)
   const arriving = await paintedEdge(edge)
 
   await chip.evaluate((element) => element.removeAttribute('data-lit'))
-  await page.waitForTimeout(EDGE_SETTLE_MS)
+  // Settled on the resting edge rather than a duration, so the hover below
+  // starts a fresh transition instead of reversing one still in flight.
+  await expect.poll(() => paintedEdge(edge)).toBe(resting)
   await chip.hover()
-  await page.waitForTimeout(EDGE_SETTLE_MS)
+  await expect.poll(() => paintedEdge(edge)).toBe(arriving)
   const pointed = await paintedEdge(edge)
 
   expect(arriving).toBe(pointed)
@@ -1655,7 +1659,6 @@ test('a pointed-at rail row takes the accent edge the chip and dock take', async
   await page.waitForSelector('[data-section-nav][data-revealed="true"]')
   const row = page.locator('.section-nav-link:not([data-active])').first()
   await row.hover()
-  await page.waitForTimeout(EDGE_SETTLE_MS)
 
-  expect(await paintedEdge(row)).toBe(await paintedAccent(page))
+  await expect.poll(() => paintedEdge(row)).toBe(await paintedAccent(page))
 })
