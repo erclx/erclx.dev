@@ -1221,9 +1221,13 @@ The rows keep their straight border until the script has drawn, so the line
 degrades to what it always was rather than to nothing.
 
 An earlier arm carrying the gradient on a straight 2px rule is retired with the
-curve, but its finding stands and reaches the shipped path: the fade sits at 90%
-of the span and the dog occupies 78 to 93% of it, so the end fade is weakest
-exactly where the paws grip.
+curve, and the fade band it left behind reaches the shipped path unevenly. The
+character's own span is not the figure that matters, since the two paws that
+grip the line sit narrower than the body above them: read off the paw
+ellipses rather than the outer silhouette, the trailing paw clears the 90%
+mark at 1280 (87.2% to 89.4%, inside the solid band) and crosses it at 390
+(89.5% to 93.7%, fading to about 63% opacity at its own tip). The taper is
+real at the narrow end of the ramp and absent from 1024 up.
 
 Measured at 10c511a on 2026-08-25 with this branch applied, at 390, 768, 1024,
 1280, 1440, and 1920, where the full suite passes 719 and skips 7 across
