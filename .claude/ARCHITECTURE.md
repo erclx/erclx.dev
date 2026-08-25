@@ -1178,6 +1178,77 @@ dropped out of scope on 2026-08-24 rather than shipping as unnecessary rework.
 `.claude/REQUIREMENTS.md` records why analytics left the non-goals list on the
 same date.
 
+### The closing rule is a contour, and what clips the dog is the line itself
+
+The looking-for section's hairline was the landing page's only standalone rule,
+and it drew at 1.115:1 in light and 1.188:1 in dark against the page. The page
+ground behind it, inside the reading column where `contentDamp` has taken it,
+measures 1.036:1 and 1.010:1 at 1.3% and 0.0% coverage. **The line was louder
+than the ground it sat on and thinner than every contour drifting past it**, so
+it read as table chrome on a page that had stopped drawing lines.
+
+Read "match the field" carefully, because it points two ways and one of them
+erases the line. Matching the ground actually behind it means going quieter
+than 1.036:1, which is invisible. What ships instead borrows the hero field's
+own contour peak, read off painted pixels at rgb(198,193,186) and rgb(88,84,79),
+which measure 1.632:1 and 2.359:1 at a median 2px. That makes the rule louder
+rather than subtler, and it is the direction the section wanted.
+
+The curve is the decision the section could not have taken on its own, because
+the dog perched on that rule is clipped by a window whose bottom edge sits at
+0.00px from it at every width from 390 to 1920, and his paws overlap it by
+3.36px. A flat clip under a curved line drops that grip everywhere the curve
+leaves its midline. The window is therefore clipped by a polygon generated from
+the same geometry as the drawn path, so the line he grips and the edge he is cut
+against cannot disagree.
+
+**The window's own `overflow: hidden` had to go with it, and that is the half
+that shipped broken first.** Both mechanisms clip, and the tighter wins at every
+point, so `clip-path` could only ever remove more of him and never reveal him:
+every crest detached the paws. Deleting the clip entirely moved 0.06% of the
+rendered bytes with the overflow left on, against 2.93% with it off. A check
+reading the computed `clipPath` saw a healthy polygon in both states.
+
+Amplitude is read off the stage's own width rather than fixed, and 390 is what
+decides it rather than desktop. The dog spans 72 to 100% of a shorter rule there
+against 78 to 93% from 1024 up, so the curve compresses under him exactly where
+there is least room: his local tilt runs about 1.06 times the amplitude, against
+paws about 10.4px tall. A fixed 16px reads as terrain at 1280 and tips him
+visibly at 390, and a fixed 11px keeps him level everywhere while drawing a
+curve barely worth having at 1920. The shipped ramp runs 5px to 16px across a
+342px to 768px stage, measuring 9.5px of peak-to-peak travel at 390 and 30.4px
+from 1024 up, with his tilt at 5.3px at both ends.
+
+The curve is a sum of three incommensurate sines rather than one. The field's
+own adjacent-contour gaps measure p25 3px against p90 120px, so its spacing
+varies continuously and a regular period is the one thing that would not read as
+belonging to it. A denser arm at 1.9x the frequency was built and rejected on
+that reading: it reads as a wobble where the field's lines are long and lazy.
+Clearance was never the constraint, since even a 22px amplitude leaves 15.8px to
+the first row's text.
+
+The rows keep their straight border until the script has drawn, so the line
+degrades to what it always was rather than to nothing.
+
+An earlier arm carrying the gradient on a straight 2px rule is retired with the
+curve, and the fade band it left behind reaches the shipped path unevenly. The
+character's own span is not the figure that matters, since the two paws that
+grip the line sit narrower than the body above them: read off the paw
+ellipses rather than the outer silhouette, the trailing paw clears the 90%
+mark at 1280 (87.2% to 89.4%, inside the solid band) and crosses it at 390
+(89.5% to 93.7%, fading to about 63% opacity at its own tip). The taper does
+not shrink steadily across that range. The window's own size steps at 768,
+from `w-24` at `sm:right-8` to `w-28` at `md:right-14`, so the trailing paw
+sits worse a pixel below that step than at 390: at 767 it spans 90.1% to 92.2%,
+fully inside the fade at roughly 78% opacity at its own tip, and at 768 the
+wider window clears the band entirely at 85.8% to 88.3%. The taper is real
+below 768 and absent at 768 and above, rather than fading out gradually
+between 390 and 1024.
+
+Measured at 10c511a on 2026-08-25 with this branch applied, at 390, 768, 1024,
+1280, 1440, and 1920, where the full suite passes 719 and skips 7 across
+chromium, firefox, and webkit.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.

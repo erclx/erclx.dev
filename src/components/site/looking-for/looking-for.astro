@@ -76,6 +76,33 @@ const criteria = [
     </p>
 
     <div class="looking-stage relative mt-7">
+      {/* The rule is a contour rather than a border. The dog's window takes its
+          clip from the same generated geometry, so the line he grips and the
+          edge he is cut against cannot disagree.
+
+          It carries no `d` until the script runs, and the rows keep their
+          border until then, so a reader with no JS gets the straight line
+          rather than no line at all. */}
+      <svg
+        class="looking-rule-curve"
+        aria-hidden="true"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="looking-rule-fade" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0%" stop-color="var(--rule-ink)" stop-opacity="0" />
+            <stop offset="10%" stop-color="var(--rule-ink)" stop-opacity="1" />
+            <stop offset="90%" stop-color="var(--rule-ink)" stop-opacity="1" />
+            <stop offset="100%" stop-color="var(--rule-ink)" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <path
+          fill="none"
+          stroke="url(#looking-rule-fade)"
+          stroke-width="2"
+          stroke-linecap="round"
+        ></path>
+      </svg>
       {/* A window sitting directly on the rule, clipping whatever hangs below
           it. The rows carried an opaque plate for this instead, which is the
           one surface on the page that hid the ground behind it: every other
@@ -349,6 +376,47 @@ const criteria = [
       }
     }
   }
+  /* The ink is the hero field's own contour peak rather than the border token,
+     measured off painted pixels at rgb(198,193,186) in light and rgb(88,84,79)
+     in dark. The border it replaces measured 1.115:1 and 1.188:1 against the
+     page, under the 1.632:1 and 2.359:1 the field's lines carry, so the rule
+     was quieter than the ground drifting behind it. */
+  .looking-stage {
+    --rule-ink: rgb(198, 193, 186);
+  }
+  :global(.dark) .looking-stage {
+    --rule-ink: rgb(88, 84, 79);
+  }
+
+  /* It straddles the rows' top edge, so it needs room for the full amplitude
+     on both sides of the line. */
+  .looking-rule-curve {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -20px;
+    height: 40px;
+    width: 100%;
+    overflow: visible;
+    z-index: 11;
+    pointer-events: none;
+  }
+
+  /* The rows hold their straight border until the curve has actually drawn, so
+     the line degrades to what it always was rather than to nothing. */
+  .looking-stage[data-curve='on'] .looking-rows {
+    border-top-color: transparent;
+  }
+  /* The window's own rectangular overflow has to go with it, or it caps the
+     dog at the flat edge and the clip can only ever remove more of him.
+     Measured with the overflow left on, breaking the clip entirely moved 0.06%
+     of the rendered bytes against 2.93% with it off: every crest detached the
+     paws with nothing showing below. The path becomes the sole clip. */
+  .looking-stage[data-curve='on'] .looking-peek-window {
+    overflow: visible;
+  }
+
   /* Measured from the window's own bottom edge, which sits on the rule. Fully
      down is fully clipped, and the visible state shows the top of him with the
      rest cut by the window rather than covered by a plate. */
@@ -410,6 +478,84 @@ const criteria = [
       rows.addEventListener('pointerleave', () => {
         delete stage.dataset.peekDucked
       })
+    }
+
+    // The line is drawn as a path and the dog's window is clipped to that same
+    // path, which is the whole reason a curve is buildable here: the window's
+    // bottom edge IS the rule, measured at 0.00px from it at every width from
+    // 390 to 1920, and the paws overlap it by only 3.36px. A flat clip under a
+    // curved line drops that grip everywhere the curve leaves its midline.
+    const curve = stage.querySelector<SVGSVGElement>('.looking-rule-curve')
+    const path = curve?.querySelector('path')
+    const win = stage.querySelector<HTMLElement>('.looking-peek-window')
+
+    if (curve && path && win) {
+      // Incommensurate terms rather than one sine. The field's own contour
+      // gaps measure p25 3px against p90 120px, so its spacing varies
+      // continuously and a regular period is the one thing that would not
+      // read as belonging to it.
+      const offsetAt = (t: number, amp: number) =>
+        amp *
+        (0.6 * Math.sin(t * Math.PI * 2 * 1.7 + 0.4) +
+          0.3 * Math.sin(t * Math.PI * 2 * 3.1 + 1.9) +
+          0.25 * Math.sin(t * Math.PI * 2 * 0.9 + 3.3))
+
+      /**
+       * Amplitude is read off the stage's own width, 342px at a 390 viewport up
+       * to a 768px cap, because no fixed value satisfies both ends.
+       *
+       * The dog spans 72-100% of a shorter rule at 390 against 78-93% from
+       * 1024 up, so the curve compresses under him exactly where there is least
+       * room: his local tilt runs about 1.06x the amplitude, against paws about
+       * 10.4px tall there. A fixed 16px reads as terrain on a desktop and tips
+       * him visibly on a phone, and a fixed 11px keeps him level everywhere at
+       * the cost of a curve barely worth drawing at 1920.
+       */
+      const amplitudeFor = (stageWidth: number) => {
+        const progress = Math.min(1, Math.max(0, (stageWidth - 342) / (768 - 342)))
+        return 5 + 11 * progress
+      }
+
+      const draw = () => {
+        const stageBox = stage.getBoundingClientRect()
+        const amp = amplitudeFor(stageBox.width)
+        const winBox = win.getBoundingClientRect()
+        const width = stageBox.width
+        const mid = 20
+
+        curve.setAttribute('viewBox', `0 0 ${width} 40`)
+
+        const steps = Math.max(64, Math.round(width / 4))
+        const points: string[] = []
+        for (let i = 0; i <= steps; i++) {
+          const x = (i / steps) * width
+          points.push(
+            `${x.toFixed(2)},${(mid + offsetAt(i / steps, amp)).toFixed(2)}`,
+          )
+        }
+        path.setAttribute('d', `M ${points.join(' L ')}`)
+
+        // The same curve again, in the window's own coordinates, as the
+        // region the window keeps. Its bottom edge stops being flat and
+        // becomes the line, so the paws grip wherever the line happens to be.
+        const winLeft = winBox.x - stageBox.x
+        const winW = winBox.width
+        const winH = winBox.height
+        const clip: string[] = ['0px 0px', `${winW.toFixed(2)}px 0px`]
+        const clipSteps = 48
+        for (let i = clipSteps; i >= 0; i--) {
+          const localX = (i / clipSteps) * winW
+          const t = (winLeft + localX) / width
+          clip.push(
+            `${localX.toFixed(2)}px ${(winH + offsetAt(t, amp)).toFixed(2)}px`,
+          )
+        }
+        win.style.clipPath = `polygon(${clip.join(', ')})`
+        stage.dataset.curve = 'on'
+      }
+
+      draw()
+      window.addEventListener('resize', draw)
     }
   }
 </script>
