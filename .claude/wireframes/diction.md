@@ -8,6 +8,8 @@ description: Long-form sub-page at /diction covering the calibration failure, th
 
 Reached from the diction project card on the landing page. Carries six measured figures, which is what separates its layout from the other two case studies. The card that leads here shows the tool running, so this page is where the measurement lands rather than the card.
 
+It opens on a gallery of the app rather than on one still, which is the other thing separating it. Five screenshots sit in a peek carousel: one centred, a sliver of each neighbor either side, and a click on a sliver centres it. A click on the centred one opens the same carousel larger in a dialog. The six charts below it keep the plate-and-caption treatment and are unaffected.
+
 ## All viewports
 
 ```plaintext
@@ -21,6 +23,12 @@ Reached from the diction project card on the landing page. Carries six measured 
 │   against what a native speaker actually sounds like.    │
 │   GitHub                                                 │  ← link row
 │                                                          │
+│  ┌─┐ ┌──────────────────────────────┐ ┌─┐                │  ← peek carousel, breaks out of
+│  │ │ │                              │ │ │                │    the prose column
+│  │ │ │      centred screenshot      │ │ │                │  ← slivers of the neighbors,
+│  └─┘ └──────────────────────────────┘ └─┘                │    dimmed and scaled back
+│           ‹   ● ○ ○ ○ ○   ›                              │  ← arrows and dots, each on a
+│                                                          │    44px target
 │   problem                                                │
 │   I wanted to assess my own English ...                  │  ← the reason, at lede weight
 │   The drill told native speakers they were wrong ...     │  ← the framing, demoted to body
@@ -69,6 +77,16 @@ The section-nav rail sits in the left margin from `xl`, tracking the five sectio
 - The top bar's controls and the rule under them sit at the same measure as the prose, so the frame agrees with the column instead of spanning past it. The foot already closed this way and the bar now matches it.
 - A reader who arrived from the landing page returns to the place they left rather than to the top of it, and the landing page does not replay its reveal animations on the way back. A reader who opened the case study directly lands at the top, since there is nowhere else to return to. Mechanism: `.claude/context/case-study-navigation.md`.
 - Clicking a chart opens it over the page with its caption under it and a close control clear of the image. The whole chart is visible without scrolling, whatever its shape. Escape, the close control, and a click outside all close it, and the page behind stays where it was rather than scrolling under the open panel.
+
+## Screenshot gallery
+
+The opening carousel and the dialog behind it are one carousel rendered twice, so a reader meets one set of rules at both sizes. The centred screenshot is readable, a sliver of each neighbor shows on either side, and clicking a sliver centres it. Clicking the centred one opens the dialog on that same screenshot. Clicking it inside the dialog does nothing, since it has nowhere further to go.
+
+The ends stop rather than wrap, and the first and last centre exactly as the middle three do, so the row reads as a set with two ends rather than a loop. Arrows, dots, a swipe, and the left and right arrow keys all move it, and the keys act on the track whenever focus sits inside the gallery.
+
+Every screenshot is one size, captured at one viewport. That is a constraint on the source rather than a layout rule: the app's sidebar is exactly one viewport tall, so a capture taken longer than the viewport shows it stopping partway down with a gap under it, which reads as a defect in the app.
+
+Distinct from the chart treatment below, and deliberately so. A chart is drawn on paper and wants a light plate and a magnifier. A screenshot is a picture of this app and keeps the page's own dark card. See `.claude/context/case-study-figures.md` for the chart dialog, which is a separate mechanism.
 
 ## Figures
 
