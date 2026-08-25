@@ -24,7 +24,29 @@ import { describe, expect, it } from 'vitest'
  */
 
 /** The extensions that carry block comments in this tree. */
-const COMMENT_BEARING_EXTENSIONS = ['.css', '.astro']
+const COMMENT_BEARING_EXTENSIONS = ['.css', '.astro'] as const
+
+/**
+ * What each extension held when this guard was written, and what the walk has to
+ * keep reaching. A floor rather than a count, so a file added passes and a walk
+ * that quietly narrows fails. Raise a floor once the tree outgrows it, and lower
+ * one only alongside the deletion that earned it.
+ *
+ * Written out rather than derived, because the walk is the thing under guard and
+ * a floor read from it would move with every narrowing it exists to report.
+ */
+const MEASURED_COUNTS: Record<
+  (typeof COMMENT_BEARING_EXTENSIONS)[number],
+  number
+> = {
+  '.css': 2,
+  '.astro': 26,
+}
+
+const MEASURED_TOTAL = Object.values(MEASURED_COUNTS).reduce(
+  (total, count) => total + count,
+  0,
+)
 
 const SOURCE_ROOT = fileURLToPath(new URL('../', import.meta.url))
 
@@ -104,24 +126,27 @@ const CLOSED_WHERE_INTENDED = `/* An aura marks the member rather than lighting 
 const filesWithExtension = (extension: string) =>
   sourceFiles.filter((path) => path.endsWith(extension))
 
-// A walk that reached one extension and not the other passes every balance case
-// below while leaving half the tree unread, which is the silent staleness this
-// file exists to catch arriving through the file's own instrument.
+// A narrowed walk passes every balance case below while reading a fraction of
+// the tree, which is the silent staleness this file exists to catch arriving
+// through the file's own instrument. Both guards here read a floor rather than
+// zero, because one file per extension satisfies mere presence and leaves the
+// twenty-six components guarded at one of them.
 describe('the tree under guard', () => {
-  it('should read a population of files carrying block comments', () => {
+  it('should walk at least the files each extension held when this was written', () => {
+    const belowFloor = COMMENT_BEARING_EXTENSIONS.filter(
+      (extension) =>
+        filesWithExtension(extension).length < MEASURED_COUNTS[extension],
+    )
+
+    expect(belowFloor).toEqual([])
+  })
+
+  it('should find a block comment in at least as many files as carried one', () => {
     const carryingComments = sourceFiles.filter((path) =>
       readFileSync(path, 'utf8').includes('/*'),
     )
 
-    expect(carryingComments.length).toBeGreaterThan(0)
-  })
-
-  it('should reach every extension that carries block comments', () => {
-    const unreached = COMMENT_BEARING_EXTENSIONS.filter(
-      (extension) => filesWithExtension(extension).length === 0,
-    )
-
-    expect(unreached).toEqual([])
+    expect(carryingComments.length).toBeGreaterThanOrEqual(MEASURED_TOTAL)
   })
 })
 
