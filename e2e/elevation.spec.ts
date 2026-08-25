@@ -248,6 +248,98 @@ test.describe('elevated surfaces', () => {
     expect(drawn.borderColor).not.toBe('rgba(0, 0, 0, 0)')
   })
 
+  // The shape both bars contract into is declared once, and a component
+  // redeclaring `transition` on the ground replaces that list rather than
+  // adding to it. The landing bar did, asking for its ground's opacity fade,
+  // and reset `transition-property` to `opacity` alone: measured at 1280
+  // across 31 frames, it held 2 distinct radius values against a route's 21,
+  // so the shape changed in one frame on the surface a reader meets first.
+  //
+  // Read off the transition events rather than off a sampled radius or a
+  // snapshot of what is running. Both of those race the page: the landing page
+  // runs the hero shader and ticks at 22fps against a route's 60 under a
+  // headless composite, so a radius read at 120ms returned 0 on WebKit for
+  // both surfaces and 705 on Chromium for one, and a `getAnimations` snapshot
+  // taken at a fixed pause missed the landing bar on WebKit against the built
+  // preview while passing against the dev server. An event registered before
+  // the trigger cannot be missed for arriving early or late.
+  for (const surface of [
+    { name: 'the landing bar', path: '/' },
+    { name: "a route's bar", path: '/jobtriage' },
+  ]) {
+    test(`${surface.name} eases between its two shapes`, async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 900 })
+      await page.goto(surface.path)
+
+      const ground = page.locator('[data-bar-ground]').first()
+      await expect(ground).toHaveCount(1)
+      const bar = ground.locator('xpath=..')
+
+      // The landing bar condenses past the hero's own height and a route's
+      // past the top of the page, so each is driven from its own gate rather
+      // than from one scroll distance that would miss one of them.
+      const heroHeight = await page.evaluate(
+        () =>
+          document
+            .querySelector('[data-section="header"]')
+            ?.getBoundingClientRect().height ?? 0,
+      )
+      const condensed = surface.path === '/' ? heroHeight + 420 : 400
+      const expanded = surface.path === '/' ? heroHeight + 100 : 100
+
+      // Driving the gate once and waiting on the attribute is what proves the
+      // scroll listener is attached. A fixed pause instead stands in for that
+      // and is what a loaded machine makes too short.
+      await page.evaluate(
+        (top) => window.scrollTo({ top, behavior: 'instant' }),
+        condensed,
+      )
+      await expect(bar).toHaveAttribute('data-condensed', 'true')
+      await page.evaluate(
+        (top) => window.scrollTo({ top, behavior: 'instant' }),
+        expanded,
+      )
+      await expect(bar).not.toHaveAttribute('data-condensed', 'true')
+
+      // Settled on the shape rather than on the attribute, because the leg
+      // back to the full-width state is itself a transition. Registering while
+      // it still runs makes the trigger a reversal of a live transition rather
+      // than the start of one, and WebKit reversed in place and announced
+      // nothing: the guard collected an empty set on a bar that was easing
+      // correctly.
+      await expect
+        .poll(() =>
+          ground.evaluate(
+            (element) => getComputedStyle(element).borderTopLeftRadius,
+          ),
+        )
+        .toBe('0px')
+
+      const ran = await ground.evaluate(async (element, top) => {
+        const seen = new Set<string>()
+        element.addEventListener('transitionrun', (event) =>
+          seen.add((event as TransitionEvent).propertyName),
+        )
+        window.scrollTo({ top, behavior: 'instant' })
+        // Bounded rather than open, so a bar that never transitions fails here
+        // instead of hanging until the whole spec times out.
+        const deadline = Date.now() + 2000
+        while (
+          !(seen.has('left') && seen.has('border-top-left-radius')) &&
+          Date.now() < deadline
+        )
+          await new Promise((settle) => setTimeout(settle, 50))
+        return [...seen]
+      }, condensed)
+
+      // Both halves of the shape, because `inset` and `border-radius` are
+      // separate entries in that list and dropping either leaves a bar that
+      // travels without rounding or rounds without traveling.
+      expect(ran).toContain('border-top-left-radius')
+      expect(ran).toContain('left')
+    })
+  }
+
   test('a chart plate stays white in both themes', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
 

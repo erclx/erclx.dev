@@ -217,11 +217,38 @@ body.surface-case-study > header[data-section='header'] {
   }
 }
 
+/* Every term the ground animates on any surface, in one declaration, because
+   `transition` is a shorthand and a component redeclaring it replaces the list
+   rather than adding to it. The landing bar did exactly that: its own rule
+   asked for the ground's opacity fade and reset `transition-property` to
+   `opacity` alone, so the shape below changed in a single frame there while a
+   route eased through it. Measured at 1280 across 31 frames, the landing
+   ground held 2 distinct radius values against the route's 21.
+
+   Specificity is why the component won and why composing in the component is
+   not the repair. Astro scopes a component rule to a `data-astro-cid-*`
+   attribute, so `[data-site-bar] [data-bar-ground]` compiles to three
+   attribute selectors against the one here, and the next component to declare
+   a transition on this element would take the list again. One declaration
+   nothing outranks is what closes that, rather than a second copy of these
+   durations in a file with no reason to know them. It is the same trap
+   `--reveal-transition` above is published against.
+
+   The opacity term is inert on a route, where the ground never fades: only the
+   landing bar's ground is drawn at zero and revealed. The two states cannot
+   collide there either, measured 770px of scroll apart at 1280 and 1440 and
+   635px at 390, since the reveal keys to half the hero and the shape to 320px
+   past its full height.
+
+   The edge and the shadow stay out of the list deliberately. They arrive at
+   once on both bars, which is what marks the instant the bar detaches from the
+   viewport, where an edge fading up reads as the bar being unsure it has. */
 @media (prefers-reduced-motion: no-preference) {
   [data-bar-ground] {
     transition:
       inset 320ms ease,
-      border-radius 320ms ease;
+      border-radius 320ms ease,
+      opacity 200ms ease-out;
   }
 }
 

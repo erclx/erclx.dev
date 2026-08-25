@@ -24,6 +24,16 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 - The light is weaker than the chip's own hover, at 55% of the accent with no fill, so a pointer still has an answer to give. Source order is what makes hover win, since the two selectors weigh the same.
 - A pointer resting on the row does not suppress the wave, which is the one place this diverges from the cast. Standing down under a hand answers a schedule interrupting a reader repeatedly, and a wave that runs once has nothing to repeat.
 
+## The bar's shape change
+
+- Both bars contract from full width into a floating pill on scroll, and the shape transition is declared once as `inset 320ms ease, border-radius 320ms ease` on `[data-bar-ground]` in `src/styles/global.css`. The landing bar's ground also fades in on reveal, and that `opacity 200ms ease-out` sits in the same declaration rather than in the component.
+- It has to sit there. `transition` is a shorthand, so a component redeclaring it replaces the list rather than adding to it. `site-bar.astro` asked for the fade on its own ground until 2026-08-25, which reset `transition-property` to `opacity` alone and left the landing bar changing shape in a single frame while a route eased through the same 320ms. Astro scopes a component rule to a `data-astro-cid-*` attribute, so the component selector carried three attribute selectors against the one in the stylesheet and won on specificity.
+- Measured at 1280 across 31 frames, the landing ground held 2 distinct radius values against a route's 21. Read a claim about this off the computed `transition-property` rather than off a capture, since the two surfaces render identically at rest and differ only in how they get there.
+- The border and the shadow are deliberately not in the list. They arrive at once on both bars, which marks the instant the bar detaches from the viewport, where an edge fading up reads as the bar being unsure whether it has.
+- The landing bar's reveal fade and its shape change never overlap. The reveal keys to half the hero and the shape to 320px past its full height, which measures 770px of scroll apart at 1280 and 1440 and 635px at 390.
+- The two bars condense on different gates by design. A route condenses at 240px of raw scroll, and the landing bar at 320px past the hero's own height, so a tall viewport and a short one condense at the same point in the reading rather than at the same pixel.
+- Under `prefers-reduced-motion: reduce` neither bar transitions and both still change shape, so that reader meets two shapes arriving instantly. See `.claude/ARCHITECTURE.md` § One ground for two bars, and the shape moves while the row does not.
+
 ## Cascade reveal primitive
 
 - Elements that animate in on scroll carry a `data-fade` attribute and an optional `--fade-delay` CSS custom property.

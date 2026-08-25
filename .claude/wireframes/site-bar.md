@@ -62,6 +62,7 @@ Both bars draw one shared ground rather than a copy per surface. A reader crossi
 - The shape is detached from the viewport edge, carries an edge and a shadow, and holds no rule under it.
 - It is lightly translucent over a wide blur. Prose passing under a lighter bar reads through it as letterforms, which a wider blur destroys while the backdrop still reads as a wash. Widening it further averages the dark gaps between project cards into the ground and darkens it under near-black text.
 - It contracts on scroll and the row inside holds its position. Everything the hero flies into that row is placed at a measured position, so the shape is the one thing free to move.
+- It eases between the two shapes over 320ms on both surfaces, and the edge and the shadow arrive at once rather than fading with it. The landing bar switched in a single frame until 2026-08-25, because its own component redeclared `transition` on the ground and a shorthand replaces the shared list rather than adding to it.
 
 See `.claude/ARCHITECTURE.md` § One ground for two bars, and the shape moves while the row does not for the measured values behind each of these.
 

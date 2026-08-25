@@ -97,6 +97,7 @@ tabindex
 timonwong
 tolower
 toplevel
+transitionrun
 unlayered
 Vercel
 viewports
