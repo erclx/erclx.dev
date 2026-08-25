@@ -193,6 +193,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # This job builds nothing, and it still needs a toolchain. wrangler-action
+      # reads the lockfile the checkout brings in, picks the package manager
+      # behind it, and installs wrangler with that, so a deploy with no bun on
+      # PATH fails before it reaches Cloudflare. Removing these as dead weight
+      # is what broke the deploy on every push after #84.
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - name: Download Build Output
         uses: actions/download-artifact@v4
         with:
