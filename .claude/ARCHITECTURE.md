@@ -1226,8 +1226,14 @@ character's own span is not the figure that matters, since the two paws that
 grip the line sit narrower than the body above them: read off the paw
 ellipses rather than the outer silhouette, the trailing paw clears the 90%
 mark at 1280 (87.2% to 89.4%, inside the solid band) and crosses it at 390
-(89.5% to 93.7%, fading to about 63% opacity at its own tip). The taper is
-real at the narrow end of the ramp and absent from 1024 up.
+(89.5% to 93.7%, fading to about 63% opacity at its own tip). The taper does
+not shrink steadily across that range. The window's own size steps at 768,
+from `w-24` at `sm:right-8` to `w-28` at `md:right-14`, so the trailing paw
+sits worse a pixel below that step than at 390: at 767 it spans 90.1% to 92.2%,
+fully inside the fade at roughly 78% opacity at its own tip, and at 768 the
+wider window clears the band entirely at 85.8% to 88.3%. The taper is real
+below 768 and absent at 768 and above, rather than fading out gradually
+between 390 and 1024.
 
 Measured at 10c511a on 2026-08-25 with this branch applied, at 390, 768, 1024,
 1280, 1440, and 1920, where the full suite passes 719 and skips 7 across
