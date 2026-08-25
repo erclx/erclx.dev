@@ -8,6 +8,7 @@ axios
 backgrounded
 bradlc
 bunx
+cfemail
 changelogithub
 cksum
 commitlint
