@@ -1507,3 +1507,80 @@ test('the chip row holds still for a reader who asked for less motion', async ({
 
   expect(lits).toEqual(lits.map(() => 0))
 })
+
+/**
+ * Reads the drawn rule and the dog's clipped silhouette off the same page, so
+ * a claim about one can be checked against the other rather than against the
+ * geometry the component generated.
+ */
+async function readLedge(page: Page) {
+  await page.goto('/')
+  await page.locator('[data-section="looking-for"]').scrollIntoViewIfNeeded()
+  await page.waitForFunction(
+    () =>
+      (document.querySelector('.looking-stage') as HTMLElement)?.dataset
+        .curve === 'on',
+  )
+  return await page.evaluate(() => {
+    const stage = document.querySelector('.looking-stage') as HTMLElement
+    const win = document.querySelector('.looking-peek-window') as HTMLElement
+    const path = document.querySelector(
+      '.looking-rule-curve path',
+    ) as SVGPathElement
+    const sb = stage.getBoundingClientRect()
+    const wb = win.getBoundingClientRect()
+    const len = path.getTotalLength()
+    const ys: { x: number; y: number }[] = []
+    for (let i = 0; i <= 400; i++) {
+      const pt = path.getPointAtLength((i / 400) * len)
+      ys.push({ x: pt.x, y: pt.y })
+    }
+    const heightAt = (x: number) =>
+      ys.reduce((best, s) =>
+        Math.abs(s.x - x) < Math.abs(best.x - x) ? s : best,
+      ).y
+    return {
+      peakToPeak:
+        Math.max(...ys.map((v) => v.y)) - Math.min(...ys.map((v) => v.y)),
+      tiltUnderDog: heightAt(wb.right - sb.x) - heightAt(wb.x - sb.x),
+      clipPath: win.style.clipPath,
+      windowOverflow: getComputedStyle(win).overflow,
+    }
+  })
+}
+
+test('the peek window is clipped by the line rather than by a flat edge', async ({
+  page,
+}) => {
+  const ledge = await readLedge(page)
+
+  // A rectangular overflow would cap the dog at the flat bottom edge, so the
+  // clip could only ever remove more of him and every crest would detach the
+  // paws. Both halves are asserted because the first shipped without the
+  // second and the defect was invisible to a check reading only the polygon.
+  expect(ledge.windowOverflow).toBe('visible')
+  expect(ledge.clipPath).toContain('polygon(')
+})
+
+test('the rule curves gently enough to keep the dog level on a phone', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const narrow = await readLedge(page)
+
+  // His paws stand about 10.4px tall at this width. A line dropping more than
+  // that across his body reads as a slide rather than a grip.
+  expect(Math.abs(narrow.tiltUnderDog)).toBeLessThan(10.4)
+})
+
+test('the rule spends more curve where there is room for it', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const narrow = await readLedge(page)
+  await page.setViewportSize({ width: 1440, height: 900 })
+  const wide = await readLedge(page)
+
+  // A fixed amplitude cannot satisfy both ends, so the two must differ.
+  expect(wide.peakToPeak).toBeGreaterThan(narrow.peakToPeak * 2)
+})
