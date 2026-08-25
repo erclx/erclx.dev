@@ -135,11 +135,11 @@ import BarMark from '@/components/site/nav/bar-mark.astro'
     opacity: 1;
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    [data-site-bar] [data-bar-ground] {
-      transition: opacity 200ms ease-out;
-    }
-  }
+  /* The ground's fade is declared with the shape it also animates, in
+     `global.css`, rather than here. Asking for it here replaced the shared
+     list instead of adding to it, which is what left this bar changing shape
+     in one frame while a route eased through it. */
+
   /* The slot renders its text so it carries the right box, and hides it so the
      flyer is the only name on screen. Without motion the flyer never runs, so
      the slot is what the reader sees. */
