@@ -82,6 +82,7 @@ regen
 RLENGTH
 RSTART
 scannability
+scroller
 Segoe
 serviceworker
 shadcn
