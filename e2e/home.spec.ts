@@ -1624,9 +1624,13 @@ test('a chip wears the same edge arriving as it does under a pointer', async ({
   const edge = chip.locator('.experience-chip')
 
   // The row's own arrival wave lights this chip once as it enters view, so
-  // wait for it to finish before reading a resting value rather than racing
-  // a manual data-lit toggle against it.
-  await expect.poll(() => page.locator('[data-chip][data-lit]').count()).toBe(0)
+  // wait for it to both start and finish before reading a resting value
+  // rather than racing a manual data-lit toggle against it. `count()` reads
+  // 0 before the wave has fired at all as readily as it does once the wave
+  // is done, so the first poll below is what tells the two apart.
+  const lit = page.locator('[data-chip][data-lit]')
+  await expect.poll(() => lit.count()).toBeGreaterThan(0)
+  await expect.poll(() => lit.count()).toBe(0)
 
   const resting = await paintedEdge(edge)
   const accent = await paintedAccent(page)
