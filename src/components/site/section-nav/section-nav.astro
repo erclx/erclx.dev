@@ -85,10 +85,19 @@ const {
   }
   /* A row a reader is pointing at, which is a different claim from the row
      they are inside. The glow answers the pointer and the ground below
-     answers the scroll position, so the two never say the same thing. */
+     answers the scroll position, so the two never say the same thing.
+
+     The edge is part of that answer here, which it was not until now. Measured
+     across the site, this was the one bounded control whose hover left its
+     border alone: a chip and a dock control both take the accent, and a rail
+     row moved fill and shadow while its edge held at 1.08:1 against the page
+     in light and 1.03:1 in dark, which is no edge at all. What separates a
+     pointed-at row from the row a reader is inside is now the ground, the
+     blur, and the step, rather than the edge on its own. */
   .section-nav-link:hover,
   .section-nav-link:focus-visible {
     color: var(--foreground);
+    border-color: var(--accent);
     background: var(--glow-fill);
     box-shadow: var(--glow-shadow);
   }

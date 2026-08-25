@@ -1,4 +1,4 @@
-import { expect, type Page, test } from '@playwright/test'
+import { expect, type Locator, type Page, test } from '@playwright/test'
 
 import { REVEAL_THRESHOLD } from '../src/lib/reveal'
 import { ANCHOR_RATIO } from '../src/lib/section-nav'
@@ -1583,4 +1583,83 @@ test('the rule spends more curve where there is room for it', async ({
 
   // A fixed amplitude cannot satisfy both ends, so the two must differ.
   expect(wide.peakToPeak).toBeGreaterThan(narrow.peakToPeak * 2)
+})
+
+// One accent across every bounded control, read off the painted color rather
+// than off the declaration. Both of these guard a treatment the stylesheet
+// paints rather than a state a script sets, which is the distinction that once
+// let a rail row report itself active while painting nothing.
+// Reads the element a locator already resolved rather than re-finding it by a
+// selector carrying `:hover`. Firefox and WebKit do apply the hover treatment
+// to a synthetically pointed-at element while `querySelector(':hover')` finds
+// nothing, so the selector form passed on Chromium and threw on the other two.
+const paintedEdge = (target: Locator) =>
+  target.evaluate((element) => {
+    const context = document.createElement('canvas').getContext('2d')
+    if (!context) throw new Error('Canvas 2D context is unavailable')
+    context.fillStyle = getComputedStyle(element).borderTopColor
+    context.fillRect(0, 0, 1, 1)
+    const [red, green, blue] = context.getImageData(0, 0, 1, 1).data
+    return `${red},${green},${blue}`
+  })
+
+const paintedAccent = (page: Page) =>
+  page.evaluate(() => {
+    const context = document.createElement('canvas').getContext('2d')
+    if (!context) throw new Error('Canvas 2D context is unavailable')
+    context.fillStyle = getComputedStyle(
+      document.documentElement,
+    ).getPropertyValue('--accent')
+    context.fillRect(0, 0, 1, 1)
+    const [red, green, blue] = context.getImageData(0, 0, 1, 1).data
+    return `${red},${green},${blue}`
+  })
+
+test('a chip wears the same edge arriving as it does under a pointer', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await showChipRow(page)
+  const chip = page.locator('[data-chip]').first()
+  const edge = chip.locator('.experience-chip')
+
+  // The row's own arrival wave lights this chip once as it enters view, so
+  // wait for it to both start and finish before reading a resting value
+  // rather than racing a manual data-lit toggle against it. `count()` reads
+  // 0 before the wave has fired at all as readily as it does once the wave
+  // is done, so the first poll below is what tells the two apart.
+  const lit = page.locator('[data-chip][data-lit]')
+  await expect.poll(() => lit.count()).toBeGreaterThan(0)
+  await expect.poll(() => lit.count()).toBe(0)
+
+  const resting = await paintedEdge(edge)
+  const accent = await paintedAccent(page)
+
+  await chip.evaluate((element) => element.setAttribute('data-lit', 'true'))
+  await expect.poll(() => paintedEdge(edge)).toBe(accent)
+  const arriving = await paintedEdge(edge)
+
+  await chip.evaluate((element) => element.removeAttribute('data-lit'))
+  // Settled on the resting edge rather than a duration, so the hover below
+  // starts a fresh transition instead of reversing one still in flight.
+  await expect.poll(() => paintedEdge(edge)).toBe(resting)
+  await chip.hover()
+  await expect.poll(() => paintedEdge(edge)).toBe(arriving)
+})
+
+test('a pointed-at rail row takes the accent edge the chip and dock take', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.evaluate(() =>
+    window.scrollTo({ top: window.innerHeight * 1.4, behavior: 'instant' }),
+  )
+  // The rail holds `pointer-events: none` until it reveals, so a pointer sent
+  // before that lands on the page behind it and the row reports its resting
+  // edge. Waiting on the attribute rather than on a duration.
+  await page.waitForSelector('[data-section-nav][data-revealed="true"]')
+  const row = page.locator('.section-nav-link:not([data-active])').first()
+  await row.hover()
+
+  await expect.poll(() => paintedEdge(row)).toBe(await paintedAccent(page))
 })

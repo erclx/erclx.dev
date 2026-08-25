@@ -75,6 +75,14 @@ The settled form is `not all and (pointer: coarse)` for an exclusion and `(hover
 
 The exclusion admits a device reporting `pointer: none` alongside one reporting `pointer: fine`, which is a known cost rather than an oversight. Measured across all three engines on 2026-08-21, Playwright's Firefox answers `(pointer: none)` true, `(hover: none)` true, and both `(pointer: fine)` and `(pointer: coarse)` false, so it agrees with a television or a kiosk on every pointer and hover query there is. No pairing separates them, and keying a fallback on `(hover: none)` sends Firefox down the touch path the exclusion exists to keep it off. The class the fallback was written for is phones, which report a coarse pointer and are unaffected. What a no-pointer device loses is a clip that autoplays, and it still gets the poster.
 
+## A guard reads the element a locator resolved, never one found by `:hover`
+
+Firefox and WebKit apply a hover treatment to an element the driver has pointed at while `document.querySelector(':hover')` matches nothing there. Chromium matches normally, so a guard reading a hovered control through a selector carrying the pseudo-class passes on one engine and throws `nothing matches` on the other two.
+
+Read the element the locator already resolved, through `locator.evaluate`, rather than re-finding it by selector. Measured on 2026-08-25 against two edge-color guards in `e2e/home.spec.ts`, which passed on Chromium and failed on both other engines until the selector form came out.
+
+This is a different fact from the media-query section above it. That one is about what an engine reports its own capabilities to be, and this one is about whether a synthetic hover is visible to a selector, which the same engine can get right and wrong in turn.
+
 ## Firefox needs a software GL driver and a pref, and a red engine needs a trace
 
 The first widened run went red on firefox alone, four cases in `e2e/header-shader.spec.ts` against 147 passing, while chromium and webkit passed on the same machine. All four are one cause: `mount.ts` reveals the fallback when it cannot draw, and `revealFallback` sets `canvas.style.display` to `none`, which fails the geometry case, the paint case, the reduced-motion case, and the case asserting the fallback is hidden at rest.

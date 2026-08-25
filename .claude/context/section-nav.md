@@ -52,6 +52,16 @@ Under a reduced-motion preference the step is dropped rather than shortened, and
 
 Pointing at a row is a separate claim from being inside one, so a hover adds the site's glow. On the active row it stacks on top of the ground rather than replacing it, for the reason the dock records.
 
+A hover also takes the accent on the row's edge, which it did not until 2026-08-25. Measured across the site, this was the one bounded control whose hover left its border alone: a timeline chip and a dock control both moved theirs to `--accent`, and a rail row moved fill and shadow while its edge held at 1.08:1 against the ground in light and 1.03:1 in dark, which is no edge at all. It reads 2.58:1 and 2.79:1 now, against the active row's own 2.63:1 and 2.92:1. What separates a pointed-at row from the row a reader is inside is the ground, the blur, and the step, rather than the edge on its own.
+
+## The rail's stroke cannot reach its own accent at 1x
+
+Both the active and the hovered row declare `border-color: var(--accent)` and neither paints it on a one-to-one display. The 1px stroke is split across two device rows at roughly 37% and 60% coverage, so its strongest row reads 197,137,106 in light against the declared 164,71,27, and the pill measures 2.63:1 against the ground where a timeline chip's own accent edge measures 5.43:1. At `deviceScaleFactor: 2` both paint the accent exactly.
+
+The cause is the stroke width rather than any of the compositing the rail carries. Widening it to 2px restores the declared color at 1x, while stripping the backdrop filter, the row's transform, its background, its shadow, and the nav's opacity each change nothing. Measured at 1440x900 in both themes on 2026-08-25.
+
+Nothing is queued for it. The repair costs the rail a stop of weight on a retina display where it is already correct, so it wants reading on real hardware before it is taken.
+
 ## instant prop
 
 The `instant` prop names the absence of a scroll gate and nothing else. It stamps `data-instant`, which stops the hero observer attaching, and the script reveals the rail on the frame after the first paint so the opacity transition runs.
