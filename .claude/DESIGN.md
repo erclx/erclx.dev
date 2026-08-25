@@ -30,7 +30,7 @@ The test is what the mark offers. Not what its element does, and not what raised
 
 Two cases carry the whole rule, and each defeats one of the readings that look right.
 
-The rail defeats reading by the element. Its label is an anchor that scrolls to a section, so the element is operable, and its focus ring is interactive on those grounds. The active border beside it tracks scroll position and would sit there under a reader who never clicked anything, so it is accent. Two roles on one element rather than a contradiction.
+The rail defeats reading by the element. Its label is an anchor that scrolls to a section, so the element is operable, and its focus ring is interactive on those grounds. The active border beside it tracks scroll position and would sit there under a reader who never clicked anything, so it is accent. Two roles on one element rather than a contradiction. A pointer raises that same border on any row, which changes nothing here: the mark offers emphasis either way, and the case below is the one that settles it.
 
 The closing block's criteria rows defeat reading by the trigger. Their border is raised by a hover, which is the reader acting, and it still takes the accent, because the rows are read rather than operated and the border offers emphasis rather than an affordance. A hover raising emphasis on something inert is not an action mark.
 

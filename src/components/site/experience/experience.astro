@@ -368,27 +368,30 @@ const artifacts = [
     padding: 0.2rem 0.75rem;
     color: var(--muted-foreground);
   }
-  /* The chip's own light, deliberately weaker than the hover below it. A row
-     that lights itself as hard as a pointer does takes the pointer's answer
-     away: the reader points at a chip, nothing changes, and the control reads
-     as dead. So this carries the accent at part strength and a fainter shadow,
-     and it takes no fill at all.
-
-     It sits above the hover rule on purpose. Both selectors weigh the same, an
-     attribute and a pseudo-class each counting once, so source order is what
-     decides them and the pointer has to win. Source order is the whole guard:
-     the module carries no pointer code of its own and lights a chip whether or
-     not one is resting on the row, on the same reasoning the cast member a few
-     pixels away stands down under a hand and this control does not. */
-  .experience-chip-hit[data-lit] .experience-chip {
-    border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
-    color: var(--foreground);
-    box-shadow: 0 0 0.9rem 0
-      color-mix(in oklab, var(--foreground) 4%, transparent);
-  }
   /* A chip has its own bounds, so it takes the glow the project cards carry
-     rather than the border-and-color answer it shared with the rail until
-     that rail gained a ground of its own. */
+     rather than the border-and-color answer it shared with the rail until that
+     rail gained a ground of its own.
+
+     The arrival wave takes the identical treatment rather than a weakened one,
+     which reverses what this component shipped until now. The weaker light
+     existed so a reader pointing at a lit chip still got an answer, and that
+     reasoning was measured rather than kept: on this palette the border color
+     is the only part of the glow carrying visible weight. `--glow-fill` sits
+     0.032 from white on a page already at `oklch(0.968)` in light and one step
+     above the background in dark, so with the edge held constant the fill and
+     the shadow move the painted pixels less than the still ground drifts on
+     its own between two captures.
+
+     What the weaker light bought was therefore a difference in edge color,
+     paid for across every surface: the rail's active pill, the dock, and this
+     chip's own hover all carry `--accent`, and the arrival was the one state
+     wearing a mix of it. One declaration for both states is what closes that.
+
+     The cost is real and is accepted: a pointer resting on a chip during the
+     wave's 1.48s changes nothing. That window opens once, when the row first
+     enters view, and outside it a resting chip still answers a pointer by
+     moving its edge from `--border` to `--accent`. */
+  .experience-chip-hit[data-lit] .experience-chip,
   .experience-chip-hit:hover .experience-chip,
   .experience-chip-hit:focus-visible .experience-chip {
     border-color: var(--accent);
@@ -439,11 +442,17 @@ const artifacts = [
        nobody asked for has to arrive slowly enough to read as the row
        breathing, and 130ms of arrival reads as a blink instead. It still
        leaves on the shared timing above, so the row trails the way the rest of
-       the page does. */
+       the page does.
+
+       Timing is now the whole difference between the two states, since they
+       share one declaration above. It carries the fill as well: a transition
+       shorthand replaces the base list outright, so the property this state
+       did not name would snap while everything beside it swelled. */
     .experience-chip-hit[data-lit] .experience-chip {
       transition:
         color 260ms ease-out,
         border-color 260ms ease-out,
+        background-color 260ms ease-out,
         box-shadow 400ms ease-out;
     }
     .experience-chip-hit:hover .experience-chip,

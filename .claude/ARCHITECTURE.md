@@ -836,6 +836,12 @@ The response set answers a question the site had never asked in one place. Measu
 
 Two tiers now, and the test is whether the thing has its own box. A control with bounds takes the card's glow, and a link sitting inline in a paragraph keeps its underline, because a ground behind a word reads as a highlighter and fights the sentence around it. That test is what keeps the hero's three contact links unchanged, and it is what excludes the footer signature: the signature is `aria-hidden` decoration, and a hover response on it would promise a click that does nothing.
 
+**The sweep left one control behind and the tier test did not catch it, because the test decides membership rather than completeness.** The rail row is a control with bounds, took the glow, and moved fill and shadow without ever touching its border, where a timeline chip and a dock control both move theirs to `--accent`. Measured on 2026-08-25 it held 1.08:1 against the ground in light and 1.03:1 in dark, which is no edge at all. It takes the accent now, at 2.58:1 and 2.79:1, matching the active row it sits beside.
+
+The reason it survived is worth more than the repair. `e2e/inventory.ts` groups controls by which properties move, and a rule written on a pseudo-element inherits `border-top-color` from `currentColor`, so a control whose text color changes reports a border change it does not have. The rail rows therefore sat inside the 33-element majority group looking settled. **An instrument grouping by what moved cannot separate a property that moved from one that followed something else**, so a claim about one specific property is read off that property on the element rather than off the grouping.
+
+The set has a ceiling on how much it can ever separate two states, and it is lower than the token values suggest. Held at one edge color, a pointer moves a chip's fill by 5 and its halo by 12 in light against a ground drifting 11 on its own, and by 5 and 15 in dark against a drift of 15. Both are inside the noise, because `--surface-elevated` sits 0.032 from white in light and one step above the background in dark. The border color is carrying essentially all of the response set's visible weight, and a proposal separating two states by fill or shadow alone will not read. The entry below this one records the same ceiling from the elevation side.
+
 The card is the source rather than one more surface to match, so its four values moved out of it unchanged and it now reads them back. Where a control already carries a ground at rest, the dock and the active rail row, the glow stacks on top rather than replacing it. Swapping one shadow for the other makes a lit control appear to drop as it lights.
 
 The palette has no headroom below its muted token, and that is a constraint on every future treatment rather than a fact about one section. Muted measures 4.82:1 in light, so a third step lightened beneath it fails the 4.5:1 floor for text at any value visible enough to do a job. The closing ask shipped exactly that on this branch, at a 65% mix measuring 2.53:1, and it was found by measuring for an unrelated question days later. Separate two text layers by weight, size, or the space between them, and read lightness as already spent.
@@ -848,7 +854,7 @@ That coupling then decides an easing. The plate leaves more slowly than the walk
 
 Read the sweep as one decision rather than as eight component edits. The operator's own framing is the reason it is recorded this way: a treatment settled on one component and not the others is how the site arrived at three answers, and the inventory at `e2e/inventory.ts` exists so the next such question is measured across the site before anything is changed. It reads pseudo elements and descendants as well as the element itself, because a first pass that read only the element reported the timeline chips and the card halo as controls that do nothing.
 
-Verified at c5f17e4 on 2026-08-20, at 1280x800, 1440x900, and 390x844, with the elevation ceiling re-read off painted pixels at 1440x900 on 2026-08-22.
+Verified at c5f17e4 on 2026-08-20, at 1280x800, 1440x900, and 390x844, with the elevation ceiling re-read off painted pixels at 1440x900 on 2026-08-22, and the rail's missing edge and the response set's own ceiling read at 1440x900 in both themes on 2026-08-25.
 
 ### The rail states position by moving, and a control that scrolls owns the URL it leaves
 
@@ -1125,12 +1131,44 @@ visible and cannot run again until the row has left entirely, so the dead band
 between those two covers a reader parked with the row at the edge of the
 viewport, where a single threshold would re-fire on scroll jitter alone.
 
-The light is deliberately weaker than the hover it sits under, carrying the
-accent at 55% and a faint shadow against hover's full glow and fill. A row that
-lights itself as hard as a pointer does takes the pointer's answer away, and the
-control then reads as dead to anyone who points at it. Both selectors weigh the
-same, an attribute and a pseudo-class counting once each, so source order is
-what makes the pointer win.
+The light is the hover, declared once for both states, and it was deliberately
+weaker until 2026-08-25. The weaker form carried the accent at 55% mixed toward
+`--border` with a fainter shadow and no fill, on the reading that a row lighting
+itself as hard as a pointer does takes the pointer's answer away and the control
+then reads as dead to anyone who points at it.
+
+**That reading was true of the state and wrong about the window.** A chip is lit
+for 1.48s, once, when the row first enters view. For the rest of the read it is
+at rest, and a pointer landing on a resting chip moves its edge from `--border`
+to `--accent`, which measures a channel distance of 189 in light and 111 in
+dark. What the weaker light bought was a difference in edge color, and it was
+paid for across every other bounded control on the site: the rail's active pill,
+the rail's hovered row, the dock, and this chip's own hover all carry `--accent`,
+and the arrival was the one state wearing a mix of it. The operator read that
+difference as a defect and asked whether it was intentional, which is what got
+it measured.
+
+The fill and the shadow could not carry the difference instead, and that is the
+finding worth keeping rather than the pick. Held at one edge color, a pointer
+moves the chip's fill by 5 and its halo by 12 in light, against a ground that
+drifts 11 on its own between two captures, and by 5 and 15 in dark against a
+drift of 15. Both sit inside the noise. `--glow-fill` resolves to
+`--surface-elevated`, which is 0.032 from white on a light page already at
+`oklch(0.968)` and one step above the background in dark, so **the border color
+is the whole visible weight of this site's glow** and two states sharing an edge
+are near-indistinguishable whatever else they declare. Read that as a constraint
+on any future treatment rather than as a fact about this chip.
+
+What still separates the two states is timing. The arrival swells over 260ms and
+400ms where the pointer's answer arrives in 130ms, so an unattended light reads
+as the row breathing rather than as a blink, and both leave on the shared 520ms.
+The transition list for the lit state has to name the fill as well: a transition
+shorthand replaces the base list outright, so a property the state does not name
+snaps while everything beside it swells.
+
+The cost is accepted rather than argued away. A pointer resting on a chip during
+those 1.48s changes nothing, and a reader who lands there gets no answer. The
+operator was given that cost in the label of the arm they picked.
 
 **A pointer resting on the row deliberately does not suppress the wave, and the
 first build had it doing so.** Standing down under a hand is the cast's rule and
@@ -1154,8 +1192,17 @@ second loop fails the quiet guard and the reduced-motion guard together. That
 sequence is the point rather than the count, since this file already collects
 five instruments that reported nothing wrong while reporting nothing at all.
 
+A guard was added with the reversal and run against its own defect first. It
+compares the painted edge a chip wears arriving against the one it wears under a
+pointer, and it fails when the arrival's declaration is taken out. It reads the
+element the locator resolved rather than one found by a `:hover` selector, since
+Firefox and WebKit apply the treatment while `querySelector(':hover')` finds
+nothing there. `.claude/context/ci.md` carries that.
+
 Measured at 8004095 on 2026-08-24 with this branch applied, where the full suite
-passes 705 across chromium, firefox, and webkit.
+passes 705 across chromium, firefox, and webkit. The reversal and its
+measurements were read at 1440x900 in both themes on 2026-08-25, where the
+landing surfaces pass 251 and skip 1 across the three engines.
 
 ### Visitor analytics runs at the edge, with no code in this repository
 
