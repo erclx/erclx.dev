@@ -1354,9 +1354,10 @@ reintroduces the failure.
 **`size-11` was outside that selector until 2026-08-26, and it is the way
 ten of these controls declare the minimum.** Both contact dock rows, the
 theme toggle, all three figure dialog controls, the bar's toggle slot, and
-the three the screenshot gallery added set both axes with it, against
-eighteen declarations using the pair. So the guard read about half the
-controls it appeared to cover, and the two written here as one gap were
+the three the screenshot gallery added set both axes with it, against eleven
+controls using the pair, which carry eighteen tokens between them because
+seven set both axes and four set height alone. So the guard read about half
+the controls it appeared to cover, and the two written here as one gap were
 different sizes: this one was ten live controls rather than a shape nothing
 had reached yet. Widening it passed unchanged, because all ten already
 carry a box class, which is what made the hole invisible. The guard also
