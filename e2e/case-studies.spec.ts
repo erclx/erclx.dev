@@ -1,13 +1,19 @@
-import { expect, test } from '@playwright/test'
+import { expect, type Page, test } from '@playwright/test'
 
 import { contrastRatio, paintedColor, relativeLuminance } from './colors'
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 import { WATCHED_SELECTORS } from './reveal-selectors'
 
 const FIGURE_SELECTOR = 'main figure img'
-// Six charts plus the still the route opens on, added 2026-08-20 so the route
-// does not begin in prose where every other one begins with a figure.
-const DICTION_FIGURE_COUNT = 7
+// The six research charts. The route's opening figure, added 2026-08-20 so
+// the route does not begin in prose where every other one begins with a
+// figure, became a screenshot gallery on 2026-08-25 and is counted below
+// under its own selector rather than this one: a carousel slide is a
+// button a reader operates, not a `<figure>` a reader reads past.
+const DICTION_FIGURE_COUNT = 6
+const DICTION_GALLERY_SELECTOR =
+  'main [data-screenshot-gallery] [data-peek-slide] img'
+const DICTION_GALLERY_COUNT = 5
 const CASE_STUDY_ROUTES = [
   '/aitk',
   '/jobtriage',
@@ -119,6 +125,398 @@ test('every diction figure loads its image', async ({ page }) => {
   await expect
     .poll(() => loadedImageCount(page, FIGURE_SELECTOR))
     .toBe(DICTION_FIGURE_COUNT)
+})
+
+test('every diction gallery screenshot loads its image', async ({ page }) => {
+  await page.goto('/diction')
+
+  await expect
+    .poll(() => loadedImageCount(page, DICTION_GALLERY_SELECTOR))
+    .toBe(DICTION_GALLERY_COUNT)
+})
+
+test('clicking a peeking screenshot centers it', async ({ page }) => {
+  await page.goto('/diction')
+
+  const slides = page.locator('[data-screenshot-gallery] [data-peek-slide]')
+  // Dispatched rather than clicked, because Playwright scrolls a target into
+  // view before clicking it and that scroll centers the slide, which makes it
+  // the active one before the click lands. The click then reads as a click on
+  // the centered slide and opens the preview instead of advancing, which is
+  // the driver's scroll changing the state under the assertion rather than a
+  // defect in what a reader's own click does.
+  await slides.nth(1).dispatchEvent('click')
+
+  await expect(slides.nth(1)).toHaveAttribute('data-active', '')
+  await expect(page.locator('[data-gallery-preview]')).toBeHidden()
+})
+
+test('clicking the centered screenshot opens the preview on the same image', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  await page
+    .locator('[data-screenshot-gallery] [data-peek-slide]')
+    .first()
+    .click()
+
+  const dialog = page.locator('[data-gallery-preview]')
+  await expect(dialog).toBeVisible()
+  await expect(page.locator('[data-gallery-preview-position]')).toHaveText(
+    `1 / ${DICTION_GALLERY_COUNT}`,
+  )
+  await expect(dialog.locator('[data-peek-slide]')).toHaveCount(
+    DICTION_GALLERY_COUNT,
+  )
+  await expect(
+    dialog.locator('[data-peek-slide][data-active]'),
+  ).toHaveAttribute('data-peek-index', '0')
+})
+
+test('stepping inside the preview carries back to the inline gallery', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  await page
+    .locator('[data-screenshot-gallery] [data-peek-slide]')
+    .first()
+    .click()
+  const dialog = page.locator('[data-gallery-preview]')
+  await expect(dialog).toBeVisible()
+
+  await page.keyboard.press('ArrowRight')
+  await expect(page.locator('[data-gallery-preview-position]')).toHaveText(
+    `2 / ${DICTION_GALLERY_COUNT}`,
+  )
+
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeHidden()
+
+  await expect(
+    page.locator('[data-screenshot-gallery] [data-peek-slide][data-active]'),
+  ).toHaveAttribute('data-peek-index', '1')
+})
+
+/**
+ * How far the centered slide sits from the middle of its own scroller, which
+ * is the reading that catches an end slide the scroll cannot reach. Both
+ * mounts are measured the same way, so `scope` is the only thing that varies.
+ */
+async function offCenterBy(page: Page, scope: string): Promise<number> {
+  return page.evaluate((root) => {
+    const mount = document.querySelector<HTMLElement>(root)
+    const scroller = mount?.querySelector<HTMLElement>('[data-peek-scroller]')
+    const active = mount?.querySelector<HTMLElement>(
+      '[data-peek-slide][data-active]',
+    )
+    if (!scroller || !active) return Number.NaN
+    const scrollerRect = scroller.getBoundingClientRect()
+    const activeRect = active.getBoundingClientRect()
+    return Math.abs(
+      activeRect.left +
+        activeRect.width / 2 -
+        (scrollerRect.left + scrollerRect.width / 2),
+    )
+  }, scope)
+}
+
+test('every screenshot centers when it is stepped to, including the last', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  const slides = page.locator('[data-screenshot-gallery] [data-peek-slide]')
+  const dots = page.locator('[data-screenshot-gallery] [data-gallery-dot]')
+  const offsets: number[] = []
+
+  for (let at = 0; at < DICTION_GALLERY_COUNT; at += 1) {
+    // Stepped by dot rather than by clicking the slide, since a dot always
+    // navigates where a click on the centered slide opens the preview.
+    if (at > 0) await dots.nth(at).click()
+    await expect(slides.nth(at)).toHaveAttribute('data-active', '')
+    // The scroll is animated, so the reading settles rather than being taken
+    // once after a pause.
+    await expect
+      .poll(() => offCenterBy(page, '[data-screenshot-gallery]'))
+      .toBeLessThan(2)
+    offsets.push(await offCenterBy(page, '[data-screenshot-gallery]'))
+  }
+
+  expect(offsets).toHaveLength(DICTION_GALLERY_COUNT)
+})
+
+test('stepping back from the last screenshot moves the active row', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  const dots = page.locator('[data-screenshot-gallery] [data-gallery-dot]')
+
+  await dots.nth(DICTION_GALLERY_COUNT - 1).click()
+  await expect(dots.nth(DICTION_GALLERY_COUNT - 1)).toHaveAttribute(
+    'data-active',
+    '',
+  )
+  await expect(
+    page.locator('[data-screenshot-gallery] [data-gallery-next]'),
+  ).toBeDisabled()
+
+  await page.locator('[data-screenshot-gallery] [data-gallery-prev]').click()
+
+  await expect(dots.nth(DICTION_GALLERY_COUNT - 2)).toHaveAttribute(
+    'data-active',
+    '',
+  )
+  await expect(dots.nth(DICTION_GALLERY_COUNT - 1)).not.toHaveAttribute(
+    'data-active',
+    '',
+  )
+})
+
+test('only the centered screenshot is in the tab sequence', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  const dots = page.locator('[data-screenshot-gallery] [data-gallery-dot]')
+
+  await dots.nth(2).click()
+  await expect(
+    page.locator('[data-screenshot-gallery] [data-peek-slide][data-active]'),
+  ).toHaveAttribute('data-peek-index', '2')
+
+  const tabbable = await page.evaluate(() =>
+    Array.from(
+      document.querySelectorAll<HTMLElement>(
+        '[data-screenshot-gallery] [data-peek-slide]',
+      ),
+    )
+      .map((slide, index) => ({ index, tabIndex: slide.tabIndex }))
+      .filter((entry) => entry.tabIndex === 0)
+      .map((entry) => entry.index),
+  )
+
+  expect(tabbable).toEqual([2])
+})
+
+test('the focus ring follows the screenshot the reader steps to', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  await page
+    .locator('[data-screenshot-gallery] [data-peek-slide]')
+    .first()
+    .click()
+  const dialog = page.locator('[data-gallery-preview]')
+  await expect(dialog).toBeVisible()
+
+  // Focus the centered slide the way a keyboard reader reaches it, so the
+  // ring is on the track rather than on the dialog's close button.
+  await dialog.locator('[data-peek-slide][data-active]').focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(page.locator('[data-gallery-preview-position]')).toHaveText(
+    `2 / ${DICTION_GALLERY_COUNT}`,
+  )
+
+  // Left behind, the ring marks the slide the reader has just stepped off
+  // while a different one sits centered.
+  const focusedIsCentered = await page.evaluate(() => {
+    const focused = document.activeElement
+    return (
+      focused instanceof HTMLElement &&
+      focused.matches('[data-peek-slide]') &&
+      focused.hasAttribute('data-active')
+    )
+  })
+
+  expect(focusedIsCentered).toBe(true)
+})
+
+test('the focus ring on a screenshot is not clipped by the track', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  const centered = page.locator(
+    '[data-screenshot-gallery] [data-peek-slide][data-active]',
+  )
+  await centered.focus()
+
+  const room = await page.evaluate(() => {
+    const scroller = document.querySelector<HTMLElement>(
+      '[data-screenshot-gallery] [data-peek-scroller]',
+    )
+    const slide = document.querySelector<HTMLElement>(
+      '[data-screenshot-gallery] [data-peek-slide][data-active]',
+    )
+    if (!scroller || !slide) return null
+    const style = getComputedStyle(slide)
+    const scrollerRect = scroller.getBoundingClientRect()
+    const slideRect = slide.getBoundingClientRect()
+    return {
+      outlineStyle: style.outlineStyle,
+      // How far the ring is painted outside the slide's own border box.
+      reach: parseFloat(style.outlineWidth) + parseFloat(style.outlineOffset),
+      above: slideRect.top - scrollerRect.top,
+      below: scrollerRect.bottom - slideRect.bottom,
+    }
+  })
+
+  expect(room).not.toBeNull()
+  // Assert the ring is painted before measuring room for it. An unfocused
+  // element computes `outline-width: 0px` while `outline-style` is none, so a
+  // check that only compared the reach against the headroom read 0 against 0
+  // and passed on a slide carrying no ring at all.
+  expect(room?.outlineStyle).not.toBe('none')
+  expect(room?.reach).toBeGreaterThan(0)
+
+  // The centered slide is the one at risk: it sits at scale(1) and fills the
+  // track's height where the peeking slides are held clear by scale(0.94).
+  expect(room?.above).toBeGreaterThanOrEqual(room?.reach ?? 0)
+  expect(room?.below).toBeGreaterThanOrEqual(room?.reach ?? 0)
+})
+
+test('arrow keys step the gallery on the route itself', async ({ page }) => {
+  await page.goto('/diction')
+  const centered = page.locator(
+    '[data-screenshot-gallery] [data-peek-slide][data-active]',
+  )
+  await centered.focus()
+
+  await page.keyboard.press('ArrowRight')
+  await expect(centered).toHaveAttribute('data-peek-index', '1')
+
+  await page.keyboard.press('ArrowLeft')
+  await expect(centered).toHaveAttribute('data-peek-index', '0')
+})
+
+test('arrow keys still step after an arrow control disables itself', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  const centered = page.locator(
+    '[data-screenshot-gallery] [data-peek-slide][data-active]',
+  )
+
+  // Click the control with a pointer, so focus lands on the arrow rather than
+  // on the track, which is the path a reader takes and the one that breaks.
+  await page.locator('[data-screenshot-gallery] [data-gallery-next]').click()
+  await expect(centered).toHaveAttribute('data-peek-index', '1')
+
+  for (let step = 3; step <= DICTION_GALLERY_COUNT; step += 1) {
+    await page.keyboard.press('ArrowRight')
+    await expect(centered).toHaveAttribute('data-peek-index', String(step - 1))
+  }
+
+  // Reaching the end disables the next arrow, and a browser blurs an element
+  // as it becomes disabled, which dropped focus to the body and left every
+  // later press doing nothing.
+  await expect(
+    page.locator('[data-screenshot-gallery] [data-gallery-next]'),
+  ).toBeDisabled()
+
+  await page.keyboard.press('ArrowLeft')
+  await expect(centered).toHaveAttribute('data-peek-index', '3')
+})
+
+test('the preview opens focused on the screenshot rather than on close', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  await page
+    .locator('[data-screenshot-gallery] [data-peek-slide]')
+    .first()
+    .click()
+  await expect(page.locator('[data-gallery-preview]')).toBeVisible()
+
+  // `showModal` focuses the first focusable descendant, which is the close
+  // button, so the first arrow press ringed the close control while the
+  // carousel moved under it.
+  const focusedIsSlide = await page.evaluate(
+    () =>
+      document.activeElement instanceof HTMLElement &&
+      document.activeElement.matches('[data-peek-slide]'),
+  )
+
+  expect(focusedIsSlide).toBe(true)
+})
+
+test('each screenshot names what it shows, not only its position', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  const names = await page
+    .locator('[data-screenshot-gallery] [data-peek-slide]')
+    .evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('aria-label') ?? ''),
+    )
+  const alts = await page
+    .locator('[data-screenshot-gallery] [data-peek-slide] img')
+    .evaluateAll((nodes) => nodes.map((node) => (node as HTMLImageElement).alt))
+
+  expect(names).toHaveLength(DICTION_GALLERY_COUNT)
+  // An `aria-label` on a button replaces its contents for the accessible
+  // name, so a label carrying the position alone leaves a screen reader five
+  // slides that differ by a number and discards every alt on the page.
+  expect(alts.every((alt) => alt.length > 0)).toBe(true)
+  expect(names.every((name, at) => name.includes(alts[at] ?? ' '))).toBe(true)
+})
+
+test('only the mount that answers a click promises one', async ({ page }) => {
+  await page.goto('/diction')
+  await page
+    .locator('[data-screenshot-gallery] [data-peek-slide]')
+    .first()
+    .click()
+  await expect(page.locator('[data-gallery-preview]')).toBeVisible()
+
+  const cursors = await page.evaluate(() => {
+    const read = (scope: string): string | null => {
+      const slide = document.querySelector<HTMLElement>(
+        `${scope} [data-peek-slide][data-active]`,
+      )
+      return slide ? getComputedStyle(slide).cursor : null
+    }
+    return {
+      inline: read('[data-screenshot-gallery]'),
+      preview: read('[data-gallery-preview]'),
+    }
+  })
+
+  // The inline mount opens the preview on a click here. The preview passes no
+  // `onCenterClick`, so the same click does nothing and must not offer to.
+  expect(cursors.inline).toBe('zoom-in')
+  expect(cursors.preview).not.toBe('zoom-in')
+})
+
+test('the preview holds one panel size across its screenshots', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  await page
+    .locator('[data-screenshot-gallery] [data-peek-slide]')
+    .first()
+    .click()
+  const dialog = page.locator('[data-gallery-preview]')
+  await expect(dialog).toBeVisible()
+
+  const widths: number[] = []
+  for (let at = 0; at < DICTION_GALLERY_COUNT; at += 1) {
+    if (at > 0) {
+      await page.keyboard.press('ArrowRight')
+      await expect(page.locator('[data-gallery-preview-position]')).toHaveText(
+        `${at + 1} / ${DICTION_GALLERY_COUNT}`,
+      )
+    }
+    await expect
+      .poll(() => offCenterBy(page, '[data-gallery-preview]'))
+      .toBeLessThan(2)
+    widths.push(Math.round((await dialog.boundingBox())?.width ?? 0))
+  }
+
+  // A panel sized to its content takes its width from whichever slide is
+  // centered, and the five captures differ in height, so stepping resized the
+  // dialog under the reader: 958px on the first against 720px on the last.
+  expect(new Set(widths).size).toBe(1)
 })
 
 test('the project cards link to both case studies', async ({ page }) => {

@@ -1344,26 +1344,139 @@ exactly as declared, and the prior computed-display check would have caught
 it. The class-list assertion is load-bearing on most of these controls
 rather than on a few, which is the reverse of what an earlier version of
 this entry claimed. The guard now asserts the exempt set directly, reading
-the class list of every element carrying `min-h-11` or `min-w-11` and
-failing if none of `flex`, `inline-flex`, `block`, `inline-block`, `grid`,
-or `inline-grid` is present, which does not depend on what a parent's
-layout mode does to the computed value. Verified against the same
-regression before trusting it: reverting the class list check reintroduces
-the failure.
+the class list of every element carrying `min-h-11`, `min-w-11`, or
+`size-11` and failing if none of `flex`, `inline-flex`, `block`,
+`inline-block`, `grid`, or `inline-grid` is present, which does not depend
+on what a parent's layout mode does to the computed value. Verified against
+the same regression before trusting it: reverting the class list check
+reintroduces the failure.
 
-The assertion still selects what it checks by the same two classes a
-regression could remove together. A control that drops `min-h-11` and
-`inline-flex` in the same edit matches neither the class-list assertion nor
-the computed-display one, and falls back to the size check alone, where an
-`<li>`-nested control now computing `inline` is exempted again. Left as a
-gap rather than closed with more code, since every current call site keeps
-the two classes together and nothing has needed them to move independently.
+**`size-11` was outside that selector until 2026-08-26, and it is the way
+ten of these controls declare the minimum.** Both contact dock rows, the
+theme toggle, all three figure dialog controls, the bar's toggle slot, and
+the three the screenshot gallery added set both axes with it, against eleven
+controls using the pair, which carry eighteen tokens between them because
+seven set both axes and four set height alone. So the guard read about half
+the controls it appeared to cover, and the two written here as one gap were
+different sizes: this one was ten live controls rather than a shape nothing
+had reached yet. Widening it passed unchanged, because all ten already
+carry a box class, which is what made the hole invisible. The guard also
+counts what its filter matched now, since a filter selecting nothing
+satisfies an emptiness assertion without reading a control.
+
+One narrower gap survives that widening. A control dropping its sizing
+class and `inline-flex` in the same edit matches neither the class-list
+assertion nor the computed-display one, and falls back to the size check
+alone, where an `<li>`-nested control now computing `inline` is exempted
+again. Left open rather than closed with more code, since every call site
+keeps the two together and nothing has needed them to move independently.
 
 Measured at a7b1c04 on 2026-08-25 with this branch applied, where
 `e2e/links.spec.ts` passes 60 and `e2e/case-studies.spec.ts` passes 141
 across chromium, firefox, and webkit. Re-verified against `3120b0a` on
 2026-08-26, where the corrected finding above and the class-list guard both
-held.
+held. The `size-11` count was read across the tree at cd0f04b on 2026-08-26,
+and the widened selector was proved both ways: dropping `inline-flex` from a
+`size-11` control fails it and passes the version that read the pair alone.
+
+### The gallery is one carousel rendered twice, and every end of it is a scroll the box has to reserve
+
+The diction route opened on a single still, which showed one of eleven drills
+and stood in for the whole app. It opens on five screenshots in a peek
+carousel now, and clicking the centred one opens the same carousel larger in a
+dialog.
+
+**One track component serves both mounts.** The alternative was extending the
+chart dialog an entry above already describes, and it is the wrong parent: it
+forces a light plate because those charts are drawn on white paper, and it
+pages through every figure on the route as one sequence. A screenshot of this
+app wants the page's own dark card and a sequence of its own. Two components
+would have been the other option and the two would drift, so the scroller, the
+track, and the slides are one file that both mounts render, scoped by whichever
+ancestor holds it.
+
+**Three attempts at reserving the end scroll failed, and each failure is a
+different lesson about what contributes scrollable overflow.** Padding on the
+track came first and shrank every slide, because a child's percentage
+`flex-basis` resolves against the track's content box: measured 333px against
+the 538px `60%` was meant to produce. Pseudo-element spacers replaced it and
+worked at the near end only. `align-items: center`, added to stop unequal
+captures stretching, collapsed them to `height: 0`, and **a zero-height box
+contributes no scrollable overflow**, so the trailing spacer reserved nothing
+and the last slide sat 195px right of centre with `scrollLeft` already at
+`maxScrollLeft`. Padding returned and still failed, because the track was a
+block-level box the width of the scroller while its slides overflowed to about
+3000px, putting its trailing padding nowhere near the end of the content.
+
+What holds is `width: max-content` on the track, with the slides sized in `cqw`
+against the scroller so padding and slide width cannot fight. The first and
+last then land at exactly `scrollLeft: 0` and `maxScrollLeft` by construction
+rather than by tuning.
+
+**Read the diagnosis rather than the fix.** Two of those attempts were this
+branch's own earlier repairs cancelling each other, and what identified it was
+`maxScrollLeft` moving between readings, 2051 to 2067, which a fixed border box
+cannot do and a set of scaled children can. A wobbling bound is the tell that
+overflow is coming from transformed content rather than from the box.
+
+The centred slide is read back from an `IntersectionObserver` as the largest
+share of any slide showing, never as the first intersecting entry in the batch.
+A step crosses two slides at once and the batch is not ordered by how centred
+each is, so taking the first put the active row on index 3 after a click on
+index 4 and left the dots a slide behind for the rest of the track.
+
+**A control's destination outranks that reading until the scroll reaches it.**
+Geometry is the right authority for a swipe, where nothing declared an intent,
+and the wrong one for a click, where waiting to infer the answer makes it
+depend on the scroll finishing and on a threshold being crossed on the way.
+Under a loaded three-engine run that race lost, and a dot click left the row on
+the previous slide with the attribute never arriving. Setting it from the
+control alone is not enough either: every slide the scroll passes over is
+briefly the one showing most of itself, so the row walked through the
+intermediate slides and settled correctly only at the end. The pending
+destination is what holds the two together, and a reader touching the track
+clears it, so a scroll interrupted by a swipe cannot leave the observer
+deferring to a destination nothing is traveling to.
+
+**Focus and centring are one state.** Slides take a roving tabindex, focus
+follows the carousel whenever a slide already holds it, and the arrow keys move
+focus onto the track. Each of those closed a defect a reader saw: the ring
+marking the slide they had stepped off, Tab reaching four slides they could
+not see, and the ring pinned to an arrow while the screenshots moved under it. The
+sharpest was at the ends, where an arrow disables and **a browser blurs an
+element as it becomes disabled**, dropping focus to `body` so the keydown bound
+to the mount never fired again and the carousel was stuck. The keys themselves
+were never dead: the browser already scrolls the nearest scrollable ancestor
+and snap lands it on a neighbor, on all three engines, so the handler buys one
+slide per press rather than a pixel distance.
+
+The scroller carries `padding-block` because `overflow-x: auto` forces the
+block axis to clip, so the focus ring drawn outside a slide's border box is cut
+off. The centred slide is the only one that suffers, sitting at `scale(1)`
+where the peeking slides are held clear by their own `scale(0.94)`.
+
+The preview panel takes a fixed width rather than fitting its content. Fitted,
+it read its width off whichever slide was centred and resized under the reader
+as they stepped, measured 958px on the first against 720px on the last.
+
+**Two instruments lied on this branch and both are the class this file already
+collects.** A clipped-ring guard compared the ring's reach against the room
+around it and passed on a slide carrying no ring, because `outline-width`
+computes to `0px` while `outline-style` is `none`, so it read 0 against 0. And
+the falsification run meant to prove that guard sound was served a `dist` built
+before the revert, so it reported green having never exercised the reverted
+code. **Confirm the build under test carries the revert before believing a
+falsification that passes.**
+
+The five screenshots are captured at one viewport rather than full page, which
+is a constraint the source imposes rather than a layout choice. The app's
+sidebar is `fixed inset-y-0 h-svh`, so a full-page capture of a longer screen
+renders it stopping partway down with a gap beneath, which reads as a defect in
+the app and was one of two complaints a single re-capture closed.
+
+Measured at c58ae55 on 2026-08-26 with this branch applied, at 390, 1280, and
+1440 across chromium, firefox, and webkit, where the case-study suite passes
+180 and the full suite passes 770 and skips 7 with nothing failing.
 
 ## Risks / open questions
 

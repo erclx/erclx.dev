@@ -1,0 +1,114 @@
+---
+import type { ImageMetadata } from 'astro'
+import PeekTrack from './peek-track.astro'
+
+interface GalleryImage {
+  readonly src: ImageMetadata
+  readonly alt: string
+}
+
+interface Props {
+  readonly images: readonly GalleryImage[]
+}
+
+const { images } = Astro.props
+const arrowClass =
+  'screenshot-gallery-arrow bg-card border-border/60 text-muted-foreground hover:text-foreground inline-flex size-11 shrink-0 items-center justify-center rounded-full border disabled:opacity-30'
+---
+
+<div
+  class="screenshot-gallery figure-breakout mt-12"
+  data-screenshot-gallery
+>
+  <PeekTrack images={images} />
+
+  {/* The gap tightens on a phone because the tap targets do not. Five dots
+      and two arrows hold 308px of target between them, which leaves 34px at
+      390 for everything around them, so a 16px gap on each side overflows
+      the gallery's own 342px box. */}
+  <div
+    class="screenshot-gallery-controls mt-6 flex items-center justify-center gap-1 sm:gap-4"
+    data-gallery-controls
+  >
+    <button
+      type="button"
+      class={arrowClass}
+      data-gallery-prev
+      aria-label="Previous screenshot"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width="18"
+        height="18"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m15 18-6-6 6-6"></path>
+      </svg>
+    </button>
+
+    {/* Each dot carries a full tap target around a small mark rather than
+        being one. The mark is what a reader sees and the button is what a
+        thumb has to hit, and the phone minimum governs the button: at the
+        mark's own 8px all five failed it on every engine. */}
+    <div
+      class="screenshot-gallery-dots flex items-center"
+      data-gallery-dots
+      role="tablist"
+      aria-label="Screenshots"
+    >
+      {
+        images.map((_, index) => (
+          <button
+            type="button"
+            class="screenshot-gallery-dot inline-flex size-11 items-center justify-center rounded-full"
+            data-gallery-dot
+            role="tab"
+            aria-label={`Go to screenshot ${index + 1}`}
+          >
+            <span class="screenshot-gallery-dot-mark bg-border size-2 rounded-full" />
+          </button>
+        ))
+      }
+    </div>
+
+    <button
+      type="button"
+      class={arrowClass}
+      data-gallery-next
+      aria-label="Next screenshot"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width="18"
+        height="18"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m9 18 6-6-6-6"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .screenshot-gallery-dot[data-active] .screenshot-gallery-dot-mark {
+    background: var(--accent);
+  }
+
+  /* Only this mount answers a click on the centered slide, by opening the
+     preview, so only this mount promises one. The slide is rendered by
+     `peek-track.astro` and carries that component's scope rather than this
+     one's, which is what `:global` reaches past. */
+  .screenshot-gallery :global(.screenshot-gallery-slide[data-active]) {
+    cursor: zoom-in;
+  }
+</style>

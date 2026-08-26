@@ -1,3 +1,5 @@
+import { lockPageScroll, releasePageScroll } from '@/lib/page-scroll-lock'
+
 const TRIGGER_SELECTOR = '[data-figure-zoom]'
 const DIALOG_SELECTOR = '[data-figure-dialog]'
 const DIALOG_IMAGE_SELECTOR = '[data-figure-dialog-image]'
@@ -144,44 +146,4 @@ export function initFigureZoom(): void {
   dialog.querySelector(CLOSE_SELECTOR)?.addEventListener('click', () => {
     dialog.close()
   })
-}
-
-/**
- * Where the reader was when the figure opened. Hiding the body's overflow
- * takes the document's scroll to zero, because that overflow propagates to the
- * viewport when the scrolling element is the root, so releasing it alone drops
- * the reader at the top of the page. Measured on the pronunciation route at
- * 1440x900: opening a figure 6177px down and closing it landed at 0.
- */
-let lockedScrollY = 0
-
-/**
- * Holds the page still under the open dialog. The scrollbar it removes is
- * replaced by padding of the same width, so the page behind does not jump
- * sideways as the modal opens.
- */
-function lockPageScroll(): void {
-  lockedScrollY = window.scrollY
-  const gap = window.innerWidth - document.documentElement.clientWidth
-  document.body.style.overflow = 'hidden'
-  if (gap > 0) document.body.style.paddingRight = `${gap}px`
-}
-
-/**
- * Returns the reader to the page. A reader who stepped through the sequence is
- * put beside the figure they ended on rather than the one they opened, since
- * that is the one they were last reading. `landOn` is null when they never
- * stepped, and the exact position is restored instead.
- */
-function releasePageScroll(landOn: HTMLElement | null): void {
-  document.body.style.removeProperty('overflow')
-  document.body.style.removeProperty('padding-right')
-
-  if (landOn) {
-    landOn.scrollIntoView({ block: 'center', behavior: 'instant' })
-    return
-  }
-  // Instant rather than the page's own behavior, so a reader closing a figure
-  // is put back rather than watching the page travel there.
-  window.scrollTo({ top: lockedScrollY, behavior: 'instant' })
 }

@@ -105,15 +105,15 @@ for (const route of ROUTES) {
       'grid',
       'inline-grid',
     ]
+    const sizedClasses = ['min-h-11', 'min-w-11', 'size-11']
     const sizedWithoutOwnBox = await page
       .locator('a:visible, button:visible')
       .evaluateAll(
-        (elements, boxClasses) =>
+        (elements, { boxClasses, sizedClasses }) =>
           elements
             .filter((element) =>
-              Array.from(element.classList).some(
-                (className) =>
-                  className === 'min-h-11' || className === 'min-w-11',
+              Array.from(element.classList).some((className) =>
+                sizedClasses.includes(className),
               ),
             )
             .filter(
@@ -129,9 +129,25 @@ for (const route of ROUTES) {
                 ''
               return `${label} (${element.className})`
             }),
-        boxDisplayClasses,
+        { boxClasses: boxDisplayClasses, sizedClasses },
       )
 
+    // Assert the filter found controls at all. A selector matching nothing
+    // satisfies the emptiness below without reading a single control, which
+    // is how the narrower version passed while ten of them sat outside it.
+    const sizedCount = await page
+      .locator('a:visible, button:visible')
+      .evaluateAll(
+        (elements, sizedClasses) =>
+          elements.filter((element) =>
+            Array.from(element.classList).some((className) =>
+              sizedClasses.includes(className),
+            ),
+          ).length,
+        sizedClasses,
+      )
+
+    expect(sizedCount).toBeGreaterThan(0)
     expect(sizedWithoutOwnBox).toEqual([])
   })
 }
