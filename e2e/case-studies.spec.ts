@@ -171,7 +171,7 @@ test('clicking the centered screenshot opens the preview on the same image', asy
   )
   await expect(
     dialog.locator('[data-peek-slide][data-active]'),
-  ).toHaveAttribute('aria-label', 'Show screenshot 1 of 5')
+  ).toHaveAttribute('data-peek-index', '0')
 })
 
 test('stepping inside the preview carries back to the inline gallery', async ({
@@ -196,7 +196,7 @@ test('stepping inside the preview carries back to the inline gallery', async ({
 
   await expect(
     page.locator('[data-screenshot-gallery] [data-peek-slide][data-active]'),
-  ).toHaveAttribute('aria-label', 'Show screenshot 2 of 5')
+  ).toHaveAttribute('data-peek-index', '1')
 })
 
 /**
@@ -282,7 +282,7 @@ test('only the centered screenshot is in the tab sequence', async ({
   await dots.nth(2).click()
   await expect(
     page.locator('[data-screenshot-gallery] [data-peek-slide][data-active]'),
-  ).toHaveAttribute('aria-label', 'Show screenshot 3 of 5')
+  ).toHaveAttribute('data-peek-index', '2')
 
   const tabbable = await page.evaluate(() =>
     Array.from(
@@ -382,10 +382,10 @@ test('arrow keys step the gallery on the route itself', async ({ page }) => {
   await centered.focus()
 
   await page.keyboard.press('ArrowRight')
-  await expect(centered).toHaveAttribute('aria-label', 'Show screenshot 2 of 5')
+  await expect(centered).toHaveAttribute('data-peek-index', '1')
 
   await page.keyboard.press('ArrowLeft')
-  await expect(centered).toHaveAttribute('aria-label', 'Show screenshot 1 of 5')
+  await expect(centered).toHaveAttribute('data-peek-index', '0')
 })
 
 test('arrow keys still step after an arrow control disables itself', async ({
@@ -399,14 +399,11 @@ test('arrow keys still step after an arrow control disables itself', async ({
   // Click the control with a pointer, so focus lands on the arrow rather than
   // on the track, which is the path a reader takes and the one that breaks.
   await page.locator('[data-screenshot-gallery] [data-gallery-next]').click()
-  await expect(centered).toHaveAttribute('aria-label', 'Show screenshot 2 of 5')
+  await expect(centered).toHaveAttribute('data-peek-index', '1')
 
   for (let step = 3; step <= DICTION_GALLERY_COUNT; step += 1) {
     await page.keyboard.press('ArrowRight')
-    await expect(centered).toHaveAttribute(
-      'aria-label',
-      `Show screenshot ${step} of 5`,
-    )
+    await expect(centered).toHaveAttribute('data-peek-index', String(step - 1))
   }
 
   // Reaching the end disables the next arrow, and a browser blurs an element
@@ -417,7 +414,7 @@ test('arrow keys still step after an arrow control disables itself', async ({
   ).toBeDisabled()
 
   await page.keyboard.press('ArrowLeft')
-  await expect(centered).toHaveAttribute('aria-label', 'Show screenshot 4 of 5')
+  await expect(centered).toHaveAttribute('data-peek-index', '3')
 })
 
 test('the preview opens focused on the screenshot rather than on close', async ({
@@ -440,6 +437,55 @@ test('the preview opens focused on the screenshot rather than on close', async (
   )
 
   expect(focusedIsSlide).toBe(true)
+})
+
+test('each screenshot names what it shows, not only its position', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+
+  const names = await page
+    .locator('[data-screenshot-gallery] [data-peek-slide]')
+    .evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('aria-label') ?? ''),
+    )
+  const alts = await page
+    .locator('[data-screenshot-gallery] [data-peek-slide] img')
+    .evaluateAll((nodes) => nodes.map((node) => (node as HTMLImageElement).alt))
+
+  expect(names).toHaveLength(DICTION_GALLERY_COUNT)
+  // An `aria-label` on a button replaces its contents for the accessible
+  // name, so a label carrying the position alone leaves a screen reader five
+  // slides that differ by a number and discards every alt on the page.
+  expect(alts.every((alt) => alt.length > 0)).toBe(true)
+  expect(names.every((name, at) => name.includes(alts[at] ?? ' '))).toBe(true)
+})
+
+test('only the mount that answers a click promises one', async ({ page }) => {
+  await page.goto('/diction')
+  await page
+    .locator('[data-screenshot-gallery] [data-peek-slide]')
+    .first()
+    .click()
+  await expect(page.locator('[data-gallery-preview]')).toBeVisible()
+
+  const cursors = await page.evaluate(() => {
+    const read = (scope: string): string | null => {
+      const slide = document.querySelector<HTMLElement>(
+        `${scope} [data-peek-slide][data-active]`,
+      )
+      return slide ? getComputedStyle(slide).cursor : null
+    }
+    return {
+      inline: read('[data-screenshot-gallery]'),
+      preview: read('[data-gallery-preview]'),
+    }
+  })
+
+  // The inline mount opens the preview on a click here. The preview passes no
+  // `onCenterClick`, so the same click does nothing and must not offer to.
+  expect(cursors.inline).toBe('zoom-in')
+  expect(cursors.preview).not.toBe('zoom-in')
 })
 
 test('the preview holds one panel size across its screenshots', async ({

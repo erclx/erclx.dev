@@ -27,14 +27,22 @@ const { images } = Astro.props
         page, only the carousel, and the browser's native lazy load keys off
         the page's own viewport. A peeking slide is close enough to that
         viewport to load anyway; the two further off never do, leaving them
-        blank for a reader who clicks straight to one. */}
+        blank for a reader who clicks straight to one.
+
+        Each label carries its description as well as its position. An
+        `aria-label` on a button replaces its contents for the accessible
+        name, so a label naming the position alone discards the image's own
+        alt and hands a screen reader five slides that differ by a number.
+        The preview shows the same description as a visible caption, and the
+        label is what says it on the inline mount. */}
     {
       images.map((image, index) => (
         <button
           type="button"
           class="screenshot-gallery-slide bg-card border-border/60 overflow-hidden rounded-lg border"
           data-peek-slide
-          aria-label={`Show screenshot ${index + 1} of ${images.length}`}
+          data-peek-index={index}
+          aria-label={`${image.alt}. Screenshot ${index + 1} of ${images.length}`}
         >
           <Image
             src={image.src}
@@ -135,11 +143,11 @@ const { images } = Astro.props
   .screenshot-gallery-slide[data-active] {
     opacity: 1;
     transform: scale(1);
-    /* A click here has nowhere left to advance to, so the inline gallery
-       reads it as opening the preview, and the preview reads it as nothing.
-       The cursor still promises the inline behavior, since that is the mount
-       a reader meets it at first. */
-    cursor: zoom-in;
+    /* No cursor here. A click on the centered slide opens the preview from
+       the inline mount and does nothing inside the preview, which passes no
+       `onCenterClick`, so the promise belongs to the mount that answers it
+       rather than to the track both share. `screenshot-gallery.astro` sets
+       it. */
   }
   @media (prefers-reduced-motion: no-preference) {
     .screenshot-gallery-slide {

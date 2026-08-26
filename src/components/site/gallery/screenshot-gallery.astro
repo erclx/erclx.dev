@@ -103,4 +103,12 @@ const arrowClass =
   .screenshot-gallery-dot[data-active] .screenshot-gallery-dot-mark {
     background: var(--accent);
   }
+
+  /* Only this mount answers a click on the centered slide, by opening the
+     preview, so only this mount promises one. The slide is rendered by
+     `peek-track.astro` and carries that component's scope rather than this
+     one's, which is what `:global` reaches past. */
+  .screenshot-gallery :global(.screenshot-gallery-slide[data-active]) {
+    cursor: zoom-in;
+  }
 </style>
