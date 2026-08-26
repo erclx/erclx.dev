@@ -1519,7 +1519,7 @@ the pointer and the tab sequence together rather than needing an answer each.
 The 44px costs the row nothing, since the lockup beside it already holds that
 height.
 
-**Two instruments failed on this branch and both are the class this file
+**Three instruments failed on this branch and all are the class this file
 collects.** A before-and-after sheet reported no difference while the
 manipulation producing it was a silent no-op: the two grid classes are not
 adjacent in the class attribute, so a string replace of them matched nothing
@@ -1532,14 +1532,33 @@ than an undersized one, which is a starved page and not a regression. **Read a
 guard's failure mode before reading its verdict**, since zero controls and no
 undersized controls are the same green on a different question.
 
+The third was the search itself, and it is the one that reached furthest. A raw
+NUL byte sat inside a string literal in `e2e/case-studies.spec.ts`, which makes
+every text tool classify the file as binary, so `grep` and `rg` answer that a
+binary file matches and print no lines. Two searches during this branch's review
+came back empty against a file that held what they asked for, and the way-home
+count guard was nearly reported missing while it sat at line 600. It blinded a
+reading on this side as well: a `sed -n` line count taken while the byte was
+still there reported the wrong line, and the correct one only appeared once the
+file was text again.
+
+That is exactly what the entries above describe, arriving through the tooling
+rather than through a test. **A tool reporting nothing and a tool reporting
+nothing wrong are the same output**, and a search is the instrument least likely
+to be suspected of either, because an empty result is what an honest search
+returns most of the time. The escape `\0` compiles to the same value and keeps
+the file searchable. It predated this branch and is repaired here, since this is
+the branch that was reading the file.
+
 The wireframe had drawn the name centred since the surface was written, so the
 document stated the intent and the row diverged from it with nothing comparing
 the two.
 
-Measured at 1e09bf2 on 2026-08-26 with this branch applied, at 320, 390, 640,
+Measured at 4577565 on 2026-08-26 with this branch applied, at 320, 390, 640,
 768, 1024, 1280, 1440, and 1920 across all five routes, where the name centres
-to 0.00px at every one and the full suite passes across chromium, firefox, and
-webkit.
+to 0.00px at every one. The full suite passed 812 across chromium, firefox, and
+webkit at 2c17144, and the two commits since changed no assertion and no
+rendered surface.
 
 ## Risks / open questions
 
