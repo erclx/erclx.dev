@@ -1478,6 +1478,69 @@ Measured at c58ae55 on 2026-08-26 with this branch applied, at 390, 1280, and
 1440 across chromium, firefox, and webkit, where the case-study suite passes
 180 and the full suite passes 770 and skips 7 with nothing failing.
 
+### Equal gaps are not a centre, and the name nobody could press was the only way back
+
+A route's bar named the route between the identity lockup and the theme
+toggle. The name sat 17.5px right of the bar's centre at every width from 390
+to 1920 and on all five routes, and pressing it did nothing.
+
+**The offset was arithmetic rather than drift.** Three items under
+`justify-between` split the free space into two equal gaps, which centres the
+middle item only when the two flanking it weigh the same. The lockup measures
+79px against the toggle's 44px, and `(79 - 44) / 2` is 17.5 exactly. The gaps
+either side of the name were equal at every width, so the name was centred
+between the two controls and not in the bar. **Those are different boxes, and
+only one of them is the box an eye reads a bar's centre from.**
+
+That distinction decides the guard as well as the fix. A check reading the two
+gaps passes against the defect, because equal gaps are precisely what the
+retired layout produced. It reads the row's own box instead.
+
+The repair is three columns with equal outer ones rather than a nudge. A 17.5px
+offset encodes today's two control widths and goes wrong the moment either
+moves, which is the literal-standing-in-for-a-relationship this file already
+bars. Matching the two flanking slots by width was the other candidate and
+fails the same way, since it fixes the toggle's slot to the lockup's current
+size.
+
+**The dead label turned out to name a gap rather than a spare control.** Every
+other way back on a route leaves it: the lockup here and the closing foot both
+target the landing page, and the rail's first row is the only control that
+returns to the top of the route. The rail is hidden below 1280, so **the one
+band with no back-to-top at all was the band the name is the sole answer in**,
+which is where both screenshots that prompted this were taken. It is a button
+now, and the two existing exits are unchanged.
+
+Opacity was the only thing withholding it, and opacity hides a control from the
+eye and from nothing else. That cost a `span` nothing. It costs a button a tab
+stop and a 44px target across the whole opening screen while painting nothing.
+It takes `inert` on the same clock as the shown marker, which closes
+the pointer and the tab sequence together rather than needing an answer each.
+The 44px costs the row nothing, since the lockup beside it already holds that
+height.
+
+**Two instruments failed on this branch and both are the class this file
+collects.** A before-and-after sheet reported no difference while the
+manipulation producing it was a silent no-op: the two grid classes are not
+adjacent in the class attribute, so a string replace of them matched nothing
+and returned the attribute untouched, and the pair of crops was two pictures of
+one layout. It asserts the offset moves before it trusts a crop. Then eighteen
+unrelated tests failed on the first three-engine run and none reproduced on a
+clean one, because the run overlapped a capture driving its own browser. The
+tap-target guard's own failure was a count of zero controls on the page rather
+than an undersized one, which is a starved page and not a regression. **Read a
+guard's failure mode before reading its verdict**, since zero controls and no
+undersized controls are the same green on a different question.
+
+The wireframe had drawn the name centred since the surface was written, so the
+document stated the intent and the row diverged from it with nothing comparing
+the two.
+
+Measured at 1e09bf2 on 2026-08-26 with this branch applied, at 320, 390, 640,
+768, 1024, 1280, 1440, and 1920 across all five routes, where the name centres
+to 0.00px at every one and the full suite passes across chromium, firefox, and
+webkit.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.

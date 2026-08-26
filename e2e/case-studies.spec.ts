@@ -1099,3 +1099,89 @@ test('a route with no intersection observer still renders its prose', async ({
 
   await context.close()
 })
+
+// Past the opening screen, where the bar's name has arrived. The routes run
+// thousands of pixels, so this only has to clear the heading.
+const INTO_THE_PROSE_PX = 2000
+
+const scrollIntoTheProse = async (page: Page) => {
+  await page.evaluate(
+    (top) => window.scrollTo({ top, behavior: 'instant' as ScrollBehavior }),
+    INTO_THE_PROSE_PX,
+  )
+  await expect(page.locator('[data-route-here]')).toHaveAttribute(
+    'data-shown',
+    'true',
+  )
+}
+
+for (const route of CASE_STUDY_ROUTES) {
+  test(`the bar names ${route} at the bar's own centre`, async ({ page }) => {
+    await page.goto(route)
+    await scrollIntoTheProse(page)
+
+    // Read against the row rather than against the gap between the two
+    // controls, because those are different boxes and only the first is the
+    // one an eye reads a bar's centre from. Equal gaps are what the retired
+    // `justify-between` already produced while the name sat 17.5px right of
+    // here, so a guard on the gaps passes against the defect.
+    const offset = await page.evaluate(() => {
+      const row = document.querySelector('[data-bar-row]')
+      const here = document.querySelector('[data-route-here]')
+      if (!row || !here) throw new Error('the bar row or its name is missing')
+      const rowBox = row.getBoundingClientRect()
+      const hereBox = here.getBoundingClientRect()
+      return hereBox.left + hereBox.width / 2 - (rowBox.left + rowBox.width / 2)
+    })
+
+    // Subpixel, since the middle column is sized to the name's own text and a
+    // fractional advance splits either side of centre.
+    expect(Math.abs(offset)).toBeLessThan(1)
+  })
+
+  test(`the bar's name for ${route} says what it does`, async ({ page }) => {
+    await page.goto(route)
+    await scrollIntoTheProse(page)
+
+    // A button reading only the route name states where the reader is and not
+    // what pressing it does, and an accessible name that drops the visible one
+    // leaves a voice reader naming a control the page does not show.
+    const here = page.getByRole('button', { name: /back to top of/i })
+    await expect(here).toHaveCount(1)
+    await expect(here).toHaveAccessibleName(
+      new RegExp(`back to top of ${(await here.innerText()).trim()}`, 'i'),
+    )
+  })
+}
+
+test('the bar name returns a reader to the top of the route', async ({
+  page,
+}) => {
+  await page.goto('/diction#problem')
+  await scrollIntoTheProse(page)
+
+  await page.locator('[data-route-here]').click()
+
+  // Polled rather than read once: the root's own `scroll-behavior` glides
+  // this, so a read taken on the click catches the page in transit.
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+
+  // The rail row that left this fragment names a section the reader has left,
+  // and this control scrolls rather than navigates, so nothing else clears it.
+  expect(await page.evaluate(() => window.location.hash)).toBe('')
+})
+
+test('the bar name is out of reach while the route heading is on screen', async ({
+  page,
+}) => {
+  await page.goto('/diction')
+  const here = page.locator('[data-route-here]')
+
+  // Opacity hides a control from the eye and from nothing else, so without
+  // this the name was a 44px target and a tab stop across the whole opening
+  // screen while painting nothing.
+  await expect(here).toHaveAttribute('inert', '')
+
+  await scrollIntoTheProse(page)
+  await expect(here).not.toHaveAttribute('inert', '')
+})

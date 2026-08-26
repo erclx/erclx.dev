@@ -31,10 +31,17 @@ const { here } = Astro.props
       marked: its name and toggle fly in from the hero on measured positions,
       and an opacity transition there reopens the three placement defects
       `.claude/ARCHITECTURE.md` records. Same arrival, different mechanism. */}
+  {/* Three columns rather than `justify-between`, because equal gaps centre the
+      middle item only when the two flanking it weigh the same. They do not: the
+      lockup measures 79px against the toggle's 44px, so the name sat 17.5px
+      right of the bar's centre at every width and on every route, which is
+      (79 - 44) / 2 exactly. Equal side columns state the relationship the
+      centring actually depends on, where a 17.5px nudge would encode today's
+      two control widths and go wrong the moment either moves. */}
   <div
     data-fade
     data-bar-row
-    class="relative mx-auto flex max-w-3xl items-center justify-between py-4"
+    class="relative mx-auto grid max-w-3xl grid-cols-[1fr_auto_1fr] items-center py-4"
   >
     {/* One control carrying both, the way the landing bar carries them, so the
         chrome holds one shape and one hit area as a reader crosses between the
@@ -43,20 +50,33 @@ const { here } = Astro.props
     <a
       href="/"
       data-way-home
-      class="text-foreground text-label flex min-h-11 items-center gap-2.5 underline-offset-4 hover:underline"
+      class="text-foreground text-label flex min-h-11 items-center gap-2.5 justify-self-start underline-offset-4 hover:underline"
     >
       <BarMark />
       Eric Le
     </a>
     {/* The name states where the reader is only once the page has stopped
         stating it. Both on screen together covers the first screen of every
-        route, which is the duplication this closes. */}
-    <span
+        route, which is the duplication this closes.
+
+        It is a control rather than a label because a route had no way back to
+        its own top: the lockup beside it and the closing foot both leave for
+        the landing page, and the rail's first row is the only thing that
+        returns here and is hidden below 1280. So the one viewport with no
+        back-to-top was the one this name is the sole answer on. It carries the
+        44px minimum the row already holds from the lockup, so the bar does not
+        grow to gain a hit area. */}
+    <button
+      type="button"
       data-route-here
-      class="text-muted-foreground text-label truncate px-4"
-      aria-hidden="true">{here}</span
+      inert
+      aria-label={`Back to top of ${here}`}
+      class="text-muted-foreground hover:text-foreground text-label inline-flex min-h-11 min-w-0 cursor-pointer items-center truncate px-4 underline-offset-4 justify-self-center hover:underline"
+      >{here}</button
     >
-    <ThemeToggle />
+    <div class="justify-self-end">
+      <ThemeToggle />
+    </div>
   </div>
 </header>
 
@@ -110,6 +130,39 @@ const { here } = Astro.props
   const title = document.querySelector<HTMLElement>('main h1')
   const bar = document.querySelector<HTMLElement>('header[data-section="header"]')
 
+  // Opacity alone hides a control from the eye and from nothing else, so
+  // before this the name was a 44px target and a tab stop through the whole
+  // first screen while painting nothing. `inert` is what the landing bar
+  // already uses for the same reason, and it closes the pointer and the tab
+  // sequence together rather than needing one answer each.
+  const setShown = (shown: boolean) => {
+    if (!here) return
+    if (shown) {
+      here.setAttribute('data-shown', 'true')
+      here.removeAttribute('inert')
+    } else {
+      here.removeAttribute('data-shown')
+      here.setAttribute('inert', '')
+    }
+  }
+
+  here?.addEventListener('click', () => {
+    // The root's own `scroll-behavior` decides, so the motion preference is
+    // read in the one place the whole site reads it rather than here as well.
+    window.scrollTo({ top: 0 })
+
+    // A rail row leaves a fragment naming a section the reader has left, and
+    // this control scrolls rather than navigates, so nothing else clears it.
+    // Replaced rather than pushed, so leaving the top costs one back press.
+    if (window.location.hash) {
+      window.history.replaceState(
+        null,
+        '',
+        window.location.pathname + window.location.search,
+      )
+    }
+  })
+
   if (here && title && bar && 'IntersectionObserver' in window) {
     // The bar sits over the top of the page, so the title counts as gone once
     // it passes behind the bar rather than once it clears the viewport. Its own
@@ -119,11 +172,7 @@ const { here } = Astro.props
       const observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            if (entry.isIntersecting) {
-              here.removeAttribute('data-shown')
-            } else {
-              here.setAttribute('data-shown', 'true')
-            }
+            setShown(!entry.isIntersecting)
           }
         },
         {
@@ -141,6 +190,6 @@ const { here } = Astro.props
   } else if (here) {
     // Without an observer the name is the more useful of the two states, since
     // a reader deep in a route has no other answer to where they are.
-    here.setAttribute('data-shown', 'true')
+    setShown(true)
   }
 </script>
