@@ -37,12 +37,16 @@ The ground starts at the full width with square corners and contracts to a round
 ```plaintext
 ┌─[viewport]──────────────────────────────────────────────────┐
 │      ╭─[same ground, same column]───────────────────╮       │
-│      │  e▮ Eric Le       diction              [☾]   │       │  ← mark, way home, route name, toggle
+│      │  e▮ Eric Le       diction              [☾]   │       │  ← mark, way home, name returns to route top, toggle
 │      ╰──────────────────────────────────────────────╯       │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 The route name is absent while the route's own title is still on screen and fades in once that title passes behind the bar, so the two never state the same thing at once. A route carries no arrow beside the name. The foot carries one on its own control, and the two are separated by a page height rather than by an ornament, so an arrow here would state a second time what the name already does.
+
+The name sits at the centre of the bar's own box, which is what the diagram above has always drawn and what the row did not do until 2026-08-26. Three items under `justify-between` split the free space into two equal gaps, and equal gaps centre the middle item only when the two flanking it match, so the 79px lockup against the 44px toggle left the name 17.5px right of centre at every width and on all five routes. Nothing compared the drawing against the page.
+
+The name is also the route's way back to its own top. Every other control on a route leaves it: the lockup here and the closing foot both target the landing page, and the rail's first row is the only one that returns to the top and is hidden below 1280, which is the band both of the screenshots that prompted this sit in.
 
 ## Behavior
 
@@ -52,6 +56,8 @@ The route name is absent while the route's own title is still on screen and fade
 - The mark sits inside that control and outside the name slot, which are different boxes. The slot is the target the flying name is measured against, so the marker stays on the name rather than moving up to the group.
 - The bar switches on and its ground fades in under it. The name and the toggle arrive by riding the scroll and are fully opaque when they land, so a mark fading up beside them was a third timing on the row. The opacity stays on the bar rather than the row, because reduced motion gives the name slot its color back and an always-opaque bar would then show a second name through the whole hero.
 - The bar is `inert` until it is revealed, so nothing inside it takes focus while it is off screen.
+- A route's name is `inert` on its own clock, since it is withheld for the opening screen while the bar around it is already reachable. Opacity hides a control from the eye and from nothing else, so without this it was a tab stop and a 44px target across the whole opening screen while painting nothing.
+- The route row is three columns with equal outer ones rather than a spaced row, so the name centres whatever the two controls beside it weigh. A measured nudge was rejected: the offset is exactly half the difference between them, so it would encode today's two widths and go wrong the moment either moved.
 - A route's own bar is the sticky one rather than a second bar above it, so a reader deep in a long route always has a way home without stacking two bars.
 
 ## The ground
