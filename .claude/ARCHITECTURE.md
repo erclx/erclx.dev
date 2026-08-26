@@ -1344,26 +1344,39 @@ exactly as declared, and the prior computed-display check would have caught
 it. The class-list assertion is load-bearing on most of these controls
 rather than on a few, which is the reverse of what an earlier version of
 this entry claimed. The guard now asserts the exempt set directly, reading
-the class list of every element carrying `min-h-11` or `min-w-11` and
-failing if none of `flex`, `inline-flex`, `block`, `inline-block`, `grid`,
-or `inline-grid` is present, which does not depend on what a parent's
-layout mode does to the computed value. Verified against the same
-regression before trusting it: reverting the class list check reintroduces
-the failure.
+the class list of every element carrying `min-h-11`, `min-w-11`, or
+`size-11` and failing if none of `flex`, `inline-flex`, `block`,
+`inline-block`, `grid`, or `inline-grid` is present, which does not depend
+on what a parent's layout mode does to the computed value. Verified against
+the same regression before trusting it: reverting the class list check
+reintroduces the failure.
 
-The assertion still selects what it checks by the same two classes a
-regression could remove together. A control that drops `min-h-11` and
-`inline-flex` in the same edit matches neither the class-list assertion nor
-the computed-display one, and falls back to the size check alone, where an
-`<li>`-nested control now computing `inline` is exempted again. Left as a
-gap rather than closed with more code, since every current call site keeps
-the two classes together and nothing has needed them to move independently.
+**`size-11` was outside that selector until 2026-08-26, and it is the way
+ten of these controls declare the minimum.** Both contact dock rows, the
+theme toggle, all three figure dialog controls, the bar's toggle slot, and
+the three the screenshot gallery added set both axes with it, against
+eighteen declarations using the pair. So the guard read about half the
+controls it appeared to cover, and the two written here as one gap were
+different sizes: this one was ten live controls rather than a shape nothing
+had reached yet. Widening it passed unchanged, because all ten already
+carry a box class, which is what made the hole invisible. The guard also
+counts what its filter matched now, since a filter selecting nothing
+satisfies an emptiness assertion without reading a control.
+
+One narrower gap survives that widening. A control dropping its sizing
+class and `inline-flex` in the same edit matches neither the class-list
+assertion nor the computed-display one, and falls back to the size check
+alone, where an `<li>`-nested control now computing `inline` is exempted
+again. Left open rather than closed with more code, since every call site
+keeps the two together and nothing has needed them to move independently.
 
 Measured at a7b1c04 on 2026-08-25 with this branch applied, where
 `e2e/links.spec.ts` passes 60 and `e2e/case-studies.spec.ts` passes 141
 across chromium, firefox, and webkit. Re-verified against `3120b0a` on
 2026-08-26, where the corrected finding above and the class-list guard both
-held.
+held. The `size-11` count was read across the tree at cd0f04b on 2026-08-26,
+and the widened selector was proved both ways: dropping `inline-flex` from a
+`size-11` control fails it and passes the version that read the pair alone.
 
 ### The gallery is one carousel rendered twice, and every end of it is a scroll the box has to reserve
 
