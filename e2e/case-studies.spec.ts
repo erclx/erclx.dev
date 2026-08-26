@@ -458,7 +458,7 @@ test('each screenshot names what it shows, not only its position', async ({
   // name, so a label carrying the position alone leaves a screen reader five
   // slides that differ by a number and discards every alt on the page.
   expect(alts.every((alt) => alt.length > 0)).toBe(true)
-  expect(names.every((name, at) => name.includes(alts[at] ?? ' '))).toBe(true)
+  expect(names.every((name, at) => name.includes(alts[at] ?? '\0'))).toBe(true)
 })
 
 test('only the mount that answers a click promises one', async ({ page }) => {

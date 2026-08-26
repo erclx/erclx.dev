@@ -37,7 +37,7 @@ The ground starts at the full width with square corners and contracts to a round
 ```plaintext
 ┌─[viewport]──────────────────────────────────────────────────┐
 │      ╭─[same ground, same column]───────────────────╮       │
-│      │  e▮ Eric Le       diction              [☾]   │       │  ← mark, way home, route name, toggle
+│      │  e▮ Eric Le       diction              [☾]   │       │  ← mark, way home, name returns to route top, toggle
 │      ╰──────────────────────────────────────────────╯       │
 └─────────────────────────────────────────────────────────────┘
 ```
