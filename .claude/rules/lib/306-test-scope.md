@@ -21,5 +21,5 @@ paths:
 
 - Answer a question about the running page with a script against the dev server rather than with the suite.
 - Do not enable `fullyParallel` in `playwright.config.ts`.
-- Follow `.claude/rules/ui/445-screenshot.md` for capture scope.
+- Follow `.claude/rules/project/ui/445-screenshot.md` for capture scope.
 - Follow `.claude/rules/lib/305-e2e-reliability.md` for waits and guards.
