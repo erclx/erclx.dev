@@ -64,11 +64,21 @@ fi
 
 root="${CLAUDE_PROJECT_DIR:-.}"
 
-# No standard installs into a project, so the corpus inside the aitk package is
-# what answers here and the reminder names the verb that reaches it. The earlier
-# form tested a path in this tree and exited zero when it was absent, which made
-# retiring that tree silently switch the hook off rather than break it.
-command -v aitk >/dev/null 2>&1 || exit 0
+case "$standard" in
+pr) governs="a pull request title and body" ;;
+commit) governs="a commit message" ;;
+branch) governs="a branch name" ;;
+esac
+
+# A standard resolves only through `aitk`, and this hook is the sole enforcer for
+# the three writing surfaces its header names, so a missing binary is reported
+# the way `standards-audit.sh` and `tasks-index.sh` report theirs rather than
+# exiting clean, which `575-hooks` bars for an only enforcer.
+if ! command -v aitk >/dev/null 2>&1; then
+  msg=$(printf 'Standards-reminder: cannot point at the %s standard for %s. No `aitk` binary on PATH. Install one with `bun add -g @erclx/aitk`.' "$standard" "$governs")
+  jq -nc --arg msg "$msg" '{hookSpecificOutput:{hookEventName:"PreToolUse",additionalContext:$msg}}'
+  exit 0
+fi
 
 # Once per session per standard. Without this the commit row alone would speak
 # on every commit of a run, which is the noise that gets a hook switched off.
@@ -79,12 +89,6 @@ marker="$marker_dir/$key"
 [ -f "$marker" ] && exit 0
 mkdir -p "$marker_dir"
 : >"$marker"
-
-case "$standard" in
-pr) governs="a pull request title and body" ;;
-commit) governs="a commit message" ;;
-branch) governs="a branch name" ;;
-esac
 
 msg=$(printf 'This command writes %s, which the %s standard governs. Read it with `aitk standards %s` before writing one rather than working the shape from memory. The %s skill reads it first and is the route that cannot skip it.' \
   "$governs" "$standard" "$standard" "git-$standard")

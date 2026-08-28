@@ -9,6 +9,12 @@ description: Scroll-reveal cascade primitive and the per-surface animations on t
 
 How the landing page's scroll-triggered animation works. Layout and interaction intent for each surface live in its `.claude/wireframes/<surface>.md` file. This entry covers the shared mechanism.
 
+## Layout
+
+- `src/lib/` owns the reveal observer and the threshold constants its harnesses import
+- `src/styles/` owns the fade-and-rise and the bar shape-transition declarations every surface here resolves
+- `e2e/` owns the reveal-selector inventory and the lazy-image walk that waits on what the observer marks
+
 ## Traveling to a target
 
 - The root declares `scroll-behavior: smooth` under `prefers-reduced-motion: no-preference`, and every control that scrolls resolves it rather than naming a behavior. That covers the rail, the bar's home control, and the timeline chips, which had answered the same question three different ways. `.claude/ARCHITECTURE.md` § One declaration decides how the page travels, and every caller resolves it carries the reasoning and what it cost.

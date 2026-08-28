@@ -1586,9 +1586,12 @@ semicolons while reporting nothing wrong. `standards-reminder.sh` gated on
 completely with no error anywhere. The audit hook now calls
 `aitk markdown audit --json` and the reminder names `aitk standards <name>`,
 and both were run against a probe carrying three banned words before either was
-trusted. This is the class this file already collects, arriving through a path
-test rather than through a measurement: **a guard keyed to a file's existence
-reports success the moment that file stops existing.**
+trusted. A machine with no `aitk` on PATH draws the same missing-binary line
+`standards-audit.sh` and `tasks-index.sh` draw rather than exiting clean, which
+`575-hooks` bars for a hook that is the only enforcer of its rule. This is the
+class this file already collects, arriving through a path test rather than
+through a measurement: **a guard keyed to a file's existence reports success the
+moment that file stops existing.**
 
 The tooling sync was read and declined. It reported 15 changes across 9 configs,
 5 scripts and a gitignore line, and every drifted file is a customization this
@@ -1596,9 +1599,12 @@ document already defends. `playwright.config.ts` carries its own port band,
 `fullyParallel` off with the measurement behind it, and the prebuilt-dist path.
 `.github/workflows/verify.yml` carries the three-engine matrix, the xvfb wrapper
 firefox needs for a GL context, and an engine-keyed cache. `e2e/screenshot.ts`
-carries per-section capture. A sync would take all of it. The one additive item
-is a `screenshots/` ignore line, and captures land under `.claude/review/`, which
-is ignored already. **Read a tooling report as a list of decisions to re-take
+carries per-section capture. Those three are the clearest cases and not the
+whole list: the decline covers the tooling domain entire, with `astro.config.mjs`
+holding the `site` value the share cards resolve absolute image URLs through and
+`scripts/worktree-port.sh` holding the per-worktree port derivation among the
+rest. A sync would take all of it. The one additive item is a `screenshots/`
+ignore line, and captures land under `.claude/review/`, which is ignored already. **Read a tooling report as a list of decisions to re-take
 rather than as drift to clear**, since the sync has no way to tell a
 customization from a lag.
 
@@ -1622,7 +1628,8 @@ found by searching for the old name.** All 78 links across the board and both
 archives resolve.
 
 Measured at 3.38.0 on 2026-08-28, where 59 rules carry zero citations of the
-retired path and 16 name the verb, both hooks fire against a probe, and the
+retired path and 16 name the verb, both hooks fire against a probe and the
+reminder draws its missing-binary line on a stripped PATH, and the
 install stamp reads from `.claude/aitk/config.json` with `stampAtLegacyPath`
 reported false.
 
@@ -1630,7 +1637,7 @@ reported false.
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
 - Closed on 2026-08-28. The stamp recorded a governance commit living only on an unmerged toolkit branch, because the Astro glob fix had been synced from a local checkout rather than a release. It is stamped from released 3.38.0 now, which carries both that fix and the mirror retirement, so no domain here is anchored to an unreleased tree. A released package ships no git history, so the governance domain records no commit at all rather than a stale one, and `aitk sync --check` reports the drift it can still see as unattributed.
-- The governance install carried two stack members short until 2026-08-15: `556-groundwork` and `557-intake`, both shipped by the base stack and both named in `.claude/aitk.json` while absent from disk. `aitk gov sync` refreshes rules already present and adds none, so the gap survived every sync and closed only under `aitk gov install`. A sync alone does not prove the install is complete, and the signal to read is a recorded path with no file behind it rather than the rule count on its own. A recorded path whose file exists with a different hash is a separate state and not that signal. The three standards files that illustrated it here are gone with the rest of the tree, so the example no longer resolves and the reading it supports still holds.
+- The governance install carried two stack members short until 2026-08-15: `556-groundwork` and `557-intake`, both shipped by the base stack and both named in the install record, now `.claude/aitk/config.json`, while absent from disk. `aitk gov sync` refreshes rules already present and adds none, so the gap survived every sync and closed only under `aitk gov install`. A sync alone does not prove the install is complete, and the signal to read is a recorded path with no file behind it rather than the rule count on its own. A recorded path whose file exists with a different hash is a separate state and not that signal. The three standards files that illustrated it here are gone with the rest of the tree, so the example no longer resolves and the reading it supports still holds.
 - `aitk gov install` re-adds every stack member this project declines, and there are three: `440-surface-capture`, which the decision below covers, `450-link-behavior`, which `455-links` supersedes on an overlapping glob, and `505-at-references`, which governs the retired snippets folder alone. No mechanism exists to opt a project out of one rule its stack ships, so each decline holds only while an install is followed by removing that file and its record entry. Check for all three after any install. A sync reports them as listed but not installed rather than re-adding them, so only `install` carries this cost.
 - `aitk gov sync` reverts `306-test-scope.md` to citing `440-surface-capture.md` on every run, because the one line naming `445-screenshot.md` is a customization of a toolkit-owned file rather than a project-authored rule. Re-apply it after any sync. Moving the rule into `.claude/rules/project/` is not available, since the rest of the file is toolkit content this project wants updated.
 - `caret.astro` and `stackr.astro` sync against `career/assets/portfolio/caret.md` and `stackr.md`, which do not exist on the career repository's `main` today. Both files, along with the two opening sentences and the `Fix Session Timeout` example they carry, are added by `erclx/career#210`, still open. Until that pull request merges, the sync target for those two routes can still move, and a reword to either file on its branch arrives as fresh drift here with nothing reporting it. Re-check both files against `main` once `erclx/career#210` lands, and until then read the branch it ships from rather than assuming it is `main`.
