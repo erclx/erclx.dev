@@ -11,6 +11,10 @@ A fixed layer behind every page, drawing the hero's own field at a fraction of i
 
 It exists because the hero's surface stopped at the hero. Dissolving the seam between them removed the boundary and left the two halves still speaking different languages, which is what a reader was reading as two documents joined.
 
+## Layout
+
+- `src/components/site/page-ground/` owns the still layer the base layout mounts under every page
+
 ## Decisions
 
 - It runs the hero's shader held to a single frame rather than an authored copy. There is one drawing, so the two cannot drift and there is no second rendering path to keep matched. See `.claude/context/shader-field.md`.

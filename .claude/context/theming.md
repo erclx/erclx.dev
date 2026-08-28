@@ -9,6 +9,11 @@ description: Dark mode wiring across the first-paint script, theme toggle, and C
 
 How the page picks and switches between light and dark. Spans `src/layouts/base.astro`, `src/components/site/theme-toggle/theme-toggle.astro`, and `src/styles/global.css`.
 
+## Layout
+
+- `src/components/site/theme-toggle/` owns the control that writes the theme choice
+- `src/styles/` owns the token layers both themes resolve through
+
 ## Layer responsibilities
 
 - `src/layouts/base.astro` owns the first-paint inline script. Reads `localStorage.theme` and `prefers-color-scheme`, resolves the active mode, applies `.dark` to `documentElement`, and writes `documentElement.dataset.themeMode` before the body renders.

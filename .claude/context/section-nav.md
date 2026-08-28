@@ -9,6 +9,10 @@ description: Scroll-position tracking, reveal gates, and click-lock behind the s
 
 `src/components/site/section-nav/section-nav.astro` renders the fixed left-margin rail used on the landing page and every project route. It is a plain Astro file with an inline `<script>`. Layout and intent live in `.claude/wireframes/section-nav.md`. This entry covers how the tracking works.
 
+## Layout
+
+- `src/components/site/section-nav/` owns the rail markup and the row treatment its tracking drives
+
 ## Active tracking
 
 - A scroll handler recomputes the active section on every `scroll` and `resize`, throttled with `requestAnimationFrame`.

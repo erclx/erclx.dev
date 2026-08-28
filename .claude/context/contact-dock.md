@@ -11,6 +11,10 @@ A control in the page's right margin carrying GitHub, LinkedIn, the address, and
 
 It answers the stretch between the hero and the footer, where the destinations the hero opens with were unreachable for the whole scroll.
 
+## Layout
+
+- `src/components/site/contact-dock/` owns the dock markup and the gates at both ends of its travel
+
 ## Decisions
 
 - It sits opposite the section rail, so the two margins read as a pair of controls rather than as one control and one ornament. Both now render the same ground, and the rail's arrived second: see `.claude/context/section-nav.md`.

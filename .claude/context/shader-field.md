@@ -11,6 +11,11 @@ The page's visual signature. One fragment shader, authored here, drawn twice: st
 
 It replaced a hand-built particle canvas on 2026-08-20. That canvas and its six files are gone rather than kept behind a flag, along with a dot-lattice arm built and judged beside this one.
 
+## Layout
+
+- `src/components/site/header/shader-field/` owns the mount lifecycle, the uniform contract, and the reduced-motion fallback
+- `src/components/site/header/shader-field/fields/` owns the authored stream functions the contour pass draws from
+
 ## Layer responsibilities
 
 - `mount.ts` owns everything a surface needs regardless of what it draws: canvas sizing, the pixel-ratio clamp, low-end detection, the render loop, theme re-reads, viewport and tab-visibility gating, the degrade path, pointer and click state, and cleanup
