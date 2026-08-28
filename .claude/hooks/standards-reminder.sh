@@ -63,8 +63,12 @@ fi
 [ -n "$standard" ] || exit 0
 
 root="${CLAUDE_PROJECT_DIR:-.}"
-path=".claude/standards/${standard}.md"
-[ -f "$root/$path" ] || exit 0
+
+# No standard installs into a project, so the corpus inside the aitk package is
+# what answers here and the reminder names the verb that reaches it. The earlier
+# form tested a path in this tree and exited zero when it was absent, which made
+# retiring that tree silently switch the hook off rather than break it.
+command -v aitk >/dev/null 2>&1 || exit 0
 
 # Once per session per standard. Without this the commit row alone would speak
 # on every commit of a run, which is the noise that gets a hook switched off.
@@ -82,6 +86,6 @@ commit) governs="a commit message" ;;
 branch) governs="a branch name" ;;
 esac
 
-msg=$(printf 'This command writes %s, which %s governs. Read it before writing one rather than working the shape from memory. The %s skill reads it first and is the route that cannot skip it.' \
-  "$governs" "$path" "git-$standard")
+msg=$(printf 'This command writes %s, which the %s standard governs. Read it with `aitk standards %s` before writing one rather than working the shape from memory. The %s skill reads it first and is the route that cannot skip it.' \
+  "$governs" "$standard" "$standard" "git-$standard")
 jq -nc --arg msg "$msg" '{hookSpecificOutput:{hookEventName:"PreToolUse",additionalContext:$msg}}'
