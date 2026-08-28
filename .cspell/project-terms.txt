@@ -1,11 +1,11 @@
 autoplays
 backticked
 BHSoft
-blocklist
-blocklists
 blockification
 blockified
 blockifies
+blocklist
+blocklists
 borderless
 Borås
 BYOK
@@ -38,6 +38,9 @@ Stig
 telematics
 undercount
 ungated
+unparseable
+unwired
+updatability
 Värnamo
 WCAG
 woah

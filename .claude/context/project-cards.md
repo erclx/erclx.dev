@@ -9,6 +9,10 @@ description: Static Astro card rendering with hover-play video and parallax tilt
 
 The projects section. Cards render statically from a config array in `projects.astro`. Interactivity ships as two vanilla TypeScript modules loaded via `<script>` tags, not as React islands.
 
+## Layout
+
+- `src/components/site/projects/` owns the section markup, one card's markup, and the pointer tilt module behind the grid
+
 ## Layer responsibilities
 
 - `src/components/site/projects/projects.astro` owns the section: the data array of cards and the `<script>` imports that mount interactivity

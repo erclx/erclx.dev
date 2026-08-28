@@ -55,7 +55,7 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 
 ## Choosing a capture
 
-`.claude/rules/ui/445-screenshot.md` owns the capture mechanics and fires on a path match whether or not this skill ran. Follow it. This section only classifies the decision so the right option in that rule gets used.
+`.claude/rules/project/ui/445-screenshot.md` owns the capture mechanics and fires on a path match whether or not this skill ran. Follow it. This section only classifies the decision so the right option in that rule gets used.
 
 - A decision about size, weight, color, spacing, or arrangement is static. Compose the candidates into one sheet.
 - A decision about how something moves is motion. Record it, per that rule's `video: true`, rather than shooting stills of a moving surface.
@@ -128,7 +128,7 @@ Every batch ends the same four ways. Run them in order once the operator has jud
 1. Run `claude-docs`.
 2. Commit, per `## Holding the diff` above, carrying that record with the batch.
 3. Re-run `bun run screenshot` for the surfaces the batch touched.
-4. Hand over the address, per `.claude/rules/ui/445-screenshot.md` § Handoff.
+4. Hand over the address, per `.claude/rules/project/ui/445-screenshot.md` § Handoff.
 
 ### Rules
 

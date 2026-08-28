@@ -12,7 +12,7 @@ For the source and test layout, see `.claude/context/development.md` § Layout.
 
 Always-loaded context is paid on every session whatever the task, so only project-wide invariants sit in that tier. Everything else keys to a trigger: path-scoped rules load when a file matches their `paths:` glob, and per-domain narrative loads on demand through an index. `CLAUDE.md` § Context carries the tier map a session reads to place a given file.
 
-The root `docs/`, `standards/`, and `snippets/` folders are gone. Nothing in `docs/` served a visitor, so all three moved under `.claude/`. Toolkit standards are the source of truth and are reinstalled from source rather than hand-edited, so an edit applied directly to one is lost on the next `aitk standards sync`. Project customizations are re-applied on top after each install.
+The root `docs/`, `standards/`, and `snippets/` folders are gone. Nothing in `docs/` served a visitor, so all three moved under `.claude/`. Both `.claude/standards/` and `.claude/snippets/` have since been retired outright, and the decision below records why.
 
 ### Astro over Next or a static React app
 
@@ -82,9 +82,9 @@ Reading the full-page shape here as license to capture the landing page whole is
 
 Two further reasons hold whichever file is open. The glob overlaps `445-screenshot` on `src/pages/**` exactly, so both rules would load on one page edit. Both also name `bun run screenshot`, which the rule-authoring standard bars between siblings.
 
-`445-screenshot` is this project's answer and stays. It is locally authored, so no sync touches it, and it carries the before-and-after discipline and the handoff rules the toolkit rule has no equivalent for.
+`445-screenshot` is this project's answer and stays. It carries the before-and-after discipline and the handoff rules the toolkit rule has no equivalent for. It sits at `.claude/rules/project/ui/445-screenshot.md` since 2026-08-28, which is where the toolkit now asks a target to keep what it authored itself, and a sync names it rather than passing over it silently.
 
-Reading its absence as an install gap is the specific mistake to avoid: a session did exactly that on 2026-08-15 and installed it alongside two rules that were genuinely missing. What tells the two cases apart is `.claude/aitk.json`. It named `556-groundwork` and `557-intake` with no file behind them, which is a missing install, while `440-surface-capture` appeared in neither the record nor the tree, which is what a declined rule looks like.
+Reading its absence as an install gap is the specific mistake to avoid: a session did exactly that on 2026-08-15 and installed it alongside two rules that were genuinely missing. What tells the two cases apart is the install stamp, now at `.claude/aitk/config.json`. It named `556-groundwork` and `557-intake` with no file behind them, which is a missing install, while `440-surface-capture` appeared in neither the record nor the tree, which is what a declined rule looks like.
 
 ### A touch decision is judged on a device, not in device emulation
 
@@ -1560,10 +1560,93 @@ to 0.00px at every one. The full suite passed 812 across chromium, firefox, and
 webkit at 2c17144, and the two commits since changed no assertion and no
 rendered surface.
 
+### The standards corpus is resolved rather than installed, and the readers were the load-bearing half
+
+`.claude/standards/` held 28 files and `.claude/snippets/` held 3. Both are
+gone. No standard installs into a project any more, so the corpus inside the
+`aitk` package is what answers here and `aitk standards <name>` is the route to
+it. Across the rules, the skills and the root file, 24 places cited the deleted
+path and none named the verb. Every rule names it now.
+
+Nothing in the tree was project-authored, and that was checked rather than
+assumed. Three of the 28 named standards the toolkit has since retired,
+`prose`, `changelog` and `roadmap`, which reads like local authoring and is not:
+this repository's own history shows two commits touching `prose.md` and both are
+toolkit syncs, and the file differs from the toolkit's last copy by two edits
+made upstream after this one was taken. A retired standard and an authored one
+look identical in a listing, so the question is answered from history rather
+than from the file set.
+
+**The citations were the easy half. Two hooks read the tree at run time, and
+both fail silently rather than loudly.** `standards-audit.sh` parsed the word
+bans out of `prose.md`, which the toolkit retired into `markdown.md` and the
+`write-human` skill, so deleting the tree left it checking em dashes and
+semicolons while reporting nothing wrong. `standards-reminder.sh` gated on
+`[ -f "$root/$path" ] || exit 0`, so the same deletion switched it off
+completely with no error anywhere. The audit hook now calls
+`aitk markdown audit --json` and the reminder names `aitk standards <name>`,
+and both were run against a probe carrying three banned words before either was
+trusted. A machine with no `aitk` on PATH draws the same missing-binary line
+`standards-audit.sh` and `tasks-index.sh` draw rather than exiting clean, which
+`575-hooks` bars for a hook that is the only enforcer of its rule. This is the
+class this file already collects, arriving through a path test rather than
+through a measurement: **a guard keyed to a file's existence reports success the
+moment that file stops existing.**
+
+The tooling sync was read and declined. It reported 15 changes across 9 configs,
+5 scripts and a gitignore line, and every drifted file is a customization this
+document already defends. `playwright.config.ts` carries its own port band,
+`fullyParallel` off with the measurement behind it, and the prebuilt-dist path.
+`.github/workflows/verify.yml` carries the three-engine matrix, the xvfb wrapper
+firefox needs for a GL context, and an engine-keyed cache. `e2e/screenshot.ts`
+carries per-section capture. Those three are the clearest cases and not the
+whole list: the decline covers the tooling domain entire, with `astro.config.mjs`
+holding the `site` value the share cards resolve absolute image URLs through and
+`scripts/worktree-port.sh` holding the per-worktree port derivation among the
+rest. A sync would take all of it. The one additive item is a `screenshots/`
+ignore line, and captures land under `.claude/review/`, which is ignored already. **Read a tooling report as a list of decisions to re-take
+rather than as drift to clear**, since the sync has no way to tell a
+customization from a lag.
+
+Three declines now cost something on every install rather than one.
+`450-link-behavior` joins `440-surface-capture` because `455-links` states the
+same same-tab default plus the `rel="noopener"` requirement on a narrower glob,
+and two rules on one concern is the exact objection `440` was declined under.
+`505-at-references` governs the retired snippets folder and nothing else.
+
+The archives moved from flat siblings onto the nested layout, `.claude/tasks/archive/`
+and `.claude/plans/archive/`, which is what the toolkit's own `tasks-index.sh`
+was updated to expect: its guard skips the live index alone, and a shell
+wildcard crosses a separator, so the copy here would have rebuilt the board
+index from an archived file. 28 pointers were retargeted, 20 for the rename and
+8 more for the folder depth the move added, and that second set is the one worth
+naming. `../groundwork/` and `../intake/` resolved correctly before the move and
+broke because the files sat one level deeper, which no search for the old
+spelling would ever have found. **A move retargets what names the moved folder
+and what the moved files name from where they now sit, and only the first can be
+found by searching for the old name.** All 78 links across the board and both
+archives resolve.
+
+`CLAUDE.md` kept four sections, `005-behavior`, `015-output`, `045-memory`, and
+`025-indexes`, that overlap the rules of the same name rather than only the
+three cut outright. The kept four are not a wording fork of the rule: measured
+at `e904c1e`, the overlapping bullets are byte-identical, and each section
+carries bullets the rule does not, 13 against 10, 11 against 9, 4 against 4, and
+4 against 1. Cutting a kept section wholesale would drop that project-specific
+content, and nothing compares the shared bullets between the two copies, so a
+wording edit to one needs the same edit made to the other by hand.
+
+Measured at 3.38.0 on 2026-08-28, where 59 rules carry zero citations of the
+retired path and 16 name the verb, both hooks fire against a probe and the
+reminder draws its missing-binary line on a stripped PATH, and the
+install stamp reads from `.claude/aitk/config.json` with `stampAtLegacyPath`
+reported false.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
-- `.claude/aitk.json` records a governance commit that lives only on an unmerged toolkit branch, because the Astro glob fix was synced from a local checkout rather than a release. Running `aitk gov sync` against released 0.98.0 before erclx/aitk#1006 merges reverts all four `ui/` globs and rewrites the four hashes to match, so the record stays internally consistent while the fix disappears with nothing reporting it. Re-sync from a released build once that pull request ships, and check the four `paths:` blocks carry `'**/*.astro'` before trusting a sync run in the meantime.
-- The governance install carried two stack members short until 2026-08-15: `556-groundwork` and `557-intake`, both shipped by the base stack and both named in `.claude/aitk.json` while absent from disk. `aitk gov sync` refreshes rules already present and adds none, so the gap survived every sync and closed only under `aitk gov install`. A sync alone does not prove the install is complete, and the signal to read is a recorded path with no file behind it rather than the rule count on its own. A recorded path whose file exists with a different hash is a separate state and not that signal: `.claude/standards/context.md`, `prose.md`, and `wireframes.md` all mismatch today, which is the project customization § Agent context split by load cost describes rather than a defect.
-- `aitk gov install` re-adds `440-surface-capture` every time it runs, and the decision below declines it. No mechanism exists to opt a project out of one rule its stack ships, so the decline holds only while each install is followed by removing that file and its record entry. Check for it after any install.
+- Closed on 2026-08-28. The stamp recorded a governance commit living only on an unmerged toolkit branch, because the Astro glob fix had been synced from a local checkout rather than a release. It is stamped from released 3.38.0 now, which carries both that fix and the mirror retirement, so no domain here is anchored to an unreleased tree. A released package ships no git history, so the governance domain records no commit at all rather than a stale one, and `aitk sync --check` reports the drift it can still see as unattributed.
+- The governance install carried two stack members short until 2026-08-15: `556-groundwork` and `557-intake`, both shipped by the base stack and both named in the install record, now `.claude/aitk/config.json`, while absent from disk. `aitk gov sync` refreshes rules already present and adds none, so the gap survived every sync and closed only under `aitk gov install`. A sync alone does not prove the install is complete, and the signal to read is a recorded path with no file behind it rather than the rule count on its own. A recorded path whose file exists with a different hash is a separate state and not that signal. The three standards files that illustrated it here are gone with the rest of the tree, so the example no longer resolves and the reading it supports still holds.
+- `aitk gov install` re-adds every stack member this project declines, and there are three: `440-surface-capture`, which the decision below covers, `450-link-behavior`, which `455-links` supersedes on an overlapping glob, and `505-at-references`, which governs the retired snippets folder alone. No mechanism exists to opt a project out of one rule its stack ships, so each decline holds only while an install is followed by removing that file and its record entry. Check for all three after any install. A sync reports them as listed but not installed rather than re-adding them, so only `install` carries this cost.
+- `aitk gov sync` reverts `306-test-scope.md` to citing `440-surface-capture.md` on every run, because the one line naming `445-screenshot.md` is a customization of a toolkit-owned file rather than a project-authored rule. Re-apply it after any sync. Moving the rule into `.claude/rules/project/` is not available, since the rest of the file is toolkit content this project wants updated.
 - `caret.astro` and `stackr.astro` sync against `career/assets/portfolio/caret.md` and `stackr.md`, which do not exist on the career repository's `main` today. Both files, along with the two opening sentences and the `Fix Session Timeout` example they carry, are added by `erclx/career#210`, still open. Until that pull request merges, the sync target for those two routes can still move, and a reword to either file on its branch arrives as fresh drift here with nothing reporting it. Re-check both files against `main` once `erclx/career#210` lands, and until then read the branch it ships from rather than assuming it is `main`.

@@ -9,6 +9,11 @@ description: GitHub Actions workflow triggers and checks
 
 GitHub Actions workflow for this project.
 
+## Layout
+
+- `.github/workflows/` owns the verify pipeline whose jobs gate every merge
+- `e2e/` owns the Playwright suite the engine matrix runs, alongside the capture and inventory harnesses the review scripts drive
+
 ## Triggers
 
 - Pull requests targeting any branch (verify only)

@@ -39,7 +39,7 @@ Without this skill, a session working on a visual surface:
 ## Must not
 
 - Restate a shipping rule. Root `CLAUDE.md` owns when a commit and a push are allowed, and a copy here drifts from it. An earlier version of this file carried one that already disagreed, barring a push the root file permits.
-- Restate capture mechanics. `.claude/rules/ui/445-screenshot.md` owns them and loads on a path match without this skill, so a second copy hands one case two answers.
+- Restate capture mechanics. `.claude/rules/project/ui/445-screenshot.md` owns them and loads on a path match without this skill, so a second copy hands one case two answers.
 - Prototype a decision the operator has not asked to make. Variants cost a build each and a run that offers options everywhere spends their attention rather than saving it.
 
 ## Guards
@@ -58,7 +58,7 @@ The refusal strings sit in the body, since the runtime loads that file and ignor
 
 ## Collision
 
-`.claude/rules/ui/445-screenshot.md` is the one surface this can contradict, because it fires on a component, layout, page, or stylesheet path match with no decision from the session, while this fires on invocation. A session editing those paths holds both.
+`.claude/rules/project/ui/445-screenshot.md` is the one surface this can contradict, because it fires on a component, layout, page, or stylesheet path match with no decision from the session, while this fires on invocation. A session editing those paths holds both.
 
 They are split so neither answers the other's question. The rule owns every mechanic: which harness call, which flag, composing a sheet, recording with `video: true`, and the handoff. This owns only the classification that decides which of those options applies, and adds one case the rule does not carry, where the operator has to drive the candidate themselves and a live query-parameter variant is served instead of a recording.
 
