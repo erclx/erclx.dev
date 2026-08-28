@@ -1627,6 +1627,15 @@ and what the moved files name from where they now sit, and only the first can be
 found by searching for the old name.** All 78 links across the board and both
 archives resolve.
 
+`CLAUDE.md` kept four sections, `005-behavior`, `015-output`, `045-memory`, and
+`025-indexes`, that overlap the rules of the same name rather than only the
+three cut outright. The kept four are not a wording fork of the rule: measured
+at `e904c1e`, the overlapping bullets are byte-identical, and each section
+carries bullets the rule does not, 13 against 10, 11 against 9, 4 against 4, and
+4 against 1. Cutting a kept section wholesale would drop that project-specific
+content, and nothing compares the shared bullets between the two copies, so a
+wording edit to one needs the same edit made to the other by hand.
+
 Measured at 3.38.0 on 2026-08-28, where 59 rules carry zero citations of the
 retired path and 16 name the verb, both hooks fire against a probe and the
 reminder draws its missing-binary line on a stripped PATH, and the

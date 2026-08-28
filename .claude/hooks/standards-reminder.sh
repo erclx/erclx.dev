@@ -70,6 +70,18 @@ commit) governs="a commit message" ;;
 branch) governs="a branch name" ;;
 esac
 
+# Once per session per standard, ahead of both messages below. A missing-binary
+# notice repeated once per matching command is the same noise the comment
+# beneath it warns against, aimed at the one machine that cannot install `aitk`
+# between commits.
+session=$(printf '%s' "$input" | jq -r '.session_id // "none"')
+key=$(printf '%s__%s' "$session" "$standard" | tr -c 'A-Za-z0-9' '_')
+marker_dir="$root/.claude/.tmp/standards-reminder"
+marker="$marker_dir/$key"
+[ -f "$marker" ] && exit 0
+mkdir -p "$marker_dir"
+: >"$marker"
+
 # A standard resolves only through `aitk`, and this hook is the sole enforcer for
 # the three writing surfaces its header names, so a missing binary is reported
 # the way `standards-audit.sh` and `tasks-index.sh` report theirs rather than
@@ -79,16 +91,6 @@ if ! command -v aitk >/dev/null 2>&1; then
   jq -nc --arg msg "$msg" '{hookSpecificOutput:{hookEventName:"PreToolUse",additionalContext:$msg}}'
   exit 0
 fi
-
-# Once per session per standard. Without this the commit row alone would speak
-# on every commit of a run, which is the noise that gets a hook switched off.
-session=$(printf '%s' "$input" | jq -r '.session_id // "none"')
-key=$(printf '%s__%s' "$session" "$standard" | tr -c 'A-Za-z0-9' '_')
-marker_dir="$root/.claude/.tmp/standards-reminder"
-marker="$marker_dir/$key"
-[ -f "$marker" ] && exit 0
-mkdir -p "$marker_dir"
-: >"$marker"
 
 msg=$(printf 'This command writes %s, which the %s standard governs. Read it with `aitk standards %s` before writing one rather than working the shape from memory. The %s skill reads it first and is the route that cannot skip it.' \
   "$governs" "$standard" "$standard" "git-$standard")
