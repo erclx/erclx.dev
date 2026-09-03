@@ -76,7 +76,7 @@ esac
 # between commits.
 session=$(printf '%s' "$input" | jq -r '.session_id // "none"')
 key=$(printf '%s__%s' "$session" "$standard" | tr -c 'A-Za-z0-9' '_')
-marker_dir="$root/.claude/.tmp/standards-reminder"
+marker_dir="$root/.canon/tmp/standards-reminder"
 marker="$marker_dir/$key"
 [ -f "$marker" ] && exit 0
 mkdir -p "$marker_dir"
