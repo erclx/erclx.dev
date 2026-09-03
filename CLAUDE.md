@@ -19,14 +19,8 @@ The project uses a three-tier context model. Know which tier holds what before r
 
 ## Behavior
 
-- Flag concerns or alternatives when a proposed change has tradeoffs worth discussing
-- When facing a judgment call with 2-3 reasonable options mid-flow, pick one and state the tradeoff in one sentence. Enumerate options only when the user's preference is the deciding factor.
-- Match edit scope to the request. Ship minimal v1 and queue extensions as follow-ups.
-- On simplification requests, edit only what the user named
-- Do not add features the user did not ask for
-- When rewriting a section, preserve existing code blocks, tables, and grouped examples unless the user asked to remove them
-- This is a public repo. Do not write personal names into READMEs, `.claude/` planning docs and context entries, source comments, or commit messages. Use neutral phrasing like "the user", "a recruiter", or "a local file".
-- Do not cite `.claude/` paths (tasks, plans, review, `.tmp`) from PR bodies, READMEs, or other artifacts a reviewer reads. Inline the context or use neutral phrasing like "queued as a follow-up".
+- This is a public repo. Do not write personal names into commit messages. Use neutral phrasing like "the user", "a recruiter", or "a local file".
+- Do not cite `.claude/` paths (tasks, plans, review, `.tmp`) from PR bodies or other artifacts a reviewer reads. Inline the context or use neutral phrasing like "queued as a follow-up".
 - Before any multi-path `rm` or `rm -rf`, list every target path in chat and wait for explicit confirmation. "Clean up X" authorizes a different destructive action than a previous one, never a blanket nuke.
 - Before proposing a new doc home for a convention (screenshot output path, fixture format, scratch convention), grep `CLAUDE.md` and `.claude/context/` for the topic. Extend the existing entry over creating a new section.
 
@@ -41,8 +35,7 @@ The project uses a three-tier context model. Know which tier holds what before r
 ## Shipping
 
 - After implementing a feature, run `bun run check` plus any test suite for the surfaces you touched. Fix what fails before opening a PR.
-- After implementing a feature, run it end-to-end against the real surface (deployed preview, live page) and paste the output into the PR body under a `## Live smoke` section. If a live run is impossible, say so explicitly instead of claiming success.
-- Keep PR bodies evergreen. Beyond the `## Live smoke` block, run logs, follow-up notes, and polish narratives go into PR comments via `gh pr comment`, not the body.
+- Keep PR bodies evergreen. Run logs, follow-up notes, and polish narratives go into PR comments via `gh pr comment`, not the body.
 - After a local commit on a feature branch, stop and hand control back. Push only when the user signals after browser verification. User-invoked skills that push by design (`git-ship`, `git-followup`) are exempt for that invocation only. Manual edits made between skill invocations require a fresh push signal.
 - Hold the diff across multi-step flows. Do not commit between visual-tuning iterations or between items in a multi-item batch. Commit on explicit ship signal and use `git-stage` to split into focused commits at that point.
 
