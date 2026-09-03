@@ -2,7 +2,6 @@
 description: Route .canon/teach/ edits to the teach standard for layout, ordinal naming, and the mission and record formats, in the projects that open a learning workspace
 paths:
   - '.canon/teach/**'
-  - '.claude/teach/**'
 ---
 
 # Teach standards

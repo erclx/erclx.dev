@@ -2,7 +2,6 @@
 description: Route .canon/tasks/ session map edits to the session standard for the filename, the core sections, and what a handoff carries
 paths:
   - '.canon/tasks/session-*.md'
-  - '.claude/tasks/session-*.md'
 ---
 
 # Session map standards
