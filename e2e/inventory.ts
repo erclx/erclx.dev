@@ -31,7 +31,7 @@ function devServerUrl(): string {
 const BASE = process.env.INVENTORY_BASE_URL ?? devServerUrl()
 const FILTER = process.env.INVENTORY_FILTER?.split(',').map((t) => t.trim())
 
-const ROUTES = ['/', '/aitk', '/jobtriage', '/stackr', '/caret', '/diction']
+const ROUTES = ['/', '/canon', '/jobtriage', '/stackr', '/caret', '/diction']
 
 /** The properties a hover treatment can move. */
 const TRACKED = [

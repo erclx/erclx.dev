@@ -22,7 +22,7 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 │     ┌──────────────────────────────────────────────┐     │  ← media slot, still with optional hover video
 │     └──────────────────────────────────────────────┘     │
 │                                                          │
-│     aitk                                                 │  ← display heading
+│     canon                                                │  ← display heading
 │                                                          │
 │     CLI that installs one set of agent rules,            │  ← description body
 │     skills, and standards into every project ...         │
@@ -51,7 +51,7 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 │   second. Each one has a page here on why it exists ...            │     measure, short of the grid beside it
 │                                                                    │
 │  01 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐ 02       │  ← numerals hang into the outer margin
-│       aitk                        Jobtriage                        │
+│       canon                       Jobtriage                        │
 │     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘          │
 │                                 ↑                                  │
 │  03 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐   │ 48px gutter, halo reaches 44px   │

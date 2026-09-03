@@ -21,9 +21,9 @@ import path from 'node:path'
 import { chromium, type Page } from '@playwright/test'
 
 const SITE = process.env.UNFURL_BASE_URL ?? 'http://localhost:4400'
-const OUT = '.claude/review/unfurl'
+const OUT = '.canon/review/unfurl'
 
-const ROUTES = ['/', '/jobtriage', '/aitk', '/diction', '/stackr', '/caret']
+const ROUTES = ['/', '/jobtriage', '/canon', '/diction', '/stackr', '/caret']
 
 interface Preview {
   route: string

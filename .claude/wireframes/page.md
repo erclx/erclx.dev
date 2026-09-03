@@ -55,7 +55,7 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `.claud
 │                                                          │
 │   Projects                                               │  ← no line counting the cards
 │   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ┐   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ┐              │  ← two columns from lg, unboxed
-│     [card: aitk]           [card: Jobtriage]             │
+│     [card: canon]          [card: Jobtriage]             │
 │   └ ─ ─ ─ ─ ─ ─ ─ ─ ┘   └ ─ ─ ─ ─ ─ ─ ─ ─ ┘         [@]  │  ← contact dock, right margin
 │   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ┐   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ┐              │
 │     [card: Stackr]         [card: Caret]                 │

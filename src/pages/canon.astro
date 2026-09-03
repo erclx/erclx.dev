@@ -6,16 +6,16 @@ import RouteBar from '@/components/site/nav/route-bar.astro'
 import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
-import installTranscript from '@/assets/projects/aitk.png'
+import installTranscript from '@/assets/projects/canon.png'
 
 const artifactLinks = [
-  { label: 'GitHub', href: 'https://github.com/erclx/aitk' },
-  { label: 'npm', href: 'https://www.npmjs.com/package/@erclx/aitk' },
+  { label: 'GitHub', href: 'https://github.com/erclx/canon' },
+  { label: 'npm', href: 'https://www.npmjs.com/package/@erclx/canon' },
 ]
 
 // The route's opening leads the rail, per the note in `jobtriage.astro`.
 const navItems = [
-  { id: 'aitk', label: 'aitk' },
+  { id: 'canon', label: 'canon' },
   { id: 'problem', label: 'problem' },
   { id: 'thesis', label: 'thesis' },
   { id: 'taxonomy', label: 'taxonomy' },
@@ -53,16 +53,16 @@ const prescriptions = [
 ---
 
 <BaseLayout
-  title="aitk · Eric Le"
+  title="canon · Eric Le"
   description="One set of agent rules, skills, and standards installed into every project and kept in step. The install taxonomy, the adoption thesis, and the operating model behind it."
   surface="case-study"
 >
   <SectionNav items={navItems} instant />
 
-  <RouteBar here="aitk" />
+  <RouteBar here="canon" />
 
   <main>
-    <section id="aitk" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
+    <section id="canon" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
       <div class="mx-auto prose-column">
         <p data-fade class="text-muted-foreground text-label tracking-wide uppercase">
           Project
@@ -70,7 +70,7 @@ const prescriptions = [
         <h1
           data-fade          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
         >
-          aitk
+          canon
         </h1>
         <p
           data-fade          class="text-muted-foreground text-lede mt-4"
@@ -82,7 +82,7 @@ const prescriptions = [
           data-fade          class="text-muted-foreground text-body mt-3"
         >
           Public and MIT licensed. Installs from npm as
-          <code class="font-mono">@erclx/aitk</code> and as a Claude Code
+          <code class="font-mono">@erclx/canon</code> and as a Claude Code
           plugin.
         </p>
         <ul
@@ -110,7 +110,7 @@ const prescriptions = [
         >
           <Image
             src={installTranscript}
-            alt="A terminal installing aitk as a Claude Code plugin in three commands, ending with the plugin listed as enabled"
+            alt="A terminal installing canon as a Claude Code plugin in three commands, ending with the plugin listed as enabled"
             class="block h-auto w-full"
             loading="eager"
           />

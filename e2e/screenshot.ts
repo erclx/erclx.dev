@@ -17,7 +17,7 @@ type Section = (typeof LANDING_SECTIONS)[number]
 // A case study is one long prose surface rather than a stack of distinct ones,
 // so it is captured whole and its `id` headings are not capture targets.
 const CASE_STUDY_ROUTES = [
-  'aitk',
+  'canon',
   'jobtriage',
   'diction',
   'stackr',
@@ -99,7 +99,7 @@ const PAGE_CASES: readonly PageCase[] = CASE_STUDY_ROUTES.flatMap((route) =>
 const ALL_CASES: readonly Case[] = [...SECTION_CASES, ...PAGE_CASES]
 
 const BASE_URL = process.env.SCREENSHOT_BASE_URL ?? 'http://localhost:4173'
-const OUT_DIR = '.claude/review/screenshots'
+const OUT_DIR = '.canon/review/screenshots'
 const SCREENSHOT_FILTER = process.env.SCREENSHOT_FILTER?.trim() || null
 
 const filterTerms = SCREENSHOT_FILTER
