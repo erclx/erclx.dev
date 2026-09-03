@@ -24,7 +24,7 @@ import { chromium } from '@playwright/test'
 import QRCode from 'qrcode-terminal/vendor/QRCode'
 import QRErrorCorrectLevel from 'qrcode-terminal/vendor/QRCode/QRErrorCorrectLevel'
 
-const OUT = '.claude/review/qr'
+const OUT = '.canon/review/qr'
 const MODULE_PX = 8
 const QUIET_MODULES = 4
 

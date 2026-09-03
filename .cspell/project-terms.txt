@@ -36,6 +36,7 @@ shiba
 Stackr
 Stig
 telematics
+unconfigured
 undercount
 ungated
 unparseable

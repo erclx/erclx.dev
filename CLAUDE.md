@@ -38,11 +38,11 @@ The project uses a three-tier context model. Know which tier holds what before r
 - Check a folder's `index.md` before grepping its source or reading its files, starting with `.claude/context/` for a domain and `.claude/wireframes/` for a UI surface. It orients faster than a blind search.
 - For folders where an agent browses to pick a document, `index.md` is regenerated from each file's frontmatter. Do not hand-edit `index.md`. Code folders and scratch folders do not need one.
 - Every `index.md` carries its own frontmatter (`title`, `subtitle`) that the walker preserves. To keep a folder's `index.md` hand-edited, add `auto: false` to its frontmatter.
-- When a diff adds a new top-level source domain folder, draft its `.claude/context/<domain>.md` entry at ship time per the context standard, read with `aitk standards context`. `claude-docs` only refreshes existing entries and never auto-creates.
+- When a diff adds a new top-level source domain folder, draft its `.claude/context/<domain>.md` entry at ship time per the context standard, read with `canon standards context`. `claude-docs` only refreshes existing entries and never auto-creates.
 
 ## Markdown
 
-- Before writing a PR, commit, or branch name, read its standard with `aitk standards <name>` and follow it. No standard installs into this repository, so that verb is the only route to one. File-edit standards route automatically via `.claude/rules/claude/`.
+- Before writing a PR, commit, or branch name, read its standard with `canon standards <name>` and follow it. No standard installs into this repository, so that verb is the only route to one. File-edit standards route automatically via `.claude/rules/claude/`.
 - Keep `README.md` user-facing. Technical detail belongs in `.claude/context/`.
 
 ## Commands
@@ -66,7 +66,7 @@ The project uses a three-tier context model. Know which tier holds what before r
 - Read `CLAUDE_CODE_ENTRYPOINT` once, at the first response that emits a path, and reuse it for the rest of the session. The surface cannot change mid-session, so a second read only confirms the first.
 - When it reads `claude-desktop`, emit each path as a markdown link carrying the path as its text and an absolute `file://` URI as its target, resolving a relative path against the main project root to build that target. The desktop file tree hides dotted folders, so a bare path into one names a file the reader cannot reach.
 - On every other value, including unset, emit the path bare. A terminal emulator makes it clickable through its own path detection, and link markup defeats that.
-- Both forms govern a path emitted in a response. A path written into a markdown file follows the markdown standard instead, read with `aitk standards markdown`, which backticks a file reference and never repeats it as a link label.
+- Both forms govern a path emitted in a response. A path written into a markdown file follows the markdown standard instead, read with `canon standards markdown`, which backticks a file reference and never repeats it as a link label.
 - Use the path the user's editor can resolve. The editor is rooted at the main project root.
 - In the main worktree: relative from `pwd` works because `pwd` equals the editor root.
 - In a linked worktree (under `.claude/worktrees/<name>/`): use absolute paths. Relative paths from worktree `pwd` would not resolve against the editor's project root.
@@ -80,10 +80,10 @@ The project uses a three-tier context model. Know which tier holds what before r
 - `.claude/wireframes/`: per-surface ASCII layouts loaded on demand, indexed via `.claude/wireframes/index.md`
 - `.claude/rules/`: path-scoped coding standards loaded by Claude Code on file match
 - `.claude/rules/project/`: the rules this repository authors, which no sync touches
-- `.claude/aitk/config.json`: the toolkit install stamp, recording what each domain was synced from
-- `.claude/review/`: gitignored scratch for review and UI-test output, overwritten on each run
-- `.claude/tasks/`: gitignored task board, one file per task
-- `.claude/tasks/archive/` and `.claude/plans/archive/`: shipped tasks and their plans, nested inside the folders they archive
+- `.claude/canon/config.json`: the toolkit install stamp, recording what each domain was synced from
+- `.canon/review/`: gitignored scratch for review and UI-test output, overwritten on each run
+- `.canon/tasks/`: gitignored task board, one file per task
+- `.canon/tasks/archive/` and `.canon/plans/archive/`: shipped tasks and their plans, nested inside the folders they archive
 
 ## Spelling
 
@@ -92,7 +92,7 @@ The project uses a three-tier context model. Know which tier holds what before r
 
 ## Memory
 
-- Write all memory files to `.claude/memory/`, not `~/.claude/projects/`
+- Write all memory files to `.canon/memory/`, not `~/.claude/projects/`
 - A fact about a domain goes to that domain's `.claude/context/` entry, not to memory. `claude-memory-capture` routes it there and `claude-docs` folds it in. Memory keeps only what no context entry owns.
-- Never delete a memory entry. Retire one by moving it to `.claude/.tmp/memory-archive/`. A bulk retire runs through the shell, where no file edit fires a path-scoped rule, and the folder is gitignored with nothing to recover from.
-- Follow the memory standard, read with `aitk standards memory`, for the filename and type prefix, the frontmatter, the body shape each type carries, and the lifecycle. Check every entry in the pen against that standard and fix what breaks it, since nothing keeps the folder conforming on its own.
+- Never delete a memory entry. Retire one by moving it to `.canon/tmp/memory-archive/`. A bulk retire runs through the shell, where no file edit fires a path-scoped rule, and the folder is gitignored with nothing to recover from.
+- Follow the memory standard, read with `canon standards memory`, for the filename and type prefix, the frontmatter, the body shape each type carries, and the lifecycle. Check every entry in the pen against that standard and fix what breaks it, since nothing keeps the folder conforming on its own.

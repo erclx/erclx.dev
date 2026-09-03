@@ -20,14 +20,8 @@ node_modules/
 !.vscode/settings.json
 
 # Claude
-.claude/.tmp/
-.claude/memory/
-.claude/plans/
-.claude/review/
+.canon/tmp/
 .claude/worktrees/
-.claude/groundwork/
-.claude/intake/
-.claude/tasks/
 
 # Tests
 coverage/
@@ -38,3 +32,4 @@ playwright/.cache/
 
 # Lighthouse
 C:*
+.canon/

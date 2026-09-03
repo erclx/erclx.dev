@@ -30,9 +30,9 @@ import { MOOD_IDS } from '../src/components/site/experience/cast/faces'
 // the drift is invisible because both still animate.
 //
 // Run: bun e2e/cast-inventory.ts
-// Output: .claude/review/cast/
+// Output: .canon/review/cast/
 
-const OUT = '.claude/review/cast'
+const OUT = '.canon/review/cast'
 const CELL = 132
 /**
  * The smallest member the cast ships. The instrument measures at this size

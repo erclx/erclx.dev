@@ -11,7 +11,7 @@ paths:
 
 ## Before a change
 
-- Read the current captures in `.claude/review/screenshots/` for the surfaces involved before proposing a UI change.
+- Read the current captures in `.canon/review/screenshots/` for the surfaces involved before proposing a UI change.
 - Do not propose a visual change from a wireframe alone.
 
 ## After a change

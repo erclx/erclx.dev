@@ -1,7 +1,7 @@
 ---
-description: Route .claude/plans/ edits to the plan standard for sections, the answer contract, and the archive move
+description: Route .canon/plans/ edits to the plan standard for sections, the answer contract, and the archive move
 paths:
-  - '.claude/plans/**'
+  - '.canon/plans/**'
 ---
 
 # Plan standards
@@ -14,9 +14,9 @@ paths:
 
 ## Archiving
 
-- Move a shipped plan to `.claude/plans/archive/`. Never delete one.
+- Move a shipped plan to `.canon/plans/archive/`. Never delete one.
 - Amend a plan in place when a decision changes. Do not append a second passage narrating the change.
 
 ## Authority
 
-- Follow the plan standard for the filename and slug, the required sections, the suggested-and-answer contract, and the lifecycle. It is the single source. Read it with `aitk standards plan`.
+- Follow the plan standard for the filename and slug, the required sections, the suggested-and-answer contract, and the lifecycle. It is the single source. Read it with `canon standards plan`.
