@@ -1416,7 +1416,7 @@ test('the card a chip lands on clears the sticky bar', async ({ page }) => {
   await traceChipScroll(page, 20)
 
   const clearance = await page.evaluate(() => {
-    const card = document.querySelector('#aitk')
+    const card = document.querySelector('#canon')
     const ground = document.querySelector('[data-bar-ground]')
     if (!card || !ground) throw new Error('no card, or no bar to clear')
     return (

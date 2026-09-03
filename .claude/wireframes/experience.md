@@ -34,7 +34,7 @@ Where that happened
   ← employer marks, one tone, sized so each reads rather than matching heights
 
  jan 2026 to        ●  shipping independently, open to the next thing
- present            │     ( aitk ) ( Jobtriage ) ( Stackr ) ( Caret ) ( diction )
+ present            │     ( canon ) ( Jobtriage ) ( Stackr ) ( Caret ) ( diction )
                     │
  jun to dec 2025    ○  working out what to build
                     │     Took the time to learn TypeScript and web application
@@ -70,7 +70,7 @@ The same three parts, with the span column narrowed and the span itself set at l
 ```plaintext
  jan 2026        ●  shipping independently, open to the
  to present      │  next thing
-                 │    ( aitk ) ( Jobtriage ) ( Stackr ) ( Caret )
+                 │    ( canon ) ( Jobtriage ) ( Stackr ) ( Caret )
                  │
  jun to dec 2025 ○  working out what to build
                  │    Took the time to learn TypeScript and web
@@ -86,7 +86,7 @@ The span column folds into the reading column and leads its own beat, still at l
  ● jan 2026 to present
  │ shipping independently, open to
  │ the next thing
- │   ( aitk ) ( Jobtriage )
+ │   ( canon ) ( Jobtriage )
  │   ( Stackr ) ( Caret ) ( diction )
  │
  ○ jun to dec 2025

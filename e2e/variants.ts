@@ -76,7 +76,7 @@ export interface VariantRun {
 const BAR = '[data-site-bar] { display: none !important }'
 
 // The only two roots this harness writes into, both gitignored.
-const SCRATCH_ROOTS = ['.claude/review', '.claude/.tmp'] as const
+const SCRATCH_ROOTS = ['.canon/review', '.canon/tmp'] as const
 
 const prepare = async (
   page: Page,

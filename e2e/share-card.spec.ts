@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { CARD_CLAIM } from '../scripts/card-copy'
 
-const ROUTES = ['/', '/aitk', '/jobtriage', '/stackr', '/caret', '/diction']
+const ROUTES = ['/', '/canon', '/jobtriage', '/stackr', '/caret', '/diction']
 
 // What Google truncates a description at. Every host shows less than this, so a
 // description inside it is inside all of them.

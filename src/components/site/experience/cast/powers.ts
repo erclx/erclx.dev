@@ -15,7 +15,7 @@
  *
  * Strokes are 0.7 cells or wider. One cell is 4.5px on a 54px member, so a
  * thinner stroke lands under 3px and stops holding its shape against the ground.
- * `.claude/.tmp/cast-society/legibility.ts` is where that figure comes from.
+ * `.canon/tmp/cast-society/legibility.ts` is where that figure comes from.
  *
  * The layer reaches `REACH` cells past the member on every side. Held to the
  * member's own 12 by 12 box a power cannot be larger than the figure emitting

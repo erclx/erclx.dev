@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const ROUTES = ['/', '/aitk', '/jobtriage', '/diction', '/stackr', '/caret']
+const ROUTES = ['/', '/canon', '/jobtriage', '/diction', '/stackr', '/caret']
 const MINIMUM_TAP_TARGET_PX = 44
 const PHONE = { width: 390, height: 844 }
 

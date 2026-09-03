@@ -1,6 +1,7 @@
 ---
-description: Route .claude/tasks/ session map edits to the session standard for the filename, the core sections, and what a handoff carries
+description: Route .canon/tasks/ session map edits to the session standard for the filename, the core sections, and what a handoff carries
 paths:
+  - '.canon/tasks/session-*.md'
   - '.claude/tasks/session-*.md'
 ---
 
@@ -12,4 +13,4 @@ paths:
 
 ## Authority
 
-- Follow the session standard for the filename and location, frontmatter, the core sections, and the write and read procedures. It is the single source. Read it with `aitk standards session`.
+- Follow the session standard for the filename and location, frontmatter, the core sections, and the write and read procedures. It is the single source. Read it with `canon standards session`.

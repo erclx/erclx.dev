@@ -1,12 +1,12 @@
 ---
-title: aitk project
-subtitle: Long-form sub-page at /aitk covering the adoption thesis, the install taxonomy, and the operating model
-description: Long-form sub-page at /aitk covering the adoption thesis, the install taxonomy, and the operating model
+title: canon project
+subtitle: Long-form sub-page at /canon covering the adoption thesis, the install taxonomy, and the operating model
+description: Long-form sub-page at /canon covering the adoption thesis, the install taxonomy, and the operating model
 ---
 
-# aitk project
+# canon project
 
-Reached from the aitk project card on the landing page. Carries the depth a visitor opted into by following the link, so it expands where the card compresses.
+Reached from the canon project card on the landing page. Carries the depth a visitor opted into by following the link, so it expands where the card compresses.
 
 ## All viewports
 
@@ -16,7 +16,7 @@ Reached from the aitk project card on the landing page. Carries the depth a visi
 │   ────────────────────────────────────────────────────   │  ← the rule stops at the text column
 │                                                          │
 │   PROJECT                                                │  ← eyebrow
-│   aitk                                                   │  ← display heading
+│   canon                                                  │  ← display heading
 │   A CLI that installs one set of agent rules, skills,    │  ← the claim, one sentence
 │   and standards into every project and keeps them in     │
 │   step.                                                  │

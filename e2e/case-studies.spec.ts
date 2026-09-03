@@ -15,7 +15,7 @@ const DICTION_GALLERY_SELECTOR =
   'main [data-screenshot-gallery] [data-peek-slide] img'
 const DICTION_GALLERY_COUNT = 5
 const CASE_STUDY_ROUTES = [
-  '/aitk',
+  '/canon',
   '/jobtriage',
   '/diction',
   '/stackr',
@@ -82,20 +82,22 @@ for (const route of CASE_STUDY_ROUTES) {
   })
 }
 
-test('the aitk case study renders its claim and sections', async ({ page }) => {
-  await page.goto('/aitk')
+test('the canon case study renders its claim and sections', async ({
+  page,
+}) => {
+  await page.goto('/canon')
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('aitk')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('canon')
   await expect(page.locator('main')).toContainText(
     'installs one set of agent rules, skills, and standards into every project',
   )
   await expect(page.locator('main section[id]')).toHaveCount(6)
 })
 
-test('the aitk case study names the scoped package', async ({ page }) => {
-  await page.goto('/aitk')
+test('the canon case study names the scoped package', async ({ page }) => {
+  await page.goto('/canon')
 
-  await expect(page.locator('main')).toContainText('@erclx/aitk')
+  await expect(page.locator('main')).toContainText('@erclx/canon')
 })
 
 test('the diction case study renders its claim and sections', async ({
@@ -522,7 +524,7 @@ test('the preview holds one panel size across its screenshots', async ({
 test('the project cards link to both case studies', async ({ page }) => {
   await page.goto('/')
 
-  await expect(page.locator('#projects a[href="/aitk"]').first()).toBeVisible()
+  await expect(page.locator('#projects a[href="/canon"]').first()).toBeVisible()
   await expect(
     page.locator('#projects a[href="/diction"]').first(),
   ).toBeVisible()
@@ -862,7 +864,7 @@ test('returning from a case study restores where the visitor left', async ({
   await page.waitForTimeout(400)
   const left = await page.evaluate(() => window.scrollY)
   await page.locator('#projects article').first().click()
-  await expect(page).toHaveURL('/aitk')
+  await expect(page).toHaveURL('/canon')
 
   // The unwind runs off the foot rather than the bar. `way-home.ts` binds
   // every `[data-way-home]` anchor, so both controls carry it, and the foot is
@@ -879,7 +881,7 @@ test('returning from a case study restores where the visitor left', async ({
 test('a case study opened directly still links home from the foot', async ({
   page,
 }) => {
-  await page.goto('/aitk')
+  await page.goto('/canon')
 
   await page.getByRole('link', { name: 'Back to Eric Le' }).click()
 

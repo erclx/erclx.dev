@@ -11,7 +11,7 @@ paths:
 
 ## Before a change
 
-- Read the current captures in `.claude/review/screenshots/` for the surfaces involved before proposing a UI change.
+- Read the current captures in `.canon/review/screenshots/` for the surfaces involved before proposing a UI change, or in `.claude/review/screenshots/` where that folder does not exist yet: a capture written before the records move still sits at the old root until something re-runs `bun run screenshot` for that surface.
 - Do not propose a visual change from a wireframe alone.
 
 ## After a change

@@ -72,7 +72,7 @@ esac
 
 # Once per session per standard, ahead of both messages below. A missing-binary
 # notice repeated once per matching command is the same noise the comment
-# beneath it warns against, aimed at the one machine that cannot install `aitk`
+# beneath it warns against, aimed at the one machine that cannot install `canon`
 # between commits.
 session=$(printf '%s' "$input" | jq -r '.session_id // "none"')
 key=$(printf '%s__%s' "$session" "$standard" | tr -c 'A-Za-z0-9' '_')
@@ -82,16 +82,16 @@ marker="$marker_dir/$key"
 mkdir -p "$marker_dir"
 : >"$marker"
 
-# A standard resolves only through `aitk`, and this hook is the sole enforcer for
+# A standard resolves only through `canon`, and this hook is the sole enforcer for
 # the three writing surfaces its header names, so a missing binary is reported
 # the way `standards-audit.sh` and `tasks-index.sh` report theirs rather than
 # exiting clean, which `575-hooks` bars for an only enforcer.
-if ! command -v aitk >/dev/null 2>&1; then
-  msg=$(printf 'Standards-reminder: cannot point at the %s standard for %s. No `aitk` binary on PATH. Install one with `bun add -g @erclx/aitk`.' "$standard" "$governs")
+if ! command -v canon >/dev/null 2>&1; then
+  msg=$(printf 'Standards-reminder: cannot point at the %s standard for %s. No `canon` binary on PATH. Install one with `bun add -g @erclx/canon`.' "$standard" "$governs")
   jq -nc --arg msg "$msg" '{hookSpecificOutput:{hookEventName:"PreToolUse",additionalContext:$msg}}'
   exit 0
 fi
 
-msg=$(printf 'This command writes %s, which the %s standard governs. Read it with `aitk standards %s` before writing one rather than working the shape from memory. The %s skill reads it first and is the route that cannot skip it.' \
+msg=$(printf 'This command writes %s, which the %s standard governs. Read it with `canon standards %s` before writing one rather than working the shape from memory. The %s skill reads it first and is the route that cannot skip it.' \
   "$governs" "$standard" "$standard" "git-$standard")
 jq -nc --arg msg "$msg" '{hookSpecificOutput:{hookEventName:"PreToolUse",additionalContext:$msg}}'

@@ -8,7 +8,7 @@ subtitle: Per-surface ASCII layouts loaded on demand
 Per-surface ASCII layouts loaded on demand
 
 - [About me](about.md): Personal surface directly under the header, carrying where the person is from and one thing that is not work
-- [aitk project](aitk.md): Long-form sub-page at /aitk covering the adoption thesis, the install taxonomy, and the operating model
+- [canon project](canon.md): Long-form sub-page at /canon covering the adoption thesis, the install taxonomy, and the operating model
 - [Caret project](caret.md): Sub-page at /caret covering the reuse problem, the trigger palette, and the three-editor adapter
 - [Contact dock](contact-dock.md): Fixed right-margin control carrying contact and the résumé between the hero and the footer, mirroring the section rail on the left
 - [diction project](diction.md): Long-form sub-page at /diction covering the calibration failure, the per-sound fix, and the held-out result

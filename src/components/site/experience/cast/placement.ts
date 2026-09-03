@@ -285,7 +285,7 @@ export const clusters: readonly Cluster[] = [
  * A flat index across every cluster, so a guard can name the member that failed
  * and a candidate arm can address one. Placement is by cluster and both of
  * those are by member, which are two questions about the same list. It stays
- * whether or not an arm is being served: without it `.claude/.tmp` measurements
+ * whether or not an arm is being served: without it `.canon/tmp` measurements
  * fell back to counting position in a NodeList and reported nothing at all when
  * the selector went stale.
  */

@@ -19,7 +19,7 @@ file_path=$(printf '%s' "$input" | jq -r '.tool_input.file_path // empty')
 [ -n "$file_path" ] || exit 0
 
 case "$file_path" in
-*/.claude/.tmp/*) exit 0 ;;
+*/.claude/.tmp/* | */.canon/tmp/*) exit 0 ;;
 esac
 
 # A project whose own root sits under a path carrying a tmp segment is not
@@ -48,5 +48,5 @@ marker="$marker_dir/$key"
 mkdir -p "$marker_dir"
 : >"$marker"
 
-msg='Temporary file write outside .claude/.tmp/. Write temp files to .claude/.tmp/<slug>/ in the project root, not system temp. See the Scratch rule in CLAUDE.md.'
+msg='Temporary file write outside the project scratch folder. Write temp files to .canon/tmp/<slug>/ in the project root (or .claude/.tmp/<slug>/ where .canon/ is not set up yet), not system temp. See the Scratch rule in CLAUDE.md.'
 jq -nc --arg msg "$msg" '{hookSpecificOutput:{hookEventName:"PreToolUse",additionalContext:$msg}}'
