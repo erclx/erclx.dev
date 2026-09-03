@@ -19,7 +19,7 @@ file_path=$(printf '%s' "$input" | jq -r '.tool_input.file_path // empty')
 [ -n "$file_path" ] || exit 0
 
 case "$file_path" in
-*/.claude/.tmp/*) exit 0 ;;
+*/.claude/.tmp/* | */.canon/tmp/*) exit 0 ;;
 esac
 
 # A project whose own root sits under a path carrying a tmp segment is not
