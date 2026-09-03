@@ -2,6 +2,7 @@
 description: Route .canon/tasks/ edits to the tasks standard for filenames, frontmatter, and task file format
 paths:
   - '.canon/tasks/**'
+  - '.claude/tasks/**'
 ---
 
 # Tasks standards

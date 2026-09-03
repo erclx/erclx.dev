@@ -2,6 +2,7 @@
 description: Route .canon/memory/ edits to the memory standard for the filename, frontmatter, body shape, and lifecycle
 paths:
   - '.canon/memory/**'
+  - '.claude/memory/**'
 ---
 
 # Memory standards

@@ -2,6 +2,7 @@
 description: Route .canon/intake/ edits to the intake standard for the item format, the answer contract, and ordinal naming
 paths:
   - '.canon/intake/**'
+  - '.claude/intake/**'
 ---
 
 # Intake standards

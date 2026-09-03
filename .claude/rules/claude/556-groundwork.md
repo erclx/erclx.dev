@@ -2,6 +2,7 @@
 description: Route .canon/groundwork/ edits to the groundwork standard for ordinal naming, numbering, frontmatter, and required file contents
 paths:
   - '.canon/groundwork/**'
+  - '.claude/groundwork/**'
 ---
 
 # Groundwork standards

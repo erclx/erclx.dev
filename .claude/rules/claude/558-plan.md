@@ -2,6 +2,7 @@
 description: Route .canon/plans/ edits to the plan standard for sections, the answer contract, and the archive move
 paths:
   - '.canon/plans/**'
+  - '.claude/plans/**'
 ---
 
 # Plan standards
