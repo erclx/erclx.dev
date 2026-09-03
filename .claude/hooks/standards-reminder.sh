@@ -2,7 +2,7 @@
 
 # Routes a shell command that authors prose to the standard governing it.
 #
-# The path-scoped rules under `.claude/rules/claude/` load on a file edit, so
+# The path-scoped rules under `.claude/rules/canon/claude/` load on a file edit, so
 # every authoring surface that writes a file is already covered. A pull request
 # body written through `gh`, a commit message passed with `-m`, and a branch
 # name given to `git checkout -b` write no file at all, so nothing in that

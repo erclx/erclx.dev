@@ -62,7 +62,7 @@ Scope and engines look like two ways to make a run cheaper and only one of them 
 
 What costs is the serial chain inside one spec, since `fullyParallel` is off. `cast.spec.ts` holds a 20-second scheduler watch and several full-field captures, which is why it sets the floor for the whole suite at roughly 2 minutes however the run is sliced. The full three-engine suite runs about 3.5 minutes against that floor.
 
-Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/lib/306-test-scope.md` states the resulting directive, and `.claude/ARCHITECTURE.md` § The merge gate runs every engine the suite defines carries why the matrix exists at all.
+Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/canon/lib/306-test-scope.md` states the resulting directive, and `.claude/ARCHITECTURE.md` § The merge gate runs every engine the suite defines carries why the matrix exists at all.
 
 Turning `fullyParallel` on was measured rather than assumed. It took the full run from about 3:30 to 2:49 and failed two webkit tests, both timing assertions: more contexts on one machine is less processor each, and a reveal stagger read against a wall clock came back at zero. A fifth off the clock does not pay for a suite reporting failures nobody caused.
 

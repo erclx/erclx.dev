@@ -42,7 +42,7 @@ The project uses a three-tier context model. Know which tier holds what before r
 
 ## Markdown
 
-- Before writing a PR, commit, or branch name, read its standard with `canon standards <name>` and follow it. No standard installs into this repository, so that verb is the only route to one. File-edit standards route automatically via `.claude/rules/claude/`.
+- Before writing a PR, commit, or branch name, read its standard with `canon standards <name>` and follow it. No standard installs into this repository, so that verb is the only route to one. File-edit standards route automatically via `.claude/rules/canon/claude/`.
 - Keep `README.md` user-facing. Technical detail belongs in `.claude/context/`.
 
 ## Commands
