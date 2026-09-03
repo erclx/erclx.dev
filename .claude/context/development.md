@@ -24,6 +24,10 @@ Local dev workflow for this project.
 
 For the rationale behind these choices, such as Astro over Next, the shadcn install path, font preload, and the theme toggle as static Astro, see `.claude/ARCHITECTURE.md` § Key technical decisions.
 
+## New domain folders
+
+A diff adding a new top-level folder under `src/` drafts that domain's `.claude/context/<domain>.md` entry at ship time, per the context standard (`canon standards context`). `claude-docs` only refreshes an entry that already exists and never creates one on its own.
+
 ## Setup
 
 - Install [Bun](https://bun.sh): `curl -fsSL https://bun.sh/install | bash`
@@ -152,3 +156,7 @@ All `.sh` files live under `scripts/`. Do not place shell scripts outside `scrip
 - `pre-commit` runs `lint-staged`. ESLint and prettier auto-fix `.astro`, `.tsx`, `.ts`, `.jsx`, `.js` files. Prettier and cspell run on `.json`, `.css`, `.md`, `.mdc`. shfmt and shellcheck run on `.sh`.
 - `commit-msg` runs `commitlint` against the conventional commit format.
 - `pre-push` runs `bun run check`. After pushing, run `git status`. If files changed, commit the diff as `style(<scope>):` and push again.
+
+## The synced résumé PDF
+
+`public/resume.pdf` shows as modified whenever the upstream résumé sync runs, not from a stray edit. It ships in the same commit set as its own `chore(assets): sync resume pdf` commit rather than getting flagged as out of scope.

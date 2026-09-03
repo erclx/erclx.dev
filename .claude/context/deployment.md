@@ -15,6 +15,7 @@ The reasoning behind Cloudflare Pages and behind deploying from Actions rather t
 
 - The Pages project is a Direct Upload type. Wrangler pushes a built `./dist/`, so Cloudflare never runs a build and never needs a bun version pinned on its side.
 - The free tier covers unlimited bandwidth and 500 builds per month. A single-page site stays well inside both, so no billing alarm is wired.
+- CLI over the dashboard for inspection, redeploy, env-var, and domain changes. Confirm before a destructive operation: deleting the project, force-pushing a production deploy, changing live DNS.
 
 ## Deploy job
 
