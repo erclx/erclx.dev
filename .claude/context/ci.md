@@ -182,6 +182,53 @@ Normalize Cloudflare's email obfuscation before comparing two fetches of one pag
 
 Re-running that job alone answers the retention question the seven-day artifact window was widened for, and it is a recovery path rather than a rebuild. The re-run downloaded the retained `dist` and republished it in roughly ten seconds with no verify leg re-executing, which is the first time anything has confirmed that path works.
 
+## The worker cap was raised twice and rejected twice
+
+A pull request here waits about thirteen minutes because `workers` pins to 1
+under CI, and the runner is 4 vCPU. Raising the cap looked like the obvious
+saving, and it was measured rather than assumed, at 2 and at 4, on
+`workflow_dispatch` runs of the full 273-test suite on pull request 100 so a
+worker-count reading would not be confused with the pull request's own
+changed-spec selection below.
+
+Both counts made the gate slower and flakier at once, and the failures spread
+across the codebase rather than sitting where the two known webkit timing
+assertions predicted. At 2 workers, chromium ran 19.6m against a 14m01s
+single-worker baseline, failing 11 tests across `cast.spec.ts`,
+`focus-ring.spec.ts`, `home.spec.ts`, `pointer-gating.spec.ts`, and
+`projects.spec.ts`, every one of them on the initial attempt and both retries.
+Firefox and webkit stayed closer to their baseline, with firefox failing one
+test and webkit passing clean. At 4 workers every engine failed: chromium ran
+20.0m and failed 24 tests across nine files, firefox carried the same single
+failure at a shorter 5.4m, and webkit, clean at 2 workers, failed 2 and flaked
+4 at 8.0m.
+
+Read this as the runner rather than the suite. `retries: 2` cannot mask
+contention that is the steady state rather than a one-off flake, and a
+population failing on every attempt across nine unrelated files is not a
+population of individually flaky tests. This runner's 4 vCPU tier does not hold
+two full browser contexts without starving the wall-clock timing assertions
+the codebase carries throughout, which is a different and larger claim than
+the `fullyParallel` finding above: that one named two specific webkit
+assertions, and this one is a property of the tier that no single assertion
+fix closes. `workers` stays at 1 until the timing assertions those failures hit
+are rewritten against animation and transition state rather than a wall clock,
+which is v7.5's own scope.
+
+What survived the rejection is independent of the worker cap. `cast.spec.ts`
+split into itself and `e2e/cast-scheduler.spec.ts`, carrying the three
+scheduler tests whose 70s of wall-clock watching had been the file's own
+floor, and the pull request e2e step now runs `--only-changed` against the
+base branch with a full-suite fallback on an empty selection, a push, or a
+dispatch. That selection is also what made the worker-count measurement need
+its own instrument: a pull request run touching only the two cast files
+selects only those, so its own leg times are a 19-test reading rather than a
+suite one, and a first read of pull request 100's own checks was caught in
+review for exactly that confusion. `.canon/tasks/v09.7-gate-worker-concurrency.md`
+carries the per-engine failure lists this entry summarizes.
+
+Measured at 2896e77 (workers=2, run 33954276561) and 26b6f2e (workers=4, run 33955347743) on 2026-09-05.
+
 ## Running CI locally
 
 `bun run check` runs the static and unit asserts plus auto-formats first. `bun run check:full` runs verify plus `test:e2e`. If CI fails on format, run `bun run check` locally and commit the diff.
