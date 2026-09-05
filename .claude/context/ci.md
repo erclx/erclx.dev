@@ -247,6 +247,180 @@ lists this entry summarizes.
 
 Measured at 2896e77 (workers=2, run 33954276561) and 26b6f2e (workers=4, run 33955347743) on 2026-09-05.
 
+## A settle carries the bound the pause implied, and CPU throttling is not the only way to prove one
+
+The gating suite's fixed pauses convert to three shapes rather than one. A read
+that already sits behind a poll or a web-first assertion loses its pause
+outright, since the poll was always the real settle and the pause ahead of it
+was margin nobody measured. A read that has no such poll gets one, on the exact
+condition the assertion checks rather than on a proxy for it. A window
+asserting nothing happened stays a duration, since that claim has no condition
+to poll for, with what it bounds written beside it rather than left for a
+reader to infer from the number.
+
+`305-e2e-reliability.md` names `Emulation.setCPUThrottlingRate` as the
+reproduction tool, and it worked for exactly one of the four conversions this
+first pass carried. `e2e/focus-ring.spec.ts`'s scripted-focus settle
+(`:focus-visible` read 80ms after a `.focus()` call, which failed on Firefox on
+the trunk) reproduces under throttle in the sense that matters: a direct
+instrumentation harness against this machine's chromium found the real
+settle already running 245 to 451ms at full speed, before any CDP session
+touched it, climbing to 1.8 to 2.2s at 40x and 3.8 to 7.1s at 80x. The shipped
+80ms pause was marginal from the start on this hardware. Fixed with
+`page.waitForFunction` polling the same predicate the pause used to check
+once, bounded at 15000ms, and verified 6 of 6 on chromium, firefox, and webkit.
+
+The first attempt at this bound was 8000ms and it was not enough on GitHub's
+own runner. Firefox failed there with the settle correctly giving up and
+falling into the pre-existing Tab-walk fallback, the one this file's own
+comments already document as unreliable under load, and the test's own
+default 30s budget was undersized for the four controls the failing case
+loops over even before that fallback ran. Both numbers moved: the settle to
+15000ms, and the two four-control tests to `test.setTimeout(90_000)`, sized
+so a control legitimately needing the settle's own full bound does not also
+exhaust the test around it. Raising the settle's bound here is not the
+pattern `305-e2e-reliability.md` bars, since nothing about the wait was
+flaky at any bound: the pause it replaced could never have covered four
+real settles in 30s either, and the fixed span running fast is what hid
+that arithmetic rather than solving it.
+
+A review of the CI trace, taken before trusting either number, found a
+second problem riding along with the first. The timeout on Firefox landed
+inside the Tab-walk fallback rather than at the settle itself, since a
+caught timeout fell through to it for every engine. That walk exists for
+WebKit alone, per its own comment naming a browser that never carries
+keyboard modality across a scripted focus, and it has its own defect: its
+per-press check reads `:focus-visible` once right after each `Tab` with no
+settle of its own, so the same load that times out the settle above could
+also let it walk past the right control without ever reading it as focused.
+That looked like the mechanism behind this file's own recorded trunk
+failure for that exact walk, reached a second way, and the walk was gated to
+WebKit alone on that reading: a timeout on any other engine would throw the
+settle's own `TimeoutError` instead of falling into a walk that might never
+succeed for it there.
+
+That gate turned out to answer the wrong question, and three runs of the
+same test file settle which one mattered. Fixing an unrelated bug in
+`e2e/scroll.ts` (below) landed in the same branch, and Firefox ran under
+three configurations before this settled:
+
+- 15000ms bound, the old broken scroll settle: red, inside the settle
+  itself, on every attempt.
+- 15000ms bound, walk ungated, scroll fix applied: green, 6m10s.
+- 15000ms bound, walk gated to WebKit, scroll fix applied: green, 7m7s.
+
+The third row is what answers the gate question, since gating removes
+Firefox's only fallback: if the settle still needed the walk to pass, that
+row would fail loudly rather than quietly. It passed on all three engines
+(Firefox 7m7s, WebKit 9m7s, chromium 14m1s), which means the settle was
+resolving inside its own bound with no fallback available. The walk was
+never load-bearing for Firefox on this evidence. It stays gated to WebKit,
+and the comment above the gate says this rather than blaming a narrow
+settle, which is the claim the second row alone would have supported and
+the third row rules out. `git diff --stat` between the first and third rows
+touches one file, `e2e/scroll.ts`, confirming the gate itself nets to zero
+across the diagnostic commits and the scroll fix is the single variable
+that moved.
+
+What connects a fix in one file to a passing test in another that does not
+import it is not established, and a specific, plausible-sounding mechanism
+was proposed here and checked against the log rather than left standing.
+The proposal was retry contention: a broken scroll settle failing other
+tests' first attempts, retried at roughly three times the cost of a clean
+pass, inflating the shared job's wall clock enough to starve this file's own
+settle. Two facts in this repository rule it out. `playwright.config.ts`
+pins `workers: isCI ? 1 : undefined`, so CI runs one test at a time with
+nothing to contend with. And the red run's own log (job 101308722933) shows
+zero retries outside `focus-ring.spec.ts`: `case-studies.spec.ts` and
+`pointer-gating.spec.ts`, the only files importing `settleScroll`, both
+passed clean on the first attempt, while the tally was `1 failed, 1 flaky,
+4 skipped, 267 passed` with every failing line inside `focus-ring.spec.ts`
+itself. `focus-ring.spec.ts` does not import `settleScroll` at all, and its
+own scroll is `window.scrollTo({ behavior: 'instant' })`, already instant and
+called after the point where the red run failed. The retry-contention
+mechanism is recorded here as tested and false, so a later session does not
+re-propose it from the same correlation.
+
+What the three rows establish stands regardless: the scroll fix changed
+Firefox's outcome on a file it does not touch, the gate is not load-bearing
+on Firefox, and one retry captured on the red run swung from 21.1s and
+23.5s to 2.6s with nothing else changed, which is a machine reading load
+rather than a stable measurement either way. Read a single green row here
+as consistent with the gate being correct, not as proof of it, and treat
+the pathway between the two files as an open question this entry flags
+rather than a settled fact it doesn't have.
+
+The other three did not reproduce that way, and each failed for a different
+reason worth keeping. `Emulation.setCPUThrottlingRate` is Chromium-only, so a
+Firefox-specific race has no same-engine throttled repro at all. On this
+32-core sandbox, throttling a page carrying the header's own WebGL frame loop
+mostly serializes ordinary interactions behind that loop's now-inflated cost
+rather than widening the specific gap a race depends on: `page.goto` itself
+timed out at 30s once the rate passed 150x, and a bare `target.evaluate` call
+could take upward of 30s at 300x, both dominated by contention with a
+continuously-ticking `requestAnimationFrame` loop rather than by the read
+under test. Neither failure mode is the one the historical incidents reported.
+
+The chip row's re-arm case (`e2e/home.spec.ts`, the trunk failure from
+2026-08-25) is the clearest example. It reproduces deterministically at **zero
+throttle**: removing the 400ms gap between hiding the row and showing it again
+failed 3 of 10 runs at full speed on an idle machine, because the browser can
+coalesce the hide-then-show pair into one `IntersectionObserver` callback that
+only ever reports the row back in view, skipping the momentary left state the
+component's re-arm depends on. Neither CDP throttling nor saturating all 32
+cores with busy loops moved that failure rate in either direction for the
+broken or the fixed version, 15 of 15 passing serialized under full
+saturation for the fix. The rate this case needed was a shorter gap, not a
+slower processor, which is a fact about task-queue batching rather than about
+CPU speed. Fixed with two chained `requestAnimationFrame` waits, tying the
+bound to the platform's own callback-timing guarantee instead of a guess.
+
+A third shape needed no throttle and no failure to justify converting: a
+400ms pause after `data-ready` in `e2e/home.spec.ts`'s reveal-threshold case
+never once mattered across 20 repeats with it removed outright, since the
+mark it was guessing at was already set by the time `data-ready` appeared. It
+still took an explicit `page.waitForFunction` on that mark rather than a bare
+deletion, since a passing repeat count is evidence for today's ordering and
+not a proof it cannot reverse.
+
+The fourth shape is the one the rule already carries and this pass confirms
+by example rather than by counting: `e2e/header-shader.spec.ts`'s
+lost-context test removed its leading pause on the same reasoning as the
+first shape above, reading `toBeHidden()` on the fallback as though it were
+already a settle. It is not. The fallback carries the `hidden` class before
+any mount script runs, so the assertion passes identically whether the app
+has drawn or has not started, and the removal raced the app for ownership of
+the canvas's WebGL context on WebKit, failing the restore assertion at the
+end of the same test with nothing wrong at the point removed. This is the
+risk the plan for this sweep named ahead of writing any conversion, caught by
+running the file's own suite rather than by inspection. The repair polls
+`litPercent()`, the same pixel-readback helper the drawing tests already use,
+which needed the shared `preserveDrawingBuffer` instrument added to this test
+too since WebKit clears an undecorated WebGL buffer once it presents a frame.
+
+Read the throttling instruction as one tool among several rather than the
+whole method. What every conversion in this pass shares is a real,
+independently verified reason the bound is where it is: a measured settle
+time, a deterministic zero-throttle reproduction, a repeat count with the
+wait removed, or a same-suite regression caught by running it. `Emulation.setCPUThrottlingRate`
+answers "does this get slower under load," which is the right question for a
+speed-bound race and the wrong one for a race about event ordering, a race
+about which of two independent callbacks a page has run, or a pause that
+never bounded anything measurable to begin with.
+
+Two waits in `e2e/home.spec.ts` stayed as durations rather than converting,
+alongside `header-shader.spec.ts`'s frame-count window. The about-flight case
+asserts the craft has not flown in absent a scroll to its section, and the
+bar-placement case reads an intentionally intermediate state before
+`data-ready` can appear, since the test exists to check the page before that
+resource-delayed marker arrives. Neither claim has a condition to poll for,
+so each keeps its duration with what it bounds stated in the comment beside
+it, which is what the plan's own risk section asked for rather than a forced
+conversion.
+
+Measured at 03d7a9c on 2026-09-05 with the first-pass branch applied, across
+`e2e/focus-ring.spec.ts`, `e2e/header-shader.spec.ts`, and `e2e/home.spec.ts`.
+
 ## Running CI locally
 
 `bun run check` runs the static and unit asserts plus auto-formats first. `bun run check:full` runs verify plus `test:e2e`. If CI fails on format, run `bun run check` locally and commit the diff.

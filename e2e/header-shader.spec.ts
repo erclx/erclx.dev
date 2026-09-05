@@ -7,7 +7,7 @@ declare global {
 }
 
 const CANVAS = '[data-shader-field]'
-const SETTLE_MS = 1200
+/** How long a window watching for a scheduled frame has to prove one arrived. */
 const FRAME_WINDOW_MS = 1500
 /** How long a reading waits for the surface to draw before it gives up. */
 const SETTLE_TIMEOUT_MS = 10000
@@ -75,15 +75,15 @@ test('the header carries a shader canvas covering the band', async ({
 test('the surface paints in both themes', async ({ page, baseURL }) => {
   await page.addInitScript(instrument)
   await page.goto(baseURL ?? '/')
-  await page.waitForTimeout(SETTLE_MS)
 
   // The animated surface draws on a frame callback, and a page WebKit has
   // backgrounded gets that callback a couple of times a second rather than
   // sixty. Measured late in a full run it had scheduled 2 frames against a
   // 1200ms pause, with the context healthy, the canvas shown, and the fallback
   // down, so the reading was of a surface that had not been given the frames to
-  // draw. Raised to the front and settled on what it drew, which is the same
+  // draw. Raised to the front rather than paused for a span, which is the same
   // treatment `e2e/lazy-images.ts` gives the page walk and for the same reason.
+  // The poll below settles on what it drew.
   await page.bringToFront()
 
   // A surface reading as blank still reports a fraction of a percent, which is
@@ -106,10 +106,11 @@ test('reduced motion renders a still frame rather than hiding the surface', asyn
   const page = await context.newPage()
   await page.addInitScript(instrument)
   await page.goto(baseURL ?? '/')
-  await page.waitForTimeout(SETTLE_MS)
 
   await expect(page.locator(CANVAS)).toBeVisible()
-  expect(await litPercent(page)).toBeGreaterThan(1)
+  await expect
+    .poll(() => litPercent(page), { timeout: SETTLE_TIMEOUT_MS })
+    .toBeGreaterThan(1)
 
   await context.close()
 })
@@ -122,8 +123,18 @@ test('reduced motion schedules no animation frames once drawn', async ({
   const page = await context.newPage()
   await page.addInitScript(instrument)
   await page.goto(baseURL ?? '/')
-  await page.waitForTimeout(SETTLE_MS)
 
+  // Settled on the still itself before the window opens, so a startup frame
+  // scheduled while the surface was drawing is not mistaken for one scheduled
+  // after it stopped.
+  await expect
+    .poll(() => litPercent(page), { timeout: SETTLE_TIMEOUT_MS })
+    .toBeGreaterThan(1)
+
+  // A duration rather than a settle from here: the claim is that nothing
+  // schedules a frame across this window, which has no condition to poll for.
+  // FRAME_WINDOW_MS bounds that window alone, wide enough to catch a frame
+  // requested on the reduced-motion path if one ever were.
   const before = await page.evaluate(() => window.__frames)
   await page.waitForTimeout(FRAME_WINDOW_MS)
   const after = await page.evaluate(() => window.__frames)
@@ -153,10 +164,26 @@ test('the heading, links, and toggle stay reachable over the surface', async ({
 test('a lost context reveals the fallback and a restore hides it', async ({
   page,
 }) => {
+  // The same instrument the drawing tests install, so the readback below can
+  // read the buffer WebKit clears once it presents a frame. Nothing in this
+  // test reads `window.__frames`; only the drawing-buffer patch is load-bearing
+  // here.
+  await page.addInitScript(instrument)
   await page.goto('/')
-  await page.waitForTimeout(SETTLE_MS)
 
   const fallback = page.locator('[data-shader-field-fallback]')
+
+  // `toBeHidden` on its own proves nothing here: the fallback carries the
+  // `hidden` class before the mount script has ever run, so it reads hidden
+  // whether or not a context exists yet. Settled on the drawn surface instead,
+  // which only turns true once the app has created its own WebGL context.
+  // Dropping this to a bare visibility check cost the case below: grabbing the
+  // context before the app owns one raced the mount on WebKit and left the
+  // restore with nothing listening, failing under this file's own suite while
+  // every visibility assertion still passed.
+  await expect
+    .poll(() => litPercent(page), { timeout: SETTLE_TIMEOUT_MS })
+    .toBeGreaterThan(1)
   await expect(fallback).toBeHidden()
 
   // The extension drives the same events the browser fires when it drops a

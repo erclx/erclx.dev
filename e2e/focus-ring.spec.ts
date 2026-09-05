@@ -1,4 +1,4 @@
-import { expect, type Page, test } from '@playwright/test'
+import { errors, expect, type Page, test } from '@playwright/test'
 
 import { contrastRatio, paintedColor } from './colors'
 
@@ -46,8 +46,42 @@ async function tabTo(page: Page, selector: string, index = 0) {
     )
 
   await target.evaluate((element) => (element as HTMLElement).focus())
-  await page.waitForTimeout(80)
-  if (await visiblyFocused()) return target
+
+  // Settled on the browser's own focus-visible determination rather than
+  // paused for a fixed span. Firefox failed on the trunk reading this after a
+  // flat 80ms: `:focus-visible` mode does not always land inside that window
+  // once a runner is loaded, and the same evaluate round trip that carries the
+  // focus() call already absorbs most of the delay under load, measured up to
+  // several seconds at heavy CPU throttle. The bound is the giving-up point,
+  // not a guess at how long settling takes.
+  const isWebKit = page.context().browser()?.browserType().name() === 'webkit'
+  try {
+    await page.waitForFunction(
+      (element) =>
+        document.activeElement === element &&
+        (element as HTMLElement).matches(':focus-visible'),
+      await target.elementHandle(),
+      { timeout: 15000 },
+    )
+    return target
+  } catch (error) {
+    if (!(error instanceof errors.TimeoutError)) throw error
+    // The walk below exists for WebKit alone, per its own comment: a browser
+    // that does not carry keyboard modality across a scripted focus, not a
+    // browser running slowly. A timeout on any other engine throws here
+    // rather than falling into it. The walk's own per-press check reads
+    // `:focus-visible` once right after each `Tab`, with no settle of its
+    // own, so a Firefox that reached this catch would walk past the right
+    // control without ever reading it as focused, exhausting all 80 presses.
+    // That is this file's own recorded trunk failure for this exact walk.
+    // A single-variable CI experiment later confirmed the gate is not
+    // load-bearing on Firefox: with the settle at its current 15000ms bound,
+    // Firefox passed on all three engines whether the walk was reachable or
+    // not, so gating it here throws loudly instead of absorbing a future
+    // Firefox settle failure into an unrelated engine's fallback path.
+    if (!isWebKit) throw error
+    // Falls through to the bounded Tab walk below.
+  }
 
   // WebKit does not carry keyboard modality across a scripted focus on every
   // control, so the fallback reaches the target the way a reader does. Bounded
@@ -96,6 +130,11 @@ test.describe('focus ring', () => {
   test('every control marks focus in the accent rather than a color of its own', async ({
     page,
   }) => {
+    // Four controls each carrying their own settle, which under load can
+    // legitimately need most of that settle's own 15s bound. The default
+    // 30s test budget was measured exceeding on a loaded CI runner with
+    // this loop at four iterations.
+    test.setTimeout(90_000)
     await page.setViewportSize({ width: 1440, height: 900 })
     await settle(page)
 
@@ -136,6 +175,8 @@ test.describe('focus ring', () => {
   })
 
   test('no ring is drawn square around a control', async ({ page }) => {
+    // Same margin as the loop above, and for the same reason.
+    test.setTimeout(90_000)
     await page.setViewportSize({ width: 1440, height: 900 })
     await settle(page)
 
@@ -180,8 +221,13 @@ test.describe('focus ring', () => {
       await page.evaluate((mode) => {
         document.documentElement.classList.toggle('dark', mode === 'dark')
       }, theme)
-      await page.waitForTimeout(250)
 
+      // No pause follows the toggle. `getComputedStyle` forces a synchronous
+      // style recalculation, and no token or transition in this codebase
+      // animates between themes, so the class and the color it resolves to
+      // land inside the one evaluate call above. Verified against 80x CPU
+      // throttling: the class and the resolved color never disagree.
+      //
       // The ring is read once and measured against every ground it can sit on,
       // rather than against the page alone. It reaches controls inside the two
       // bars, the rail's active row and the dock, and each of those draws its
