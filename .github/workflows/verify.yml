@@ -109,7 +109,7 @@ jobs:
           retention-days: 7
 
   e2e-tests:
-    name: 🎭 E2E Tests (${{ matrix.browser }})
+    name: 🎭 E2E Tests (${{ matrix.slug }})
     runs-on: ubuntu-latest
     needs: [static-checks, unit-tests, build-verify]
     strategy:
@@ -117,13 +117,22 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Chromium alone splits: it is the only leg still above webkit's
+          # 9.1m floor once divided, so a third shard would mostly idle.
           - browser: chromium
+            shard: '1/2'
+            slug: chromium-1
+          - browser: chromium
+            shard: '2/2'
+            slug: chromium-2
           - browser: firefox
+            slug: firefox
             # Headless firefox creates no GL context without an X display, and
             # no pref substitutes for one. Chromium carries SwiftShader and
             # webkit its own path, so neither needs this.
             wrapper: xvfb-run -a
           - browser: webkit
+            slug: webkit
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -196,20 +205,34 @@ jobs:
         # the full-suite path below and is what a worker-count reading is
         # taken from instead.
         run: |
+          shard_flag=""
+          if [ -n "${{ matrix.shard }}" ]; then
+            shard_flag="--shard=${{ matrix.shard }}"
+          fi
+
           total=0
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             changed=$(git diff --name-only "origin/${{ github.base_ref }}" HEAD)
             if [ -n "$changed" ] && ! printf '%s\n' "$changed" | grep -qv '^e2e/'; then
-              total=$(bunx playwright test --project=${{ matrix.browser }} \
+              total=$(bunx playwright test --project=${{ matrix.browser }} $shard_flag \
                 --only-changed="origin/${{ github.base_ref }}" --list 2>&1 |
                 grep -oP 'Total: \K[0-9]+(?= tests?)')
             fi
           fi
 
           if [ "${total:-0}" -gt 0 ]; then
-            ${{ matrix.wrapper }} bunx playwright test --project=${{ matrix.browser }} --only-changed="origin/${{ github.base_ref }}"
+            # Defense in depth: total already gates this branch on a nonzero
+            # --list count for this shard, so --pass-with-no-tests guards
+            # only a --list/run disagreement rather than the ordinary path.
+            ${{ matrix.wrapper }} bunx playwright test --project=${{ matrix.browser }} $shard_flag \
+              --only-changed="origin/${{ github.base_ref }}" --pass-with-no-tests
           else
-            ${{ matrix.wrapper }} bun run test:e2e --project=${{ matrix.browser }}
+            # A zero here can mean no e2e/-only diff, or one whose changed
+            # specs all land in the other shard, and the two are conflated:
+            # the second runs this shard's full half rather than nothing.
+            # Latent today, since none of the last 30 merged pull requests
+            # were e2e/-only. See .claude/context/ci.md for the measurement.
+            ${{ matrix.wrapper }} bun run test:e2e --project=${{ matrix.browser }} $shard_flag
           fi
         env:
           # Tells the webServer command to serve the downloaded dist/ rather
@@ -220,8 +243,9 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          # Unique per leg. A duplicate artifact name fails the upload.
-          name: playwright-report-${{ matrix.browser }}
+          # Unique per leg, including shard: a duplicate artifact name fails
+          # the upload, and two chromium jobs both carry matrix.browser.
+          name: playwright-report-${{ matrix.slug }}
           # Both, because the report renders the run and test-results carries
           # the traces and the error context a failing engine is read from.
           path: |
