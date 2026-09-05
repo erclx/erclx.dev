@@ -268,7 +268,21 @@ settle already running 245 to 451ms at full speed, before any CDP session
 touched it, climbing to 1.8 to 2.2s at 40x and 3.8 to 7.1s at 80x. The shipped
 80ms pause was marginal from the start on this hardware. Fixed with
 `page.waitForFunction` polling the same predicate the pause used to check
-once, bounded at 8000ms, and verified 6 of 6 on chromium, firefox, and webkit.
+once, bounded at 15000ms, and verified 6 of 6 on chromium, firefox, and webkit.
+
+The first pull request shipped that bound at 8000ms and it was not enough on
+GitHub's own runner. Firefox failed there with the settle correctly giving up
+and falling into the pre-existing Tab-walk fallback, the one this file's own
+comments already document as unreliable under load, and the test's own
+default 30s budget was undersized for the four controls the failing case
+loops over even before that fallback ran. Both numbers moved: the settle to
+15000ms, and the two four-control tests to `test.setTimeout(90_000)`, sized
+so a control legitimately needing the settle's own full bound does not also
+exhaust the test around it. Raising the settle's bound here is not the
+pattern `305-e2e-reliability.md` bars, since nothing about the wait was
+flaky at any bound: the pause it replaced could never have covered four
+real settles in 30s either, and the fixed span running fast is what hid
+that arithmetic rather than solving it.
 
 The other three did not reproduce that way, and each failed for a different
 reason worth keeping. `Emulation.setCPUThrottlingRate` is Chromium-only, so a

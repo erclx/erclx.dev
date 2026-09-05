@@ -60,7 +60,7 @@ async function tabTo(page: Page, selector: string, index = 0) {
         document.activeElement === element &&
         (element as HTMLElement).matches(':focus-visible'),
       await target.elementHandle(),
-      { timeout: 8000 },
+      { timeout: 15000 },
     )
     return target
   } catch (error) {
@@ -115,6 +115,11 @@ test.describe('focus ring', () => {
   test('every control marks focus in the accent rather than a color of its own', async ({
     page,
   }) => {
+    // Four controls each carrying their own settle, which under load can
+    // legitimately need most of that settle's own 15s bound. The default
+    // 30s test budget was measured exceeding on a loaded CI runner with
+    // this loop at four iterations.
+    test.setTimeout(90_000)
     await page.setViewportSize({ width: 1440, height: 900 })
     await settle(page)
 
@@ -155,6 +160,8 @@ test.describe('focus ring', () => {
   })
 
   test('no ring is drawn square around a control', async ({ page }) => {
+    // Same margin as the loop above, and for the same reason.
+    test.setTimeout(90_000)
     await page.setViewportSize({ width: 1440, height: 900 })
     await settle(page)
 
