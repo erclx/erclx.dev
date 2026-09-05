@@ -223,6 +223,9 @@ test('the about flight waits off the page until its section arrives', async ({
   page,
 }) => {
   await page.goto('/')
+  // A duration rather than a settle: the claim is that nothing flies the craft
+  // in absent a scroll to its section, which has no condition to poll for.
+  // 300ms bounds the window a stray trigger on load would have to appear in.
   await page.waitForTimeout(300)
 
   const parked = await page.evaluate(() => {
@@ -639,6 +642,11 @@ test('the bar stays shut while the controls are still unplaced', async ({
     await route.continue()
   })
   await page.goto('/', { waitUntil: 'commit' })
+  // A duration rather than a settle, and deliberately so: `data-ready` only
+  // appears once the delayed webp above resolves or the placement wait's own
+  // three-second ceiling passes, and this case exists to read the state before
+  // either does. 250ms bounds a window with plenty of margin below that
+  // ceiling for hydration to have started, with nothing in between to poll.
   await page.waitForTimeout(250)
 
   // Short of the nearest landing, which is the toggle's. Its home is the
@@ -1251,7 +1259,23 @@ test('the reveal marks a row at any sliver, not at its declared threshold', asyn
   await page.waitForSelector('[data-toggle-host][data-ready]', {
     timeout: 15000,
   })
-  await page.waitForTimeout(400)
+
+  // The placement wait and the reveal observer are two independent rAF-driven
+  // systems, so `data-ready` says nothing about whether `initReveal` has run
+  // its own callback yet. Settled on the mark the assertion below reads,
+  // rather than paused for a span: verified against 20 repeats with no wait at
+  // all, the mark was already set by the time `data-ready` appeared every
+  // time, so this poll costs nothing on the ordinary path and only matters if
+  // that ordering ever reverses.
+  await page.waitForFunction(
+    () =>
+      document
+        .querySelector('[data-hero-name]')
+        ?.closest('[data-fade]')
+        ?.getAttribute('data-visible') === 'true',
+    undefined,
+    { timeout: 5000 },
+  )
 
   // `initReveal` passes `threshold: REVEAL_THRESHOLD` and then branches on
   // `entry.isIntersecting` alone. A threshold decides when a callback fires and
@@ -1489,7 +1513,21 @@ test('the chip row lights again when a reader comes back to it', async ({
   await watchChipLights(page, 3_000)
 
   await hideChipRow(page)
-  await page.waitForTimeout(400)
+  // Two rendered frames rather than a guessed span. `initChipLife` re-arms on
+  // an IntersectionObserver callback, which the platform queues after a
+  // rendering update, and the hide-then-show pair happening inside one such
+  // update is exactly what "isArmed" exists to guard against. Removing this
+  // wait outright reproduces the trunk failure without any throttling at all:
+  // it failed 3 of 10 runs at full speed, since the browser can coalesce the
+  // hide and the show into a single callback that only ever reports the row
+  // back in view. Two frames is the shortest gap that reliably gives the
+  // "left" state its own callback before the row returns.
+  await page.evaluate(
+    () =>
+      new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      ),
+  )
   await showChipRow(page)
   const lits = await watchChipLights(page, 3_000)
 

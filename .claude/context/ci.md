@@ -247,6 +247,100 @@ lists this entry summarizes.
 
 Measured at 2896e77 (workers=2, run 33954276561) and 26b6f2e (workers=4, run 33955347743) on 2026-09-05.
 
+## A settle carries the bound the pause implied, and CPU throttling is not the only way to prove one
+
+The gating suite's fixed pauses convert to three shapes rather than one. A read
+that already sits behind a poll or a web-first assertion loses its pause
+outright, since the poll was always the real settle and the pause ahead of it
+was margin nobody measured. A read that has no such poll gets one, on the exact
+condition the assertion checks rather than on a proxy for it. A window
+asserting nothing happened stays a duration, since that claim has no condition
+to poll for, with what it bounds written beside it rather than left for a
+reader to infer from the number.
+
+`305-e2e-reliability.md` names `Emulation.setCPUThrottlingRate` as the
+reproduction tool, and it worked for exactly one of the four conversions this
+first pass carried. `e2e/focus-ring.spec.ts`'s scripted-focus settle
+(`:focus-visible` read 80ms after a `.focus()` call, which failed on Firefox on
+the trunk) reproduces under throttle in the sense that matters: a direct
+instrumentation harness against this machine's chromium found the real
+settle already running 245 to 451ms at full speed, before any CDP session
+touched it, climbing to 1.8 to 2.2s at 40x and 3.8 to 7.1s at 80x. The shipped
+80ms pause was marginal from the start on this hardware. Fixed with
+`page.waitForFunction` polling the same predicate the pause used to check
+once, bounded at 8000ms, and verified 6 of 6 on chromium, firefox, and webkit.
+
+The other three did not reproduce that way, and each failed for a different
+reason worth keeping. `Emulation.setCPUThrottlingRate` is Chromium-only, so a
+Firefox-specific race has no same-engine throttled repro at all. On this
+32-core sandbox, throttling a page carrying the header's own WebGL frame loop
+mostly serializes ordinary interactions behind that loop's now-inflated cost
+rather than widening the specific gap a race depends on: `page.goto` itself
+timed out at 30s once the rate passed 150x, and a bare `target.evaluate` call
+could take upward of 30s at 300x, both dominated by contention with a
+continuously-ticking `requestAnimationFrame` loop rather than by the read
+under test. Neither failure mode is the one the historical incidents reported.
+
+The chip row's re-arm case (`e2e/home.spec.ts`, the trunk failure from
+2026-08-25) is the clearest example. It reproduces deterministically at **zero
+throttle**: removing the 400ms gap between hiding the row and showing it again
+failed 3 of 10 runs at full speed on an idle machine, because the browser can
+coalesce the hide-then-show pair into one `IntersectionObserver` callback that
+only ever reports the row back in view, skipping the momentary left state the
+component's re-arm depends on. Neither CDP throttling nor saturating all 32
+cores with busy loops moved that failure rate in either direction for the
+broken or the fixed version, 15 of 15 passing serialized under full
+saturation for the fix. The rate this case needed was a shorter gap, not a
+slower processor, which is a fact about task-queue batching rather than about
+CPU speed. Fixed with two chained `requestAnimationFrame` waits, tying the
+bound to the platform's own callback-timing guarantee instead of a guess.
+
+A third shape needed no throttle and no failure to justify converting: a
+400ms pause after `data-ready` in `e2e/home.spec.ts`'s reveal-threshold case
+never once mattered across 20 repeats with it removed outright, since the
+mark it was guessing at was already set by the time `data-ready` appeared. It
+still took an explicit `page.waitForFunction` on that mark rather than a bare
+deletion, since a passing repeat count is evidence for today's ordering and
+not a proof it cannot reverse.
+
+The fourth shape is the one the rule already carries and this pass confirms
+by example rather than by counting: `e2e/header-shader.spec.ts`'s
+lost-context test removed its leading pause on the same reasoning as the
+first shape above, reading `toBeHidden()` on the fallback as though it were
+already a settle. It is not. The fallback carries the `hidden` class before
+any mount script runs, so the assertion passes identically whether the app
+has drawn or has not started, and the removal raced the app for ownership of
+the canvas's WebGL context on WebKit, failing the restore assertion at the
+end of the same test with nothing wrong at the point removed. This is the
+risk the plan for this sweep named ahead of writing any conversion, caught by
+running the file's own suite rather than by inspection. The repair polls
+`litPercent()`, the same pixel-readback helper the drawing tests already use,
+which needed the shared `preserveDrawingBuffer` instrument added to this test
+too since WebKit clears an undecorated WebGL buffer once it presents a frame.
+
+Read the throttling instruction as one tool among several rather than the
+whole method. What every conversion in this pass shares is a real,
+independently verified reason the bound is where it is: a measured settle
+time, a deterministic zero-throttle reproduction, a repeat count with the
+wait removed, or a same-suite regression caught by running it. `Emulation.setCPUThrottlingRate`
+answers "does this get slower under load," which is the right question for a
+speed-bound race and the wrong one for a race about event ordering, a race
+about which of two independent callbacks a page has run, or a pause that
+never bounded anything measurable to begin with.
+
+Two waits in `e2e/home.spec.ts` stayed as durations rather than converting,
+alongside `header-shader.spec.ts`'s frame-count window. The about-flight case
+asserts the craft has not flown in absent a scroll to its section, and the
+bar-placement case reads an intentionally intermediate state before
+`data-ready` can appear, since the test exists to check the page before that
+resource-delayed marker arrives. Neither claim has a condition to poll for,
+so each keeps its duration with what it bounds stated in the comment beside
+it, which is what the plan's own risk section asked for rather than a forced
+conversion.
+
+Measured at 03d7a9c on 2026-09-05 with the first-pass branch applied, across
+`e2e/focus-ring.spec.ts`, `e2e/header-shader.spec.ts`, and `e2e/home.spec.ts`.
+
 ## Running CI locally
 
 `bun run check` runs the static and unit asserts plus auto-formats first. `bun run check:full` runs verify plus `test:e2e`. If CI fails on format, run `bun run check` locally and commit the diff.

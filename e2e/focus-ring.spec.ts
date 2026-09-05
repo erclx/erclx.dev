@@ -1,4 +1,4 @@
-import { expect, type Page, test } from '@playwright/test'
+import { errors, expect, type Page, test } from '@playwright/test'
 
 import { contrastRatio, paintedColor } from './colors'
 
@@ -46,8 +46,27 @@ async function tabTo(page: Page, selector: string, index = 0) {
     )
 
   await target.evaluate((element) => (element as HTMLElement).focus())
-  await page.waitForTimeout(80)
-  if (await visiblyFocused()) return target
+
+  // Settled on the browser's own focus-visible determination rather than
+  // paused for a fixed span. Firefox failed on the trunk reading this after a
+  // flat 80ms: `:focus-visible` mode does not always land inside that window
+  // once a runner is loaded, and the same evaluate round trip that carries the
+  // focus() call already absorbs most of the delay under load, measured up to
+  // several seconds at heavy CPU throttle. The bound is the giving-up point,
+  // not a guess at how long settling takes.
+  try {
+    await page.waitForFunction(
+      (element) =>
+        document.activeElement === element &&
+        (element as HTMLElement).matches(':focus-visible'),
+      await target.elementHandle(),
+      { timeout: 8000 },
+    )
+    return target
+  } catch (error) {
+    if (!(error instanceof errors.TimeoutError)) throw error
+    // Falls through to the bounded Tab walk below.
+  }
 
   // WebKit does not carry keyboard modality across a scripted focus on every
   // control, so the fallback reaches the target the way a reader does. Bounded
@@ -180,8 +199,13 @@ test.describe('focus ring', () => {
       await page.evaluate((mode) => {
         document.documentElement.classList.toggle('dark', mode === 'dark')
       }, theme)
-      await page.waitForTimeout(250)
 
+      // No pause follows the toggle. `getComputedStyle` forces a synchronous
+      // style recalculation, and no token or transition in this codebase
+      // animates between themes, so the class and the color it resolves to
+      // land inside the one evaluate call above. Verified against 80x CPU
+      // throttling: the class and the resolved color never disagree.
+      //
       // The ring is read once and measured against every ground it can sit on,
       // rather than against the page alone. It reaches controls inside the two
       // bars, the rail's active row and the dock, and each of those draws its
