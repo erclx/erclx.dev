@@ -24,6 +24,10 @@ Local dev workflow for this project.
 
 For the rationale behind these choices, such as Astro over Next, the shadcn install path, font preload, and the theme toggle as static Astro, see `.claude/ARCHITECTURE.md` § Key technical decisions.
 
+## New domain folders
+
+A diff adding a new top-level folder under `src/` drafts that domain's `.claude/context/<domain>.md` entry at ship time, per the context standard (`canon standards context`). `claude-docs` only refreshes an entry that already exists and never creates one on its own.
+
 ## Setup
 
 - Install [Bun](https://bun.sh): `curl -fsSL https://bun.sh/install | bash`
@@ -62,7 +66,7 @@ Scope and engines look like two ways to make a run cheaper and only one of them 
 
 What costs is the serial chain inside one spec, since `fullyParallel` is off. `cast.spec.ts` holds a 20-second scheduler watch and several full-field captures, which is why it sets the floor for the whole suite at roughly 2 minutes however the run is sliced. The full three-engine suite runs about 3.5 minutes against that floor.
 
-Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/lib/306-test-scope.md` states the resulting directive, and `.claude/ARCHITECTURE.md` § The merge gate runs every engine the suite defines carries why the matrix exists at all.
+Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/canon/lib/306-test-scope.md` states the resulting directive, and `.claude/ARCHITECTURE.md` § The merge gate runs every engine the suite defines carries why the matrix exists at all.
 
 Turning `fullyParallel` on was measured rather than assumed. It took the full run from about 3:30 to 2:49 and failed two webkit tests, both timing assertions: more contexts on one machine is less processor each, and a reveal stagger read against a wall clock came back at zero. A fifth off the clock does not pay for a suite reporting failures nobody caused.
 
@@ -152,3 +156,7 @@ All `.sh` files live under `scripts/`. Do not place shell scripts outside `scrip
 - `pre-commit` runs `lint-staged`. ESLint and prettier auto-fix `.astro`, `.tsx`, `.ts`, `.jsx`, `.js` files. Prettier and cspell run on `.json`, `.css`, `.md`, `.mdc`. shfmt and shellcheck run on `.sh`.
 - `commit-msg` runs `commitlint` against the conventional commit format.
 - `pre-push` runs `bun run check`. After pushing, run `git status`. If files changed, commit the diff as `style(<scope>):` and push again.
+
+## The synced résumé PDF
+
+`public/resume.pdf` shows as modified whenever the upstream résumé sync runs, not from a stray edit. It ships in the same commit set as its own `chore(assets): sync resume pdf` commit rather than getting flagged as out of scope.

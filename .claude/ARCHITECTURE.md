@@ -1636,6 +1636,16 @@ carries bullets the rule does not, 13 against 10, 11 against 9, 4 against 4, and
 content, and nothing compares the shared bullets between the two copies, so a
 wording edit to one needs the same edit made to the other by hand.
 
+The four kept sections did not stay duplicated. `005-behavior` and
+`015-output` came down to the bullets their rule counterpart does not carry, 4
+of 13 and 2 of 11, and `045-memory` and `025-indexes` carried no such
+remainder: both came out of `CLAUDE.md` entirely rather than staying byte-
+identical with the rule. One `025-indexes` bullet, drafting a new domain's
+context entry at ship time, moved into `.claude/context/development.md`
+instead of dropping, since it reads as this project's own practice rather than
+an always-loaded rule. `CLAUDE.md` runs 58 lines against the 98 the entry
+above measured. Measured at 7783070 on 2026-09-05.
+
 Measured at 3.38.0 on 2026-08-28, where 59 rules carry zero citations of the
 retired path and 16 name the verb, both hooks fire against a probe and the
 reminder draws its missing-binary line on a stripped PATH, and the

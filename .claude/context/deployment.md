@@ -15,6 +15,8 @@ The reasoning behind Cloudflare Pages and behind deploying from Actions rather t
 
 - The Pages project is a Direct Upload type. Wrangler pushes a built `./dist/`, so Cloudflare never runs a build and never needs a bun version pinned on its side.
 - The free tier covers unlimited bandwidth and 500 builds per month. A single-page site stays well inside both, so no billing alarm is wired.
+- CLI over the dashboard for inspection, redeploy, env-var, and domain changes. Confirm before a destructive operation: deleting the project, force-pushing a production deploy, changing live DNS.
+- A change to deploy config itself (redirects, headers, the Pages project settings, DNS) gets checked against a real preview or production deploy before it ships, since the e2e suite runs against a local `astro preview` and never touches the Cloudflare edge. Dispatch a preview deploy for the branch if it has none. Say so explicitly if a live check isn't possible, rather than claiming one happened.
 
 ## Deploy job
 
