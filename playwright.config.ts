@@ -21,7 +21,7 @@ export default defineConfig({
   // parallelism across files instead, leaving each file's internal order
   // intact, which is what those assertions depend on.
   retries: isCI ? 2 : 0,
-  workers: isCI ? 2 : undefined,
+  workers: isCI ? 4 : undefined,
   // The html report is what the failure artifact uploads. Under `list` alone
   // that directory is never written and the upload takes nothing, which leaves
   // a red engine with no trace to read.
