@@ -177,12 +177,19 @@ jobs:
         # workflow, or dependency edit is exactly the case most likely to
         # break the suite, so an empty selection is not read as nothing to
         # test.
+        #
+        # A pull request's own run is therefore the wrong instrument for a
+        # worker-count comparison whenever its diff selects a narrow set of
+        # specs, since the leg times it reports are for that set rather than
+        # for the suite. A `workflow_dispatch` run on the branch always takes
+        # the full-suite path below and is what a worker-count reading is
+        # taken from instead.
         run: |
           total=0
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             total=$(bunx playwright test --project=${{ matrix.browser }} \
               --only-changed="origin/${{ github.base_ref }}" --list 2>&1 |
-              grep -oP 'Total: \K[0-9]+(?= tests)')
+              grep -oP 'Total: \K[0-9]+(?= tests?)')
           fi
 
           if [ "${total:-0}" -gt 0 ]; then
