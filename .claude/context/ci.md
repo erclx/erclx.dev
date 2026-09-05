@@ -491,6 +491,72 @@ chromium, 269 on firefox (4 skipped), and 270 on webkit (3 skipped).
 
 Measured at 03d7a9c on 2026-09-05 with the second-pass branch applied.
 
+## The chromium leg splits across two shards
+
+Chromium's per-spec table reads a gap spread across nearly the whole test
+population rather than concentrated in one file, which rules out a suite edit
+as the fix and leaves the leg's own runner as the lever. It now runs as two
+matrix jobs, `chromium-1` and `chromium-2`, splitting the 273 tests by count
+with `--shard` rather than one job holding all of them.
+
+Splitting by count rather than by a hand-picked file list is what the
+measurement supports. `bunx playwright test --shard=1/2 --list` and
+`--shard=2/2 --list` put 138 tests across nine files in the first half and 135
+across eight in the second. Mapping the per-spec table's chromium durations
+onto that split puts 385s of named specs in shard one against 262s in shard
+two, with 193s unattributed across the smaller files, so the worse shard lands
+near 7.6 minutes. That clears webkit's 9.1-minute floor either way, which is
+what makes the count-based balance good enough without a hand-assigned list.
+
+`home.spec.ts` is why a third shard would mostly idle rather than help
+further. It holds 75 tests and 221s of chromium time in one file, and
+sharding never splits a file, so it sets a floor near 3.7 minutes for
+whichever shard holds it whatever the shard count.
+
+Two mechanical points follow from adding a shard rather than an engine. The
+Playwright browser cache stays keyed on `matrix.browser` alone, so the two
+chromium shards share one warm cache rather than each fetching its own copy.
+And the failure-artifact name now carries a `slug` field, `chromium-1`,
+`chromium-2`, `firefox`, `webkit`, rather than `matrix.browser`, since an
+artifact name cannot hold the `/` a shard value like `1/2` carries and two
+legs uploading under one name fails the upload.
+
+`--pass-with-no-tests` sits on the `--only-changed` invocation alone. A pull
+request diff touching one spec can put every selected test in a single shard,
+and Playwright exits non-zero on an empty selection without the flag. The
+full-suite fallback carries no such flag, since an empty selection there is a
+real defect the gate should fail on rather than pass through.
+
+Per-run job count goes from six to seven, which the worker-cap entry above
+already prices this repository's own trigger shape against: four dispatches
+holding nine runner jobs at once, and the gate running twice on one commit
+whenever a dispatch fires on a branch already carrying an open pull request.
+Read the extra job as a further draw against that same cost rather than as a
+separate one the split introduces.
+
+Measured against `1f0aeff` on 2026-09-05, from the per-spec table taken at
+`f0b076b` and confirmed unchanged in the interval.
+
+## A hand-run instrument needs its own timeout on a shared sandbox
+
+`e2e/engine-latency.ts` times five primitive actions per engine, navigate,
+evaluate, click, hover, and Tab, to say which one carries the chromium
+excess rather than only that the excess exists. It bounds every action
+against an external timer rather than trusting Playwright's own defaults,
+which is not a defensive habit so much as a requirement on the sandbox this
+was built against.
+
+That sandbox runs several concurrent Claude Code sessions, editors, and
+background builds at once, and a stall from that contention can hold a bare
+`page.goto` past Playwright's own 30s default with nothing wrong in the
+browser under test. Two of the five actions this instrument drives,
+`evaluate` and a single `Tab` press, carry no native `timeout` option at
+all, so the bound has to come from racing the action against a timer rather
+than from a parameter Playwright exposes. A rep that loses the race is
+dropped and counted rather than crashing the whole probe, and a short settle
+between engine launches keeps one engine's contention from reading as the
+next engine's own defect.
+
 ## Running CI locally
 
 `bun run check` runs the static and unit asserts plus auto-formats first. `bun run check:full` runs verify plus `test:e2e`. If CI fails on format, run `bun run check` locally and commit the diff.
