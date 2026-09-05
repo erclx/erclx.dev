@@ -13,15 +13,15 @@ export default defineConfig({
   testDir: 'e2e',
   forbidOnly: isCI,
   // `fullyParallel` stays off, and it was measured rather than assumed. Tests
-  // inside one file run serially without it, so `cast.spec.ts` sets the floor
-  // for the suite at 2.0 minutes on one engine. Turning it on took the full
-  // three-engine run from about 3:30 to 2:49 and failed two webkit tests, both
-  // timing assertions: more contexts on one machine is less processor each, and
-  // a reveal stagger measured against a wall clock starts reading zero. A fifth
-  // off the wall clock does not pay for a suite that reports failures nobody
-  // caused. Narrow the scope in the inner loop instead.
+  // inside one file run serially without it, so the heaviest file sets a floor
+  // no worker count breaks. Turning it on took the full three-engine run from
+  // about 3:30 to 2:49 and failed two webkit tests, both timing assertions:
+  // more contexts on one machine is less processor each, and a reveal stagger
+  // measured against a wall clock starts reading zero. `workers` raises
+  // parallelism across files instead, leaving each file's internal order
+  // intact, which is what those assertions depend on.
   retries: isCI ? 2 : 0,
-  workers: isCI ? 1 : undefined,
+  workers: isCI ? 2 : undefined,
   // The html report is what the failure artifact uploads. Under `list` alone
   // that directory is never written and the upload takes nothing, which leaves
   // a red engine with no trace to read.
