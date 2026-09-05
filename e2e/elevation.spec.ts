@@ -93,10 +93,13 @@ async function restingFill(target: Locator): Promise<string> {
 }
 
 async function setTheme(page: Page, theme: 'light' | 'dark'): Promise<void> {
+  // No pause follows the toggle. `getComputedStyle` forces a synchronous style
+  // recalculation and nothing here reads a color that transitions between
+  // themes, verified against 80x CPU throttling in `e2e/focus-ring.spec.ts`'s
+  // own theme toggle: the class and the resolved value never disagreed.
   await page.evaluate((mode) => {
     document.documentElement.classList.toggle('dark', mode === 'dark')
   }, theme)
-  await page.waitForTimeout(250)
 }
 
 test.describe('elevated surfaces', () => {

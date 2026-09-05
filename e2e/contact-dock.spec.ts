@@ -1,7 +1,12 @@
 import { expect, test } from '@playwright/test'
 
 const DOCK = '[data-contact-dock]'
-const SETTLE_MS = 700
+/**
+ * The window the two hero-only cases below hold the page in front of a
+ * regression, since a claim that the dock has not yet revealed itself has no
+ * completion to poll for.
+ */
+const PROVE_NOTHING_MS = 700
 
 async function scrollPastHero(page: import('@playwright/test').Page) {
   await page.evaluate(() => {
@@ -12,14 +17,18 @@ async function scrollPastHero(page: import('@playwright/test').Page) {
       behavior: 'instant',
     })
   })
-  await page.waitForTimeout(SETTLE_MS)
+  // Settled on the reveal gate itself rather than a guessed span. Every
+  // caller of this helper wants the dock actually revealed, and a scroll
+  // settling is not the same event: the gate is an IntersectionObserver
+  // callback that can land after the scroll has already finished.
+  await expect(page.locator(DOCK)).toHaveAttribute('data-revealed', 'true')
 }
 
 test('the dock stays out of reach while the reader is still in the hero', async ({
   page,
 }) => {
   await page.goto('/')
-  await page.waitForTimeout(SETTLE_MS)
+  await page.waitForTimeout(PROVE_NOTHING_MS)
 
   await expect(page.locator(DOCK)).not.toHaveAttribute('data-revealed', 'true')
 })
@@ -43,7 +52,8 @@ test('the dock holds to the end of the page, where the footer carries one of its
       behavior: 'instant',
     }),
   )
-  await page.waitForTimeout(SETTLE_MS)
+  // No settle needed here: the web-first assertion below already polls for
+  // the reveal, which was the only thing this pause was waiting on.
 
   // It stood down here until 2026-08-20, on the reading that the footer
   // repeats what it carries. The footer carries the resume alone, so standing
@@ -60,7 +70,7 @@ test('no dock destination takes focus before the dock is revealed', async ({
   page,
 }) => {
   await page.goto('/')
-  await page.waitForTimeout(SETTLE_MS)
+  await page.waitForTimeout(PROVE_NOTHING_MS)
 
   // Collapsed only hides the stack. The dock itself is invisible until it
   // arrives, so without inert a keyboard reader tabs through four destinations
@@ -79,10 +89,6 @@ test('every contact destination takes focus once the dock is revealed', async ({
 }) => {
   await page.goto('/')
   await scrollPastHero(page)
-  // The gate is what makes the links reachable, so the test waits on it rather
-  // than on the scroll settling. Under a loaded machine the observer can fire
-  // after the settle, which read as a focus defect and was a slow callback.
-  await expect(page.locator(DOCK)).toHaveAttribute('data-revealed', 'true')
 
   const landed = await page.locator(DOCK).evaluate((dock: HTMLElement) => {
     const link = dock.querySelector('a')
@@ -135,12 +141,18 @@ test('a pointer names one destination rather than the whole set', async ({
 
   // The dock first, which is what opens the stack. A collapsed stack takes no
   // pointer events, so an item cannot be reached before the set is open.
+  const links = page.locator('[data-dock-links]')
   await page.locator(DOCK).hover()
-  await page.waitForTimeout(300)
+  await expect(links).toHaveCSS('opacity', '1')
 
   const items = page.locator('[data-dock-links] li')
   await items.last().hover()
-  await page.waitForTimeout(300)
+  // Settled on the same fade the assertion below reads, rather than paused for
+  // a span that guesses the `[data-dock-name]` transition's 150ms.
+  await expect(items.last().locator('[data-dock-name]')).toHaveCSS(
+    'opacity',
+    '1',
+  )
 
   const shown = await items.evaluateAll((rows) =>
     rows.map((row) => {

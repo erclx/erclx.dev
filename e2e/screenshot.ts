@@ -3,6 +3,7 @@ import { mkdir, rm } from 'fs/promises'
 import path from 'path'
 
 import { settleLazyImages } from './lazy-images'
+import { settleScroll } from './scroll'
 
 const LANDING_SECTIONS = [
   'header',
@@ -151,14 +152,18 @@ for (const c of cases) {
   await mkdir(caseDir, { recursive: true })
   const file = path.join(caseDir, `${c.viewport.name}--${c.theme}.png`)
 
+  // Settled on the fonts actually being ready to paint, which every capture
+  // needs whether or not it scrolls, rather than paused for a span that
+  // guessed at both a scroll settling and a font swap at once.
+  await page.evaluate(() => document.fonts.ready)
+
   if (c.kind === 'section') {
     const target = page.locator(`[data-section="${c.section}"]`).first()
     await target.waitFor({ state: 'visible', timeout: 10_000 })
     await target.scrollIntoViewIfNeeded()
-    await page.waitForTimeout(200)
+    await settleScroll(page)
     await target.screenshot({ path: file })
   } else {
-    await page.waitForTimeout(200)
     await page.screenshot({ path: file, fullPage: true })
   }
 

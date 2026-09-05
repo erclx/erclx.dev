@@ -4,10 +4,7 @@ import {
   MEMBER,
   SCHEDULER_TEST_MS,
   SCHEDULER_WATCH_MS,
-  SECTION,
-  SETTLE_MS,
   settleCast,
-  STILL_AFTER_TAP_MS,
   WIDE,
 } from './cast-helpers'
 
@@ -76,9 +73,7 @@ test.describe('agent cast', () => {
     })
     const page = await context.newPage()
     await page.setViewportSize(WIDE)
-    await page.goto('/')
-    await page.locator(SECTION).scrollIntoViewIfNeeded()
-    await page.waitForTimeout(SETTLE_MS)
+    await settleCast(page)
 
     // Bringing the section into view leaves the first member 61px above the
     // viewport at this size, so the tap below was relying on the driver to
@@ -98,7 +93,18 @@ test.describe('agent cast', () => {
     }, MEMBER)
 
     await page.locator(MEMBER).first().tap()
-    await page.waitForTimeout(STILL_AFTER_TAP_MS)
+    // Settled on the reaction the tap itself starts, rather than paused for a
+    // span guessing when it ends. `cast.astro` clears `data-reacting` on
+    // whichever comes first, `animationend` or its own 1400ms fallback, so
+    // polling that mark directly carries both the tap's own timeout and the
+    // engine's actual animation length rather than a number computed by hand.
+    await page.waitForFunction(
+      (selector) =>
+        document.querySelector<HTMLElement>(selector)?.dataset.reacting ===
+        undefined,
+      MEMBER,
+      { timeout: 5000 },
+    )
 
     const acted = await page.evaluate(
       async ({ member, watchMs }) => {

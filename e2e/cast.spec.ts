@@ -20,6 +20,22 @@ import {
 } from './cast-helpers'
 import { behaviorGrid } from './cast-inventory'
 
+/**
+ * Settled on the animations existing rather than paused for a span.
+ * `readBandShares` reads `document.getAnimations()`, and a browser does not
+ * populate that list until it has run a style and layout pass over content
+ * `setContent` just replaced, which `load` alone does not guarantee.
+ */
+async function settleBehaviorGrid(page: import('@playwright/test').Page) {
+  await page.waitForFunction(
+    () => document.getAnimations().length > 0,
+    undefined,
+    {
+      timeout: 5000,
+    },
+  )
+}
+
 // Guards for the agent cast in the experience section, apart from the three
 // scheduler tests now in cast-scheduler.spec.ts: their 70s of wall-clock
 // watching would otherwise set the floor one worker holds this file to, which
@@ -143,7 +159,7 @@ test.describe('agent cast', () => {
   }) => {
     await page.setViewportSize(WIDE)
     await page.setContent(behaviorGrid('light'))
-    await page.waitForTimeout(400)
+    await settleBehaviorGrid(page)
 
     const readings = await readBandShares(page)
     const resting = readings.filter((reading) => {
@@ -179,7 +195,7 @@ test.describe('agent cast', () => {
   }) => {
     await page.setViewportSize(WIDE)
     await page.setContent(behaviorGrid('light'))
-    await page.waitForTimeout(400)
+    await settleBehaviorGrid(page)
 
     const readings = await readBandShares(page)
     const reactions = readings.filter((reading) => {
@@ -217,7 +233,7 @@ test.describe('agent cast', () => {
   }) => {
     await page.setViewportSize(WIDE)
     await page.setContent(behaviorGrid('light'))
-    await page.waitForTimeout(400)
+    await settleBehaviorGrid(page)
 
     const readings = await readBandShares(page)
     const seen = new Set(

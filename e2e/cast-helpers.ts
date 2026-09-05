@@ -10,7 +10,6 @@ import { AMBIENT_BAND } from '../src/components/site/experience/cast/behaviors'
 export const FIELD = '[data-cast-field]'
 export const MEMBER = '[data-cast-member]'
 export const SECTION = '[data-section="experience"]'
-export const SETTLE_MS = 1800
 /**
  * Long enough to hold several of the scheduler's own gaps, which run 5.2 to
  * 7.8 seconds apart. A window shorter than one gap reports a working scheduler
@@ -29,15 +28,34 @@ export const SCHEDULER_WATCH_MS = 20_000
  * own gaps, which is the thing under test.
  */
 export const SCHEDULER_TEST_MS = 60_000
-/** Long enough for a tap's own reaction to finish before the window opens. */
-export const STILL_AFTER_TAP_MS = 2_500
 
 export const WIDE = { width: 1440, height: 900 }
 
 export async function settleCast(page: Page): Promise<void> {
   await page.goto('/')
   await page.locator(SECTION).scrollIntoViewIfNeeded()
-  await page.waitForTimeout(SETTLE_MS)
+  // `cast-spawn` only ever runs under `.cast-field[data-arrived]`, which an
+  // IntersectionObserver sets at a 0.15 threshold, so settling on the poll
+  // below alone would read zero running animations before the field has even
+  // arrived and call that settled. Waiting for the mark first is what makes
+  // the poll's zero mean "finished" rather than "not yet started".
+  //
+  // Skipped rather than waited out below the rail's own breakpoint, where the
+  // field stands down under `display: none`. Nothing there ever intersects,
+  // so the mark never arrives, and a caller testing that stood-down state
+  // reads it through its own assertion. The poll below still holds for it: a
+  // field that never started spawning already reads zero running.
+  const canArrive = await page
+    .locator(FIELD)
+    .evaluate((field) => getComputedStyle(field).display !== 'none')
+  if (canArrive) {
+    await page.waitForFunction(
+      (selector) =>
+        document.querySelector(selector)?.hasAttribute('data-arrived'),
+      FIELD,
+      { timeout: 5000 },
+    )
+  }
   // The arrival scales every member up from 0.7, so a box read while it runs
   // is a fraction of the size that ships. Measured on webkit under the full
   // suite, the largest member read 61.6px against the 72 it settles at, which
