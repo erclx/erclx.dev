@@ -2,7 +2,8 @@ import { expect, type Page, test } from '@playwright/test'
 
 const FIELD = '[data-page-ground-field]'
 const COLUMN = '[data-page-ground-column]'
-const SETTLE_MS = 900
+/** How long a reading waits for the still frame to draw before it gives up. */
+const SETTLE_TIMEOUT_MS = 5000
 
 // The ground draws one frame and runs no loop, so its buffer is cleared once
 // composited and every later read returns nothing. Keeping it readable has to
@@ -105,8 +106,25 @@ async function fieldWeights(page: Page): Promise<Weights> {
 async function readAt(page: Page, width: number): Promise<Weights> {
   await page.setViewportSize({ width, height: 900 })
   await page.reload()
-  await page.waitForTimeout(SETTLE_MS)
-  return fieldWeights(page)
+  // Settled on the column actually carrying ink rather than paused for a
+  // span. The column is what every caller asserts nonzero, where the margin
+  // is not: at a narrow enough viewport the column spans the full canvas and
+  // the margin has no pixels to sample at all, which is a fact about the
+  // layout rather than a sign the field never drew. The mount draws its one
+  // still frame synchronously rather than on a frame callback, so this
+  // ordinarily returns on its first check, and only waits out a genuine delay
+  // in the rare case the mount script runs late.
+  let weights: Weights = { column: 0, margin: 0 }
+  await expect
+    .poll(
+      async () => {
+        weights = await fieldWeights(page)
+        return weights.column
+      },
+      { timeout: SETTLE_TIMEOUT_MS },
+    )
+    .toBeGreaterThan(0)
+  return weights
 }
 
 test.describe('the page ground over the reading column', () => {

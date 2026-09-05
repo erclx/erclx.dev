@@ -421,6 +421,76 @@ conversion.
 Measured at 03d7a9c on 2026-09-05 with the first-pass branch applied, across
 `e2e/focus-ring.spec.ts`, `e2e/header-shader.spec.ts`, and `e2e/home.spec.ts`.
 
+## The second pass found two settles that only worked at one viewport
+
+The remaining gating specs carried the same four shapes, and two conversions
+failed the moment they met a state their author had not pictured, both caught
+by running the file rather than the one case being changed.
+
+`e2e/cast-helpers.ts`'s shared `settleCast` was rewritten to wait for
+`.cast-field[data-arrived]` before polling for the spawn animation to finish,
+since the field only ever spawns under that mark. `.cast-field` also carries
+`display: none` below the rail's own 1280px breakpoint, where nothing ever
+intersects and the mark never arrives, so the same settle hung for its full
+timeout on `e2e/cast.spec.ts`'s own case for that width, one that asserts
+exactly this stood-down state. The fix reads the computed `display` first and
+skips the wait entirely when the field cannot arrive, which is what the poll
+right behind it already handles correctly: a field that never started
+spawning already reads zero running.
+
+`e2e/page-ground.spec.ts`'s per-width reading polled for the margin carrying
+ink before reading the field, on the reasoning that the mount draws its one
+still frame synchronously and the poll would ordinarily return on its first
+check. At 390px the reading column spans the full canvas, so the margin has
+no pixels to sample and reads zero by construction rather than by the field
+failing to draw, and the poll hung for its whole timeout on a case that never
+asserts anything about the margin at that width. The column is what every
+caller actually asserts nonzero, at every width the suite reads, so the
+settle polls that instead.
+
+Read both as one lesson rather than two. A settle correct at the width or the
+state it was written against can still assume something that only holds
+there, and the population these span is exactly the kind a single converted
+case cannot surface: the same file's own suite, run in full, is what a
+conversion in this sweep has to clear before it counts as done.
+
+A third case needed the opposite correction: a poll where a duration was
+already correct. `e2e/case-studies.spec.ts`'s wheel-lock case waited 300ms and
+then read `scrollY` through `expect.poll`, which is safe only because the
+wait already ran to completion first. Read on its own, `expect.poll` stops at
+its first passing sample, so pairing it with no preceding wait at all would
+have reported "locked" the instant a leaked scroll had not yet landed. The
+fix keeps the 300ms and swaps the poll for a single read, which is the same
+shape `e2e/header-shader.spec.ts`'s frame-count window already uses and the
+one this file's own risk section describes: a window with nothing to poll for
+gets a duration, and the read at the end of it is single rather than
+retried.
+
+Two of the remaining conversions read an existing state marker instead of a
+duration. `e2e/cast-scheduler.spec.ts`'s post-tap settle now polls the tapped
+member's own `data-reacting` clearing, which `cast.astro` already clears on
+whichever comes first, the reaction's `animationend` or its own 1400ms
+fallback, rather than guessing a span with margin over both. And a scroll
+settle extracted to `e2e/scroll.ts` replaces every `scrollIntoViewIfNeeded`
+pause across `e2e/pointer-gating.spec.ts` and `e2e/case-studies.spec.ts` with
+a wait on two consecutive reads of `window.scrollY` agreeing, since none of
+the four calls it replaces were waiting on anything else.
+
+`e2e/screenshot.ts`'s two capture-side pauses converted as well, since the
+task named it as an exception: the capture is close to a reviewer-facing
+artifact rather than a hand-run instrument. Neither wait was guarding what it
+looked like. The context captures under `reducedMotion: 'reduce'`, which
+gates both the reveal fade and `scroll-behavior: smooth` behind the same media
+query this codebase already keys them to, so there was no transition and no
+smooth scroll left to wait out. What both pauses actually sat in front of was
+`document.fonts.ready`, which now runs once per case, and the section variant
+keeps the same scroll settle as the two spec files above.
+
+Verified with the full three-engine suite passing at one worker: 273 on
+chromium, 269 on firefox (4 skipped), and 270 on webkit (3 skipped).
+
+Measured at 03d7a9c on 2026-09-05 with the second-pass branch applied.
+
 ## Running CI locally
 
 `bun run check` runs the static and unit asserts plus auto-formats first. `bun run check:full` runs verify plus `test:e2e`. If CI fails on format, run `bun run check` locally and commit the diff.

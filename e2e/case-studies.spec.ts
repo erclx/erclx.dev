@@ -3,6 +3,7 @@ import { expect, type Page, test } from '@playwright/test'
 import { contrastRatio, paintedColor, relativeLuminance } from './colors'
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 import { WATCHED_SELECTORS } from './reveal-selectors'
+import { settleScroll } from './scroll'
 
 const FIGURE_SELECTOR = 'main figure img'
 // The six research charts. The route's opening figure, added 2026-08-20 so
@@ -555,9 +556,16 @@ test('the page behind an open figure does not scroll', async ({ page }) => {
   const resting = await page.evaluate(() => window.scrollY)
 
   await page.mouse.wheel(0, 1200)
+
+  // A duration rather than a settle: the claim is that the wheel event never
+  // moves the page, which has no completion to poll for. 300ms is the margin
+  // a native wheel scroll needs to have landed if the lock were absent, and
+  // the read below is single rather than a poll, since polling for `resting`
+  // stops at the first sample matching it and would not keep watching for a
+  // leak that lands later in the window.
   await page.waitForTimeout(300)
 
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(resting)
+  await expect(page.evaluate(() => window.scrollY)).resolves.toBe(resting)
 })
 
 test('every opened figure fits without scrolling inside the dialog', async ({
@@ -861,7 +869,7 @@ test('returning from a case study restores where the visitor left', async ({
 }) => {
   await page.goto('/')
   await page.locator('#projects').scrollIntoViewIfNeeded()
-  await page.waitForTimeout(400)
+  await settleScroll(page)
   const left = await page.evaluate(() => window.scrollY)
   await page.locator('#projects article').first().click()
   await expect(page).toHaveURL('/canon')

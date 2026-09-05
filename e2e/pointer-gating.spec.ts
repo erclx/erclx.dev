@@ -1,8 +1,17 @@
 import { expect, test } from '@playwright/test'
 
+import { settleScroll } from './scroll'
+
 const CARD = '[data-tilt]'
 const ROW = '.experience-row'
-const SETTLE_MS = 500
+/**
+ * The window a drag has to prove nothing happened across, for the two cases
+ * where the read is a negative: the pointer gate keeps the whole tilt and
+ * active-row systems from ever wiring up under a coarse pointer, so there is
+ * no completion event a passing case could poll for, only a span to hold the
+ * page in front of a regression that wired them up anyway.
+ */
+const PROVE_NOTHING_MS = 500
 
 // A real touch device is what the gate keys on, and only a context reporting a
 // coarse pointer is one. Chromium is the engine that reports it from
@@ -36,7 +45,7 @@ test.describe('a touch reader', () => {
 
     const card = page.locator(CARD).first()
     await card.scrollIntoViewIfNeeded()
-    await page.waitForTimeout(SETTLE_MS)
+    await settleScroll(page)
 
     const box = await card.boundingBox()
     expect(box).not.toBeNull()
@@ -51,7 +60,11 @@ test.describe('a touch reader', () => {
       steps: 12,
     })
     await page.mouse.up()
-    await page.waitForTimeout(SETTLE_MS)
+
+    // A duration rather than a settle: `initTilt` never attaches a listener
+    // under a coarse pointer, so there is no completion this could poll for,
+    // only a span to hold the page in front of a gate that wired up anyway.
+    await page.waitForTimeout(PROVE_NOTHING_MS)
 
     const tilt = await card.evaluate((element) => ({
       x: (element as HTMLElement).style.getPropertyValue('--tilt-x'),
@@ -78,7 +91,7 @@ test.describe('a touch reader', () => {
 
     const rows = page.locator(ROW)
     await rows.first().scrollIntoViewIfNeeded()
-    await page.waitForTimeout(SETTLE_MS)
+    await settleScroll(page)
 
     // The beat the list marks from first paint. A drag crossing the rows used
     // to hand the mark to each in turn and leave it on the last one crossed.
@@ -96,7 +109,11 @@ test.describe('a touch reader', () => {
     await page.mouse.down()
     await page.mouse.move(box.x + 20, box.y - box.height * 3, { steps: 12 })
     await page.mouse.up()
-    await page.waitForTimeout(SETTLE_MS)
+
+    // A duration rather than a settle, for the same reason as the tilt case
+    // above: the row-swap listener never attaches under a coarse pointer, so
+    // nothing here completes for a poll to catch.
+    await page.waitForTimeout(PROVE_NOTHING_MS)
 
     await expect(rows.first()).toHaveAttribute('data-active', 'true')
     await expect(last).not.toHaveAttribute('data-active', 'true')
@@ -119,7 +136,7 @@ test.describe('a pointer reader', () => {
 
     const card = page.locator(CARD).first()
     await card.scrollIntoViewIfNeeded()
-    await page.waitForTimeout(SETTLE_MS)
+    await settleScroll(page)
 
     const box = await card.boundingBox()
     expect(box).not.toBeNull()
@@ -128,7 +145,19 @@ test.describe('a pointer reader', () => {
     // The gate has to leave the pointer path alone, which is the half a
     // capability check breaks when it is written the other way round.
     await page.mouse.move(box.x + box.width * 0.25, box.y + box.height * 0.25)
-    await page.waitForTimeout(SETTLE_MS)
+
+    // Settled on the style the tilt loop writes rather than paused for a span:
+    // `initTilt` runs its lerp toward the target over several frames, and the
+    // assertion only needs the loop to have painted once, not to have
+    // converged.
+    await page.waitForFunction(
+      (selector) =>
+        document
+          .querySelector<HTMLElement>(selector)
+          ?.style.getPropertyValue('--tilt-x') !== '',
+      CARD,
+      { timeout: 5000 },
+    )
 
     const tilt = await card.evaluate((element) =>
       (element as HTMLElement).style.getPropertyValue('--tilt-x'),
