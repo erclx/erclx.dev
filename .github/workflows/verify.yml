@@ -127,6 +127,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # --only-changed below diffs HEAD against the base branch, which a
+          # depth-1 checkout carries no history to do.
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -167,7 +171,46 @@ jobs:
         run: bunx playwright install ${{ matrix.browser }}
 
       - name: Run E2E Tests
-        run: ${{ matrix.wrapper }} bun run test:e2e --project=${{ matrix.browser }}
+        # A pull request runs only the specs whose import graph reaches a
+        # changed file, and only when every changed file sits under e2e/.
+        # These specs drive a served build rather than importing it, so a
+        # source file outside e2e/ reaches no spec's import graph at all: on
+        # its own that selects nothing and the fallback below runs everything,
+        # but paired with an edited spec file the selection comes back
+        # non-empty on that spec alone, silently skipping every spec the
+        # source change actually affects. Measured over the last 30 merged
+        # pull requests, 16 touched src/ and e2e/ together against 0 touching
+        # e2e/ alone, so scoping the selection to an e2e/-only diff is what
+        # keeps it from ever under-selecting rather than a defense against a
+        # rare case.
+        #
+        # A push to main and a dispatch run everything, and so does a pull
+        # request whose e2e/-only change reaches no spec at all: a workflow or
+        # dependency edit is exactly the case most likely to break the suite,
+        # so an empty selection is not read as nothing to test.
+        #
+        # A pull request's own run is therefore the wrong instrument for a
+        # worker-count comparison whenever its diff selects a narrow set of
+        # specs, since the leg times it reports are for that set rather than
+        # for the suite. A `workflow_dispatch` run on the branch always takes
+        # the full-suite path below and is what a worker-count reading is
+        # taken from instead.
+        run: |
+          total=0
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            changed=$(git diff --name-only "origin/${{ github.base_ref }}" HEAD)
+            if [ -n "$changed" ] && ! printf '%s\n' "$changed" | grep -qv '^e2e/'; then
+              total=$(bunx playwright test --project=${{ matrix.browser }} \
+                --only-changed="origin/${{ github.base_ref }}" --list 2>&1 |
+                grep -oP 'Total: \K[0-9]+(?= tests?)')
+            fi
+          fi
+
+          if [ "${total:-0}" -gt 0 ]; then
+            ${{ matrix.wrapper }} bunx playwright test --project=${{ matrix.browser }} --only-changed="origin/${{ github.base_ref }}"
+          else
+            ${{ matrix.wrapper }} bun run test:e2e --project=${{ matrix.browser }}
+          fi
         env:
           # Tells the webServer command to serve the downloaded dist/ rather
           # than building its own. Unset locally, where a build always runs.

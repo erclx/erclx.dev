@@ -16,7 +16,7 @@ It is decoration. Every figure is `aria-hidden`, carries no accessible name, and
 - `src/components/site/experience/cast/` owns the whole domain: the generator, the four vocabularies, the shared stylesheet, and the placement component.
 - `faces.ts` holds what a face does, `powers.ts` what a member emits, and `gear.ts` what it holds. A face is three slots inside the head, and the other two are slots around the body.
 - `pets.ts` is a second family rather than a fourth slot. A pet belongs to a cluster, not to a member.
-- `e2e/` owns the two instruments, `cast-motion.ts` and `cast-inventory.ts`, and the guards in `cast.spec.ts`.
+- `e2e/` owns the two instruments, `cast-motion.ts` and `cast-inventory.ts`, and the guards, split across `cast.spec.ts` and `cast-scheduler.spec.ts` with shared helpers in `cast-helpers.ts`. The split is a CI-timing concern, covered in `.claude/context/ci.md`, and carries no meaning about the drawing.
 - `placement.ts` holds where every figure stands, separately from the component, so a guard can read it without rendering the page. The defects this domain has shipped live inside a cluster's own box, which the margin check cannot see.
 - `cast.test.ts` holds every guard that is a fact about the drawing or the placement rather than about the rendered page. Cell bounds, stroke floors, overlapping eyes, stepped figures breaking apart, repeated face features, and figures overlapping inside a cluster all run without a browser.
 - `.canon/review/cast/` holds the generated inventory and is gitignored.
