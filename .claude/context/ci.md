@@ -521,11 +521,25 @@ And the failure-artifact name now carries a `slug` field, `chromium-1`,
 artifact name cannot hold the `/` a shard value like `1/2` carries and two
 legs uploading under one name fails the upload.
 
-`--pass-with-no-tests` sits on the `--only-changed` invocation alone. A pull
-request diff touching one spec can put every selected test in a single shard,
-and Playwright exits non-zero on an empty selection without the flag. The
+`--pass-with-no-tests` sits on the `--only-changed` invocation alone, and it is
+defense in depth rather than the guard against the ordinary narrow-diff case.
+The `total` count is computed with the same shard flag a few lines up, so the
+branch it sits on is already gated on a nonzero `--list` count for this exact
+shard. The flag only covers a `--list` and the actual run disagreeing. The
 full-suite fallback carries no such flag, since an empty selection there is a
 real defect the gate should fail on rather than pass through.
+
+That `total` gate conflates two states once a shard exists, and the gate does
+not see the difference. A zero can mean the diff carries no `e2e/`-only
+change, which is the case the fallback was built for, or it can mean the
+changed specs all landed in the _other_ shard, which the fallback treats
+identically: it runs this shard's full half rather than the small selection a
+narrower gate would give it. Read at first as a defect to fix, then measured
+rather than fixed: across the last 30 merged pull requests, 16 touched both
+`src/` and `e2e/`, 2 touched `src/` alone, 12 touched neither, and none were
+`e2e/`-only, so the path this conflation reaches has not fired once in that
+window. The workflow's own comment names the two states rather than the fix
+carrying no record of having seen the second one.
 
 Per-run job count goes from six to seven, which the worker-cap entry above
 already prices this repository's own trigger shape against: four dispatches
@@ -534,8 +548,16 @@ whenever a dispatch fires on a branch already carrying an open pull request.
 Read the extra job as a further draw against that same cost rather than as a
 separate one the split introduces.
 
+Renaming `chromium` to `chromium-1` and `chromium-2` costs nothing today,
+checked rather than assumed: `main` carries no branch protection, and its
+active ruleset requires only `🔍 Static Checks` and `🧪 Unit Tests`, so no
+required check names an e2e leg. Promoting e2e to a required check later has
+to name both shard slugs rather than the engine, since a rule written against
+`chromium` alone would never see `chromium-2` report.
+
 Measured against `1f0aeff` on 2026-09-05, from the per-spec table taken at
-`f0b076b` and confirmed unchanged in the interval.
+`f0b076b` and confirmed unchanged in the interval. The fallthrough and the
+required-check reading were checked at `be159e8` on the same date.
 
 ## A hand-run instrument needs its own timeout on a shared sandbox
 

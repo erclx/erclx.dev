@@ -221,11 +221,17 @@ jobs:
           fi
 
           if [ "${total:-0}" -gt 0 ]; then
-            # A shard can select zero tests of a narrow --only-changed set, and
-            # Playwright exits non-zero on an empty run without this flag.
+            # Defense in depth: total already gates this branch on a nonzero
+            # --list count for this shard, so --pass-with-no-tests guards
+            # only a --list/run disagreement rather than the ordinary path.
             ${{ matrix.wrapper }} bunx playwright test --project=${{ matrix.browser }} $shard_flag \
               --only-changed="origin/${{ github.base_ref }}" --pass-with-no-tests
           else
+            # A zero here can mean no e2e/-only diff, or one whose changed
+            # specs all land in the other shard, and the two are conflated:
+            # the second runs this shard's full half rather than nothing.
+            # Latent today, since none of the last 30 merged pull requests
+            # were e2e/-only. See .claude/context/ci.md for the measurement.
             ${{ matrix.wrapper }} bun run test:e2e --project=${{ matrix.browser }} $shard_flag
           fi
         env:
