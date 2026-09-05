@@ -40,7 +40,7 @@ done
 
 session=$(printf '%s' "$input" | jq -r '.session_id // "none"')
 key=$(printf '%s__%s' "$session" "$index" | tr -c 'A-Za-z0-9' '_')
-marker_dir="${CLAUDE_PROJECT_DIR:-.}/.claude/.tmp/index-reminder"
+marker_dir="${CLAUDE_PROJECT_DIR:-.}/.canon/tmp/index-reminder"
 marker="$marker_dir/$key"
 [ -f "$marker" ] && exit 0
 mkdir -p "$marker_dir"

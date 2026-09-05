@@ -19,7 +19,7 @@ case "$file" in
 esac
 
 case "$file" in
-*.claude/.tmp/* | *.claude/memory/* | *.claude/review/* | *.claude/plans/* | *.canon/tmp/* | *.canon/memory/* | *.canon/review/* | *.canon/plans/*) exit 0 ;;
+*.canon/tmp/* | *.canon/memory/* | *.canon/review/* | *.canon/plans/*) exit 0 ;;
 esac
 
 [ -f "$file" ] || exit 0

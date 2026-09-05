@@ -2,7 +2,6 @@
 description: Route .canon/diagrams edits to the diagrams standard for entry kinds, frontmatter, and explanation prose
 paths:
   - '.canon/diagrams/**'
-  - '.claude/diagrams/**'
   - '.claude/DIAGRAMS.md'
 ---
 

@@ -25,33 +25,21 @@ esac
 file_path=$(printf '%s' "$input" | jq -r '.tool_input.file_path // empty')
 [ -n "$file_path" ] || exit 0
 
-# Both spellings match until `canon migrate records` has moved a project off
-# the fallback root. `055-scratch.md` documents the pair, and a hook keyed to
-# one alone goes silently blind the moment a project sits on the other.
 case "$file_path" in
-*/.claude/memory/*.md | */.canon/memory/*.md) ;;
+*/.canon/memory/*.md) ;;
 *) exit 0 ;;
 esac
 
 case "$file_path" in
-*/.claude/memory/index.md | */.canon/memory/index.md) exit 0 ;;
+*/.canon/memory/index.md) exit 0 ;;
 esac
 
 # The walk-up boundary has to come from the path, not from the session. Shared
 # scratch resolves at the main worktree root, so a session inside a linked
 # worktree passes a path that sits outside its own project directory and the
-# default boundary would reject it. Which spelling matched also names the
-# pen path the messages below report.
-case "$file_path" in
-*/.claude/memory/*)
-  root="${file_path%/.claude/memory/*}"
-  pen=".claude/memory"
-  ;;
-*/.canon/memory/*)
-  root="${file_path%/.canon/memory/*}"
-  pen=".canon/memory"
-  ;;
-esac
+# default boundary would reject it.
+root="${file_path%/.canon/memory/*}"
+pen=".canon/memory"
 [ -n "$root" ] || exit 0
 
 # Report a missing CLI rather than exiting quietly. The path guard above already
