@@ -178,10 +178,11 @@ jobs:
         # its own that selects nothing and the fallback below runs everything,
         # but paired with an edited spec file the selection comes back
         # non-empty on that spec alone, silently skipping every spec the
-        # source change actually affects. Measured over the last 20 trunk
-        # commits, 11 touched src/ and e2e/ together against 0 touching e2e/
-        # alone, so scoping the selection to an e2e/-only diff is what keeps it
-        # from ever under-selecting rather than a defense against a rare case.
+        # source change actually affects. Measured over the last 30 merged
+        # pull requests, 16 touched src/ and e2e/ together against 0 touching
+        # e2e/ alone, so scoping the selection to an e2e/-only diff is what
+        # keeps it from ever under-selecting rather than a defense against a
+        # rare case.
         #
         # A push to main and a dispatch run everything, and so does a pull
         # request whose e2e/-only change reaches no spec at all: a workflow or

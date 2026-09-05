@@ -230,8 +230,8 @@ build rather than importing it, so a source file outside `e2e/` reaches no
 spec's import graph at all. On its own that selects nothing and the fallback
 runs everything, but paired with an edited spec file the selection comes back
 non-empty on that spec alone, silently skipping every spec the source change
-actually affects. Measured over the last 20 trunk commits, 11 touched `src/`
-and `e2e/` together against 0 touching `e2e/` alone, so the shape the
+actually affects. Measured over the last 30 merged pull requests, 16 touched
+`src/` and `e2e/` together against 0 touching `e2e/` alone, so the shape the
 unscoped version under-selected on was the common one and the shape it
 optimized for had not happened once. Scoping the selection to an `e2e/`-only
 diff is what keeps it from ever under-selecting, at the cost of the
