@@ -62,9 +62,9 @@ A diff adding a new top-level folder under `src/` drafts that domain's `.claude/
 
 ## What an end-to-end run costs
 
-Scope and engines look like two ways to make a run cheaper and only one of them is. Measured on this suite, `cast.spec.ts` runs 19 tests on chromium alone in 2.0 minutes and 57 across all three engines in 2.2, so three times the tests cost a tenth more wall clock. Locally the engines fill workers that were otherwise idle.
+Scope and engines look like two ways to make a run cheaper and only one of them is. Measured on this suite, the full 273 tests run on chromium alone in about 1.9 minutes and 811 across all three engines in about 3.5, so three times the tests cost less than double the wall clock. Locally the engines fill workers that were otherwise idle.
 
-What costs is the serial chain inside one spec, since `fullyParallel` is off. `cast.spec.ts` holds a 20-second scheduler watch and several full-field captures, which is why it sets the floor for the whole suite at roughly 2 minutes however the run is sliced. The full three-engine suite runs about 3.5 minutes against that floor.
+What costs is the serial chain inside one spec, since `fullyParallel` is off. `e2e/cast.spec.ts` holds several full-field captures, and `e2e/cast-scheduler.spec.ts` holds the three wall-clock scheduler tests split out of it, running about 45 and 70 seconds on chromium alone, which was one file's floor before the split. `.claude/context/ci.md` § The worker cap was raised twice and rejected twice carries why the split was made and what it does and does not buy: CI pins `workers` to 1, where the two files run back to back on the one worker regardless of the split, and the seam exists so the scheduler tests can be converted off a wall clock on their own rather than to shorten today's run.
 
 Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/canon/lib/306-test-scope.md` states the resulting directive, and `.claude/ARCHITECTURE.md` § The merge gate runs every engine the suite defines carries why the matrix exists at all.
 

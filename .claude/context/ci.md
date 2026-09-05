@@ -215,17 +215,35 @@ fix closes. `workers` stays at 1 until the timing assertions those failures hit
 are rewritten against animation and transition state rather than a wall clock,
 which is v7.5's own scope.
 
-What survived the rejection is independent of the worker cap. `cast.spec.ts`
-split into itself and `e2e/cast-scheduler.spec.ts`, carrying the three
-scheduler tests whose 70s of wall-clock watching had been the file's own
-floor, and the pull request e2e step now runs `--only-changed` against the
-base branch with a full-suite fallback on an empty selection, a push, or a
-dispatch. That selection is also what made the worker-count measurement need
-its own instrument: a pull request run touching only the two cast files
-selects only those, so its own leg times are a 19-test reading rather than a
-suite one, and a first read of pull request 100's own checks was caught in
-review for exactly that confusion. `.canon/tasks/v09.7-gate-worker-concurrency.md`
-carries the per-engine failure lists this entry summarizes.
+What survived the rejection is independent of the worker cap, and neither
+piece is the wall-clock saving a first draft of this entry claimed for it.
+`cast.spec.ts` split into itself and `e2e/cast-scheduler.spec.ts`, carrying
+the three scheduler tests whose 70s of wall-clock watching had been the
+file's own floor. At `workers: 1` with `fullyParallel` off, everything still
+runs serially in one worker, so splitting one file into two changes no total:
+the split earns its place by isolating those tests for whoever converts them
+away from a wall clock, which is v7.5's own scope, not by cutting today's run.
+
+The pull request e2e step runs `--only-changed` against the base branch, and
+only when every changed file sits under `e2e/`. These specs drive a served
+build rather than importing it, so a source file outside `e2e/` reaches no
+spec's import graph at all. On its own that selects nothing and the fallback
+runs everything, but paired with an edited spec file the selection comes back
+non-empty on that spec alone, silently skipping every spec the source change
+actually affects. Measured over the last 20 trunk commits, 11 touched `src/`
+and `e2e/` together against 0 touching `e2e/` alone, so the shape the
+unscoped version under-selected on was the common one and the shape it
+optimized for had not happened once. Scoping the selection to an `e2e/`-only
+diff is what keeps it from ever under-selecting, at the cost of the
+optimization firing only when a change touches nothing but specs, which by
+that same count is rare. Its demonstrated value today is the safety property
+rather than typical wall-clock savings: a pull request run touching only the
+two cast files selects only those, and a first read of pull request 100's own
+checks read that 19-test leg as a suite-wide figure until review caught the
+confusion, which is what made the worker-count measurement need its own
+`workflow_dispatch` instrument in the first place.
+`.canon/tasks/v09.7-gate-worker-concurrency.md` carries the per-engine failure
+lists this entry summarizes.
 
 Measured at 2896e77 (workers=2, run 33954276561) and 26b6f2e (workers=4, run 33955347743) on 2026-09-05.
 
