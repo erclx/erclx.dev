@@ -15,6 +15,7 @@ export default defineConfig([
     '.astro',
     'coverage',
     '.claude',
+    '.canon',
     '.vscode',
     '.husky',
     'test-results',
