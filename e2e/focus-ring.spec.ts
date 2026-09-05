@@ -54,6 +54,7 @@ async function tabTo(page: Page, selector: string, index = 0) {
   // focus() call already absorbs most of the delay under load, measured up to
   // several seconds at heavy CPU throttle. The bound is the giving-up point,
   // not a guess at how long settling takes.
+  const isWebKit = page.context().browser()?.browserType().name() === 'webkit'
   try {
     await page.waitForFunction(
       (element) =>
@@ -65,6 +66,20 @@ async function tabTo(page: Page, selector: string, index = 0) {
     return target
   } catch (error) {
     if (!(error instanceof errors.TimeoutError)) throw error
+    // The walk below exists for WebKit alone, per its own comment: a browser
+    // that does not carry keyboard modality across a scripted focus, not a
+    // browser running slowly. A timeout on any other engine throws here
+    // rather than falling into it. The walk's own per-press check reads
+    // `:focus-visible` once right after each `Tab`, with no settle of its
+    // own, so a Firefox that reached this catch would walk past the right
+    // control without ever reading it as focused, exhausting all 80 presses.
+    // That is this file's own recorded trunk failure for this exact walk.
+    // A single-variable CI experiment later confirmed the gate is not
+    // load-bearing on Firefox: with the settle at its current 15000ms bound,
+    // Firefox passed on all three engines whether the walk was reachable or
+    // not, so gating it here throws loudly instead of absorbing a future
+    // Firefox settle failure into an unrelated engine's fallback path.
+    if (!isWebKit) throw error
     // Falls through to the bounded Tab walk below.
   }
 

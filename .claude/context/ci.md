@@ -270,9 +270,9 @@ touched it, climbing to 1.8 to 2.2s at 40x and 3.8 to 7.1s at 80x. The shipped
 `page.waitForFunction` polling the same predicate the pause used to check
 once, bounded at 15000ms, and verified 6 of 6 on chromium, firefox, and webkit.
 
-The first pull request shipped that bound at 8000ms and it was not enough on
-GitHub's own runner. Firefox failed there with the settle correctly giving up
-and falling into the pre-existing Tab-walk fallback, the one this file's own
+The first attempt at this bound was 8000ms and it was not enough on GitHub's
+own runner. Firefox failed there with the settle correctly giving up and
+falling into the pre-existing Tab-walk fallback, the one this file's own
 comments already document as unreliable under load, and the test's own
 default 30s budget was undersized for the four controls the failing case
 loops over even before that fallback ran. Both numbers moved: the settle to
@@ -283,6 +283,72 @@ pattern `305-e2e-reliability.md` bars, since nothing about the wait was
 flaky at any bound: the pause it replaced could never have covered four
 real settles in 30s either, and the fixed span running fast is what hid
 that arithmetic rather than solving it.
+
+A review of the CI trace, taken before trusting either number, found a
+second problem riding along with the first. The timeout on Firefox landed
+inside the Tab-walk fallback rather than at the settle itself, since a
+caught timeout fell through to it for every engine. That walk exists for
+WebKit alone, per its own comment naming a browser that never carries
+keyboard modality across a scripted focus, and it has its own defect: its
+per-press check reads `:focus-visible` once right after each `Tab` with no
+settle of its own, so the same load that times out the settle above could
+also let it walk past the right control without ever reading it as focused.
+That looked like the mechanism behind this file's own recorded trunk
+failure for that exact walk, reached a second way, and the walk was gated to
+WebKit alone on that reading: a timeout on any other engine would throw the
+settle's own `TimeoutError` instead of falling into a walk that might never
+succeed for it there.
+
+That gate turned out to answer the wrong question, and three runs of the
+same test file settle which one mattered. Fixing an unrelated bug in
+`e2e/scroll.ts` (below) landed in the same branch, and Firefox ran under
+three configurations before this settled:
+
+- 15000ms bound, the old broken scroll settle: red, inside the settle
+  itself, on every attempt.
+- 15000ms bound, walk ungated, scroll fix applied: green, 6m10s.
+- 15000ms bound, walk gated to WebKit, scroll fix applied: green, 7m7s.
+
+The third row is what answers the gate question, since gating removes
+Firefox's only fallback: if the settle still needed the walk to pass, that
+row would fail loudly rather than quietly. It passed on all three engines
+(Firefox 7m7s, WebKit 9m7s, chromium 14m1s), which means the settle was
+resolving inside its own bound with no fallback available. The walk was
+never load-bearing for Firefox on this evidence. It stays gated to WebKit,
+and the comment above the gate says this rather than blaming a narrow
+settle, which is the claim the second row alone would have supported and
+the third row rules out. `git diff --stat` between the first and third rows
+touches one file, `e2e/scroll.ts`, confirming the gate itself nets to zero
+across the diagnostic commits and the scroll fix is the single variable
+that moved.
+
+What connects a fix in one file to a passing test in another that does not
+import it is not established, and a specific, plausible-sounding mechanism
+was proposed here and checked against the log rather than left standing.
+The proposal was retry contention: a broken scroll settle failing other
+tests' first attempts, retried at roughly three times the cost of a clean
+pass, inflating the shared job's wall clock enough to starve this file's own
+settle. Two facts in this repository rule it out. `playwright.config.ts`
+pins `workers: isCI ? 1 : undefined`, so CI runs one test at a time with
+nothing to contend with. And the red run's own log (job 101308722933) shows
+zero retries outside `focus-ring.spec.ts`: `case-studies.spec.ts` and
+`pointer-gating.spec.ts`, the only files importing `settleScroll`, both
+passed clean on the first attempt, while the tally was `1 failed, 1 flaky,
+4 skipped, 267 passed` with every failing line inside `focus-ring.spec.ts`
+itself. `focus-ring.spec.ts` does not import `settleScroll` at all, and its
+own scroll is `window.scrollTo({ behavior: 'instant' })`, already instant and
+called after the point where the red run failed. The retry-contention
+mechanism is recorded here as tested and false, so a later session does not
+re-propose it from the same correlation.
+
+What the three rows establish stands regardless: the scroll fix changed
+Firefox's outcome on a file it does not touch, the gate is not load-bearing
+on Firefox, and one retry captured on the red run swung from 21.1s and
+23.5s to 2.6s with nothing else changed, which is a machine reading load
+rather than a stable measurement either way. Read a single green row here
+as consistent with the gate being correct, not as proof of it, and treat
+the pathway between the two files as an open question this entry flags
+rather than a settled fact it doesn't have.
 
 The other three did not reproduce that way, and each failed for a different
 reason worth keeping. `Emulation.setCPUThrottlingRate` is Chromium-only, so a
