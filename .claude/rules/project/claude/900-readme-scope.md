@@ -9,7 +9,7 @@ paths:
 ## Content
 
 - Keep `README.md` user-facing
-- Do not put technical detail in `README.md`. Route it to `.claude/context/`
+- Do not put technical detail in `README.md`. Route it to `canon/context/`
 
 ## Privacy
 
