@@ -76,15 +76,13 @@ The run is 56 cases: six landing sections across three viewports and two themes,
 
 Reading the full-page shape here as license to capture the landing page whole is the mistake to avoid. It is the answer for a single long surface, and the decision above is the answer for a page of six.
 
-### The toolkit's surface-capture rule is declined here
+### The toolkit's surface-capture rule was declined, then installed once its objection went away
 
-`440-surface-capture` ships with the astro stack and is deliberately not installed. It directs a session to capture the full page and not a component in isolation. That is the reverse of what the landing page does and the same as what a case-study route does. Its `**/pages/**` glob matches four files, so the rule contradicts the build on `index.astro` and agrees with it on the other three. A rule right on three files of four is worse than one that is absent, because the reader has to know which case they are in before trusting it.
+`440-surface-capture` ships with the astro stack and sat deliberately uninstalled from 2026-08-28 to 2026-09-15. Its `**/pages/**` glob matched `445-screenshot.md` on `src/pages/**` exactly, so both rules would have loaded on one page edit, and both named `bun run screenshot`, which the rule-authoring standard bars between siblings. `445-screenshot` carried the before-and-after discipline and the handoff rules the toolkit rule had no equivalent for, so it was this project's answer and the toolkit rule stayed out to avoid the collision.
 
-Two further reasons hold whichever file is open. The glob overlaps `445-screenshot` on `src/pages/**` exactly, so both rules would load on one page edit. Both also name `bun run screenshot`, which the rule-authoring standard bars between siblings.
+`450-link-behavior` was declined the same way, on the same page: `455-links.md` stated its same-tab default plus the `rel="noopener"` requirement the toolkit rule does not carry, on a narrower glob, and installing both was the exact two-rules-one-concern objection `440` was declined under.
 
-`445-screenshot` is this project's answer and stays. It carries the before-and-after discipline and the handoff rules the toolkit rule has no equivalent for. It sits at `.claude/rules/project/ui/445-screenshot.md` since 2026-08-28, which is where the toolkit now asks a target to keep what it authored itself, and a sync names it rather than passing over it silently.
-
-Reading its absence as an install gap is the specific mistake to avoid: a session did exactly that on 2026-08-15 and installed it alongside two rules that were genuinely missing. What tells the two cases apart is the install stamp, now at `.claude/aitk/config.json`. It named `556-groundwork` and `557-intake` with no file behind them, which is a missing install, while `440-surface-capture` appeared in neither the record nor the tree, which is what a declined rule looks like.
+The objection was the project rule, not the toolkit rule's content. `.claude/rules/project/` was deleted whole on 2026-09-15, `445-screenshot.md` and `455-links.md` included, per the entry above on `CLAUDE.md`'s own size. With no project rule left to collide with, both toolkit rules were installed the same day and are now the only surface-capture and link-behavior guidance this repository carries. Reading their prior absence as a plain install gap would still have been the mistake a 2026-08-15 session made once, caught only by the install stamp naming a rule absent from both the record and the tree as a decline rather than a miss. Check the record before installing an uninstalled rule for that reason, even though the record now reads the other way for these two. Measured at f8c13ad on 2026-09-15.
 
 ### A touch decision is judged on a device, not in device emulation
 
@@ -1646,6 +1644,28 @@ instead of dropping, since it reads as this project's own practice rather than
 an always-loaded rule. `CLAUDE.md` runs 58 lines against the 98 the entry
 above measured. Measured at 7783070 on 2026-09-05.
 
+The 58-line file did not hold. A later session on 2026-09-15 read it as still
+too large against the toolkit seed's own line count and moved `Behavior`,
+`Shipping`, `Commands`, and `Output` out entirely: `Commands` folded into
+`Shipping` as a duplicate of its own first bullet, `Output` folded into
+`445-screenshot.md` as the one rule that cited it by name, and the rest split
+into four new project rules, `902` through `905`, following the same
+every-session-regardless-of-path test this entry already applies. `CLAUDE.md`
+reached 17 lines.
+
+That split did not hold either. Asked directly whether the four new rules,
+plus the four pre-existing project rules they now sat beside
+(`900-readme-scope`, `901-privacy`, `445-screenshot`, `455-links`), were worth
+keeping against the file count, the operator chose deleting all eight over
+maintaining them. `.claude/rules/project/` no longer exists on this branch, and
+the personal-name ban, the destructive-op confirmation, the doc-home consolidation, the
+shipping discipline, the README scope, and the screenshot and link-behavior
+workflows it carried are enforced nowhere in this repository, prose or rule.
+`CLAUDE.md` runs 16 lines. Read this as a deliberate trade the operator can
+reverse rather than as a gap to close silently: the policy is not lost, it sits
+in this file's own git history at `0ffd418` and `f8c13ad`. Measured at
+f8c13ad on 2026-09-15.
+
 Measured at 3.38.0 on 2026-08-28, where 59 rules carry zero citations of the
 retired path and 16 name the verb, both hooks fire against a probe and the
 reminder draws its missing-binary line on a stripped PATH, and the
@@ -1657,6 +1677,5 @@ reported false.
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
 - Closed on 2026-08-28. The stamp recorded a governance commit living only on an unmerged toolkit branch, because the Astro glob fix had been synced from a local checkout rather than a release. It is stamped from released 3.38.0 now, which carries both that fix and the mirror retirement, so no domain here is anchored to an unreleased tree. A released package ships no git history, so the governance domain records no commit at all rather than a stale one, and `aitk sync --check` reports the drift it can still see as unattributed.
 - The governance install carried two stack members short until 2026-08-15: `556-groundwork` and `557-intake`, both shipped by the base stack and both named in the install record, now `.claude/aitk/config.json`, while absent from disk. `aitk gov sync` refreshes rules already present and adds none, so the gap survived every sync and closed only under `aitk gov install`. A sync alone does not prove the install is complete, and the signal to read is a recorded path with no file behind it rather than the rule count on its own. A recorded path whose file exists with a different hash is a separate state and not that signal. The three standards files that illustrated it here are gone with the rest of the tree, so the example no longer resolves and the reading it supports still holds.
-- `canon gov install` re-adds every stack member this project declines, and there are three: `440-surface-capture`, which the decision below covers, `450-link-behavior`, which `455-links` supersedes on an overlapping glob, and `505-at-references`, which governs the retired snippets folder alone. No mechanism exists to opt a project out of one rule its stack ships, so each decline holds only while an install is followed by removing that file and its record entry. Check for all three after any install. A sync reports them as listed but not installed rather than re-adding them, so only `install` carries this cost. Confirmed again during the aitk-to-canon rename on 2026-09-03: `canon gov install base --add 502-mermaid,576-settings .` re-added `505-at-references` while `440-surface-capture` and `450-link-behavior` stayed out, since the latter two belong to a stack this project never installs.
-- `canon gov sync` reverts `306-test-scope.md` to citing `440-surface-capture.md` on every run, because the one line naming `445-screenshot.md` is a customization of a toolkit-owned file rather than a project-authored rule. Re-apply it after any sync. Moving the rule into `.claude/rules/project/` is not available, since the rest of the file is toolkit content this project wants updated.
+- Closed on 2026-09-15. `440-surface-capture` and `450-link-behavior` no longer have a project rule to collide with, since `.claude/rules/project/` is gone, and both are installed. `306-test-scope.md` citing `440-surface-capture.md` is now the correct state rather than a reversion to undo after every sync.
 - `caret.astro` and `stackr.astro` sync against `career/assets/portfolio/caret.md` and `stackr.md`, which do not exist on the career repository's `main` today. Both files, along with the two opening sentences and the `Fix Session Timeout` example they carry, are added by `erclx/career#210`, still open. Until that pull request merges, the sync target for those two routes can still move, and a reword to either file on its branch arrives as fresh drift here with nothing reporting it. Re-check both files against `main` once `erclx/career#210` lands, and until then read the branch it ships from rather than assuming it is `main`.
