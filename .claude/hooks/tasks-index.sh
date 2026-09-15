@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Regenerates the task board's index.md after a task file changes.
+# Regenerates .claude/tasks/index.md after a task file changes.
 #
 # The task folder is gitignored, so the whole-repo walk in `bun run check`
 # drops it and never regenerates this index. Naming the file as a positional
@@ -25,31 +25,49 @@ esac
 file_path=$(printf '%s' "$input" | jq -r '.tool_input.file_path // empty')
 [ -n "$file_path" ] || exit 0
 
+# Both record roots, since a project the move has reached keeps its board under
+# `.canon/` and a guard fixed at the old spelling stops matching with nothing
+# said. The index then goes stale while every save reports success.
 case "$file_path" in
-*/.canon/tasks/*.md) ;;
+*/.claude/tasks/*.md | */.canon/tasks/*.md) ;;
 *) exit 0 ;;
 esac
 
 # The board index covers the live folder alone. A shell pattern's wildcard
-# crosses a separator, so the guard above matches an archived task as well and
-# a regen fired on one would rebuild the index the archive was taken out of.
+# crosses a separator, so the guard above matches an archived or declined task
+# as well, and a regen fired on one would rebuild the index that task was
+# taken out of.
 case "$file_path" in
-*/.canon/tasks/index.md | */.canon/tasks/archive/*) exit 0 ;;
+*/.claude/tasks/index.md | */.claude/tasks/archive/* | */.claude/tasks/declined/*) exit 0 ;;
+*/.canon/tasks/index.md | */.canon/tasks/archive/* | */.canon/tasks/declined/*) exit 0 ;;
 esac
 
 # The walk-up boundary has to come from the path, not from the session. Shared
 # scratch resolves at the main worktree root, so a session inside a linked
 # worktree passes a path that sits outside its own project directory and the
 # default boundary would reject it.
-root="${file_path%/.canon/tasks/*}"
-board=".canon/tasks"
+#
+# The index this would have rebuilt is read out of the same branch, so both
+# messages below name the file that actually went stale rather than one root's
+# spelling of it.
+case "$file_path" in
+*/.canon/tasks/*)
+  root="${file_path%/.canon/tasks/*}"
+  index=".canon/tasks/index.md"
+  ;;
+*)
+  root="${file_path%/.claude/tasks/*}"
+  index=".claude/tasks/index.md"
+  ;;
+esac
 [ -n "$root" ] || exit 0
 
 # Report a missing CLI rather than exiting quietly. The path guard above already
 # scopes this to a task-file edit, so the message only fires where the stale
 # index it warns about is the actual outcome.
 if ! command -v canon >/dev/null 2>&1; then
-  jq -nc --arg msg "canon is not on PATH, so $board/index.md was not regenerated and is now stale. Install the toolkit CLI or run canon indexes regen by hand." \
+  msg="canon is not on PATH, so $index was not regenerated and is now stale. Install the toolkit CLI or run canon indexes regen by hand."
+  jq -nc --arg msg "$msg" \
     '{hookSpecificOutput:{hookEventName:"PostToolUse",additionalContext:$msg}}'
   exit 0
 fi
@@ -66,7 +84,7 @@ output=$(canon indexes regen --no-stage --root "$root" "$file_path" 2>&1) && exi
 errors=$(printf '%s\n' "$output" | grep '^ERROR: ' | head -5)
 [ -n "$errors" ] || errors="$output"
 
-msg="Task index regen failed, so $board/index.md is now stale. Fix the frontmatter and save again. $errors"
+msg="Task index regen failed, so $index is now stale. Fix the frontmatter and save again. $errors"
 jq -nc --arg msg "$msg" \
   '{hookSpecificOutput:{hookEventName:"PostToolUse",additionalContext:$msg}}'
 exit 0

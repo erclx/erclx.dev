@@ -40,11 +40,18 @@ done
 
 session=$(printf '%s' "$input" | jq -r '.session_id // "none"')
 key=$(printf '%s__%s' "$session" "$index" | tr -c 'A-Za-z0-9' '_')
-marker_dir="${CLAUDE_PROJECT_DIR:-.}/.canon/tmp/index-reminder"
+# The marker is scratch, so it follows the scratch folder to whichever record
+# root the project carries rather than creating a second one beside it.
+project="${CLAUDE_PROJECT_DIR:-.}"
+if [ -d "$project/.canon" ]; then
+  marker_dir="$project/.canon/tmp/index-reminder"
+else
+  marker_dir="$project/.claude/.tmp/index-reminder"
+fi
 marker="$marker_dir/$key"
 [ -f "$marker" ] && exit 0
 mkdir -p "$marker_dir"
 : >"$marker"
 
-msg=$(printf 'An index.md exists at %s. Read it before searching this folder, it catalogs the sibling files faster than a blind search.' "$index")
+msg=$(printf 'An index.md exists at %s. Read it before searching this folder, it catalogs the sibling files faster than a blind search. For a cross-folder answer, run canon indexes list --json or invoke the index-lookup skill.' "$index")
 jq -nc --arg msg "$msg" '{hookSpecificOutput:{hookEventName:"PreToolUse",additionalContext:$msg}}'
