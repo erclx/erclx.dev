@@ -17,4 +17,4 @@ Personal landing site. Astro v6 static build with Tailwind v4, deployed to Cloud
 - `public/`: static files served as-is
 - `scripts/`: build, dev, and capture tooling
 - `e2e/`: Playwright suite plus the capture and inventory harnesses
-- `.github/workflows/`: CI pipelines (verify, deploy, README screenshot)
+- `.github/workflows/`: CI pipelines for checks/tests/build/deploy, PR label gating, and README screenshot capture
