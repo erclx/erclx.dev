@@ -39,7 +39,7 @@ async function settleBehaviorGrid(page: import('@playwright/test').Page) {
 // Guards for the agent cast in the experience section, apart from the three
 // scheduler tests now in cast-scheduler.spec.ts: their 70s of wall-clock
 // watching would otherwise set the floor one worker holds this file to, which
-// is what `.claude/context/ci.md` records as the seam.
+// is what `canon/context/ci.md` records as the seam.
 //
 // Three of these exist because of defects this surface already shipped, and
 // each is worth more than the assertion it makes.
@@ -52,7 +52,7 @@ async function settleBehaviorGrid(page: import('@playwright/test').Page) {
 // Motion is read by seeking each animation's own timeline rather than by
 // sampling a wall clock, so the figures are the same on every run and on every
 // engine. What is asserted is the share of a cycle spent inside the band
-// `.claude/DESIGN.md` bars, not the peak: an event term crosses that band on
+// `canon/DESIGN.md` bars, not the peak: an event term crosses that band on
 // its way to being fast, and only a term that idles inside it is a defect.
 
 test.describe('agent cast', () => {
@@ -442,7 +442,7 @@ test.describe('agent cast', () => {
   // The margin check reads a cluster's own box, and the power layer is a
   // sibling reaching past that box on every side, so it can paint over the
   // prose while the cluster still measures clear. That is the shape of the
-  // defect `.claude/ARCHITECTURE.md` records under a panel measuring correctly
+  // defect `canon/ARCHITECTURE.md` records under a panel measuring correctly
   // while sitting off screen: the instrument answers about the wrong element.
   test('keeps every power layer clear of the reading column', async ({
     page,

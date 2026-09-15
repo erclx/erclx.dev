@@ -110,7 +110,7 @@ Page copy is canonical upstream at `career/assets/portfolio/` and is read across
 ### Rules
 
 - Show drafts in chat rather than in a file. The operator is choosing, not reviewing a document.
-- Report the upstream edit explicitly in the same message as the component edit. It lands in a different repository, so this branch cannot carry it, no check compares the two, and a page-side edit alone reintroduces the drift the split exists to close. See `.claude/ARCHITECTURE.md` § Content read from the parent checkout.
+- Report the upstream edit explicitly in the same message as the component edit. It lands in a different repository, so this branch cannot carry it, no check compares the two, and a page-side edit alone reintroduces the drift the split exists to close. See `canon/ARCHITECTURE.md` § Content read from the parent checkout.
 
 ## Holding the diff
 

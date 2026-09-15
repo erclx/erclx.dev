@@ -10,7 +10,7 @@ A handback covers the whole chain, so the walk does too. Answering one branch an
 
 Walking the whole chain is not the same as holding it. Each branch is pushed and answered as the walk finishes it, because the walk rebases the branch above onto it first and nothing after that reaches it.
 
-Read `.claude/context/stacked-shipping.md` before the first fix. It carries how git behaves under a stack and why the thread outranks the session channel.
+Read `canon/context/stacked-shipping.md` before the first fix. It carries how git behaves under a stack and why the thread outranks the session channel.
 
 ## Guards
 
@@ -59,7 +59,7 @@ Never read the mergeable flag as evidence the base is current. It reports clean 
 
 Cite these rather than restating them. A step reimplemented here rots against the skill that owns it.
 
-- `.claude/context/stacked-shipping.md` carries the git behavior under a stack and the four-role model
+- `canon/context/stacked-shipping.md` carries the git behavior under a stack and the four-role model
 - `claude-address-review` owns how one finding is answered on one branch, applied here per branch
 - `stack-review` owns the merge order and checks whether a push carried edits
 - `stack-ship` owns the rebase mechanics behind each merge

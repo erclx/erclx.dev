@@ -46,7 +46,7 @@ The refusal strings sit in the body, since the runtime loads that file and ignor
 - `claude-pr-review` owns what a review looks for inside one branch. This owns what a chain needs on top of that, and invokes the per-branch reading rather than restating it.
 - `stack-ship` cuts the chain and rebases behind each merge. This reads the chain and recommends the order that rebasing follows.
 - `stack-address` fixes what this finds. This never edits a branch.
-- `.claude/context/stacked-shipping.md` carries how git behaves under a stack. This carries what a reviewer does about it.
+- `canon/context/stacked-shipping.md` carries how git behaves under a stack. This carries what a reviewer does about it.
 
 ## Collision
 

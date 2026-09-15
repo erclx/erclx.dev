@@ -7,7 +7,7 @@
  *
  * Each entry declares the peak speed it is built to reach. That declaration is
  * what `e2e/cast-motion.ts` measures against, so a keyframe edited without
- * updating its own claim fails rather than drifting quietly. `.claude/DESIGN.md`
+ * updating its own claim fails rather than drifting quietly. `canon/DESIGN.md`
  * bars sustained motion between 4 and 11px per second, as motion detected with
  * no fixed reference to judge it against, which pulls the eye without rewarding
  * it. A behavior is therefore either below that band or crosses it fast enough
@@ -110,7 +110,7 @@ export const REACTION_CEILING_MS = 2500
  */
 export const REACTION_FLOOR_PER_WIDTH = 0.6
 
-/** The band `.claude/DESIGN.md` bars, in pixels per second. */
+/** The band `canon/DESIGN.md` bars, in pixels per second. */
 export const AMBIENT_BAND = { low: 4, high: 11 } as const
 
 /** No behavior may spend more than this share of a cycle inside the band. */

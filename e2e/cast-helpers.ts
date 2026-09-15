@@ -5,7 +5,7 @@ import { AMBIENT_BAND } from '../src/components/site/experience/cast/behaviors'
 // Shared between cast.spec.ts and cast-scheduler.spec.ts, which were one file
 // until its three wall-clock scheduler tests, costing about 70s against the
 // other sixteen tests' 45s, set the floor one worker held the whole file to.
-// `.claude/context/ci.md` records the measured seam.
+// `canon/context/ci.md` records the measured seam.
 
 export const FIELD = '[data-cast-field]'
 export const MEMBER = '[data-cast-member]'

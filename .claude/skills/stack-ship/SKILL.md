@@ -8,7 +8,7 @@ allowed-tools: Bash, Read, Grep, Glob, Skill
 
 A run that opens one pull request for many slices has failed whatever the diff looks like. Two runs ended at 25 and 30 commits in one review, which is what every rule here exists to prevent.
 
-Read `.claude/context/stacked-shipping.md` before the first cut. It carries how git behaves under a stack, which this skill acts on and does not restate.
+Read `canon/context/stacked-shipping.md` before the first cut. It carries how git behaves under a stack, which this skill acts on and does not restate.
 
 ## Guards
 
@@ -43,7 +43,7 @@ The second is the one nothing else states. One slice renumbered fade delays acro
 
 - Open every branch before asking for a review rather than opening the next when the last lands. The slices were built in order and already depend on each other in that order, so the whole chain is reviewable at once and holding it back buys nothing.
 - Say how many pull requests the run will open before the first is written. A count that first appears at ship time was never a boundary.
-- Read a green check on a stacked branch as covering the chain below it, since the branch already carries every commit under it. What it reports nothing about is whether the base is current, so it is never the clearance to merge. See `.claude/context/stacked-shipping.md` § The merge order is forced by the squash.
+- Read a green check on a stacked branch as covering the chain below it, since the branch already carries every commit under it. What it reports nothing about is whether the base is current, so it is never the clearance to merge. See `canon/context/stacked-shipping.md` § The merge order is forced by the squash.
 
 ## Phase 3: rebase behind each merge
 
@@ -65,7 +65,7 @@ The second is the one nothing else states. One slice renumbered fade delays acro
 
 Cite these rather than restating them. A step reimplemented here rots against the skill that owns it.
 
-- `.claude/context/stacked-shipping.md` carries the git behavior under a stack and the four-role model
+- `canon/context/stacked-shipping.md` carries the git behavior under a stack and the four-role model
 - `stack-review` reads the chain and states the merge order
 - `stack-address` answers findings across the chain, pushing and answering each branch as its walk finishes it
 - `visual-batch` plans the slices and runs the eyeball loop when the work is visual

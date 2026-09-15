@@ -7,7 +7,7 @@
  *
  * The crop sits in the hero's right margin, clear of the centered
  * `max-width: 48rem` column the field damps around (see `capture-field.ts`
- * and `.claude/ARCHITECTURE.md` § "A landing-page figure sits inside the text
+ * and `canon/ARCHITECTURE.md` § "A landing-page figure sits inside the text
  * column" for the general rule this is an instance of).
  *
  * Two sizes come from one CSS-pixel geometry rather than two different

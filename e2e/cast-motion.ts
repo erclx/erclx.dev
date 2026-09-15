@@ -21,7 +21,7 @@ import { behaviorGrid } from './cast-inventory'
 //
 // The visibility half exists because of a specific defect. A placement check
 // that read bounding boxes passed on all six members while five of them were
-// not painted at all, which is the trap `.claude/ARCHITECTURE.md` records under
+// not painted at all, which is the trap `canon/ARCHITECTURE.md` records under
 // a panel measuring 1517x639 while sitting off screen. Ink is counted here
 // rather than geometry.
 //
