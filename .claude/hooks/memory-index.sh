@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Regenerates the memory pen's index.md after a memory file changes.
+# Regenerates .claude/memory/index.md after a memory file changes.
 #
 # The memory folder is gitignored, so the whole-repo walk in `bun run check`
 # drops it and never regenerates this index. Naming the file as a positional
@@ -25,28 +25,44 @@ esac
 file_path=$(printf '%s' "$input" | jq -r '.tool_input.file_path // empty')
 [ -n "$file_path" ] || exit 0
 
+# Both record roots, since a project the move has reached keeps its memory pen
+# under `.canon/` and a guard fixed at the old spelling stops matching with
+# nothing said. The index then goes stale while every save reports success.
 case "$file_path" in
-*/.canon/memory/*.md) ;;
+*/.claude/memory/*.md | */.canon/memory/*.md) ;;
 *) exit 0 ;;
 esac
 
 case "$file_path" in
-*/.canon/memory/index.md) exit 0 ;;
+*/.claude/memory/index.md | */.canon/memory/index.md) exit 0 ;;
 esac
 
 # The walk-up boundary has to come from the path, not from the session. Shared
 # scratch resolves at the main worktree root, so a session inside a linked
 # worktree passes a path that sits outside its own project directory and the
 # default boundary would reject it.
-root="${file_path%/.canon/memory/*}"
-pen=".canon/memory"
+#
+# The index this would have rebuilt is read out of the same branch, so both
+# messages below name the file that actually went stale rather than one root's
+# spelling of it.
+case "$file_path" in
+*/.canon/memory/*)
+  root="${file_path%/.canon/memory/*}"
+  index=".canon/memory/index.md"
+  ;;
+*)
+  root="${file_path%/.claude/memory/*}"
+  index=".claude/memory/index.md"
+  ;;
+esac
 [ -n "$root" ] || exit 0
 
 # Report a missing CLI rather than exiting quietly. The path guard above already
 # scopes this to a memory-file edit, so the message only fires where the stale
 # index it warns about is the actual outcome.
 if ! command -v canon >/dev/null 2>&1; then
-  jq -nc --arg msg "canon is not on PATH, so $pen/index.md was not regenerated and is now stale. Install the toolkit CLI or run canon indexes regen by hand." \
+  msg="canon is not on PATH, so $index was not regenerated and is now stale. Install the toolkit CLI or run canon indexes regen by hand."
+  jq -nc --arg msg "$msg" \
     '{hookSpecificOutput:{hookEventName:"PostToolUse",additionalContext:$msg}}'
   exit 0
 fi
@@ -63,7 +79,7 @@ output=$(canon indexes regen --no-stage --root "$root" "$file_path" 2>&1) && exi
 errors=$(printf '%s\n' "$output" | grep '^ERROR: ' | head -5)
 [ -n "$errors" ] || errors="$output"
 
-msg="Memory index regen failed, so $pen/index.md is now stale. Fix the frontmatter and save again. $errors"
+msg="Memory index regen failed, so $index is now stale. Fix the frontmatter and save again. $errors"
 jq -nc --arg msg "$msg" \
   '{hookSpecificOutput:{hookEventName:"PostToolUse",additionalContext:$msg}}'
 exit 0

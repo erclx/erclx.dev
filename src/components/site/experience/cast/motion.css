@@ -15,7 +15,7 @@
  *
  * Every rate here answers to `behaviors.ts`, which declares what each one was
  * measured at, and to `e2e/cast.spec.ts`, which fails any behavior spending
- * more than a small share of its cycle inside the band `.claude/DESIGN.md`
+ * more than a small share of its cycle inside the band `canon/DESIGN.md`
  * bars. A behavior is either well under that band or crosses it fast and then
  * rests. Nothing idles inside it.
  *

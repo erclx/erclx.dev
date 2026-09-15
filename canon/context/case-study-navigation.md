@@ -1,0 +1,44 @@
+---
+title: Case study navigation
+description: How the way-home controls return a reader to the position on the landing page they left from
+---
+
+# Case study navigation
+
+## Overview
+
+The behavior behind the two way-home controls a case-study route carries. Both are ordinary links to `/`, one in the route bar and one in the foot. The module upgrades them to a history unwind for the reader who arrived from the landing page, so the browser restores the scroll position rather than dropping them at the hero.
+
+The two are not one control repeated. The bar answers at any scroll position and the foot answers when the read is over, which is the split `canon/REQUIREMENTS.md` § Navigation states.
+
+A third control sits in the bar beside them and is not a way home. The route's own name returns a reader to the top of the route they are reading, where both controls above leave for the landing page, so it spends none of the two-exit budget that section fixes. Below 1280 it is the only control that reaches the top of a route at all, since the rail is hidden there and the rail's first row is the only other one that does. That band is the reason it exists rather than a consequence of adding it.
+
+The foot came out on 2026-08-21 and went back the same day. Removing it rested on a measurement, that both controls sit on screen together at the foot of every route, and the measurement was right while the conclusion drawn from it was not: a control being reachable is a different question from whether the end of a long read should close on something. The operator read the removed version and reported the page ending too tight, which is the evidence the measurement could not carry. It returned left-aligned rather than at its old full width, on the edge every line of prose starts from, and the tail went from 184px above the control and 48 below to 104 above and 80.
+
+## Layout
+
+- `src/components/site/case-study/` owns the module all five project routes load
+
+## Decisions
+
+- Unwinding history over restoring scroll by hand. The browser already tracks where a reader left and restores it on a back navigation, so the work is letting it, not repeating it. Writing the position to storage and reapplying it on load reimplements a browser feature and fights the reveal animations on the way in.
+- The control stays an `<a href="/">` in the markup and the module intercepts the click. A reader with no script, and a crawler, get a working link to the landing page. Rendering a `<button>` instead would trade that away for nothing.
+- Two guards decide whether the upgrade applies. The referrer has to be this origin at path `/`, which is the reader who came from the landing page, and `history.length` has to be at least two, which excludes the tab opened fresh onto the case study where an unwind would leave the site. Failing either leaves the plain link, so the fallback is the correct destination rather than a dead control.
+- A click carrying a modifier or a non-primary button passes through untouched, since the reader is asking for a new tab and the link already does that correctly.
+
+## Gotchas
+
+- Measured 2026-08-15 against the built page: leaving the landing page at scroll 1899, the control returned at 0 before this and returns at 1359 after, which is what the browser's own back button gives. The restored position is near where the reader left rather than exact, because lazy images above the fold settle at slightly different heights on the way back.
+- A test asserting the restored position has to compare against a threshold rather than the exact departure offset, for that same reason.
+- The landing page does not replay its reveal cascade on the way back, since the page is restored rather than re-executed. That is a consequence of the history unwind rather than a second thing the module does, so it disappears if the unwind is ever replaced by a plain navigation.
+- The tail figures are box edge to box edge at 1280x800, from the lowest text in the section above down to the control's own box, and again from that box to the end of the footer. Both pairs reproduce on all five routes and follow from the padding: 80px of `pb-20` on the last section plus the foot's own top step, against whatever the foot closes on. The figures this entry and `.claude/wireframes/jobtriage.md` carried before did not reproduce, `171` and `112` for the prior state and `96` and `99` for the current one, so a number here that cannot be derived from the two paddings either side of it is the number to distrust. Measured 2026-08-21.
+- The control's visible text sits 8px below the top of the box these figures measure, because `md:py-2` pads it. A reader crosses 112px rather than 104, so a figure quoted against the text rather than the box is the same gap read one way further in.
+
+## Hidden contracts
+
+- `[data-way-home]` on an anchor is what the module binds. A case-study route that adds another way home gets the behavior by carrying the attribute, and one that drops the attribute silently falls back to a plain navigation.
+- The bar's route name carries `[data-route-here]` and is a `<button>`, so the by-region count of way-home anchors reads one in the header and one in the footer with it present. A third exit would still fail that assertion, which is what keeps the two contracts separate rather than one counting the other's controls.
+- That button is `inert` until the route's `h1` passes behind the bar, on the same marker that fades it in. Opacity hides a control from the eye and from nothing else, so a version keyed on opacity alone leaves a tab stop and a 44px tap target sitting over the whole opening screen while painting nothing.
+- A test counts those anchors by region, one in the header and one in the footer, rather than counting two anywhere on the page. A route that grew a third in the body would satisfy a bare count of two and is the case the split assertion catches.
+- Both anchors carry a click test, and which one a test clicks is part of what it asserts. The count above catches a dropped attribute and passes over a broken `href`, so a control nothing clicks is a control nothing covers. Every way-home test briefly pointed at the bar on 2026-08-21, which left the foot with the unwind bound to it and nothing exercising it.
+- `route-foot.astro` owns the closing control for all five routes. It carries the footer landmark as well, so a route that drops the component ends with no `[data-section="footer"]` at all, which is the shape the routes shipped in for part of 2026-08-21.

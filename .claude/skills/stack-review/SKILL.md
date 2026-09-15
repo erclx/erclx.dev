@@ -8,7 +8,7 @@ allowed-tools: Bash, Read, Grep, Glob, Skill
 
 A stack is read as one unit or it is not read. Two branches can each be correct alone and wrong as a pair, and posting on the bottom while the top is still unread strands the chain.
 
-Read `.claude/context/stacked-shipping.md` before the first branch. It carries how git behaves under a stack and why the thread outranks the session channel.
+Read `canon/context/stacked-shipping.md` before the first branch. It carries how git behaves under a stack and why the thread outranks the session channel.
 
 ## Guards
 
@@ -64,7 +64,7 @@ This section owns the order. `stack-ship` and `stack-address` cite it rather tha
 3. Read the rebased branch's merge base against the trunk head and its diff file count, then merge it.
 4. Repeat upward, so nothing merges on a base a merge has moved.
 
-The order is forced rather than chosen, because a squash is an ancestor of nothing stacked on the pre-merge tip. Merging out of order replays the branch below into the trunk a second time under the wrong title. See `.claude/context/stacked-shipping.md` § The merge order is forced by the squash.
+The order is forced rather than chosen, because a squash is an ancestor of nothing stacked on the pre-merge tip. Merging out of order replays the branch below into the trunk a second time under the wrong title. See `canon/context/stacked-shipping.md` § The merge order is forced by the squash.
 
 Every branch in a chain is gated on its own, so the whole chain can be green before the first merge. Green is not the clearance to merge, since a check reports nothing about whether a base is current.
 
@@ -72,7 +72,7 @@ Every branch in a chain is gated on its own, so the whole chain can be green bef
 
 Cite these rather than restating them. A step reimplemented here rots against the skill that owns it.
 
-- `.claude/context/stacked-shipping.md` carries the git behavior under a stack and the four-role model
+- `canon/context/stacked-shipping.md` carries the git behavior under a stack and the four-role model
 - `claude-pr-review` owns what a review looks for on one branch, applied here per branch
 - `stack-ship` cut the chain and rebases it behind each merge
 - `stack-address` receives the handback and fixes every branch in one pass

@@ -48,7 +48,7 @@ The refusal strings sit in the body, since the runtime loads that file and ignor
 - `claude-address-review` owns how one finding is answered on one branch. This owns what a chain needs on top of that, and invokes the per-branch answer rather than restating it.
 - `stack-review` produces the handback this consumes and owns the merge order.
 - `stack-ship` cut the chain and owns the rebase mechanics behind each merge, cited from here.
-- `.claude/context/stacked-shipping.md` carries how git behaves under a stack. This carries what a worker does about it.
+- `canon/context/stacked-shipping.md` carries how git behaves under a stack. This carries what a worker does about it.
 
 ## Collision
 

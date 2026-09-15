@@ -17,7 +17,7 @@
  * Four candidates were served live and driven before this one was picked. A
  * single chip at intervals and a wave on a loop both read as a notification on a
  * control, and a light traveling continuously through the row sat closest to
- * the band `.claude/DESIGN.md` bars and lit the row's ground rather than the
+ * the band `canon/DESIGN.md` bars and lit the row's ground rather than the
  * controls on it.
  */
 

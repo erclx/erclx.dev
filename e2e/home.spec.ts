@@ -396,7 +396,7 @@ for (const width of ABOUT_FLIGHT_WIDTHS) {
     // craft has to land on the trail's own head, not somewhere beside it.
     expect(measured?.offset).toBeLessThan(0.5)
     // Past about 0.90 the craft's half-width outgrows the clearance the trail
-    // head holds for it, per .claude/context/motion.md, and the nose draws
+    // head holds for it, per canon/context/motion.md, and the nose draws
     // inside its own trail.
     expect(measured?.scale).toBeLessThanOrEqual(0.9)
   })

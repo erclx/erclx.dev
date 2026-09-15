@@ -11,7 +11,7 @@ import {
 // Split out of cast.spec.ts: these three each watch a wall clock for
 // SCHEDULER_WATCH_MS, about 70s combined against the sixteen tests left in
 // that file at about 45s, so keeping them there set the floor one worker held
-// the whole file to regardless of how many workers CI has. `.claude/context/ci.md`
+// the whole file to regardless of how many workers CI has. `canon/context/ci.md`
 // records the measured seam.
 
 test.describe('agent cast', () => {

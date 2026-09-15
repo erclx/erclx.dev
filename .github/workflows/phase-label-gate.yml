@@ -1,0 +1,29 @@
+name: Phase Label Gate
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches:
+      - main
+  # pull_request_review carries no branches filter GitHub Actions reads, so the
+  # base ref is checked in the job's own `if:` below instead.
+  pull_request_review:
+    types: [submitted, edited]
+  workflow_dispatch:
+
+jobs:
+  phase-label-gate:
+    name: 🏷️ Phase Label Gate
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.base.ref == 'main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Scan the pull request or review for a phase label, a board identifier, or a session link
+        run: bunx -y @erclx/canon labels scan --event "$GITHUB_EVENT_PATH"

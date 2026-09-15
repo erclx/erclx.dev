@@ -42,11 +42,11 @@ The refusal strings sit in the body, since the runtime loads that file and ignor
 - `visual-batch` plans a visual run into batches and declares the pull request boundary. This takes that boundary and cuts it, and runs whether or not the work is visual.
 - `stack-review` reads the chain and recommends the merge order. This executes behind that order and does not derive one.
 - `stack-address` answers findings across the chain. This opens the chain and rebases it, and does not fix anything.
-- `.claude/context/stacked-shipping.md` carries how git behaves under a stack. This carries what a session does about it.
+- `canon/context/stacked-shipping.md` carries how git behaves under a stack. This carries what a session does about it.
 - `git-stage` and `git-pr` own the commits and the pull request bodies, invoked from here.
 
 ## Collision
 
 `visual-batch` is the one surface this can contradict, because its § Holding the diff carried these rules until they moved out. Nothing was copied. What remains there is the batch-to-pull-request boundary declared during planning, which is a planning decision and stays, and § What this delegates names this skill for everything from the ship signal onward.
 
-The disjoint-file test in that skill's phase 1 reads as an argument against stacking, since every branch in a chain rewrites the files below it. The two tests answer different questions and `.claude/context/stacked-shipping.md` § A stack looks illegal under the disjoint-file test records why.
+The disjoint-file test in that skill's phase 1 reads as an argument against stacking, since every branch in a chain rewrites the files below it. The two tests answer different questions and `canon/context/stacked-shipping.md` § A stack looks illegal under the disjoint-file test records why.

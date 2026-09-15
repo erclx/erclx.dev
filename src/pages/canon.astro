@@ -1,12 +1,12 @@
 ---
 import { Image } from 'astro:assets'
 
-import BaseLayout from '@/layouts/base.astro'
+import installTranscript from '@/assets/projects/canon.png'
+import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import RouteBar from '@/components/site/nav/route-bar.astro'
 import SectionNav from '@/components/site/section-nav/section-nav.astro'
-import RouteFoot from '@/components/site/case-study/route-foot.astro'
+import BaseLayout from '@/layouts/base.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
-import installTranscript from '@/assets/projects/canon.png'
 
 const artifactLinks = [
   { label: 'GitHub', href: 'https://github.com/erclx/canon' },

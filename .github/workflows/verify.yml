@@ -231,7 +231,7 @@ jobs:
             # specs all land in the other shard, and the two are conflated:
             # the second runs this shard's full half rather than nothing.
             # Latent today, since none of the last 30 merged pull requests
-            # were e2e/-only. See .claude/context/ci.md for the measurement.
+            # were e2e/-only. See canon/context/ci.md for the measurement.
             ${{ matrix.wrapper }} bun run test:e2e --project=${{ matrix.browser }} $shard_flag
           fi
         env:

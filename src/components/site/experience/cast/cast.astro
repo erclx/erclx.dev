@@ -11,21 +11,22 @@
  * without rendering the page. This file owns the markup, the palette and the
  * behavior wiring, and nothing about who is where.
  */
+import './motion.css'
+
+import { TEMPERAMENTS } from './behaviors.ts'
 import {
   POWER_OVERHANG,
   renderMember,
   renderPet,
   renderPower,
 } from './cast.ts'
-import { TEMPERAMENTS } from './behaviors.ts'
+import type { MoodId } from './faces.ts'
 import {
   clusterGap,
   clusters,
   clusterWidth,
   memberIndex,
 } from './placement.ts'
-import './motion.css'
-import type { MoodId } from './faces.ts'
 
 // `emote` raises the mood's mark, so a member drawing none fires a reaction
 // that animates nothing. That failure is silent, unlike a mood with no
@@ -352,10 +353,10 @@ const reactionsFor = (mood: MoodId, hasMark: boolean) =>
     /**
      * One member acts on its own every few seconds, and never two at once.
      *
-     * `.claude/ARCHITECTURE.md` records expressive motion being moved to a
+     * `canon/ARCHITECTURE.md` records expressive motion being moved to a
      * pointer on the reading that a margin full of characters performing at a
      * reader who has not looked at them is the ambient motion problem
-     * restated. This does not reverse that. The band `.claude/DESIGN.md` bars
+     * restated. This does not reverse that. The band `canon/DESIGN.md` bars
      * is *sustained* motion with no fixed reference, at 4 to 11px per second,
      * and every term here is a reaction that crosses it in a fraction of its
      * own cycle. What changes is who triggers one, not what a trigger runs.
