@@ -115,7 +115,7 @@ A public tunnel was the alternative and is not installed. It needs no administra
 DEVICE_MODE=dev DEVICE_PATHS="/?arm=0,/?arm=1" bun run device
 ```
 
-The dev server was ruled out for device work until 2026-08-22, on a real finding that no longer holds. Astro resolves an optimized image through an endpoint reading the file off disk by absolute path under Vite's `/@fs/` prefix, and that read was refused from a remote origin, so images arrived on this machine and broke on the tablet. Re-measured against the current Astro and Vite over the LAN address, and again with a foreign `Host` header, which is what a device arriving through the Windows forward actually sends: both the page and an optimized image return 200 with `content-type: image/webp`.
+The dev server serves device work. Astro resolves an optimized image through an endpoint reading the file off disk by absolute path under Vite's `/@fs/` prefix, and against the current Astro and Vite over the LAN address, and again with a foreign `Host` header, which is what a device arriving through the Windows forward actually sends, both the page and an optimized image return 200 with `content-type: image/webp`.
 
 Read that as a server-side reading rather than a browser one. A device still losing its images is the reading that wins, and the flag is opt-in partly for that reason.
 

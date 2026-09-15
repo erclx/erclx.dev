@@ -45,4 +45,4 @@ The dock holds to the bottom of every surface and never stands down. The footer 
 
 The rail's own footer gate came out for an unrelated reason, so the two margins arrive and leave together again. See `canon/ARCHITECTURE.md` § The rail carries looking-for through the footer rather than hiding near it.
 
-A claim that a gate rests on gets measured. Both this entry and `canon/ARCHITECTURE.md` asserted the footer closed with the hero's three links, and the assertion did not survive a reading of either footer.
+A claim that a gate rests on gets measured. The footer does not close with the hero's three links, contrary to what both this entry and `canon/ARCHITECTURE.md` asserted before either footer was actually read.

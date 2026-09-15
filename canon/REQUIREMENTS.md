@@ -53,7 +53,7 @@ The header lost the role, the headline, and the location on 2026-08-17. The clai
 - Each route answers for one project only. A second project earns a second route rather than a section inside the first
 - A route carries the demo the project card can only show small. A card renders its still at 498px against a 1280px recording, where a route reaches 896px and 1216px
 - The landing page stays the entry point, and a route is reached from the project card that owns it
-- The label is `Project` on every route and every card link. `Case study` was retired on 2026-08-18 because it promises measured results, which two of the five routes do not have and should not invent
+- The label is `Project` on every route and every card link, never `Case study`, which promises measured results that two of the five routes do not have and should not invent
 
 ## Tech stack
 

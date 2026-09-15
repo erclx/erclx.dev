@@ -32,7 +32,7 @@ A project route leads with a row for its own opening, labelled with the project 
 
 Hidden. From md (768px) through lg (1024px) there is never a gutter wide enough for both the rail and content. At lg the projects section fills the viewport edge-to-edge, putting the rail on top of card content. Below xl the page is short enough that scroll-tracking adds marginal value, so the rail hides entirely.
 
-Hiding it no longer leaves the viewport without navigation. The sticky bar in `.claude/wireframes/site-bar.md` carries a way back to the top at every width, so the rail states position and the bar covers reach. Until 2026-08-19 the rail was the only navigation on the site, and below xl there was none at all.
+Hiding it leaves the viewport with navigation regardless. The sticky bar in `canon/wireframes/site-bar.md` carries a way back to the top at every width, so the rail states position and the bar covers reach.
 
 ## Behavior
 
