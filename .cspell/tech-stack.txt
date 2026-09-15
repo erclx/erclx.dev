@@ -1,3 +1,14 @@
+CSSOM
+FOUT
+Fraunces
+GLSL
+Mcpjson
+Ollama
+RLENGTH
+RSTART
+Segoe
+Vercel
+Vite
 accDescr
 advected
 advfirewall
@@ -15,7 +26,6 @@ cksum
 commitlint
 connectaddress
 connectport
-CSSOM
 cutover
 dbaeumer
 detrend
@@ -23,6 +33,7 @@ detrending
 domcontentloaded
 dotfolders
 elif
+erclx
 errexit
 esac
 esbenp
@@ -31,11 +42,8 @@ espeak
 evenodd
 firefoxUserPrefs
 fontsource
-FOUT
 fract
-Fraunces
 frontmatter
-GLSL
 gsub
 highp
 iconify
@@ -54,7 +62,6 @@ listenaddress
 listenport
 llvmpipe
 localport
-Mcpjson
 mediump
 mkhl
 netsh
@@ -66,7 +73,6 @@ ntvs
 nums
 oklab
 oklch
-Ollama
 parallelizable
 pipefail
 pointercancel
@@ -80,11 +86,8 @@ pyproject
 qrcode
 readback
 regen
-RLENGTH
-RSTART
 scannability
 scroller
-Segoe
 serviceworker
 shadcn
 shellcheck
@@ -102,10 +105,8 @@ tolower
 toplevel
 transitionrun
 unlayered
-Vercel
 viewports
 visibilitychange
-Vite
 vitest
 webgl
 webglcontextlost

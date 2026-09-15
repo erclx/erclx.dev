@@ -32,3 +32,6 @@ playwright/.cache/
 
 # Lighthouse
 C:*
+
+# Screenshots
+screenshots/

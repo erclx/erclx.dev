@@ -27,7 +27,7 @@ export default defineConfig([
   ...tseslint.configs.recommended,
   ...astro.configs.recommended,
   {
-    files: ['**/*.{ts,tsx,js,jsx}'],
+    files: ['**/*.{ts,tsx,js,jsx,astro}'],
     plugins: {
       'simple-import-sort': simpleImportSort,
       'check-file': checkFile,
@@ -51,8 +51,14 @@ export default defineConfig([
       ],
       'check-file/folder-naming-convention': [
         'error',
-        { 'src/**/!(__tests__|pages)': 'KEBAB_CASE' },
+        { 'src/**/!(__tests__)/': 'KEBAB_CASE' },
       ],
+    },
+  },
+  {
+    files: ['src/pages/**/*.{ts,tsx,astro}'],
+    rules: {
+      'check-file/folder-naming-convention': 'off',
     },
   },
   {

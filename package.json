@@ -6,13 +6,13 @@
     "node": ">=22.18.0"
   },
   "scripts": {
-    "dev": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) astro dev",
+    "dev": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) && export WORKTREE_PORT_OFFSET && astro dev",
     "device": "./scripts/device.sh",
     "brand": "bun scripts/brand.ts",
     "share-card": "bun scripts/share-card.ts",
     "unfurl": "bun scripts/unfurl.ts",
     "build": "astro check && astro build",
-    "preview": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) astro preview",
+    "preview": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) && export WORKTREE_PORT_OFFSET && astro preview",
     "astro": "astro",
     "check:spell": "cspell '**' '.*/**' '.*' --no-progress --color --show-context",
     "check:format": "prettier --check --log-level warn --ignore-path .gitignore --ignore-path .prettierignore . && shfmt --diff --indent 2 scripts/",
@@ -35,7 +35,8 @@
     "test:e2e:report": "playwright show-report",
     "check:full": "./scripts/verify.sh && bun run test:e2e",
     "setup": "./scripts/setup.sh",
-    "screenshot": "PREVIEW_PORT=$(bash scripts/worktree-port.sh 4173) bash scripts/screenshot.sh"
+    "screenshot": "PREVIEW_PORT=$(bash scripts/worktree-port.sh 4173) && export PREVIEW_PORT && bash scripts/screenshot.sh",
+    "smoke:prod": "bun e2e/screenshot.ts --check-console-clean --require-base-url"
   },
   "dependencies": {
     "@fontsource-variable/fraunces": "^5.2.9",
