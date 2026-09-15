@@ -14,3 +14,7 @@ Personal landing site. Astro v6 static build with Tailwind v4, deployed to Cloud
 ## Key paths
 
 - `src/`: Astro source (pages, layouts, components, styles, assets)
+- `public/`: static files served as-is
+- `scripts/`: build, dev, and capture tooling
+- `e2e/`: Playwright suite plus the capture and inventory harnesses
+- `.github/workflows/`: CI pipelines (verify, deploy, README screenshot)
