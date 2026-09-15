@@ -1672,6 +1672,45 @@ reminder draws its missing-binary line on a stripped PATH, and the
 install stamp reads from `.claude/aitk/config.json` with `stampAtLegacyPath`
 reported false.
 
+### The root README is a portfolio page, and its hero opts into the toolkit's own evidence convention
+
+The root `README.md` carried a bare technical summary pointing into
+`canon/context/development.md`, `ci.md`, and `deployment.md`, plus
+`canon/ARCHITECTURE.md`. Nobody but a session working the repository reads
+those, and a visitor arriving at the repository from a shared link is exactly
+the reader `canon/REQUIREMENTS.md` already writes the whole site for. It reads
+as a portfolio page instead: a themed mark, the site's own share-card claim as
+the tagline, a full, uncropped capture of the header, and a short About
+excerpt, with no install or run instructions and no link into `canon/`.
+
+The bio it quotes is not authored twice. `src/components/site/about/bio-copy.ts`
+holds the two sentences the README and the site's own About section share
+verbatim, `about.astro` reads from it, and
+`src/components/site/about/bio-copy.test.ts` fails if the two drift apart, the
+same shape `scripts/card-copy.ts` already holds for the OG share-card claim.
+
+The hero screenshot is regenerated in CI rather than hand-maintained.
+`.github/workflows/readme-screenshot.yml` re-captures
+`src/components/site/header/**` on a pull request and pushes the result back
+onto the PR's own branch when the bytes differ. That is self-terminating: the
+push retriggers the workflow, the recapture finds no diff against what it
+already pushed, and it stops there. `scripts/lib/preview-server.sh` is the
+preview-build-and-serve bootstrap `scripts/screenshot.sh` already carried,
+extracted so the new capture script does not hold a second copy of it.
+
+The images sit at `.github/evidence/readme/{light,dark}.png` rather than
+beside the README, because the installed `canon` CLI already ships
+`canon pr evidence`, run by `git-pr`/`git-followup` on every pull request: it
+renders a before/after comparison comment for any changed image whose path
+carries a literal `evidence` segment. Nothing in this repository had ever used
+that path shape before this decision, since the section-capture harness writes
+to `.canon/review/screenshots/`, gitignored and carrying no `evidence/`
+segment, so the automation had quietly reported `no-evidence` on every prior
+pull request. This is the first asset in the repository to opt into it.
+`canon/context/ci.md` carries the mechanism itself.
+
+Measured at 008c6b0 on 2026-09-15.
+
 ## Risks / open questions
 
 - The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
