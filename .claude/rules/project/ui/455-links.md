@@ -8,7 +8,6 @@ paths:
 
 ## Target
 
-- Default outbound links to same-tab.
-- Reserve `target="_blank" rel="noopener"` for a destination the visitor browses for a while and returns from: a résumé PDF, a long-form article, or an artifact page such as a repository, a package listing, a marketplace entry, or a live demo.
-- Keep internal navigation in the current tab. A `mailto:` link is a handoff to a mail client rather than a destination, so it takes the same-tab default and would otherwise leave a blank tab behind.
+- The installed link-behavior rule sets the same-tab default and the mailto: exception. This rule adds what it leaves to the project: which destinations qualify for `target="_blank"` here, and the noopener requirement it does not state.
+- On this site, a résumé PDF, a long-form article, or an artifact page such as a repository, a package listing, a marketplace entry, or a live demo is what qualifies as a destination worth leaving the page for.
 - Never set `target="_blank"` without `rel="noopener"`.

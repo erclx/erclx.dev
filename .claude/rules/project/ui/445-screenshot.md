@@ -30,7 +30,9 @@ paths:
 
 ## Handoff
 
-- End every UI change with a reachable URL, naming the dev-server address and the routes that changed. `CLAUDE.md` § Output owns the form it takes.
+- End every UI change with a reachable URL, naming the dev-server address and the routes that changed.
+- Emit that URL as a markdown link carrying the URL as its target, not a bare address or a code span, both of which force a select-and-paste.
+- Hand a phone- or tablet-facing address over as a scannable code rather than text, since no link form reaches a second device. One code per variant, since a hand-typed query string isn't worth a live comparison.
 - Leave that dev server running. Do not report the address of a preview or capture run that has exited.
 - Verify breakpoints, dark mode, narrow-viewport overflow, animation triggers, and regressions from the captures and the e2e suite, and report what the run found.
 - Hand over only what a run cannot settle: aesthetic judgment, whether a layout compromise is acceptable, and whether copy reads right.
