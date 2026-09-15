@@ -1,9 +1,11 @@
 ---
 import { Image } from 'astro:assets'
+
+import portrait from '@/assets/header/portrait.jpg'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
+
 import shaderFieldFallback from './shader-field/fallback.svg?raw'
-import portrait from '@/assets/header/portrait.jpg'
 
 const links = [
   { label: 'GitHub', href: 'https://github.com/erclx' },

@@ -1,13 +1,13 @@
 ---
 import { getImage } from 'astro:assets'
 
-import BaseLayout from '@/layouts/base.astro'
-import RouteBar from '@/components/site/nav/route-bar.astro'
-import SectionNav from '@/components/site/section-nav/section-nav.astro'
-import RouteFoot from '@/components/site/case-study/route-foot.astro'
-import { getLinkTargetAttributes } from '@/lib/links'
 import triageCanvas from '@/assets/projects/jobtriage.png'
 import canvasViews from '@/assets/videos/jobtriage.mp4?url'
+import RouteFoot from '@/components/site/case-study/route-foot.astro'
+import RouteBar from '@/components/site/nav/route-bar.astro'
+import SectionNav from '@/components/site/section-nav/section-nav.astro'
+import BaseLayout from '@/layouts/base.astro'
+import { getLinkTargetAttributes } from '@/lib/links'
 
 const artifactLinks = [
   { label: 'Live demo', href: 'https://jobtriage.erclx.dev' },
