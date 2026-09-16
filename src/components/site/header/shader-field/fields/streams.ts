@@ -20,16 +20,23 @@ export const streamsConfig = {
    * extremum rather than moving at a constant rate forever.
    *
    * The pair is chosen so their product equals the old flat rate at `time =
-   * 0`, which keeps the pace visitors actually see unchanged, since `sin`'s
-   * own slope at the origin is 1: `evolveAmplitude * evolveAngularRate =
-   * 0.0075` reproduces the value this replaced. The amplitude then caps how
-   * far the axis ever travels, at 3, which keeps the hash's `sin()`-based
-   * lookup inside the range a `mediump`-only GPU can represent precisely for
-   * the life of the page rather than only for the first half hour or so.
-   * `mediump` float precision is optional in WebGL1 and the hash bands
-   * visibly once it loses too much of it; a value fed straight from
-   * unbounded time crossed into that territory within tens of minutes of a
-   * tab staying open, measured in
+   * 0`, since `sin`'s own slope at the origin is 1: `evolveAmplitude *
+   * evolveAngularRate = 0.0075` reproduces the value this replaced. That
+   * match holds only near the origin. Across the full ~42-minute period the
+   * axis eases to a stop around the 10.5-minute mark, runs backward until
+   * about 31 minutes, and averages roughly 64% of the old pace, so a reader
+   * who leaves the tab open meets a field that slows, stalls, and revisits
+   * contours it already drew rather than one holding a constant rate
+   * forever.
+   *
+   * The amplitude caps how far the axis ever travels, at 3, which keeps the
+   * hash's `sin()`-based lookup inside the range a GPU limited to `mediump`
+   * float precision can represent for the life of the page rather than only
+   * for the first half hour or so. `highp` float precision is optional in
+   * WebGL1 fragment shaders, so a GPU without it falls back to `mediump`,
+   * and the hash bands visibly once it loses too much precision. A value
+   * fed straight from unbounded time crossed into that territory within
+   * tens of minutes of a tab staying open, measured in
    * `.canon/groundwork/01-shader-contour-consistency/08-spikes.md`.
    *
    * The value is a pace rather than a preference otherwise. The fastest term
