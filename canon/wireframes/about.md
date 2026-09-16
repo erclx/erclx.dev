@@ -9,7 +9,7 @@ Sits directly under the header and above the experience timeline, so a reader me
 
 Two short paragraphs of prose, and one small figure that arrives rather than sits. No rows and no portrait: the header carries the one portrait on the page, and a second image placed here would compete with the one a reader met three seconds earlier.
 
-A figure that crosses the surface once and comes to rest makes a quieter claim than one present from the first paint, which is what admits it against the objection above. The prose it sits beside carried an arrival-to-travel arc until the 2026-09-16 rewrite. The figure's motion was never a literal reading of that arc, so it survives the rewrite unchanged. `canon/context/motion.md` holds the test a section passes before it earns one.
+A figure that crosses the surface once and comes to rest makes a quieter claim than one present from the first paint, which is what admits it against the objection above. It cleared that bar against the paragraph that opened on Vietnam and closed on most summers. The prose was rewritten on 2026-09-16 to two paragraphs naming neither, and the operator kept the figure anyway rather than retiring it, since the bar governs whether a new figure is added rather than whether a shipped one stays. `canon/context/motion.md` holds the test itself.
 
 ## Desktop (≥768px)
 
@@ -41,9 +41,11 @@ listen to a lot of music, play tennis, and travel when I can.
 
 ## Copy provenance
 
-This surface is the one place on the page a session may not write. Every sentence is the operator's own, given in answer to direct questions rather than compressed from the record, and no canonical asset holds any of it. A session that drafts here reproduces the provenance failure that removed an earlier personal line from the timeline closer.
+This surface is the one place on the page a session may not draft from scratch. Every sentence is the operator's own, given directly rather than compressed from the record. A session that drafts here reproduces the provenance failure that removed an earlier personal line from the timeline closer.
 
-Wording was tightened on 2026-08-18 against drafts he chose between rather than ones he wrote, which the copy source records separately as the weaker provenance it is. No fact changed and none was added.
+The copy is canonical in `career/assets/portfolio/home.md` § About me, per `canon/REQUIREMENTS.md`, and this surface reads it from there rather than authoring a second copy. A session updating this surface takes the wording from that file directly.
+
+Wording was tightened on 2026-08-18 against drafts he chose between rather than ones he wrote, which the copy source records separately as the weaker provenance it is. The two paragraphs shipped here on 2026-09-16 replace that wording outright, given directly by the operator and matching the career source word for word.
 
 ## Cascade reveal
 
