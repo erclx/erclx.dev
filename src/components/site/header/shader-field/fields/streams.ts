@@ -9,21 +9,41 @@ export const streamsConfig = {
   gradientStep: 1,
 
   /**
-   * Rate along the noise's third axis. Time is an axis of the field rather than
-   * a translation of where it is sampled, so the contours form and dissolve
-   * where they stand instead of being carried past the viewport. A drift vector
-   * is what reads as a current running one way, and this surface carries none.
+   * The noise's third axis is driven by `evolveAmplitude * sin(time *
+   * evolveAngularRate)` rather than by unbounded time, so it oscillates
+   * inside a fixed range instead of growing for as long as a tab stays open.
+   * Time is still an axis of the field rather than a translation of where it
+   * is sampled, so the contours form and dissolve where they stand instead of
+   * being carried past the viewport, and a drift vector is what reads as a
+   * current running one way, which this surface still carries none of. A
+   * bounded oscillation matches that: it eases and reverses near each
+   * extremum rather than moving at a constant rate forever.
    *
-   * The value is a pace rather than a preference. The fastest term on the
-   * surface is the sheen below, whose screen velocity is its drift over its
-   * scale: 0.13px per second here, and the pattern renews over roughly two
-   * minutes. Ambient motion detected without a reference to judge it against
-   * sits near 0.1 to 0.3 degrees per second, which is about 4 to 11px per
-   * second at a desk. Anything in that band pulls the eye without rewarding it,
-   * which is what an earlier ten-times-faster setting did. This runs an order
-   * of magnitude under it, so the band reads as alive rather than as watchable.
+   * The pair is chosen so their product equals the old flat rate at `time =
+   * 0`, which keeps the pace visitors actually see unchanged, since `sin`'s
+   * own slope at the origin is 1: `evolveAmplitude * evolveAngularRate =
+   * 0.0075` reproduces the value this replaced. The amplitude then caps how
+   * far the axis ever travels, at 3, which keeps the hash's `sin()`-based
+   * lookup inside the range a `mediump`-only GPU can represent precisely for
+   * the life of the page rather than only for the first half hour or so.
+   * `mediump` float precision is optional in WebGL1 and the hash bands
+   * visibly once it loses too much of it; a value fed straight from
+   * unbounded time crossed into that territory within tens of minutes of a
+   * tab staying open, measured in
+   * `.canon/groundwork/01-shader-contour-consistency/08-spikes.md`.
+   *
+   * The value is a pace rather than a preference otherwise. The fastest term
+   * on the surface is the sheen below, whose screen velocity is its drift
+   * over its scale: 0.13px per second here, and the pattern renews over
+   * roughly two minutes. Ambient motion detected without a reference to judge
+   * it against sits near 0.1 to 0.3 degrees per second, which is about 4 to
+   * 11px per second at a desk. Anything in that band pulls the eye without
+   * rewarding it, which is what an earlier ten-times-faster setting did. This
+   * runs an order of magnitude under it, so the band reads as alive rather
+   * than as watchable.
    */
-  evolveRate: 0.0075,
+  evolveAmplitude: 3,
+  evolveAngularRate: 0.0025,
 
   sheenCyclesAcross: 1.1,
   // A slow brightness wash over the contours. Its rate was once set apart from
@@ -437,7 +457,11 @@ export const streamsField: FieldSpec = {
     const { content, time } = frame
 
     gl.uniform1f(uniforms.uPixelRatio ?? null, frame.pixelRatio)
-    gl.uniform1f(uniforms.uEvolve ?? null, time * streamsConfig.evolveRate)
+    gl.uniform1f(
+      uniforms.uEvolve ?? null,
+      streamsConfig.evolveAmplitude *
+        Math.sin(time * streamsConfig.evolveAngularRate),
+    )
     gl.uniform1f(
       uniforms.uFieldScale ?? null,
       streamsConfig.fieldCyclesAcross / frame.width,
