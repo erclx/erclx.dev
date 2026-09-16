@@ -1684,7 +1684,7 @@ the tagline, a full, uncropped capture of the header, and a short About
 excerpt, with no install or run instructions and no link into `canon/`.
 
 The bio it quotes is not authored twice. `src/components/site/about/bio-copy.ts`
-holds the two sentences the README and the site's own About section share
+holds the two paragraphs the README and the site's own About section share
 verbatim, `about.astro` reads from it, and
 `src/components/site/about/bio-copy.test.ts` fails if the two drift apart, the
 same shape `scripts/card-copy.ts` already holds for the OG share-card claim.
@@ -1709,7 +1709,7 @@ segment, so the automation had quietly reported `no-evidence` on every prior
 pull request. This is the first asset in the repository to opt into it.
 `canon/context/ci.md` carries the mechanism itself.
 
-Measured at 008c6b0 on 2026-09-15.
+Measured at 68e3a02 on 2026-09-16.
 
 ## Risks / open questions
 

@@ -7,9 +7,9 @@ description: Personal surface directly under the header, carrying where the pers
 
 Sits directly under the header and above the experience timeline, so a reader meets the person before the claim, the path, the evidence, and the ask. Added on 2026-08-17.
 
-Three short paragraphs of prose, and one small figure that arrives rather than sits. No rows and no portrait: the header carries the one portrait on the page, and a second image placed here would compete with the one a reader met three seconds earlier.
+Two short paragraphs of prose, and one small figure that arrives rather than sits. No rows and no portrait: the header carries the one portrait on the page, and a second image placed here would compete with the one a reader met three seconds earlier.
 
-A figure that crosses the surface once and comes to rest makes a quieter claim than one present from the first paint, which is what admits it against the objection above. It draws what both ends of the first paragraph share, arriving from Vietnam in one sentence and leaving most summers in another. `canon/context/motion.md` holds the test a section passes before it earns one.
+A figure that crosses the surface once and comes to rest makes a quieter claim than one present from the first paint, which is what admits it against the objection above. The prose it sits beside carried an arrival-to-travel arc until the 2026-09-16 rewrite. The figure's motion was never a literal reading of that arc, so it survives the rewrite unchanged. `canon/context/motion.md` holds the test a section passes before it earns one.
 
 ## Desktop (≥768px)
 
@@ -21,16 +21,14 @@ About me
                                             aircraft come to rest, nose
                                             down, at the column's edge
 
-I was born in Vietnam and came to Sweden in 2006, when I was six. I
-grew up in Värnamo before moving to Gothenburg.
+Most of the things I build start with some version of "this should
+be easier." I tend to get curious about how things work once
+something starts getting in my way, and that's usually how I end up
+building my own version.
 
-Outside work I listen to a lot of music and have played guitar since I
-was twelve. I once spent over 4,000 hours listening to music in a
-year. Otherwise I try to get some calisthenics in or play tennis and
-badminton.
-
-Most summers I travel, lately London, Copenhagen, Prague, and Hanoi.
-  ← three body paragraphs, muted, at the page measure
+I'm based in Gothenburg. Outside of building things, I play guitar,
+listen to a lot of music, play tennis, and travel when I can.
+  ← two body paragraphs, muted, at the page measure
 ```
 
 ## Behavior
@@ -39,7 +37,7 @@ Most summers I travel, lately London, Copenhagen, Prague, and Hanoi.
 - The prose is what the position asks for: a reader arriving from a full-height header wants a sentence rather than another visual event. The figure clears that by being an event that ends, leaving the surface prose before it and prose after it.
 - The surface reaches the same end state by either route. A reader scrolling in watches the approach, and a reader arriving from the rail, whose section pins under the sticky bar, finds the figure already at rest. Neither meets an empty band.
 - The heading reads `About me` rather than `About`, and the rail label matches it word for word. A rail label states the heading it points at rather than the anchor id behind it.
-- The two halves stay separate paragraphs with no connective claim between them. Drafts that bridged the origin to the hobbies with an authored characterization read as shoehorned, and drafts stating each fact on its own read as choppy. The shipped shape takes neither.
+- The two paragraphs stay separate, one the drive behind what he builds, one the person outside of it, with no connective claim between them.
 
 ## Copy provenance
 

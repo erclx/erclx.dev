@@ -20,9 +20,9 @@
 
 ## About
 
-I was born in Vietnam and came to Sweden in 2006, when I was six. I grew up in Värnamo before moving to Gothenburg. I now work across agents, the tooling around them, and the full-stack work of making either usable by someone else.
+Most of the things I build start with some version of "this should be easier." I tend to get curious about how things work once something starts getting in my way, and that's usually how I end up building my own version.
 
-Outside work I've played guitar since I was twelve. Most summers I travel, lately London, Copenhagen, Prague, and Hanoi.
+I'm based in Gothenburg. Outside of building things, I play guitar, listen to a lot of music, play tennis, and travel when I can.
 
 ## Built with
 
