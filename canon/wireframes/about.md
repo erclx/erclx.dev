@@ -7,9 +7,9 @@ description: Personal surface directly under the header, carrying where the pers
 
 Sits directly under the header and above the experience timeline, so a reader meets the person before the claim, the path, the evidence, and the ask. Added on 2026-08-17.
 
-Three short paragraphs of prose, and one small figure that arrives rather than sits. No rows and no portrait: the header carries the one portrait on the page, and a second image placed here would compete with the one a reader met three seconds earlier.
+Two short paragraphs of prose, and one small figure that arrives rather than sits. No rows and no portrait: the header carries the one portrait on the page, and a second image placed here would compete with the one a reader met three seconds earlier.
 
-A figure that crosses the surface once and comes to rest makes a quieter claim than one present from the first paint, which is what admits it against the objection above. It draws what both ends of the first paragraph share, arriving from Vietnam in one sentence and leaving most summers in another. `canon/context/motion.md` holds the test a section passes before it earns one.
+A figure that crosses the surface once and comes to rest makes a quieter claim than one present from the first paint, which is what admits it against the objection above. It cleared that bar against the paragraph that opened on Vietnam and closed on most summers. The prose was rewritten on 2026-09-16 to two paragraphs naming neither, and the operator kept the figure anyway rather than retiring it, since the bar governs whether a new figure is added rather than whether a shipped one stays. `canon/context/motion.md` holds the test itself.
 
 ## Desktop (≥768px)
 
@@ -21,16 +21,14 @@ About me
                                             aircraft come to rest, nose
                                             down, at the column's edge
 
-I was born in Vietnam and came to Sweden in 2006, when I was six. I
-grew up in Värnamo before moving to Gothenburg.
+Most of the things I build start with some version of "this should
+be easier." I tend to get curious about how things work once
+something starts getting in my way, and that's usually how I end up
+building my own version.
 
-Outside work I listen to a lot of music and have played guitar since I
-was twelve. I once spent over 4,000 hours listening to music in a
-year. Otherwise I try to get some calisthenics in or play tennis and
-badminton.
-
-Most summers I travel, lately London, Copenhagen, Prague, and Hanoi.
-  ← three body paragraphs, muted, at the page measure
+I'm based in Gothenburg. Outside of building things, I play guitar,
+listen to a lot of music, play tennis, and travel when I can.
+  ← two body paragraphs, muted, at the page measure
 ```
 
 ## Behavior
@@ -39,13 +37,15 @@ Most summers I travel, lately London, Copenhagen, Prague, and Hanoi.
 - The prose is what the position asks for: a reader arriving from a full-height header wants a sentence rather than another visual event. The figure clears that by being an event that ends, leaving the surface prose before it and prose after it.
 - The surface reaches the same end state by either route. A reader scrolling in watches the approach, and a reader arriving from the rail, whose section pins under the sticky bar, finds the figure already at rest. Neither meets an empty band.
 - The heading reads `About me` rather than `About`, and the rail label matches it word for word. A rail label states the heading it points at rather than the anchor id behind it.
-- The two halves stay separate paragraphs with no connective claim between them. Drafts that bridged the origin to the hobbies with an authored characterization read as shoehorned, and drafts stating each fact on its own read as choppy. The shipped shape takes neither.
+- The two paragraphs stay separate, one the drive behind what he builds, one the person outside of it, with no connective claim between them.
 
 ## Copy provenance
 
-This surface is the one place on the page a session may not write. Every sentence is the operator's own, given in answer to direct questions rather than compressed from the record, and no canonical asset holds any of it. A session that drafts here reproduces the provenance failure that removed an earlier personal line from the timeline closer.
+This surface is the one place on the page a session may not draft from scratch. Every sentence is the operator's own, given directly rather than compressed from the record. A session that drafts here reproduces the provenance failure that removed an earlier personal line from the timeline closer.
 
-Wording was tightened on 2026-08-18 against drafts he chose between rather than ones he wrote, which the copy source records separately as the weaker provenance it is. No fact changed and none was added.
+The copy is canonical in `career/assets/portfolio/home.md` § About me, per `canon/REQUIREMENTS.md`, and this surface reads it from there rather than authoring a second copy. A session updating this surface takes the wording from that file directly.
+
+Wording was tightened on 2026-08-18 against drafts he chose between rather than ones he wrote, which the copy source records separately as the weaker provenance it is. The two paragraphs shipped here on 2026-09-16 replace that wording outright, given directly by the operator and matching the career source word for word.
 
 ## Cascade reveal
 
