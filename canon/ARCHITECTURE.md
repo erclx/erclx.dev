@@ -44,10 +44,6 @@ Figures a case study references are copied into `src/assets/` rather than read a
 
 The copy is read-only here in a stronger sense than the copy rule states, because the parent checkout's pipeline decides what these files look like. All six charts are drawn on pure white, the single most common value in each at 45% to 84% of its pixels, so they suit one of the two themes and this repository cannot change that without editing an artifact its own sync overwrites. The page frames them instead, holding a light plate under a chart in both themes, which is a presentation choice this side owns and reverses on its own. Regenerating the charts per theme upstream is the durable repair and is not queued, so a chart later produced on a dark ground makes the frame wrong with nothing here reporting it. Measured at 252704a on 2026-08-16. <!-- canon-keep-record-root -->
 
-### Critical fonts preloaded via Vite ?url imports
-
-Variable woff2 files for Fraunces and Inter weight-axis are imported as `?url` in `base.astro` and referenced through `<link rel="preload">`. This eliminates the FOUT swap from Fontsource's default `font-display: swap`. Vite resolves the path through `node_modules`, so no manual copy to `public/` is needed.
-
 ### Editorial type pairing replaces Geist
 
 Three variable families carry the type system: Fraunces for display and headings, Inter for body and labels, JetBrains Mono for code. A single system font stack reads as generic against the editorial tone the rest of the page holds. `canon/DESIGN.md` is the source of truth for token values. The tokens flow into Tailwind v4 via the `@theme` block in `global.css`.
@@ -98,6 +94,8 @@ Every host reads the same Open Graph tags, so one 1200x630 image and one descrip
 
 The mark leads the composition at 210px, with a square crop across the mark and the last word of every line accepted as a known cost of most hosts taking the first `og:image` at whatever aspect they choose. `public/avatar/` carries a separate 1:1 asset for a host that wants one. `bun run share-card` redraws the card and `e2e/share-card.spec.ts` guards it, including that no route title carries `case study`.
 
+The description never names an employer. Metadata says who someone is and the timeline on the page says where they have been, and a share card is the most compressed surface the site owns, so an employer costs more room than the one click to the credential buys.
+
 ### Resume PDF served from `public/`
 
 The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source is `career/assets/resumes/eric-le-cv.pdf` in the parent career repo. Upstream keeps a Swedish `eric-le-cv-sv.pdf` beside it and this site serves the English one alone, since the page it sits on is written in English and the footer holds one résumé slot. Updates land here as a binary copy via the sync queue rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
@@ -120,6 +118,10 @@ the avatar, and the bar cannot drift.
 An engine that reads the vector never requests the raster, which is why the 32-square PNG is a fallback for engines that ignore an SVG icon rather than a first choice that declaration order could protect.
 
 Every brand raster carries a cream ground with a dark mark, so all four assets agree. The bar is the one surface that takes no ground, because it is the one surface this repository paints: a ground there would be a cream plate laid on the page, so the mark takes the theme's foreground instead. A disc was rejected in favor of a rounded square, since a circle inscribed in 16 pixels leaves about 11 for the mark and the letter reads cramped, where a square costs 16% of the drawing's scale and keeps the frame. The two other ground-carrying rasters (home screen, avatar) keep the same cream-on-dark pairing, since a dark disc dissolves into a dark host chrome such as Discord or GitHub dark, where cream stays a defined shape on both themes.
+
+The bar's own fade stays on its ground rather than moving to the row that carries the name and the toggle. Under reduced motion the row keeps its color, so a fade on the row would show a second name through the whole hero, where a fade on the ground alone reveals nothing early.
+
+Measured at e8d1d97 on 2026-08-22.
 
 The stroked paths and the filled rect take separate CSS classes, since a shared class rule carrying `fill` outranks a `fill="none"` presentation attribute and silently turns an open letter into a solid disc. `e2e/favicon.spec.ts` counts enclosed holes in the rendered pixels rather than ink coverage, since a filled disc carries more ink than an open letter and a coverage-based guard would pass the broken mark.
 
@@ -144,6 +146,8 @@ The timeline rail holds at every width in three tiers rather than two. Width is 
 Below 600 the rail moves to the section's left edge and spans the beat, since there is no room for a column beside the reading one, and the span leads a beat there where the head leads it everywhere else. The gutter takes its type from whichever line it is meeting rather than carrying an offset.
 
 What the middle tier costs is reading width at its own bottom end: at 600 the head wraps to two lines rather than one. That trade is deliberate, since a beat wrapping is legible and a list of six paragraphs claiming to be a timeline is not.
+
+Measured at e9f68e5 on 2026-08-22.
 
 ### A case-study route scales its measure with the viewport, and its figures overhang it
 
@@ -223,6 +227,8 @@ The glow lands on the same test that decides the card's hover glow: a control wi
 
 Two instrument gotchas came out of writing the guard. `outline: none` resets the width to `medium`, which engines report as 3px while drawing nothing, so a check reading `outlineWidth` sees a ring on a control that has none, read the style rather than the computed width. And a rule stripping a ring has to win a cascade against a layered declaration and a user-agent default, so the strip is written inline, where nothing outranks it.
 
+Measured at 63bfea1 on 2026-08-22, at 1440x900 across chromium, firefox, and webkit.
+
 ### One ground for two bars, and the shape moves while the row does not
 
 The landing bar and a route's bar share one ground rule rather than each declaring its own, drawn from the elevated-surface token with a 0.88 alpha over a 24px blur, holding 5.02:1 and 8.16:1 contrast in light and dark on the landing page and 4.83:1 and 8.30:1 on the densest route. A ground taken from the page's own background token cannot separate from it (it measured 1.002:1 and 1.003:1, the page laid on the page), and blur alone cannot rescue that either, since blurring a flat field returns the same flat field.
@@ -230,6 +236,8 @@ The landing bar and a route's bar share one ground rule rather than each declari
 The shape contracts on scroll and the row inside it does not: the hero flies its name and its theme toggle into the row's slots at measured positions, so a measurement of either has to be taken against a settled shape.
 
 A shared declaration is not shared until nothing can replace it. The shape's transition, `inset 320ms ease, border-radius 320ms ease`, sits on `[data-bar-ground]` rather than inside either bar's own component, since `transition` is a shorthand and a component-level rule setting only `transition: opacity` would reset `transition-property` to that one property rather than adding to the list. The edge and the shadow stay out of that list deliberately: they arrive at once on both bars, marking the instant the bar detaches from the viewport, where an edge fading up would read as the bar being unsure whether it has.
+
+Measured at 10c511a on 2026-08-25 with this branch applied, at 1280 across chromium, firefox, and webkit.
 
 ### Two token sets carry elevation and response, and every control reads them
 
@@ -244,6 +252,8 @@ The response set has a ceiling too, and it is lower than the token values sugges
 The palette has no headroom below its muted token, which is a constraint on every future treatment. Muted measures 4.82:1 in light, so a third step lightened beneath it fails the 4.5:1 text floor at any value visible enough to do a job. Separate two text layers by weight, size, or the space between them, and read lightness as already spent.
 
 Two measurement errors are cheap to repeat and worth watching for. A patch sampled at the corner of a bounding box misses a circular control and reads the page behind it instead. A color carrying alpha read as opaque reports a color nobody sees.
+
+Measured at c5f17e4 on 2026-08-20, with the elevation ceiling re-read off painted pixels at 1440x900 on 2026-08-22.
 
 ### The rail states position by moving, and a control that scrolls owns the URL it leaves
 
@@ -322,6 +332,8 @@ The dog perched on the rule is clipped by a `clip-path` polygon generated from t
 
 Amplitude is read off the stage's own width rather than fixed, ramping 5px to 16px across a 342px to 768px stage. A fixed amplitude reads as terrain at 1280 and visibly tips the figure at 390, since the dog spans a larger share of a narrower stage and the curve compresses under him exactly where there is least room. The curve itself sums three incommensurate sines rather than one, since the field's own adjacent-contour gaps vary continuously and a regular period would read as not belonging to it.
 
+Measured at 10c511a on 2026-08-25 with this branch applied, at 390, 768, 1024, 1280, 1440, and 1920.
+
 ### A case-study prose link takes the site's accent, and the tap-target guard learns what an inline link is
 
 A case-study prose link is accent-colored text with an always-on underline, applied as Tailwind utilities per link rather than a named CSS class, matching how the header and footer links are styled directly. An always-on underline rather than a pointer-hover-only one, since WCAG's caution against color as the only visual means of conveying information means a link within a paragraph has to identify itself without relying on color perception alone, which a hover-only treatment fails for a keyboard or touch reader.
@@ -349,6 +361,8 @@ A route's bar centers its name using three columns with equal outer widths rathe
 The name is a button that scrolls to the route's top, since it is the only back-to-top control in the band below 1280 where the section rail is hidden. Opacity was the only thing withholding it: a control hidden by opacity alone still costs a tab stop and a 44px target while painting nothing, so it takes `inert` on the same clock as its visible marker.
 
 A raw NUL byte in a source file makes every text tool classify the file as binary, so a search can return an honest empty result against a file that holds exactly what was searched for, worth checking for when a search comes back empty against a file that should not be.
+
+Measured at 4577565 on 2026-08-26 with this branch applied, at 320, 390, 640, 768, 1024, 1280, 1440, and 1920 across all five routes.
 
 ### The standards corpus is resolved rather than installed, and the readers were the load-bearing half
 
