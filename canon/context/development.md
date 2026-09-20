@@ -76,7 +76,7 @@ Scope and engines look like two ways to make a run cheaper and only one of them 
 
 What costs is the serial chain inside one spec, since `fullyParallel` is off. `e2e/cast.spec.ts` holds several full-field captures, and `e2e/cast-scheduler.spec.ts` holds the three wall-clock scheduler tests split out of it, running about 45 and 70 seconds on chromium alone, which was one file's floor before the split. `canon/context/ci.md` § The worker cap was raised twice and rejected twice carries why the split was made and what it does and does not buy: CI pins `workers` to 1, where the two files run back to back on the one worker regardless of the split, and the seam exists so the scheduler tests can be converted off a wall clock on their own rather than to shorten today's run.
 
-Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/canon/lib/306-test-scope.md` states the resulting directive, and `canon/ARCHITECTURE.md` § The merge gate runs every engine the suite defines carries why the matrix exists at all.
+Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/canon/lib/306-test-scope.md` states the resulting directive, and `canon/context/ci.md` § The e2e job is a matrix over the three engines the config defines carries why the matrix exists at all.
 
 Turning `fullyParallel` on was measured rather than assumed. It took the full run from about 3:30 to 2:49 and failed two webkit tests, both timing assertions: more contexts on one machine is less processor each, and a reveal stagger read against a wall clock came back at zero. A fifth off the clock does not pay for a suite reporting failures nobody caused.
 

@@ -42,4 +42,4 @@ Measured at 502da58 on 2026-08-20.
 
 ## Gotchas
 
-- `@theme inline` bakes a literal into the generated utility. A token declared as `--text-body: 1.0625rem` inside that block cannot be overridden by any downstream scope, because the utility carries the value rather than a reference. The color tokens escape this only because each resolves to a `var()`. The two type steps take the same form, resolving through `--body-size` and `--lede-size` declared in `:root`, which is why the scoping indirection exists.
+- The `surface` prop exists because a plain scope cannot reach these tokens. `@theme inline` bakes a literal into the generated utility, so no downstream scope can override a type step declared there, which is why both steps resolve through `--body-size` and `--lede-size` declared in `:root` instead. `canon/context/theming.md` § Token layers owns that trap and states what escapes it. Read a scoped override that silently does nothing against it before reading it as a specificity problem.

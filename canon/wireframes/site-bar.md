@@ -70,7 +70,7 @@ Both bars draw one shared ground rather than a copy per surface. A reader crossi
 - It contracts on scroll and the row inside holds its position. Everything the hero flies into that row is placed at a measured position, so the shape is the one thing free to move.
 - It eases between the two shapes over 320ms on both surfaces, and the edge and the shadow arrive at once rather than fading with it. The landing bar switched in a single frame until 2026-08-25, because its own component redeclared `transition` on the ground and a shorthand replaces the shared list rather than adding to it.
 
-See `canon/ARCHITECTURE.md` § One ground for two bars, and the shape moves while the row does not for the measured values behind each of these.
+See `canon/context/site-bar.md` § One ground for two bars, and the shape moves while the row does not for the measured values behind each of these.
 
 ## The handoff
 
@@ -81,4 +81,4 @@ The name and the toggle are not duplicated between the hero and the bar. Both tr
 - Both ride the scroll rather than playing an animation over it, and each travels on its own measurements, so the toggle lands before the name. Syncing them would mean one moving at a rate the scroll does not.
 - Reduced motion keeps the name in the hero and shows the bar's own, which is the same information with none of the travel. The toggle still moves, since its position has to stay continuous for the control to be reachable at every scroll.
 
-Placement waits for the stylesheet, and for the hero's arrival wherever that arrival is still coming, before it measures. It gives up waiting after three seconds. Measuring too early put the toggle 868px off its row in WebKit against the built page, and waiting on an arrival that could never come left the bar's slots empty for three seconds on any refresh landing below the hero. See `canon/ARCHITECTURE.md` § A promoted control is measured against the settled page.
+Placement waits for the stylesheet, and for the hero's arrival wherever that arrival is still coming, before it measures. It gives up waiting after three seconds. Measuring too early put the toggle 868px off its row in WebKit against the built page, and waiting on an arrival that could never come left the bar's slots empty for three seconds on any refresh landing below the hero. See `canon/context/site-bar.md` § A promoted control is measured against the settled page.
