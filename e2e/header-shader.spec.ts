@@ -3,6 +3,7 @@ import { expect, type Page, test } from '@playwright/test'
 declare global {
   interface Window {
     __frames: number
+    __fieldGl: WebGLRenderingContext | null
   }
 }
 
@@ -12,16 +13,25 @@ const FRAME_WINDOW_MS = 1500
 /** How long a reading waits for the surface to draw before it gives up. */
 const SETTLE_TIMEOUT_MS = 10000
 
-// Counts scheduled frames and keeps the drawing buffer readable. Both have to
-// land before the mount runs, so every test needing either installs it first.
+// Counts scheduled frames, keeps the drawing buffer readable, and stashes the
+// context the app asked for. All three have to land before the mount runs, so
+// every test needing any of them installs it first.
 const instrument = `
+  window.__fieldGl = null
   const original = HTMLCanvasElement.prototype.getContext
   HTMLCanvasElement.prototype.getContext = function (type, attrs) {
-    return original.call(
+    const context = original.call(
       this,
       type,
       type === 'webgl' ? Object.assign({}, attrs, { preserveDrawingBuffer: true }) : attrs,
     )
+    // The app's own canvas rather than whichever one asked first. The readback
+    // helper below opens a 2d context and the color probe opens another, so a
+    // stash keyed on the call alone would hold one of those instead.
+    if (type === 'webgl' && this.hasAttribute('data-shader-field')) {
+      window.__fieldGl = context
+    }
+    return context
   }
   window.__frames = 0
   const raf = window.requestAnimationFrame.bind(window)
@@ -96,6 +106,50 @@ test('the surface paints in both themes', async ({ page, baseURL }) => {
   await expect
     .poll(() => litPercent(page), { timeout: SETTLE_TIMEOUT_MS })
     .toBeGreaterThan(1)
+})
+
+// This is a contract check rather than a rendering one, and no engine here can
+// make it a rendering one. Chromium, firefox and webkit all honour the declared
+// buffer format, so each of them draws the same surface whether the declaration
+// matches the buffer or not: the arm the defect produced is invisible to every
+// instrument in this repository. What the assertion below states is that the
+// canvas declares the format it actually writes, which is the one thing a
+// compositor taking either path then has no choice left to make.
+test('the canvas declares the premultiplied buffer it writes', async ({
+  page,
+  baseURL,
+}) => {
+  await page.addInitScript(instrument)
+  await page.goto(baseURL ?? '/')
+  await page.bringToFront()
+
+  // Settled on the drawn surface rather than on the context existing, since the
+  // blend factors are set inside `draw()` and read as their defaults until it
+  // has run once.
+  await expect
+    .poll(() => litPercent(page), { timeout: SETTLE_TIMEOUT_MS })
+    .toBeGreaterThan(1)
+
+  const contract = await page.evaluate(() => {
+    const gl = window.__fieldGl
+    if (!gl) return null
+    return {
+      premultipliedAlpha: gl.getContextAttributes()?.premultipliedAlpha ?? null,
+      srcAlpha: gl.getParameter(gl.BLEND_SRC_ALPHA) as number,
+      srcRgb: gl.getParameter(gl.BLEND_SRC_RGB) as number,
+      one: gl.ONE as number,
+      sourceAlphaFactor: gl.SRC_ALPHA as number,
+    }
+  })
+
+  expect(contract).not.toBeNull()
+  expect(contract?.premultipliedAlpha).toBe(true)
+  // The alpha channel takes the fragment's own alpha rather than its square,
+  // which is what makes the declared format true of the buffer.
+  expect(contract?.srcAlpha).toBe(contract?.one)
+  // The color channels stay weighted by alpha, so the buffer holds color
+  // premultiplied once rather than twice.
+  expect(contract?.srcRgb).toBe(contract?.sourceAlphaFactor)
 })
 
 test('reduced motion renders a still frame rather than hiding the surface', async ({
