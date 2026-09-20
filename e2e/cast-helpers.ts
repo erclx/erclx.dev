@@ -5,29 +5,45 @@ import { AMBIENT_BAND } from '../src/components/site/experience/cast/behaviors'
 // Shared between cast.spec.ts and cast-scheduler.spec.ts, which were one file
 // until its three wall-clock scheduler tests, costing about 70s against the
 // other sixteen tests' 45s, set the floor one worker held the whole file to.
-// `canon/context/ci.md` records the measured seam.
+// Two of those three are unit tests now and the third settles on the
+// scheduler's next act rather than watching 20s out, so the seam the split was
+// measured on has largely closed.
 
 export const FIELD = '[data-cast-field]'
 export const MEMBER = '[data-cast-member]'
 export const SECTION = '[data-section="experience"]'
 /**
- * Long enough to hold several of the scheduler's own gaps, which run 5.2 to
- * 7.8 seconds apart. A window shorter than one gap reports a working scheduler
- * as silent.
- */
-export const SCHEDULER_WATCH_MS = 20_000
-/**
- * What a test watching that window needs, against Playwright's 30s default.
+ * How long the surviving test gives one of the cast's own timers before calling
+ * it silent, whether it is waiting on a tapped member's reaction to clear or on
+ * the scheduler's next act. A gap runs 5.2 to 7.8 seconds, so anything under
+ * 7.8 reports a working scheduler as broken, and the rest is headroom for a
+ * loaded runner delaying a timer.
  *
- * These three observe a wall clock rather than wait on a condition, so the
- * window is time the run genuinely spends and no amount of machine makes it
- * shorter. Add the settle, the load and the tap's own reaction and 20s of
- * watching does not fit 30s of budget: the schedule test took 35.1s on a CI
- * runner and timed out three times while passing locally. Shortening the window
- * to fit would have bought the same fit by watching fewer of the scheduler's
- * own gaps, which is the thing under test.
+ * One budget covers both because neither can see the load it is running under.
+ * A census of 26 runs on this repository found a tight inner bound beneath a
+ * loose outer budget behind every false red on the firefox leg, where a 1.4
+ * second nominal wait reached 24.5 on a contended runner and failed with most
+ * of the test budget unspent.
+ *
+ * It is a budget rather than a window. The test settles on the next act, so a
+ * pass costs one gap and only a failure spends the whole of this. That is why
+ * it can be generous where the 20s window it replaces could not: that window
+ * was spent in full on every pass, three times over, and it still had to hold
+ * enough gaps to make an *absence* mean something. The two tests reading an
+ * absence answer to a fake clock now, which gives them more gaps than a wall
+ * clock ever could.
  */
-export const SCHEDULER_TEST_MS = 60_000
+export const SCHEDULER_ACT_MS = 15_000
+/**
+ * What that test needs, against Playwright's 30s default.
+ *
+ * Add the load, the settle and the tap's own reaction to the budget above and
+ * 30s is too tight to be safe: the schedule test took 35.1s on a CI runner and
+ * timed out three times while passing locally, back when the watching alone was
+ * 20s. A budget costs nothing on a pass, so this one is held well clear of the
+ * expectation rather than trimmed to it.
+ */
+export const SCHEDULER_TEST_MS = 45_000
 
 export const WIDE = { width: 1440, height: 900 }
 
