@@ -59,21 +59,7 @@ Three Fraunces serif elements anchor the page from top to bottom: the hero H1, t
 
 Hero H1 holds the display size. Projects H2 sits one step smaller, and the footer masthead one step under the hero, so the page closes without competing with the opener. Surface-specific sizes live in the relevant `canon/wireframes/<surface>.md`.
 
-### A case-study route scales its measure
-
-The sizes above are flat across every viewport on the landing page. A project route is the one surface that scales, because it holds one measure for thousands of pixels where a landing section varies its own per section.
-
-Prose runs 672px at 1280 and 832px at 1920, and the body scales with it from 17px to 22px. The lede scales alongside from 21px to 26px. All three are clamps that hold today's values at 1280 and below and stop growing past 1920, so the two surfaces match exactly at 1280 and diverge only above it.
-
-The column and the body move together because neither can move alone. Widening a column while the body stays put lengthens the line, which is the failure the pair exists to prevent and which reached production once. Held together, the route measures 61.1ch at 768 and at 1280 and 59.4ch at 1920, so the measure stays flat while the page fills out. That is what the pair buys.
-
-Both surfaces run about 90 characters to the line, counted on the breaks the browser actually made: 89 on the route body against 92 on the landing page, both past the comfortable ceiling near 75. The pair holds that count flat across the range rather than bringing it down. Keeping it flat is what it is for, and is not the same as settling the measure.
-
-Count characters on real line breaks when the question is whether a surface sits inside the band, since that is the band's own unit. Read `ch` when the question is whether two columns are the same width, since `ch` is text-independent where a character count is not. Neither reading substitutes for the other.
-
-Figures overhang the prose symmetrically, reaching 896px and 1216px at those two widths, which takes the widest viewport from 35% content to 63%. The prose and figure clamps carry different slopes, so their ratio drifts from 1.333 at 1280 to 1.462 at 1920. That drift is deliberate: a constant 1.4 ratio would make the figure 941px at 1024 and leave 17px of gutter each side, where the drifting pair keeps the figure safe at the narrow end and generous at the wide one. Do not collapse the two clamps into one ratio without re-checking 1024.
-
-A `surface` prop on the layout stamps a class on `body`, which is what scopes these steps to the five project routes and nothing else. `canon/context/theming.md` § Token layers carries why a plain scope cannot do it.
+The sizes above are flat across every viewport on the landing page. A project route is the one surface that scales its prose and its column together, and `canon/context/layout-measure.md` owns those clamps along with the figure overhang that tracks them.
 
 ## Spacing
 
@@ -91,7 +77,7 @@ The page's own inset is not on that scale and cannot be. It is `--page-inset`, a
 
 Anything positioned against the page edge derives from that value rather than picking its own. The sticky bar's detached shape floors its inset at the page inset minus a stated padding, which is what keeps the name off the curve. The two were independent until 2026-08-20, and the gap between them collapsed to 8px on a phone while reading 22px at 768.
 
-That generalizes past the page inset. A value relating two elements is arithmetic over named values, never a literal, and what is banned is a literal standing in for a relationship two other values already fix. A nudge centering one element against another is the shape to refuse: it encodes both of their current widths and goes wrong the moment either one moves. Equal gaps are not a center either, since equal free space only centers a middle item when the two items flanking it weigh the same. Three columns with equal outer widths do center it, whatever sits inside them.
+That generalizes past the page inset. A value relating two elements is arithmetic over named values, never a literal, and what is banned is a literal standing in for a relationship two other values already fix. A nudge centering one element against another is the shape to refuse: it encodes both of their current widths and goes wrong the moment either one moves. `canon/context/site-bar.md` carries the case that settled it.
 
 A mark that has to line up with type derives from the type's own metrics for the same reason. An origin dot centers inside a box one line-height tall, a rail segment spans `calc(1lh / 2)` to the next row rather than a measured offset, and a status dot centers on a box one cap-height tall resting on the label's baseline.
 
