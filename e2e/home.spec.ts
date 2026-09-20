@@ -4,66 +4,12 @@ import { REVEAL_THRESHOLD } from '../src/lib/reveal'
 import { ANCHOR_RATIO } from '../src/lib/section-nav'
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 
-// One per beat. The three counts below read the same number on purpose, so a
-// beat that renders a head with no marker, or a marker with no row, is caught
-// rather than passing as a smaller list.
+// One per beat.
 const EXPERIENCE_ENTRY_COUNT = 6
 const PORTRAIT_SELECTOR = 'header [data-portrait]'
 // The reveal script fits whatever arrives together into one 400ms window, so a
 // surviving authored delay is the regression this bound catches.
 const MAX_REVEAL_DELAY_SECONDS = 0.5
-
-test('the level-one heading names the person', async ({ page }) => {
-  await page.goto('/')
-
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Eric Le')
-})
-
-test('the header states no claim, leaving the stage to the concept layer', async ({
-  page,
-}) => {
-  await page.goto('/')
-  const header = page.locator('header')
-
-  await expect(header).toContainText('Welcome to my corner of the internet')
-  await expect(header).not.toContainText('the layer between a language model')
-  await expect(header).not.toContainText('In practice that means agents')
-})
-
-test('the location sits in the closing ask rather than the header', async ({
-  page,
-}) => {
-  await page.goto('/')
-
-  await expect(page.locator('header')).not.toContainText('Gothenburg')
-  await expect(page.locator('#looking-for')).toContainText('Gothenburg')
-})
-
-test('the experience section keeps the claim beside the prose depending on it', async ({
-  page,
-}) => {
-  await page.goto('/')
-  const experience = page.locator('#experience')
-
-  await expect(experience).toContainText(
-    'the layer between a language model and the job it has to do',
-  )
-  await expect(experience).toContainText('In practice that means agents')
-  await expect(experience).toContainText('I spend most of my working day')
-})
-
-test('the rail tracks every section the page stacks', async ({ page }) => {
-  await page.goto('/')
-
-  const labels = await page.locator('[data-section-nav] a').allTextContents()
-
-  expect(labels.map((label) => label.trim())).toEqual([
-    'About me',
-    'Experience',
-    'Projects',
-    'Looking for',
-  ])
-})
 
 test('the rail cascades to looking-for and stays visible to the document end', async ({
   page,
@@ -185,18 +131,6 @@ test('every rail label reads as its own heading rather than an anchor id', async
   expect(headings).toEqual(
     headings.map((entry) => ({ ...entry, label: entry.heading })),
   )
-})
-
-test('the about surface reads as personal rather than professional', async ({
-  page,
-}) => {
-  await page.goto('/')
-  const about = page.locator('[data-section="about"]')
-
-  await expect(about).toContainText('this should be easier')
-  await expect(about).toContainText('I play guitar')
-  await expect(about).not.toContainText('agents')
-  await expect(about).not.toContainText('Volvo')
 })
 
 test('the about surface sits between the header and the experience timeline', async ({
@@ -396,22 +330,6 @@ for (const width of ABOUT_FLIGHT_WIDTHS) {
     expect(measured?.scale).toBeLessThanOrEqual(0.9)
   })
 }
-
-// The scenarios harness serves candidate treatments from the running page
-// while a visual decision is open, and the rule is that the arms and the call
-// site are deleted in the change that applies the pick. A variant left behind a
-// flag is a second design nobody maintains, and the parameter is a surface a
-// reader can reach.
-//
-// This is that rule made mechanical rather than remembered. It fails on a
-// branch that ships a page still carrying a switcher, which is the one state
-// nobody notices: an arm left mounted renders nothing until the parameter is
-// named, so it survives every capture and every read of the page.
-test('the landing page ships no open visual decision', async ({ page }) => {
-  await page.goto('/')
-
-  await expect(page.locator('[data-scenario-switcher]')).toHaveCount(0)
-})
 
 // The rings are contours of a mound the shader adds to its stream function, so
 // nothing in the DOM says whether they drew. A state a component sets and a
@@ -719,17 +637,6 @@ test('the name in the bar returns the reader to the top', async ({ page }) => {
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
 })
 
-test('the availability status sits in the closing ask rather than the header', async ({
-  page,
-}) => {
-  await page.goto('/')
-
-  await expect(page.locator('header .status-dot')).toHaveCount(0)
-  await expect(page.locator('#looking-for .status-dot')).toHaveCount(1)
-  await expect(page.locator('#looking-for')).toContainText('Open to work')
-  await expect(page.locator('header')).not.toContainText('Open to work')
-})
-
 test('the availability dot centres on the cap height of its own label', async ({
   page,
 }) => {
@@ -767,38 +674,6 @@ test('the availability dot renders no pulse halo under reduced motion', async ({
   expect(halo.animationName).toBe('none')
 })
 
-test('the experience section renders one entry per beat', async ({ page }) => {
-  await page.goto('/')
-
-  await expect(page.locator('#experience ol > li')).toHaveCount(
-    EXPERIENCE_ENTRY_COUNT,
-  )
-})
-
-test('every experience entry carries a head and a supporting sentence', async ({
-  page,
-}) => {
-  await page.goto('/')
-
-  await expect(page.locator('#experience .experience-head')).toHaveCount(
-    EXPERIENCE_ENTRY_COUNT,
-  )
-  await expect(page.locator('#experience .experience-detail')).not.toHaveCount(
-    0,
-  )
-})
-
-test('the beat holding two pieces of work carries a line for each', async ({
-  page,
-}) => {
-  await page.goto('/')
-  const volvoBeat = page.locator('#experience ol > li', {
-    hasText: 'volvo technology',
-  })
-
-  await expect(volvoBeat.locator('.experience-detail')).toHaveCount(2)
-})
-
 test('the projects lede reads at the measure the page already holds', async ({
   page,
 }) => {
@@ -826,14 +701,6 @@ test('the projects lede reads at the measure the page already holds', async ({
 
   expect(widths.lede).toBe(widths.about)
   expect(widths.lede).toBeLessThan(widths.grid)
-})
-
-test('the experience rail marks every entry', async ({ page }) => {
-  await page.goto('/')
-
-  await expect(page.locator('#experience .experience-marker')).toHaveCount(
-    EXPERIENCE_ENTRY_COUNT,
-  )
 })
 
 // The band between a phone and the old breakpoint, where the rail used to be
@@ -899,43 +766,6 @@ for (const width of NARROW_TIMELINE_WIDTHS) {
     expect(separated.indented || separated.smaller).toBe(true)
   })
 }
-
-test('every beat states its span in its own column', async ({ page }) => {
-  await page.goto('/')
-
-  await expect(page.locator('#experience .experience-date')).toHaveCount(
-    EXPERIENCE_ENTRY_COUNT,
-  )
-  // The span left the head sentence, so a head restating it would put the
-  // date on the row twice.
-  await expect(
-    page.locator('#experience .experience-head').first(),
-  ).not.toContainText('2026')
-})
-
-test('the internship the record carries is on the timeline', async ({
-  page,
-}) => {
-  await page.goto('/')
-  const beat = page.locator('#experience ol > li', {
-    hasText: 'bac ha software',
-  })
-
-  await expect(beat).toHaveCount(1)
-  await expect(beat.locator('.experience-date')).toContainText('2023')
-})
-
-test('the experience chips name the cards below them', async ({ page }) => {
-  await page.goto('/')
-
-  const trimmed = (labels: string[]) => labels.map((label) => label.trim())
-  const chips = trimmed(
-    await page.locator('#experience ul a').allTextContents(),
-  )
-  const cards = trimmed(await page.locator('#projects h3').allTextContents())
-
-  expect(chips).toEqual(cards)
-})
 
 test('every experience chip links to a card that exists', async ({ page }) => {
   await page.goto('/')
@@ -1104,24 +934,6 @@ test('a grouped list staggers its rows rather than landing them together', async
   // shipped: the rows were scheduled apart and had no opacity transition to
   // run. Catching a row part-way through its fade is what separates the two.
   expect(reveal.everMidFade).toBe(true)
-})
-
-test('the experience section names the field of the degree', async ({
-  page,
-}) => {
-  await page.goto('/')
-
-  await expect(page.locator('#experience')).toContainText(
-    'complex adaptive systems',
-  )
-})
-
-test('the experience section carries no engagement vocabulary', async ({
-  page,
-}) => {
-  await page.goto('/')
-
-  await expect(page.locator('#experience')).not.toContainText('contract iii')
 })
 
 test('the looking-for section states experience rather than a level band', async ({

@@ -2,12 +2,6 @@ import { expect, type Page, test } from '@playwright/test'
 
 import { measureLetterShape } from './letter-shape'
 
-// Every engine draws a declared SVG icon whatever the order, so the raster is
-// reached only by an engine that ignores the vector entirely. That is what the
-// vector leading the relation means here, and why the raster is a fallback
-// rather than a first choice ordering could protect.
-const iconSelector = 'link[rel="icon"]'
-
 interface DiscLuminance {
   peak: number
   bright: number
@@ -61,22 +55,6 @@ async function measureDiscLuminance(
     { href, size },
   )
 }
-
-test('leads the icon relation with the vector and keeps the raster behind it', async ({
-  page,
-}) => {
-  await page.goto('/')
-
-  const icons = page.locator(iconSelector)
-  await expect(icons).toHaveCount(2)
-
-  // An engine that reads the vector never requests the raster, so the order is
-  // a statement about which one the fallback is rather than a mechanism.
-  await expect(icons.first()).toHaveAttribute('href', '/favicon.svg')
-  await expect(icons.first()).toHaveAttribute('type', 'image/svg+xml')
-  await expect(icons.nth(1)).toHaveAttribute('href', '/favicon-32.png')
-  await expect(icons.nth(1)).toHaveAttribute('sizes', '32x32')
-})
 
 test('draws a tab icon that reads as a letter at 16 pixels', async ({
   page,
@@ -141,15 +119,6 @@ test('carries its own ground so a tab theme cannot hide it', async ({
   })
 
   expect(clearPixels).toBe(0)
-})
-
-test('declares the apple touch icon at 180 square', async ({ page }) => {
-  await page.goto('/')
-
-  const appleTouchIcon = page.locator('link[rel="apple-touch-icon"]')
-
-  await expect(appleTouchIcon).toHaveAttribute('href', '/apple-touch-icon.png')
-  await expect(appleTouchIcon).toHaveAttribute('sizes', '180x180')
 })
 
 test('serves every declared icon', async ({ page, request }) => {

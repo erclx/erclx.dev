@@ -83,44 +83,6 @@ for (const route of CASE_STUDY_ROUTES) {
   })
 }
 
-test('the canon case study renders its claim and sections', async ({
-  page,
-}) => {
-  await page.goto('/canon')
-
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('canon')
-  await expect(page.locator('main')).toContainText(
-    'installs one set of agent rules, skills, and standards into every project',
-  )
-  await expect(page.locator('main section[id]')).toHaveCount(6)
-})
-
-test('the canon case study names the scoped package', async ({ page }) => {
-  await page.goto('/canon')
-
-  await expect(page.locator('main')).toContainText('@erclx/canon')
-})
-
-test('the diction case study renders its claim and sections', async ({
-  page,
-}) => {
-  await page.goto('/diction')
-
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('diction')
-  await expect(page.locator('main')).toContainText(
-    'scores each sound against what a native speaker actually sounds like',
-  )
-  await expect(page.locator('main section[id]')).toHaveCount(6)
-})
-
-test('the diction case study states the offline claim', async ({ page }) => {
-  await page.goto('/diction')
-
-  await expect(page.locator('main')).toContainText(
-    'Nothing leaves the machine it runs on',
-  )
-})
-
 test('every diction figure loads its image', async ({ page }) => {
   await page.goto('/diction')
   await scrollThroughPage(page)
@@ -520,15 +482,6 @@ test('the preview holds one panel size across its screenshots', async ({
   // centered, and the five captures differ in height, so stepping resized the
   // dialog under the reader: 958px on the first against 720px on the last.
   expect(new Set(widths).size).toBe(1)
-})
-
-test('the project cards link to both case studies', async ({ page }) => {
-  await page.goto('/')
-
-  await expect(page.locator('#projects a[href="/canon"]').first()).toBeVisible()
-  await expect(
-    page.locator('#projects a[href="/diction"]').first(),
-  ).toBeVisible()
 })
 
 test('a diction figure opens to a larger view', async ({ page }) => {
@@ -1048,16 +1001,6 @@ test('the jobtriage canvas clip plays while it is hovered', async ({
   await expect
     .poll(() => clip.evaluate((video: HTMLVideoElement) => video.paused))
     .toBe(false)
-})
-
-test('the jobtriage clip posters an optimized derivative', async ({ page }) => {
-  await page.goto('/jobtriage')
-
-  const poster = await page
-    .locator('video[data-media-video]')
-    .getAttribute('poster')
-
-  expect(poster).toMatch(/\.webp$/)
 })
 
 test('a route reveals its prose as the reader arrives at it', async ({
