@@ -47,6 +47,7 @@ The mount reports the photo's centre and radius and nothing else. How far past i
 
 ## Decisions
 
+- A fragment shader rather than a per-frame particle simulation. The relief comes free from the gradient the contour pass already computes, so lighting costs no extra sampling, and the whole surface holds to one frame where a simulation pays for every particle on every frame. § What it draws carries that gradient.
 - Authored rather than installed. `canon/DESIGN.md` § Personality rejects the shortcut rather than the medium, and states what separates the two.
 - Reduced motion draws one frame and runs no loop, rather than hiding for an authored stand-in. One surface answers both preferences and neither can drift from the other. Measured at zero scheduled animation frames over 1500ms against 120 with motion allowed. The click disturbance inherits that for free: the still path attaches no pointer listener at all, so a click there is not suppressed so much as never heard. Verified byte identical after a click and 1.9s later.
 - The inlined SVG fallback is reached where WebGL is missing, where the program fails to build, and where the context is lost. A band with nothing behind it reads as a broken page rather than a quiet one. A restore that rebuilds the renderer hides it again, so a context the browser drops and returns leaves no trace.
