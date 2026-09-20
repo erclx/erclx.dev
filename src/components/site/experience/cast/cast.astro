@@ -250,6 +250,8 @@ const reactionsFor = (mood: MoodId, hasMark: boolean) =>
 <script>
   import { hasHoverPointer } from '@/lib/pointer'
 
+  import { startScheduler } from './scheduler'
+
   // Arrival is gated on the section reaching the reader rather than on load, so
   // the spawn is something they cause by scrolling to it.
   const field = document.querySelector<HTMLElement>('[data-cast-field]')
@@ -351,30 +353,6 @@ const reactionsFor = (mood: MoodId, hasMark: boolean) =>
     }
 
     /**
-     * One member acts on its own every few seconds, and never two at once.
-     *
-     * `canon/ARCHITECTURE.md` records expressive motion being moved to a
-     * pointer on the reading that a margin full of characters performing at a
-     * reader who has not looked at them is the ambient motion problem
-     * restated. This does not reverse that. The band `canon/DESIGN.md` bars
-     * is *sustained* motion with no fixed reference, at 4 to 11px per second,
-     * and every term here is a reaction that crosses it in a fraction of its
-     * own cycle. What changes is who triggers one, not what a trigger runs.
-     *
-     * So the whole of it is a scheduler over the reactions that already exist.
-     * It writes the same `data-reacting` a tap writes and the same
-     * `animationend` clears it, which is why no keyframe and no selector moved
-     * for this.
-     */
-    const SOLO_GAP_MS = 5200
-    /** Spread, so the cast never settles into a countable rhythm. */
-    const SOLO_JITTER_MS = 2600
-
-    const members = [
-      ...field.querySelectorAll<HTMLElement>('[data-cast-member]'),
-    ]
-
-    /**
      * Whether the section is on screen. A member acting behind the reader is
      * the ambient motion complaint with none of the payoff, and it is also the
      * only part of this that costs anything when nobody is looking.
@@ -392,56 +370,22 @@ const reactionsFor = (mood: MoodId, hasMark: boolean) =>
 
     const stillMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
-    const actOnce = () => {
-      // A reader's own pointer outranks the schedule, and a member already
-      // moving is what the one-at-a-time rule is about. Both are read off the
-      // page rather than tracked, so nothing here can disagree with it.
-      if (!watching || document.hidden || stillMotion.matches) return
-      if (field.querySelector('[data-reacting]')) return
-      // Gated on the same pointer test the hover reactions answer to. WebKit
-      // applies `:hover` to a tapped element and holds it until something else
-      // is tapped, so ungated this silences the scheduler for the life of the
-      // page the moment a reader taps a member on a touch screen. The failure
-      // is silence, which is indistinguishable from a cast that is quiet on
-      // purpose.
-      if (
-        field.dataset.pointer !== undefined &&
-        field.querySelector('[data-cast-member]:hover')
-      )
-        return
-
-      const idle = members.filter(
-        (member) => member.dataset.reacting === undefined,
-      )
-      if (idle.length === 0) return
-
-      const chosen = idle[Math.floor(Math.random() * idle.length)]
-      chosen.dataset.reacting = ''
-
-      // A term that starts no animation is never ended by one, which is the
-      // trap the tap path already carries. Here it costs more, because a
-      // member left marked would take the scheduler's one slot for the life of
-      // the page and the cast would go quiet with nothing saying why.
-      window.setTimeout(() => {
-        if (!isReacting(chosen)) settle(chosen)
-      }, STILL_REACTION_MS)
-    }
-
-    // The handle is kept so the loop can be stopped. Nothing tears this page
-    // down in normal use, which is why it costs nothing to hold, and a timer
-    // that re-arms itself with no way to clear it is the shape the concurrency
-    // standard bars whatever the page does.
-    let pending = 0
-    const schedule = () => {
-      pending = window.setTimeout(
-        () => {
-          actOnce()
-          schedule()
-        },
-        SOLO_GAP_MS + Math.random() * SOLO_JITTER_MS,
-      )
-    }
-    schedule()
-    window.addEventListener('pagehide', () => window.clearTimeout(pending))
+    // Everything the loop cannot read for itself outside a browser is handed
+    // over here, and the page's own state stays on the page: the module goes on
+    // querying `field` for the pointer and the in-flight member rather than
+    // tracking either. `scheduler.ts` carries the policies and its own tests.
+    const stop = startScheduler({
+      field,
+      isWatching: () => watching,
+      isPageHidden: () => document.hidden,
+      prefersStillMotion: () => stillMotion.matches,
+      isReacting,
+      settle,
+      random: Math.random,
+      setTimer: (run, delayMs) => window.setTimeout(run, delayMs),
+      clearTimer: (handle) => window.clearTimeout(handle),
+      reactionMs: STILL_REACTION_MS,
+    })
+    window.addEventListener('pagehide', stop)
   }
 </script>
