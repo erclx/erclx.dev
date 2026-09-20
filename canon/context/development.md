@@ -49,6 +49,7 @@ A diff adding a new top-level folder under `src/` drafts that domain's `canon/co
 | Command                    | Purpose                                                                                                                |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `bun run check`            | Full verification. Auto-formats, then asserts clean.                                                                   |
+| `bun run check:record`     | Run `canon context audit --gate` through `bunx`: citations, decision cap, required sections, index drift.              |
 | `bun run format`           | Auto-fix prettier and shfmt formatting.                                                                                |
 | `bun run clean`            | Wipe `node_modules/`, clear bun cache, reinstall.                                                                      |
 | `bun run update`           | Interactive `bun update` followed by verification.                                                                     |

@@ -53,6 +53,9 @@ jobs:
       - name: Check Shell
         run: bun run check:shell
 
+      - name: Check Record
+        run: bun run check:record
+
   unit-tests:
     name: 🧪 Unit Tests
     runs-on: ubuntu-latest
