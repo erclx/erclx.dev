@@ -1,4 +1,4 @@
-import { errors, expect, type Page, test } from '@playwright/test'
+import { expect, type Page, test } from '@playwright/test'
 
 import { contrastRatio, paintedColor } from './colors'
 
@@ -13,31 +13,59 @@ import { contrastRatio, paintedColor } from './colors'
 // six pages in both themes and groups every focusable control by its full
 // treatment, which is the reading a per-component look cannot give.
 
+// The giving-up point for a scripted focus that never reports `:focus-visible`,
+// on the two engines that carry keyboard modality across one. A Firefox settle
+// has been measured taking several seconds at heavy CPU throttle, so this is the
+// point at which the engine is treated as having stopped answering rather than a
+// guess at how long settling takes.
+const SETTLE_BOUND = 15000
+
+// WebKit's fallback trigger, which is a different quantity from the bound above
+// even though one number replaced the other. It is compared against one call, so
+// the figure that decides whether a healthy control trips it is the slowest
+// single call rather than any loop total. Measured per call on webkit at
+// 1440x900 under two-core contention: 124ms at worst across three runs of the
+// four sampled controls, against this 2000ms. A loop total is the wrong reading
+// here, since `settle` dominates it and a four-control loop at 2.5s can hide one
+// call at 2.1s. This only has to be long enough to tell a slow settle from an
+// engine that will not carry the mode, rather than long enough to be a settle.
+const WEBKIT_FALLBACK_BOUND = 2000
+const WEBKIT_FALLBACK_POLL = 50
+
 /**
  * Reached by keyboard rather than by `.focus()`, which is what `:focus-visible`
  * keys on.
  *
- * The round trip is verified rather than assumed. Focus changes the layout on
- * this site: the dock's link stack is faded until something inside it holds
- * focus, so stepping off it collapses the set and the return step does not
- * always land back on the same control. Under three parallel workers that put
- * focus somewhere else in Firefox and WebKit, and every ring reading after it
- * described a control the test was not looking at, reported as a control with
- * no ring at all.
+ * The round trip is verified rather than assumed, since focus changes the layout
+ * on this site and a step that lands elsewhere reports whatever holds focus
+ * instead.
+ *
+ * Its scripted-focus path also holds the page where `settle` put it. A caller
+ * walking `SAMPLED` focuses four controls in turn, and any step that scrolls
+ * puts the hero back on screen, which re-arms the scroll-gated controls the
+ * later iterations reach. The WebKit Tab walk below is the one path that does
+ * move the page, since it reaches its target the way a reader does. It is a
+ * fallback rather than the ordinary route, and the precondition below names the
+ * inert control rather than timing out if the move does cost a later iteration.
  */
 async function tabTo(page: Page, selector: string, index = 0) {
-  // Modality first, then focus directly. Stepping off a control and back is
-  // what puts an engine in keyboard mode, and it cannot be done per control
-  // here: the dock's link stack is faded until something inside it holds focus,
-  // so stepping off collapses the set and the return step lands elsewhere. That
-  // failed under parallel workers in Firefox and WebKit, and every ring reading
-  // after it described a control the test was not looking at.
+  // Keyboard modality is established once per page, by `settle`, rather than
+  // once per call here. A Tab press moves focus to the next control in document
+  // order and the engine scrolls that control into view, so a press per call
+  // moved the page this walk is measuring. Measured on firefox at 1440x900: the
+  // press opening the second call left the page at `scrollY=40` with the dock
+  // inert, against 1700 across all four controls when the press happens once in
+  // `settle`. `:focus-visible` reads true on every control either way, so the
+  // mode does survive the move.
   //
-  // One Tab establishes the mode for the page, and `:focus-visible` is then
-  // asserted rather than assumed, so a browser that does not carry the mode
-  // across a scripted focus fails here rather than reporting a control with no
-  // ring.
-  await page.keyboard.press('Tab')
+  // Stepping off a control and back is the other way to establish the mode, and
+  // it is unavailable here: the dock's link stack is faded until something
+  // inside it holds focus, so stepping off collapses the set and the return step
+  // lands elsewhere. That failed under parallel workers in Firefox and WebKit,
+  // and every ring reading after it described a control the test was not looking
+  // at. `:focus-visible` is asserted below rather than assumed, so a browser
+  // that does not carry the mode across a scripted focus fails there rather than
+  // reporting a control with no ring.
   const target = page.locator(selector).nth(index)
   const visiblyFocused = () =>
     target.evaluate(
@@ -45,48 +73,72 @@ async function tabTo(page: Page, selector: string, index = 0) {
         document.activeElement === element && element.matches(':focus-visible'),
     )
 
-  await target.evaluate((element) => (element as HTMLElement).focus())
+  // Whether the target can take focus is read at the moment of use rather than
+  // trusted from the reveal attributes `settle` asserted, because an earlier
+  // iteration of this same walk can revoke them. An inert element refuses focus
+  // and reports nothing, so without this the settle below spends its whole bound
+  // against a condition that can never become true and then names a timeout
+  // rather than a cause. Keyed on `inert` rather than on visibility: `inert` is
+  // what refuses focus here, and the controls this file samples are legitimately
+  // off screen at the position `settle` scrolls to.
+  const inertHost = await target.evaluate((element) => {
+    const host = element.closest('[inert]')
+    if (!host) return null
+    const marks = [...host.attributes]
+      .filter((attribute) => attribute.name.startsWith('data-'))
+      .map((attribute) => ` ${attribute.name}`)
+      .join('')
+    return `<${host.tagName.toLowerCase()}${marks}>`
+  })
+  if (inertHost) {
+    throw new Error(
+      `${selector} [${index}] cannot take focus: it sits inside an inert ${inertHost}`,
+    )
+  }
+
+  // `preventScroll`, the walk's second scroll source after the Tab press above.
+  // A bare `focus()` on `SAMPLED[0]` puts the page at `scrollY=40` against the
+  // 1700 `settle` set, which brings the hero back on screen and has the dock's
+  // reveal gate set `inert` on a control a later iteration reaches. The dock is
+  // behaving correctly there. The walk was asserting reveal attributes for one
+  // scroll position and then reading them at another.
+  await target.evaluate((element) =>
+    (element as HTMLElement).focus({ preventScroll: true }),
+  )
 
   // Settled on the browser's own focus-visible determination rather than
   // paused for a fixed span. Firefox failed on the trunk reading this after a
   // flat 80ms: `:focus-visible` mode does not always land inside that window
   // once a runner is loaded, and the same evaluate round trip that carries the
   // focus() call already absorbs most of the delay under load, measured up to
-  // several seconds at heavy CPU throttle. The bound is the giving-up point,
-  // not a guess at how long settling takes.
+  // several seconds at heavy CPU throttle.
   const isWebKit = page.context().browser()?.browserType().name() === 'webkit'
-  try {
+  if (!isWebKit) {
     await page.waitForFunction(
       (element) =>
         document.activeElement === element &&
         (element as HTMLElement).matches(':focus-visible'),
       await target.elementHandle(),
-      { timeout: 15000 },
+      { timeout: SETTLE_BOUND },
     )
     return target
-  } catch (error) {
-    if (!(error instanceof errors.TimeoutError)) throw error
-    // The walk below exists for WebKit alone, per its own comment: a browser
-    // that does not carry keyboard modality across a scripted focus, not a
-    // browser running slowly. A timeout on any other engine throws here
-    // rather than falling into it. The walk's own per-press check reads
-    // `:focus-visible` once right after each `Tab`, with no settle of its
-    // own, so a Firefox that reached this catch would walk past the right
-    // control without ever reading it as focused, exhausting all 80 presses.
-    // That is this file's own recorded trunk failure for this exact walk.
-    // A single-variable CI experiment later confirmed the gate is not
-    // load-bearing on Firefox: with the settle at its current 15000ms bound,
-    // Firefox passed on all three engines whether the walk was reachable or
-    // not, so gating it here throws loudly instead of absorbing a future
-    // Firefox settle failure into an unrelated engine's fallback path.
-    if (!isWebKit) throw error
-    // Falls through to the bounded Tab walk below.
   }
 
   // WebKit does not carry keyboard modality across a scripted focus on every
-  // control, so the fallback reaches the target the way a reader does. Bounded
-  // rather than open, and it throws on exhaustion, since a walk that quietly
-  // gives up leaves the caller reading whatever holds focus instead.
+  // control, and the Tab walk below is the fallback for that. Whether it is
+  // needed is read as a predicate rather than caught as a `TimeoutError`, since
+  // an engine capability decided by an exception is control flow through
+  // exceptions, and a bound that doubles as a branch cannot be shortened
+  // without also shortening the settle it is not.
+  const deadline = Date.now() + WEBKIT_FALLBACK_BOUND
+  do {
+    if (await visiblyFocused()) return target
+    await page.waitForTimeout(WEBKIT_FALLBACK_POLL)
+  } while (Date.now() < deadline)
+
+  // The walk reaches the target the way a reader does. Bounded rather than
+  // open, and it throws on exhaustion, since a walk that quietly gives up
+  // leaves the caller reading whatever holds focus instead.
   await page.evaluate(() => (document.activeElement as HTMLElement)?.blur())
   for (let press = 0; press < 80; press++) {
     await page.keyboard.press('Tab')
@@ -97,6 +149,11 @@ async function tabTo(page: Page, selector: string, index = 0) {
 
 async function settle(page: Page) {
   await page.goto('/')
+
+  // The one Tab press of the run, taken here rather than inside `tabTo` so it
+  // happens before the scroll below and never moves the page afterwards.
+  // `tabTo` carries why.
+  await page.keyboard.press('Tab')
   await page.evaluate(() => window.scrollTo({ top: 1700, behavior: 'instant' }))
   await page.evaluate(() => {
     for (const element of document.querySelectorAll(

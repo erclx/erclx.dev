@@ -100,6 +100,42 @@ The tap-target guard asserts its exempt set by reading each element's class list
 
 The two outline readings were measured at 63bfea1 on 2026-08-22, at 1440x900 across chromium, firefox, and webkit. The tap-target reading came from the prose-link decision and carries no stamp of its own.
 
+The section below is the neighboring case and a different one. All three instruments here misread a control that never moved, where the one below records a harness reading a control its own earlier step had changed.
+
+## The focus walk scrolled the page it was measuring, and the dock closed behind it
+
+`e2e/focus-ring.spec.ts` produced every false red the gate carried for four days. Across twenty-six completed runs ending 2026-09-20, six went red, the firefox leg appears in all six, and this file appears in all six. Five of those six carried no other failure on any engine.
+
+`settle` scrolls to `scrollY=1700` and force-sets the reveal attributes on the dock, the rail, and the bar. The walk then moved the page out from under that position twice over. `tabTo` focused each control with a bare `element.focus()`, which scrolls, and it opened every call with a `Tab` press, which moves focus to the next control in document order and lets the engine scroll that one into view. Either step puts the hero back on screen, and the dock's reveal gate then sets `inert` on a control a later iteration is about to reach.
+
+An inert element refuses focus and reports nothing. The wait spent its whole bound against a condition that could never become true, then named a timeout rather than a cause.
+
+Measured on firefox at 1440x900 against the built site. After `settle` the page sits at 1700 with the dock carrying `data-revealed="true"` and no `inert`. A bare `element.focus()` on `header a` leaves it at 40 with the dock inert and the dock link refusing focus.
+
+Adding `preventScroll` alone holds the first control at 1700 and still fails at the second, where the `Tab` press opening that call leaves the page at 40. Pressing `Tab` once in `settle` and focusing with `preventScroll` holds 1700 across all four.
+
+`:focus-visible` reads true on every control under each of those arrangements, so keyboard modality survives being established once per page rather than once per call. The helper's own comment had claimed that for as long as the per-call press had been contradicting it.
+
+Treat the two repairs as one fact. A harness asserting a page state and reading it later has to keep every step between the two from changing that state, and both offending steps belonged to the walk.
+
+The failing set names the loop rather than any one control. `every control marks focus in the accent rather than a color of its own` and `no ring is drawn square around a control` walk all four entries of `SAMPLED`, and they are the only two that failed. The three tests calling `tabTo` once have never failed in the window, and one of them focuses the same dock link.
+
+The failure is intermittent because it is a race rather than a load problem. Nothing waits for the hero's observer between the focus and the wait, so a run whose round trips beat the observer callback still passes. Load changes who wins, which is why the red tracks a busy runner without being caused by one.
+
+### The repair, and the part of it that is not the fix
+
+`tabTo` reads `inert` on the element or any ancestor immediately before focusing, and raises naming the inert host. Keyed on `inert` rather than on visibility, since `inert` is what refuses focus here and the sampled controls are legitimately off screen at the position `settle` scrolls to. Under contention that precondition named the dock in 2.9 seconds, where the wait had taken fifteen to say nothing.
+
+The fifteen-second bound was never the cause and shortening it would have fixed nothing. It was named as the root cause earlier in the same session and disproved by probe. A diff touching it is a readability change rather than the repair, which is worth stating because the bound is the most visible line in that diff.
+
+Whether webkit needs the Tab walk is read as a predicate rather than caught as a `TimeoutError`. Catching one is control flow through exceptions, and it also welds an engine branch to a settle budget, so neither can move without the other. Webkit's fallback trigger sits at 2 seconds now and the settle the other two engines take stays at 15.
+
+Read that trigger against one call rather than against a loop. It is compared per call, so a four-control loop measured at 2.5s says nothing on its own: the same total covers one call at 2.1s with three at 0.15s, which would trip it. Measured per call on webkit at 1440x900 under two-core contention, the slowest single call runs 124ms against the 2000ms trigger, and the loop total is dominated by `settle` rather than by the focus calls. A large rise in the per-call figure is what means the trigger is sending a healthy control into the walk.
+
+Holding the page at 1700 changes the scroll position the two theme assertions read their grounds at, and the readings do not move. `the ring clears the contrast floor for an indicator in <theme>` measures 5.480 against the page, 5.781 against the dock, and 5.781 against the bar in light, and 5.418, 4.905, and 4.905 in dark. Those are identical at 40 and at 1700 to three decimals. The bar's shape is scroll-dependent and its painted ground is not, which is the distinction that makes the move safe.
+
+Measured against `d0b78e5` on 2026-09-20, on firefox at 1440x900 under `xvfb-run` with `CI=1`, and reproduced pinned to two cores with six spinners.
+
 ## Firefox needs a software GL driver and a pref, and a red engine needs a trace
 
 The first widened run went red on firefox alone, four cases in `e2e/header-shader.spec.ts` against 147 passing, while chromium and webkit passed on the same machine. All four are one cause: `mount.ts` reveals the fallback when it cannot draw, and `revealFallback` sets `canvas.style.display` to `none`, which fails the geometry case, the paint case, the reduced-motion case, and the case asserting the fallback is hidden at rest.
@@ -293,6 +329,11 @@ touched it, climbing to 1.8 to 2.2s at 40x and 3.8 to 7.1s at 80x. The shipped
 80ms pause was marginal from the start on this hardware. Fixed with
 `page.waitForFunction` polling the same predicate the pause used to check
 once, bounded at 15000ms, and verified 6 of 6 on chromium, firefox, and webkit.
+
+That single bound later split per engine. Chromium and firefox keep the 15000ms
+settle, and webkit reads a 2000ms predicate instead, which decides whether its
+Tab walk is needed. § The focus walk scrolled the page it was measuring carries
+why.
 
 The first attempt at this bound was 8000ms and it was not enough on GitHub's
 own runner. Firefox failed there with the settle correctly giving up and
