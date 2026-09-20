@@ -2,66 +2,27 @@ import { expect, test } from '@playwright/test'
 
 import {
   MEMBER,
+  SCHEDULER_ACT_MS,
   SCHEDULER_TEST_MS,
-  SCHEDULER_WATCH_MS,
   settleCast,
   WIDE,
 } from './cast-helpers'
 
-// Split out of cast.spec.ts: these three each watch a wall clock for
-// SCHEDULER_WATCH_MS, about 70s combined against the sixteen tests left in
-// that file at about 45s, so keeping them there set the floor one worker held
-// the whole file to regardless of how many workers CI has. `canon/context/ci.md`
-// records the measured seam.
+// One test, where there were three. The scheduler is a module now, at
+// `src/components/site/experience/cast/scheduler.ts`, driven by an injected
+// clock, so the one-at-a-time rule and the reduced-motion gate are proved in
+// the unit runner in milliseconds rather than watched against a wall clock
+// here. What is left is the case no fake clock reaches: WebKit's own hit
+// testing after a tap.
 
 test.describe('agent cast', () => {
-  // The scheduler is the one term that runs without a reader asking for it, so
-  // it answers to three things and each is the defect its own class has. A
-  // second member moving at the same time is what turns a margin into a
-  // performance. A term that fires nothing is indistinguishable from a broken
-  // selector unless something proves it can still fire. And a member left
-  // marked holds the scheduler's only slot for the life of the page.
-  test('lets one member act on its own, and never two', async ({ page }) => {
-    test.setTimeout(SCHEDULER_TEST_MS)
-    await page.setViewportSize(WIDE)
-    await settleCast(page)
-
-    const watched = await page.evaluate(
-      async ({ member, watchMs }) => {
-        const members = [...document.querySelectorAll<HTMLElement>(member)]
-        let starts = 0
-        let mostAtOnce = 0
-        const wasActive = new Array<boolean>(members.length).fill(false)
-
-        const until = performance.now() + watchMs
-        while (performance.now() < until) {
-          let atOnce = 0
-          members.forEach((one, index) => {
-            const on = one.dataset.reacting !== undefined
-            if (on) {
-              atOnce += 1
-              if (!wasActive[index]) starts += 1
-            }
-            wasActive[index] = on
-          })
-          mostAtOnce = Math.max(mostAtOnce, atOnce)
-          await new Promise((resolve) => window.setTimeout(resolve, 50))
-        }
-        return { starts, mostAtOnce }
-      },
-      { member: MEMBER, watchMs: SCHEDULER_WATCH_MS },
-    )
-
-    expect(watched.starts).toBeGreaterThan(0)
-    expect(watched.mostAtOnce).toBe(1)
-  })
-
   // The scheduler stands down while a pointer rests on a member, and WebKit
   // applies `:hover` to a tapped element and holds it. Ungated, one tap on a
   // touch screen silences the cast for the life of the page, and silence is
   // indistinguishable from a cast that is quiet on purpose. The tap is made
   // through the touch path rather than by calling `hover()`, since the point is
-  // what a device without a hover pointer leaves behind.
+  // what a device without a hover pointer leaves behind. jsdom matches `:hover`
+  // for nobody, so this cannot move down a layer.
   test('goes on acting after a member is tapped on a touch screen', async ({
     browser,
   }) => {
@@ -106,54 +67,20 @@ test.describe('agent cast', () => {
       { timeout: 5000 },
     )
 
-    const acted = await page.evaluate(
-      async ({ member, watchMs }) => {
-        const members = [...document.querySelectorAll<HTMLElement>(member)]
-        let starts = 0
-        const wasActive = new Array<boolean>(members.length).fill(false)
-        const until = performance.now() + watchMs
-        while (performance.now() < until) {
-          members.forEach((one, index) => {
-            const on = one.dataset.reacting !== undefined
-            if (on && !wasActive[index]) starts += 1
-            wasActive[index] = on
-          })
-          await new Promise((resolve) => window.setTimeout(resolve, 50))
-        }
-        return starts
-      },
-      { member: MEMBER, watchMs: SCHEDULER_WATCH_MS },
-    )
+    // The wait is the assertion: it resolves on the scheduler's next act and
+    // throws on the budget, which is exactly what going on acting means. The
+    // tap's own reaction was awaited above and nothing but the scheduler marks
+    // a member after it, so the first mark to appear is the one under test.
+    //
+    // Settled on that act rather than counting starts across a fixed window. A
+    // window is spent in full on every pass, and sizing one to clear a 7.8s gap
+    // on a loaded runner is the trade that made these tests expensive.
+    const acting = page.locator(`${MEMBER}[data-reacting]`).first()
 
-    await context.close()
-
-    expect(acted).toBeGreaterThan(0)
-  })
-
-  test('holds the cast still for a reader who asked for less motion', async ({
-    page,
-  }) => {
-    test.setTimeout(SCHEDULER_TEST_MS)
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.setViewportSize(WIDE)
-    await settleCast(page)
-
-    const acted = await page.evaluate(
-      async ({ member, watchMs }) => {
-        const members = [...document.querySelectorAll<HTMLElement>(member)]
-        let seen = 0
-        const until = performance.now() + watchMs
-        while (performance.now() < until) {
-          seen += members.filter(
-            (one) => one.dataset.reacting !== undefined,
-          ).length
-          await new Promise((resolve) => window.setTimeout(resolve, 50))
-        }
-        return seen
-      },
-      { member: MEMBER, watchMs: SCHEDULER_WATCH_MS },
-    )
-
-    expect(acted).toBe(0)
+    try {
+      await expect(acting).toBeAttached({ timeout: SCHEDULER_ACT_MS })
+    } finally {
+      await context.close()
+    }
   })
 })
