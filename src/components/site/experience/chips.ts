@@ -32,8 +32,40 @@ const STEP_MS = 90
  * with the row at the edge of the viewport sits inside it, so no amount of
  * scroll jitter re-fires the wave.
  */
-const ENTER_RATIO = 0.6
-const REARM_RATIO = 0
+export const ENTER_RATIO = 0.6
+export const REARM_RATIO = 0
+
+export interface ChipRowState {
+  readonly isArmed: boolean
+}
+
+export type ChipRowEvent =
+  | { kind: 'seen'; ratio: number; isMotionReduced: boolean }
+  | { kind: 'motion-reduced' }
+
+export type ChipRowAction = 'wave' | 'darken' | 'none'
+
+/**
+ * Decides what the row does next. Reduced motion spends the arming without a
+ * wave, so a reader who turns it off mid-read is not waved at on the way back.
+ */
+export function reduceChipRow(
+  state: ChipRowState,
+  event: ChipRowEvent,
+): { state: ChipRowState; action: ChipRowAction } {
+  if (event.kind === 'motion-reduced') return { state, action: 'darken' }
+
+  if (event.ratio <= REARM_RATIO) {
+    return { state: { isArmed: true }, action: 'darken' }
+  }
+  if (state.isArmed && event.ratio >= ENTER_RATIO) {
+    return {
+      state: { isArmed: false },
+      action: event.isMotionReduced ? 'none' : 'wave',
+    }
+  }
+  return { state, action: 'none' }
+}
 
 const LIST = '[data-chip-row]'
 const CHIP = '[data-chip]'
@@ -47,7 +79,14 @@ export function initChipLife(): void {
 
   const stillWanted = window.matchMedia('(prefers-reduced-motion: reduce)')
 
-  let isArmed = true
+  let state: ChipRowState = { isArmed: true }
+
+  const apply = (event: ChipRowEvent) => {
+    const outcome = reduceChipRow(state, event)
+    state = outcome.state
+    if (outcome.action === 'wave') wave()
+    if (outcome.action === 'darken') darken()
+  }
 
   // Every timer a wave has in flight: one per chip still waiting to light, one
   // per chip already lit and waiting to go out. darken() clears all of them, so
@@ -93,13 +132,11 @@ export function initChipLife(): void {
   const watcher = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
-        if (entry.intersectionRatio <= REARM_RATIO) {
-          isArmed = true
-          darken()
-        } else if (isArmed && entry.intersectionRatio >= ENTER_RATIO) {
-          isArmed = false
-          if (!stillWanted.matches) wave()
-        }
+        apply({
+          kind: 'seen',
+          ratio: entry.intersectionRatio,
+          isMotionReduced: stillWanted.matches,
+        })
       }
     },
     { threshold: [REARM_RATIO, ENTER_RATIO] },
@@ -109,6 +146,6 @@ export function initChipLife(): void {
   // A reader can turn the preference on while the page is open, and a wave
   // already in flight has to come down rather than play out.
   stillWanted.addEventListener('change', () => {
-    if (stillWanted.matches) darken()
+    if (stillWanted.matches) apply({ kind: 'motion-reduced' })
   })
 }

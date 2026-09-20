@@ -12,6 +12,8 @@ export default getViteConfig({
       '**/.astro/**',
       '**/e2e/**',
       '**/.{idea,git,cache,output,temp}/**',
+      '.claude/worktrees/**',
+      '.canon/**',
     ],
     coverage: {
       provider: 'v8',
