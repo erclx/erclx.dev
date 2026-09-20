@@ -56,7 +56,7 @@ The emptiness is deliberate. The band is a stage held open for an authored real-
 
 ## Shader field signature
 
-An authored WebGL surface renders behind the header band as the page's visual signature, and the same drawing continues under the whole page at a fraction of its weight. It replaced a particle canvas on 2026-08-20. See `.claude/context/shader-field.md` for the mount lifecycle, the uniform contract, and the reduced-motion still, and `.claude/context/page-ground.md` for the layer under the page.
+An authored WebGL surface renders behind the header band as the page's visual signature, and the same drawing continues under the whole page at a fraction of its weight. It replaced a particle canvas on 2026-08-20. See `canon/context/shader-field.md` for the mount lifecycle, the uniform contract, and the reduced-motion still, and `canon/context/page-ground.md` for the layer under the page.
 
 The surface answers a pointer two ways. Resting on it raises a hill the contours bend around, and clicking drops a disturbance that travels outward from where the click landed, bends the field it crosses, and fades to nothing. Both are read as displacement rather than as color, so the band never lights up under a reader.
 
