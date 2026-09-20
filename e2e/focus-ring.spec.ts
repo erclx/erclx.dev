@@ -21,12 +21,14 @@ import { contrastRatio, paintedColor } from './colors'
 const SETTLE_BOUND = 15000
 
 // WebKit's fallback trigger, which is a different quantity from the bound above
-// even though one number replaced the other. WebKit ran the whole four-control
-// loop of `every control marks focus in the accent` in 1.6s on the last green
-// run of `main`, run `35485018463`, so the scripted-focus path is succeeding
-// there and the Tab walk is reached rarely if at all. This only has to be long
-// enough to tell a slow settle from an engine that will not carry the mode,
-// rather than long enough to be a settle.
+// even though one number replaced the other. It is compared against one call, so
+// the figure that decides whether a healthy control trips it is the slowest
+// single call rather than any loop total. Measured per call on webkit at
+// 1440x900 under two-core contention: 124ms at worst across three runs of the
+// four sampled controls, against this 2000ms. A loop total is the wrong reading
+// here, since `settle` dominates it and a four-control loop at 2.5s can hide one
+// call at 2.1s. This only has to be long enough to tell a slow settle from an
+// engine that will not carry the mode, rather than long enough to be a settle.
 const WEBKIT_FALLBACK_BOUND = 2000
 const WEBKIT_FALLBACK_POLL = 50
 

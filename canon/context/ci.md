@@ -130,7 +130,7 @@ The fifteen-second bound was never the cause and shortening it would have fixed 
 
 Whether webkit needs the Tab walk is read as a predicate rather than caught as a `TimeoutError`. Catching one is control flow through exceptions, and it also welds an engine branch to a settle budget, so neither can move without the other. Webkit's fallback trigger sits at 2 seconds now and the settle the other two engines take stays at 15.
 
-Webkit ran all four controls in 1.6s on run `35485018463` and 940ms locally, so its scripted-focus path is succeeding and the walk is reached rarely. A large rise in that figure means the trigger is sending a healthy control into the walk.
+Read that trigger against one call rather than against a loop. It is compared per call, so a four-control loop measured at 2.5s says nothing on its own: the same total covers one call at 2.1s with three at 0.15s, which would trip it. Measured per call on webkit at 1440x900 under two-core contention, the slowest single call runs 124ms against the 2000ms trigger, and the loop total is dominated by `settle` rather than by the focus calls. A large rise in the per-call figure is what means the trigger is sending a healthy control into the walk.
 
 Holding the page at 1700 changes the scroll position the two theme assertions read their grounds at, and the readings do not move. `the ring clears the contrast floor for an indicator in <theme>` measures 5.480 against the page, 5.781 against the dock, and 5.781 against the bar in light, and 5.418, 4.905, and 4.905 in dark. Those are identical at 40 and at 1700 to three decimals. The bar's shape is scroll-dependent and its painted ground is not, which is the distinction that makes the move safe.
 
