@@ -28,6 +28,8 @@ Color travels through three layers in `global.css`, and an edit at the wrong one
 - `.dark` redeclares the same property names with the dark values. A property declared in `:root` and missing here keeps its light value in dark mode rather than failing
 - `@theme inline` maps each bare property to its Tailwind color name, such as `--color-background: var(--background)`. This is what makes `bg-background` resolve, and a new token needs an entry here or the utility does not exist
 
+That third layer bakes whatever it is given. `@theme inline` writes the value into the generated utility rather than a reference to it, so a token declared there as a literal cannot be overridden by any downstream scope: `--text-body: 1.0625rem` inside the block reaches every `text-body` utility as that number and a scoped redeclaration never lands. The color tokens escape it only because each one resolves to a `var()` instead, which is the whole reason `.dark .figure-plate` can rebind anything at all. A step that has to vary by scope takes the same shape, resolving through a property declared in `:root`, which is how the two type steps reach the case-study routes through `--body-size` and `--lede-size`. Read a scoped override that silently does nothing as this trap before reading it as a specificity problem.
+
 Values are authored in oklch rather than hex. The lightness channel is perceptually uniform, so a light and dark pair can hold the same chroma and hue while differing only in lightness. `canon/DESIGN.md` § Color states these as intent and is the source for what a role means.
 
 A fourth group sits above the light palette. `--light-card`, `--light-muted-foreground`, and `--light-ring` are declared in `:root` and deliberately never in `.dark`, so they hold one value under either theme. The light declarations point at them and so does `.dark .figure-plate`, which is what lets a surface pinned to the light palette follow an edit rather than hold a copy of it. Add one only for a token a pinned surface consumes, since a light alias no plate reads is a second name for a value that already has one.
@@ -38,6 +40,12 @@ Two ceilings bound every treatment built on these tokens, and neither is visible
 
 - Nothing separates below `--muted-foreground`. It measures 4.82:1 against the light page and 7.80:1 against the dark one, so a value stepped beneath it fails the 4.5:1 floor for text at any lightness visible enough to read as a second layer. A 65% mix of it measures 2.53:1 and shipped once before anyone read it. Separate two text layers by weight, size, or the space between them, and treat lightness as already spent.
 - A fill drawn from `--card` tops out at 1.10:1. The token is pure white against a light page at `oklch(0.968)`, and a floating control reaches 1.09:1 in practice. Further separation comes from the edge or the shadow, and the themes disagree about which carries it: light gets its separation from the shadow while the edge barely registers at 1.06:1, and dark gets it from the edge at 1.19:1 while the shadow is invisible. A treatment answering one theme answers neither.
+
+Both ceilings are read off painted pixels rather than off composited token values, and that is a requirement rather than a preference. A floating control carries a `backdrop-filter`, which samples whatever sits behind the element, so no arithmetic over the declared tokens reproduces what a reader actually sees. A reading taken the other way reports separation the page does not have.
+
+Two measurement errors are cheap to repeat and both report a number nobody sees. A patch sampled at the corner of a bounding box misses a circular control entirely and reads the page behind it. And a color carrying alpha, read as though it were opaque, names a value that was never painted. Both have produced confident readings of surfaces that measured nothing of the kind.
+
+A third ceiling bounds the response set rather than the fill. Held at one edge color, a pointer's effect on fill and shadow sits inside the noise a ground's own drift already produces, so the border color carries nearly all of the visible weight of a pointer response. A proposal separating two states by fill or shadow alone does not read, whatever the token values suggest. `canon/DESIGN.md` § Elevation and response owns the set itself.
 
 ## Decisions
 

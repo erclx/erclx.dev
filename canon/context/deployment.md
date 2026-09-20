@@ -11,11 +11,17 @@ erclx.dev runs on Cloudflare Pages, project name `erclx-dev`. Every push to `mai
 
 The reasoning behind Cloudflare Pages and behind deploying from Actions rather than the Cloudflare Git integration lives in `canon/ARCHITECTURE.md` § Key technical decisions.
 
+## Layout
+
+- `public/` owns what reaches the domain root unprocessed, which is this domain's concern rather than the build's: a file placed there is a URL the moment it ships
+
 ## Decisions
 
 - The Pages project is a Direct Upload type. Wrangler pushes a built `./dist/`, so Cloudflare never runs a build and never needs a bun version pinned on its side.
 - The free tier covers unlimited bandwidth and 500 builds per month. A single-page site stays well inside both, so no billing alarm is wired.
 - CLI over the dashboard for inspection, redeploy, env-var, and domain changes. Confirm before a destructive operation: deleting the project, force-pushing a production deploy, changing live DNS.
+- The résumé ships as a binary in `public/` rather than as a hotlink to a GitHub raw URL. Astro serves it at `erclx.dev/resume.pdf`, which keeps the URL on the domain and takes a third-party dependency out of the footer's highest-intent link. The cost is that the file is a copy and goes stale silently, since nothing here compares it against the source it was exported from.
+- One résumé slot, in English. The page it sits on is written in English and the footer holds one link, so a second language would need a chooser before it needed a file.
 - A change to deploy config itself (redirects, headers, the Pages project settings, DNS) gets checked against a real preview or production deploy before it ships, since the e2e suite runs against a local `astro preview` and never touches the Cloudflare edge. Dispatch a preview deploy for the branch if it has none. Say so explicitly if a live check isn't possible, rather than claiming one happened.
 
 ## Deploy job
@@ -41,6 +47,14 @@ Both preview hosts carry `x-robots-tag: noindex` and the apex carries none, so a
 GitHub emails the actor when a run fails on the default branch, and that channel is confirmed working: the deploy that broke on 2026-08-24 sent its mail, and the five hours and twenty minutes it sat broken were hours the operator was asleep rather than hours nothing announced it. No notifier is wired here for that reason, and building one would add a second channel answering a question the first already answers.
 
 What the channel cannot do is escalate. A failure arriving overnight waits for morning whatever sends it, so the number to weigh before adding anything is how long the apex can serve stale output, not how the failure is announced.
+
+## Visitor analytics runs at the edge
+
+Cloudflare Web Analytics has tracked erclx.dev since the zone was added on 2026-04-11, on automatic setup, with EU visitors excluded under the dashboard's own toggle. The edge injects the beacon into every HTML response outside that exclusion, so no script tag lives anywhere in this repository and nothing here has to be maintained for it to keep working. It had been recording for months before the operator noticed.
+
+A fetch from a Swedish vantage point therefore carries no beacon by design rather than by defect. `erclx.dev/cdn-cgi/trace` reports `loc=SE` for that same request, which is how to tell the exclusion from a broken injection before going looking for one.
+
+What automatic setup delivers is a visit with a timestamp and a rough country, with no cookies and no backend of this project's own. A manual snippet would add a script this repository has to carry for no capability the automatic path lacks. `canon/REQUIREMENTS.md` records why analytics left the non-goals list and how narrowly the exception is scoped.
 
 ## Manual deploy
 

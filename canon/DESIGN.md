@@ -59,6 +59,8 @@ Three Fraunces serif elements anchor the page from top to bottom: the hero H1, t
 
 Hero H1 holds the display size. Projects H2 sits one step smaller, and the footer masthead one step under the hero, so the page closes without competing with the opener. Surface-specific sizes live in the relevant `canon/wireframes/<surface>.md`.
 
+The sizes above are flat across every viewport on the landing page. A project route is the one surface that scales its prose and its column together, and `canon/context/layout-measure.md` owns those clamps along with the figure overhang that tracks them.
+
 ## Spacing
 
 | Step | Multiplier | Value | Tailwind step |
@@ -75,6 +77,12 @@ The page's own inset is not on that scale and cannot be. It is `--page-inset`, a
 
 Anything positioned against the page edge derives from that value rather than picking its own. The sticky bar's detached shape floors its inset at the page inset minus a stated padding, which is what keeps the name off the curve. The two were independent until 2026-08-20, and the gap between them collapsed to 8px on a phone while reading 22px at 768.
 
+That generalizes past the page inset. A value relating two elements is arithmetic over named values, never a literal, and what is banned is a literal standing in for a relationship two other values already fix. A nudge centering one element against another is the shape to refuse: it encodes both of their current widths and goes wrong the moment either one moves. `canon/context/site-bar.md` carries the case that settled it.
+
+A mark that has to line up with type derives from the type's own metrics for the same reason. An origin dot centers inside a box one line-height tall, a rail segment spans `calc(1lh / 2)` to the next row rather than a measured offset, and a status dot centers on a box one cap-height tall resting on the label's baseline.
+
+A value that sets something rather than relating two things stays a literal. That covers the spacing steps above, the type sizes, and the 44px tap minimum.
+
 ## Borders
 
 | Role    | Radius | Width | When used                                      |
@@ -90,6 +98,36 @@ Three tests decide whether a line stays.
 A line dividing rows a reader compares stays, which is why the closing ask keeps the rule above its criteria and the timeline keeps its rail. A line drawn under something a drawing rests on stays, which is the same rule reaching the ask's top edge, where a character is occluded by it. A line stating where a surface ends comes out, and what replaces it is a ground that fades, a gap, or a shape revealed under a pointer.
 
 A bound a reader needs only while pointing is revealed rather than drawn. An unboxed card states its extent by lighting a shape larger than its content on hover, so the grid stays borderless at rest and a pointer still lands on something.
+
+## Elevation and response
+
+Two token sets sit in `:root`, and every floating or interactive control resolves them from there rather than declaring its own. Elevation answers what lifts off the page. Response answers what a pointer does to a control.
+
+The elevation set carries `--surface-elevated` rather than reusing `--card`. The two had to be separated before either could move, because `--card` also grounds the white chart plates on a project route, so one token was answering two unrelated questions.
+
+The response set has a single source rather than a set of surfaces kept in agreement. The project card's four values moved out of it unchanged and every other bounded control reads them back. Where a control already carries a ground at rest, the glow stacks on top rather than replacing it, since swapping one shadow for the other makes a lit control appear to drop as it lights.
+
+Which controls take the glow is decided by the same test the card settled. A control with bounds takes it. A link sitting inline in a paragraph keeps its underline instead, since a ground behind a word reads as a highlighter and fights the sentence around it.
+
+Both sets have ceilings that are lower than their token values suggest, and neither is visible from a token name. `canon/context/theming.md` § What the palette cannot do owns them, including why they are read off painted pixels rather than off composited values.
+
+## Focus
+
+The focus ring takes the site's accent rather than the component library's default blue. It measures 5.48:1 in light and 5.42:1 in dark against a 3:1 floor for a non-text indicator. `--light-ring` resolves to the light accent, so a control focused inside a chart plate carries the site's ring too rather than losing it to the pinned palette.
+
+An outline follows its element's own radius, so a control declaring no radius draws a rectangular ring around a rounded shape. A radius floor in `@layer base` fixes that without maintaining a list of components: an unlayered component rule and a Tailwind utility both outrank a layered declaration, so a control carrying its own shape keeps it and only the shapeless ones take the floor.
+
+The glow lands on the same test as the card's hover glow, with one difference in reach. A focus indicator has to reach every control, where a hover response can afford to be selective, so the inline link that declines the glow still gets a ring.
+
+A focus ring only answers a Tab, where a pointer response is checked on every visual pass, which is why `e2e/focus-inventory.ts` sweeps every control's focus state rather than leaving it to review.
+
+## Links
+
+A prose link inside a case study is accent-colored text with an always-on underline, applied as utilities per link rather than a named class, matching how the header and footer links are styled directly.
+
+The underline is always on rather than raised by a pointer. WCAG's caution against color as the only visual means of conveying information means a link inside a paragraph has to identify itself without relying on color perception, and a hover-only underline fails that for a keyboard or touch reader outright.
+
+An inline link is exempt from the site's 44px tap-target minimum when its computed `display` resolves to `inline`, since a word sized to its own text inside a sentence cannot clear that floor without inflating the line it sits in. That is the case WCAG's own criterion exempts rather than a shortcut taken here.
 
 ## Motion
 

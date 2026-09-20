@@ -16,6 +16,7 @@ Owns how the three families reach the browser and how their sizes are named. Spa
 
 ## Decisions
 
+- Three families carry the type system rather than one, and the pairing is editorial rather than assembled from what ships free. Fraunces takes display and headings, Inter takes body and labels, JetBrains Mono takes code. A single system font stack was the alternative and reads as generic against the tone the rest of the page holds, which is what the three families are paid for.
 - All three families ship as variable fonts on a weight axis. One file per family covers every weight the page uses, so no separate 400 and 600 downloads exist to go out of sync.
 - Fraunces and Inter are imported as `?url` in `base.astro` and referenced from `<link rel="preload">`. Vite resolves the specifier through `node_modules` and emits a hashed asset, so no manual copy into `public/` is needed and the hash changes when the package updates.
 - Only Fraunces and Inter preload. Both render above the fold in the hero, where Fontsource's default `font-display: swap` would otherwise flash fallback text. JetBrains Mono is imported in `global.css` without a preload because code type appears below the fold, where the swap costs nothing visible.

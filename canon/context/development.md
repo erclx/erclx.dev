@@ -24,6 +24,16 @@ Local dev workflow for this project.
 
 For the rationale behind these choices, such as Astro over Next, the shadcn install path, font preload, and the theme toggle as static Astro, see `canon/ARCHITECTURE.md` § Key technical decisions.
 
+## What the React toolchain costs while rendering nothing
+
+No component opts into hydration. The site ships zero `client:*` directives and holds one unreferenced `.tsx` file at `src/components/ui/button.tsx`, so the React toolchain renders nothing a visitor sees. It stays anyway, because an interactive surface is a plausible next increment and standing the integration back up costs more than carrying it does. `canon/ARCHITECTURE.md` § Key technical decisions holds that call. What belongs here is the bill.
+
+Ten direct packages nothing exercises: `react`, `react-dom`, `@astrojs/react`, `radix-ui`, `lucide-react`, `@types/react`, `@types/react-dom`, `@testing-library/react`, `eslint-plugin-react-hooks`, and `eslint-plugin-react-refresh`. Two of those are lint plugins scanning a file set of one, and `src/test/setup.ts` wires the React testing helpers against a suite that reports no test files.
+
+Four more sit behind them and bring the real count to fourteen. `class-variance-authority` is imported by the unreferenced component alone, `clsx` and `tailwind-merge` are reached only through `src/lib/utils.ts`, which nothing but that component imports, and `@testing-library/user-event` is imported nowhere at all.
+
+Count the fourteen rather than the ten when weighing a removal. The smaller number reads low against a decision that has been reopened once, and a session auditing the tree without this paragraph proposes removing the toolchain. Measured on 2026-08-15.
+
 ## New domain folders
 
 A diff adding a new top-level folder under `src/` drafts that domain's `canon/context/<domain>.md` entry at ship time, per the context standard (`canon standards context`). `claude-docs` only refreshes an entry that already exists and never creates one on its own.
@@ -90,7 +100,13 @@ Keep `bun run dev` running in the background during landing-page sessions so cha
 - The wait skips an image carrying no source at all, which is the empty slot the figure dialog fills on demand. A second placeholder image added anywhere on the site needs no change, and one driven by `srcset` alone would need the check widened again.
 - No capture contains a favicon, so a tab-icon change is verified by loading the built page in a headed engine and sampling the icon through a canvas. Headless Chromium requests no favicon at all, so reading which icon an engine selects needs `xvfb-run` around a headed run. `e2e/favicon.spec.ts` holds that luminance sampling as a standing guard across all three engines.
 
-For the capture model and its output path, see `canon/ARCHITECTURE.md` § Screenshots capture per-section on the landing page and whole on a case study. For when to reach for Playwright MCP over a static capture, see § Playwright MCP for interactive verification in the same file.
+For the capture model and its output path, see `canon/context/ci.md`.
+
+### Playwright MCP over a static capture
+
+`.mcp.json` registers `@playwright/mcp@latest`. Reach for it when the question needs the page driven rather than photographed: a hover, a click, a viewport change, or a computed style read back off a live element. Reach for `bun run screenshot` when the question is what a surface looks like at rest, which covers layout review and diffing rendered content against the canonical source it came from.
+
+The split matters because the two answer different questions and the static path is far cheaper. A capture that has to be driven into position is the signal to switch, not a reason to add a step to the capture script.
 
 ## Serving to a real device
 
@@ -126,6 +142,17 @@ Read that as a server-side reading rather than a browser one. A device still los
 
 `bun scripts/qr.ts <url> [url...]` is the answer. It reads the matrix out of the same encoder the terminal renderer vendors, draws it as squares with a four-module quiet zone, and writes a PNG per address under `.canon/review/qr/`. A code cropped to its own edge fails against a busy background and the failure looks like a bad camera rather than a bad image, which is what the quiet zone is for.
 
+## Serving candidate treatments the operator drives
+
+Some decisions cannot be settled from a capture or a recording, since both are passive and the question is how a thing feels to cause: a pace read while scrolling, a gesture, whether a control is where a hand expects it. `src/components/dev/scenarios.astro` serves candidate treatments live from the running page behind one query parameter, with a switcher for moving between arms.
+
+- It renders nothing in a production build, because the whole component sits behind `import.meta.env.DEV` rather than gating itself at runtime. It renders nothing in development either until the page is asked for an arm by name.
+- An arm carries CSS where the decision is a treatment. Where the decision is a runtime value, a pace or a shader uniform, the arm carries none and the module holding that value reads the active id off `documentElement.dataset`. That indirection is what lets one component serve a stylesheet decision and a runtime decision without knowing about either.
+- It is unreferenced by default, since it is scaffolding a visual decision reaches for and removes again, and a branch with no open visual decision holds no call site.
+- An unreferenced component is only safe while something tells a session it exists. The `visual-batch` skill names it explicitly rather than leaving discovery to a tree search, which is the arrangement to preserve if either side moves.
+
+`DEVICE_MODE=dev` above exists to get these arms onto a real device, since a production build leaves the whole harness out.
+
 ## Reading a link preview without pasting one
 
 `bun run unfurl` renders all six pages as Discord, LinkedIn, X, Slack, and a Notion bookmark compose them, one sheet per page under `.canon/review/unfurl/`. It reads the tags off the served document rather than out of the source, since a crawler reads the rendered page and that is the copy that can be wrong, and it fetches the declared image the same way and embeds it so a sheet survives the server going away.
@@ -147,6 +174,12 @@ Start the preview on the same band the config uses, `4250` plus the worktree off
 Write the probe into `e2e/` and delete it when the question is answered. Playwright's `testDir` is that folder, so a spec anywhere else is reported as no tests found, and the scratch location `CLAUDE.md` directs temporary files to is worse than useless here: vitest globs `.canon/tmp/`, so a Playwright spec parked there is collected by `bun run test:run` and fails the whole `check` on a `test.use()` call outside a Playwright runner. The two rules contradict each other on this one file type and the test folder is the side that works.
 
 A suite failure reproduced under the full run and not alone is contention rather than a defect. Re-run the failing spec files on their own engine before classifying one, since the full three-engine run loads the machine enough that image-loading assertions time out while passing in isolation.
+
+## A search that comes back empty against a file that should match
+
+A raw NUL byte anywhere in a source file makes every text tool classify the whole file as binary, so a search returns an honest empty result against a file holding exactly what was searched for. Nothing reports the cause, and the natural next move is to doubt the search term rather than the file.
+
+Check for one whenever a search comes back empty against a file that should not be empty, before rewriting the pattern a third time.
 
 ## Shell scripts
 
