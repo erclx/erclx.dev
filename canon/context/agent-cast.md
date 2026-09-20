@@ -61,6 +61,17 @@ It is decoration. Every figure is `aria-hidden`, carries no accessible name, and
 - The cast lives in the experience section rather than the projects section because that is the only one with margins to hold it. Measured at 1280, experience runs a 768px column leaving 141px clear on the left and 188px on the right, where projects runs 1024px and leaves 13px and 60px. A member at the smallest size the cast ships does not fit beside the projects grid on either side until 1920.
 - The cast is desktop only, above 1280. Below it the clear margin measures 0px on both sides, and the alternative was placing figures inside a reading column that already runs 2067px at 390.
 
+## The closing rule, and the dog perched on it
+
+The dog sits on the looking-for section's rule rather than in the experience margins, so it is placed by that section rather than by `placement.ts`. It belongs to this domain because it shares the cast's palette and its drawing rules, and because what the rule does under it is a drawing decision rather than a layout one.
+
+- The rule is a curved contour drawn at the hero field's own peak weight rather than a flat 1px hairline. A hairline matching the page ground actually behind it would be invisible, and matching the field's peak contour instead makes the rule louder rather than subtler, which is the direction the section wanted rather than a side effect tolerated.
+- The dog is clipped by a `clip-path` polygon generated from the same path geometry as the drawn curve, rather than by a rectangular `overflow: hidden`. A flat clip drops the character's grip everywhere the curve leaves its midline, and the two mechanisms cannot both stay active without the tighter one winning, so the polygon is the only one declared.
+- Amplitude is read off the stage's own width rather than fixed, ramping 5px to 16px across a 342px to 768px stage. A fixed amplitude reads as terrain at 1280 and visibly tips the figure at 390, since the dog spans a larger share of a narrower stage and the curve compresses under him exactly where there is least room for it to.
+- The curve sums three incommensurate sines rather than one. The field's own adjacent-contour gaps vary continuously, so a regular period reads as a drawing that does not belong to the surface behind it.
+
+Measured on 2026-08-25 at 390, 768, 1024, 1280, 1440, and 1920.
+
 ## Gotchas
 
 - A guard that filters a list to its offenders and asserts the result is empty passes hardest when the list itself is empty. `cast.test.ts` opens by asserting every vocabulary it reads carries a population.

@@ -42,6 +42,18 @@ The opening treatment behind a raster figure on a case-study route. One dialog p
 - The plate treats a symptom the chart files own. They are rasters in `src/assets/` rather than something the page draws, so a chart later redrawn on a dark ground makes this frame wrong and nothing here reports it. Redrawing them per theme is the durable repair and reaches every surface rendering the files. Chosen against for this pass because the plate is reversible and costs nothing to keep.
 - The opened view keeps the dark panel. A dialog dims the whole page behind it and reads as a deliberate frame already, so the leak the plate answers does not arise there. Leaving it also keeps one panel treatment for the close control and the caption the dialog draws itself.
 
+## The gallery is one carousel rendered twice
+
+The diction route opens on five screenshots in a peek carousel, and clicking the centred one opens the same carousel larger in a dialog. One track component serves both mounts rather than two. The two differ in what they frame rather than in how they work: the chart dialog above forces a light plate for figures drawn on white paper and pages through every figure on the route as one sequence, where a screenshot gallery wants the page's own dark card and a sequence of its own.
+
+- The track takes `width: max-content` with its slides sized in `cqw` against the scroller, rather than padding on the track, so the first and last slides land at exactly `scrollLeft: 0` and `maxScrollLeft` by construction rather than by arithmetic that has to be kept true.
+- A `maxScrollLeft` that wobbles between readings is the tell that scrollable overflow is coming from transformed content rather than from the box. A fixed border box cannot produce that wobble and a set of scaled children can, so read the wobble as the diagnosis rather than as noise to average out.
+- The centred slide is read back from an `IntersectionObserver` as the largest share of any slide showing, never as the first intersecting entry in a batch. A step can cross two slides at once and the batch is unordered by how centred each one is.
+- A control's destination outranks that reading until the scroll reaches it. Geometry is the right authority for a swipe, where nothing declared an intent, and the wrong one for a click, where waiting to infer the answer makes it depend on the scroll finishing. A reader touching the track clears the pending destination, so a scroll interrupted by a swipe cannot leave the observer deferring to a destination nothing is traveling to.
+- Focus and centring are one state. Slides take a roving tabindex, focus follows the carousel whenever a slide already holds it, and the arrow keys move focus onto the track. A browser blurs an element as it becomes disabled, so an arrow disabling at the end of the sequence would otherwise drop focus to `body` and stall the carousel.
+- The preview panel takes a fixed width rather than fitting its content. A fitted width reads off whichever slide is centred and resizes under the reader as they step.
+- The five screenshots are captured at one viewport rather than full page. The app's sidebar is `fixed inset-y-0 h-svh`, so a full-page capture of a longer screen renders it stopping partway down.
+
 ## Gotchas
 
 - The dialog carries an `<img>` with an empty `src` until a reader opens something. The capture harness waits for every image on the page to report pixels, so that placeholder stalled it until `e2e/lazy-images.ts` learned to skip an image carrying no source at all. A second placeholder image anywhere on the site needs the same treatment.

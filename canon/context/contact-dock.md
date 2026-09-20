@@ -26,6 +26,7 @@ It answers the stretch between the hero and the footer, where the destinations t
 - The stack reverses, so the resting mark sits nearest the corner and the set grows up out of it. Rendered in order, the mark sat at the top of a group anchored to the bottom and moved every time the set opened.
 - The resting mark is an at sign rather than an envelope. The envelope is one of the destinations below it, so the control opening the set was drawn as a member of it.
 - The resume is in the dock and stays in the footer. It is the highest-intent link on a page whose job is hiring and it existed once, as the last thing on the page. It renders nearest the resting mark, so the shortest travel from the control belongs to the destination most readers came for.
+- It was built from the rail rather than beside it, and that is what found the defect in both. Copying the rail's gates copied a footer gate that had never fired: it watched a root capped to the top half of the viewport for an element sitting at the bottom of the last screen, so the condition was unreachable by construction. One reading fixed both controls. A second control built independently would have reproduced the bug instead of exposing it.
 - The hero was considered as a third home for the resume and declined. The dock arrives at half the hero, so the only stretch it does not cover is the top half of the first screen, and the hero's three links are identity where a resume is a document.
 
 ## Gotchas
@@ -43,6 +44,6 @@ It answers the stretch between the hero and the footer, where the destinations t
 
 The dock holds to the bottom of every surface and never stands down. The footer is not a second home for its destinations: measured on both surfaces, the landing footer carries the resume alone and a route's carries the way home, against four destinations in the dock. Hiding it there would remove three of them and replace one, at the moment a reader has finished reading a page whose job is hiring.
 
-The rail's own footer gate came out for an unrelated reason, so the two margins arrive and leave together again. See `canon/ARCHITECTURE.md` § The rail carries looking-for through the footer rather than hiding near it.
+The rail's own footer gate came out for an unrelated reason, so the two margins arrive and leave together again. See `canon/context/section-nav.md` § Reveal gate.
 
 A claim that a gate rests on gets measured. The footer does not close with the hero's three links, contrary to what both this entry and `canon/ARCHITECTURE.md` asserted before either footer was actually read.
