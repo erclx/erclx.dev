@@ -153,6 +153,34 @@ export const streamsConfig = {
   darkAlpha: 0.82,
   lightRevealAlpha: 0.85,
   darkRevealAlpha: 0.95,
+
+  /**
+   * The power the output alpha is raised to, per theme.
+   *
+   * It exists because the surface used to declare a non-premultiplied buffer
+   * and write a premultiplied one, which left the alpha channel holding `alpha
+   * squared` and a compositor honouring the declaration drawing the field far
+   * quieter than the shader asked for. That quiet rendering is the one the page
+   * was tuned against, so repairing the declaration without re-authoring the
+   * curve would have shipped every reader a surface nobody chose.
+   *
+   * The pair reproduces it rather than restating it. A correct pipeline passes
+   * the background through at `1 - alpha to this power` where the accident
+   * passed it at `1 - alpha squared`, so no single exponent matches both the
+   * ink and the transmission at once and these are fitted on the ink.
+   *
+   * Fitted at 1280x800 on a still surface, read off composited pixels. Matching
+   * the share of pixels the field touches, it holds 3.297% against today's
+   * 3.312% in light and 1.629% against 1.600% in dark.
+   *
+   * The arm fitted on mean weight instead, at 1.63 and 3.26, was served beside
+   * this one and lost. It reproduces today's weight and puts 8% more coverage
+   * on screen for it, which reaches 24% at 390 in light, where the column damp
+   * exists precisely because there is least room. Both were driven live rather
+   * than compared in a still, since the two differ only in weight.
+   */
+  lightAlphaCurve: 1.79,
+  darkAlphaCurve: 3.45,
 } as const
 
 /** How many clicks can be in flight at once. The oldest is displaced. */
@@ -195,6 +223,7 @@ uniform float uRevealAlpha;
 uniform vec3 uColor;
 uniform vec3 uAccent;
 uniform float uAlpha;
+uniform float uAlphaCurve;
 uniform float uContentDamp;
 uniform float uContentRevealDamp;
 // Centre in pixels, then the radius the rings start at and the radius they
@@ -338,7 +367,11 @@ void main() {
   vec3 tone = mix(uColor, uAccent, reveal * uRevealTint);
   float alpha = mix(restAlpha, liftAlpha, reveal);
 
-  gl_FragColor = vec4(tone, clamp(alpha, 0.0, 1.0) * coverage);
+  // The curve sits on the composed alpha rather than on any one term, which is
+  // where the accident sat too, so the reveal, the accent ripple and the page
+  // ground's damped copy keep the relationships they were tuned with.
+  gl_FragColor =
+    vec4(tone, pow(clamp(alpha, 0.0, 1.0) * coverage, uAlphaCurve));
 }
 `
 
@@ -374,6 +407,7 @@ const uniformNames = [
   'uColor',
   'uAccent',
   'uAlpha',
+  'uAlphaCurve',
   'uContentCenter',
   'uContentHalf',
   'uContentFeather',
@@ -543,6 +577,12 @@ export const streamsField: FieldSpec = {
       uniforms.uAlpha ?? null,
       (frame.isDark ? streamsConfig.darkAlpha : streamsConfig.lightAlpha) *
         frame.alphaScale,
+    )
+    gl.uniform1f(
+      uniforms.uAlphaCurve ?? null,
+      frame.isDark
+        ? streamsConfig.darkAlphaCurve
+        : streamsConfig.lightAlphaCurve,
     )
     gl.uniform2f(
       uniforms.uContentCenter ?? null,

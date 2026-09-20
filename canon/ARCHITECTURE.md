@@ -96,7 +96,7 @@ The apex domain already lives in Cloudflare. Pages attaches the custom domain wi
 
 ### Deploy from GitHub Actions, not the Cloudflare Git integration
 
-`cloudflare/wrangler-action` runs after `static-checks`, `unit-tests`, `build-verify`, and `e2e-tests` pass. CF's native Git integration would deploy on every push without honoring the test gate and would build in CF's environment with a separate bun version. Direct upload from Actions keeps the test gate and the build environment unified with CI.
+`cloudflare/wrangler-action` reaches production after `static-checks`, `unit-tests`, `build-verify`, and `e2e-tests` pass. CF's native Git integration would deploy on every push without honoring the test gate and would build in CF's environment with a separate bun version. Direct upload from Actions keeps the test gate and the build environment unified with CI. A preview deploy takes a shorter gate, which `canon/context/ci.md` carries.
 
 ### The vector serves the tab, and the rasters serve the surfaces that composite
 

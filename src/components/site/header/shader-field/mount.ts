@@ -209,7 +209,14 @@ export function mountShaderField(
     antialias: false,
     depth: false,
     stencil: false,
-    premultipliedAlpha: false,
+    // The buffer this surface writes is premultiplied, so the declaration says
+    // so. Declaring the opposite left the format the canvas produces and the
+    // format it announces disagreeing, which hands every compositor a choice:
+    // one honouring the declaration divides the color back out, one taking the
+    // premultiplied path does not, and the same build drew at 1.02% and 4.09%
+    // ink across two Chromium browsers on one machine. The blend in `draw()` is
+    // the other half of the pair and the two are only correct together.
+    premultipliedAlpha: true,
     powerPreference: 'low-power',
   })
 
@@ -327,7 +334,18 @@ export function mountShaderField(
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
 
     gl.enable(gl.BLEND)
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+    // Separate factors, because the color channels and the alpha channel want
+    // different ones. Color stays weighted by the fragment's alpha, which is
+    // what a premultiplied buffer holds. Alpha takes it unweighted:
+    // under one shared `SRC_ALPHA` the channel accumulated `alpha squared`
+    // against a cleared buffer, so the surface announced a coverage it had not
+    // drawn and the declaration above could not be true of it.
+    gl.blendFuncSeparate(
+      gl.SRC_ALPHA,
+      gl.ONE_MINUS_SRC_ALPHA,
+      gl.ONE,
+      gl.ONE_MINUS_SRC_ALPHA,
+    )
     gl.clearColor(0, 0, 0, 0)
     gl.clear(gl.COLOR_BUFFER_BIT)
 
