@@ -161,7 +161,7 @@ Three failures make it throw rather than draw. A page missing any of the five ta
 
 Read a sheet as evidence about this card and never as a screenshot of that app. The chrome is drawn to each host's published shape, so what the sheet proves is what the card does under a given crop and a given line clamp, which is the half that belongs to this repository. A host redesigning its own embed is the half it cannot see, and the caveat under each frame names what that host is known to vary on.
 
-The apex is where it pays. Every host except LinkedIn renders the description, and the card image draws the claim, so a description opening on that same claim prints one sentence twice in a single unfurl. The five route pages carry their own descriptions and never hit it. `e2e/share-card.spec.ts` guards the description against the title and does not guard it against the image, which is the gap this found.
+The apex is where it pays. Every host except LinkedIn renders the description, and the card image draws the claim, so a description opening on that same claim prints one sentence twice in a single unfurl. The five route pages carry their own descriptions and never hit it. `src/test/rendered-copy.test.ts` guards the description against the title and does not guard it against the image, which is the gap this found.
 
 ## Reproduce a suite failure against the suite's own target
 
