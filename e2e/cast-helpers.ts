@@ -13,10 +13,17 @@ export const FIELD = '[data-cast-field]'
 export const MEMBER = '[data-cast-member]'
 export const SECTION = '[data-section="experience"]'
 /**
- * How long the surviving test gives the scheduler to act before calling it
- * silent. A gap runs 5.2 to 7.8 seconds, so anything under 7.8 reports a
- * working scheduler as broken, and the rest is headroom for a loaded runner
- * delaying a timer.
+ * How long the surviving test gives one of the cast's own timers before calling
+ * it silent, whether it is waiting on a tapped member's reaction to clear or on
+ * the scheduler's next act. A gap runs 5.2 to 7.8 seconds, so anything under
+ * 7.8 reports a working scheduler as broken, and the rest is headroom for a
+ * loaded runner delaying a timer.
+ *
+ * One budget covers both because neither can see the load it is running under.
+ * A census of 26 runs on this repository found a tight inner bound beneath a
+ * loose outer budget behind every false red on the firefox leg, where a 1.4
+ * second nominal wait reached 24.5 on a contended runner and failed with most
+ * of the test budget unspent.
  *
  * It is a budget rather than a window. The test settles on the next act, so a
  * pass costs one gap and only a failure spends the whole of this. That is why

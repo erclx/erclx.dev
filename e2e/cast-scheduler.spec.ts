@@ -59,12 +59,17 @@ test.describe('agent cast', () => {
     // whichever comes first, `animationend` or its own 1400ms fallback, so
     // polling that mark directly carries both the tap's own timeout and the
     // engine's actual animation length rather than a number computed by hand.
+    //
+    // It takes the same budget the act below does, rather than a tighter bound
+    // of its own. Both wait on one of the cast's own timers under a load
+    // neither can see, and a bound at three times nominal is the shape that
+    // fails on a contended runner with most of the test budget unspent.
     await page.waitForFunction(
       (selector) =>
         document.querySelector<HTMLElement>(selector)?.dataset.reacting ===
         undefined,
       MEMBER,
-      { timeout: 5000 },
+      { timeout: SCHEDULER_ACT_MS },
     )
 
     // The wait is the assertion: it resolves on the scheduler's next act and
