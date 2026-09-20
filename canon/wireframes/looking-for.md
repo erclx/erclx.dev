@@ -28,7 +28,7 @@ The section pairs a display heading with the availability status and five short 
 
 ## Behavior
 
-- The section sits flat on the page canvas. A drawn contour between the heading and the rows is the only separator, at the same measure as the text under it. It takes the hero field's own contour ink and weight rather than the border token, and it curves rather than running straight, so the closing surface reads as terrain the character stands on. `.claude/ARCHITECTURE.md` carries the measured reasoning and the amplitude ramp.
+- The section sits flat on the page canvas. A drawn contour between the heading and the rows is the only separator, at the same measure as the text under it. It takes the hero field's own contour ink and weight rather than the border token, and it curves rather than running straight, so the closing surface reads as terrain the character stands on. `canon/context/agent-cast.md` carries the measured reasoning and the amplitude ramp.
 - A tinted panel is what this replaces, and the reason is worth keeping. Every other panel on the page is a project card, and a card earns its surface by holding a still. A panel around four short rows read as a widget among editorial blocks, which is what made the section the one thing on the page that did not belong.
 - Experience answers the same brief, a short list of factual fragments, and it sits flat under a heading of the same weight. Matching that arrangement is what ties this section to the page, so the two bracket the projects grid as a pair.
 - Row labels and values both take the body face in sentence case at label size, and both sit on the muted token. Weight separates the key from the answer, the label a step lighter than the value, with the 13rem column between them doing most of the work. Color separated them until 2026-08-20, first with the value at full foreground and then with the label stepped back, and neither survived measurement: the value at foreground measured 3.35x the contrast of every paragraph on the page, and the stepped-back label measured 2.53:1 against a 4.5:1 floor. The muted token is already 4.82:1 in light, so there is no room to lighten beneath it and lightness cannot be the third step.
@@ -61,7 +61,7 @@ A small filled-silhouette character perches near the right end of the contour, s
 
 The character needs an edge to rise out of rather than a panel to hide behind, which is what lets the section carry no panel and keep the peek. It sits in a window of its own, and that window is clipped by the contour itself rather than by its own rectangle, so the paws grip wherever the line happens to be. The rectangular `overflow` has to come off for that to work at all, since two clipping mechanisms both apply and the tighter wins, which leaves a path clip only ever able to subtract.
 
-The line's amplitude is what keeps the grip readable, and 390 is the width that sets it. Read `canon/ARCHITECTURE.md` before changing either the curve or the window.
+The line's amplitude is what keeps the grip readable, and 390 is the width that sets it. Read `canon/context/agent-cast.md` before changing either the curve or the window.
 
 Painting the rows block in the page's own background is what did that job until 2026-08-21, and it made this the one section on the site that hid the ground behind it while every other section let the field through. A reader on a tablet described the section as solid against transparent siblings, and the fill was the whole cause. Clip the character rather than plating what sits over it.
 
