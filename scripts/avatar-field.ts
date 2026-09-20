@@ -7,8 +7,8 @@
  *
  * The crop sits in the hero's right margin, clear of the centered
  * `max-width: 48rem` column the field damps around (see `capture-field.ts`
- * and `canon/ARCHITECTURE.md` § "A landing-page figure sits inside the text
- * column" for the general rule this is an instance of).
+ * and `canon/wireframes/experience.md`, where a figure hanging into the margin
+ * left the text centered while the section read as offset).
  *
  * Two sizes come from one CSS-pixel geometry rather than two different
  * capture widths, since the field's own scale divides by the canvas's CSS

@@ -21,9 +21,9 @@ import { behaviorGrid } from './cast-inventory'
 //
 // The visibility half exists because of a specific defect. A placement check
 // that read bounding boxes passed on all six members while five of them were
-// not painted at all, which is the trap `canon/ARCHITECTURE.md` records under
-// a panel measuring 1517x639 while sitting off screen. Ink is counted here
-// rather than geometry.
+// not painted at all, which is the trap `canon/ARCHITECTURE.md` § What a check
+// enforces here, and what nothing watches records: a panel measuring 1517x639
+// while sitting off screen. Ink is counted here rather than geometry.
 //
 // Run: bun e2e/cast-motion.ts
 // Against another server: CAST_BASE_URL=http://localhost:4400 bun e2e/cast-motion.ts
