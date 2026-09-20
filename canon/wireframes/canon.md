@@ -74,4 +74,4 @@ The section-nav rail sits in the left margin from `xl`, tracking the five sectio
 
 ## Copy
 
-Every string is templated from the copy the parent career checkout holds. Correct wording there and re-render rather than editing the page.
+Every string on this surface is authored in this repository.

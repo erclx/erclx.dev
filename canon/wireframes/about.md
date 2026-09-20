@@ -43,9 +43,7 @@ listen to a lot of music, play tennis, and travel when I can.
 
 This surface is the one place on the page a session may not draft from scratch. Every sentence is the operator's own, given directly rather than compressed from the record. A session that drafts here reproduces the provenance failure that removed an earlier personal line from the timeline closer.
 
-The copy is canonical in `career/assets/portfolio/home.md` § About me, per `canon/REQUIREMENTS.md`, and this surface reads it from there rather than authoring a second copy. A session updating this surface takes the wording from that file directly.
-
-Wording was tightened on 2026-08-18 against drafts he chose between rather than ones he wrote, which the copy source records separately as the weaker provenance it is. The two paragraphs shipped here on 2026-09-16 replace that wording outright, given directly by the operator and matching the career source word for word.
+Wording was tightened on 2026-08-18 against drafts he chose between rather than ones he wrote, which is the weaker provenance of the two and is recorded here as such. The two paragraphs shipped on 2026-09-16 replace that wording outright, given directly by the operator.
 
 ## Cascade reveal
 

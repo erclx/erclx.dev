@@ -102,4 +102,4 @@ The score table is built from layout and type rather than from an image, so it c
 
 ## Copy
 
-Every string is templated from the copy the parent career checkout holds. Correct wording there and re-render rather than editing the page.
+Every string on this surface is authored in this repository.
