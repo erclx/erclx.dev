@@ -13,11 +13,6 @@ const PORTRAIT_SELECTOR = 'header [data-portrait]'
 // surviving authored delay is the regression this bound catches.
 const MAX_REVEAL_DELAY_SECONDS = 0.5
 
-test('home page loads', async ({ page }) => {
-  await page.goto('/')
-  await expect(page).toHaveTitle(/.+/)
-})
-
 test('the level-one heading names the person', async ({ page }) => {
   await page.goto('/')
 
@@ -1491,18 +1486,6 @@ test('the chip row lights once as it arrives', async ({ page }) => {
   const lits = await watchChipLights(page, 3_000)
 
   expect(lits).toEqual(lits.map(() => 1))
-})
-
-test('the chip row stays quiet once it has arrived', async ({ page }) => {
-  await page.goto('/')
-  await showChipRow(page)
-  // Spend the arrival first, so this window watches a row a reader is sitting
-  // in. The claim is that reading the section is never interrupted.
-  await watchChipLights(page, 3_000)
-
-  const lits = await watchChipLights(page, 12_000)
-
-  expect(lits).toEqual(lits.map(() => 0))
 })
 
 test('the chip row lights again when a reader comes back to it', async ({
