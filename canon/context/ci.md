@@ -88,6 +88,18 @@ Read the element the locator already resolved, through `locator.evaluate`, rathe
 
 This is a different fact from the media-query section above it. That one is about what an engine reports its own capabilities to be, and this one is about whether a synthetic hover is visible to a selector, which the same engine can get right and wrong in turn.
 
+## A guard reads what a control declares, never what the engine computes for it
+
+Three instruments went wrong the same way, two of them while the focus-ring sweep was being written and one in the tap-target guard. The shared cause outlives any of the three.
+
+`outline: none` resets the outline width to `medium`, which engines report as 3px while drawing nothing. A check reading `outlineWidth` therefore sees a ring on a control that has none. Read the declared style instead.
+
+A rule stripping a ring for a fixture has to beat a layered declaration and a user-agent default at once, so the strip is written inline, where nothing outranks it.
+
+The tap-target guard asserts its exempt set by reading each element's class list for `min-h-11`, `min-w-11`, or `size-11` alongside a box-display class. `canon/DESIGN.md` § Links carries the exemption itself, which turns on an inline link's `display` resolving to `inline`. A flex parent blockifies a child's computed display, so a guard trusting the computed value would quietly exempt a control that had regressed from `inline-flex` to plain `inline`.
+
+The two outline readings were measured at 63bfea1 on 2026-08-22, at 1440x900 across chromium, firefox, and webkit. The tap-target reading came from the prose-link decision and carries no stamp of its own.
+
 ## Firefox needs a software GL driver and a pref, and a red engine needs a trace
 
 The first widened run went red on firefox alone, four cases in `e2e/header-shader.spec.ts` against 147 passing, while chromium and webkit passed on the same machine. All four are one cause: `mount.ts` reveals the fallback when it cannot draw, and `revealFallback` sets `canvas.style.display` to `none`, which fails the geometry case, the paint case, the reduced-motion case, and the case asserting the fallback is hidden at rest.
@@ -99,6 +111,18 @@ Reproduced locally rather than inferred, by unsetting `DISPLAY` on a machine who
 The compile path stays untested rather than ruled out. `mount.ts` reveals the same fallback when `getContext` returns null and when the renderer fails to compile, and no run has separated them, so what the display repair establishes is that a context is now granted rather than that compilation was never at fault.
 
 The reason the log could not answer it is worth keeping. `playwright.config.ts` reported `list` alone under CI, so `playwright-report/` was never written and the failure step uploaded an artifact that did not exist. CI now runs `list` and `html` together and uploads `test-results/` beside the report, since a gate that reports a failure a reader cannot open is only half a gate.
+
+## Screenshots capture per-section on the landing page and whole on a case study
+
+`e2e/screenshot.ts` enumerates top-level `<section>` elements through the `[data-section="<id>"]` attribute and shoots each one as its own image with Playwright's `locator.screenshot()`, landing at `.canon/review/screenshots/<section>/<viewport>--<theme>.png`. A full-page capture loses detail to compression and re-renders every surface when one of them changed. Per-section capture hands the reviewer one focused image per surface, and `SCREENSHOT_FILTER` takes comma-separated terms so iteration can target a single one.
+
+A case-study route takes the opposite treatment. It is one long prose surface rather than a stack of distinct ones, and its mid-page headings carry `id` where a landing section carries `data-section`, so per-section capture there would shoot the top bar and the footer and miss the body. Each route is captured whole to `.canon/review/screenshots/<route>/<viewport>--<theme>.png`, which keeps the `<dir>/<viewport>--<theme>` label format `SCREENSHOT_FILTER` matches on and leaves every landing path where it was.
+
+The run is 56 cases: six landing sections across three viewports and two themes, plus five routes across two viewports and two themes. A route drops the 320px width. That width exists to catch a landing section wrapping, and long-form prose reflows rather than breaking, so the third pass would add half again as much run time for nothing.
+
+Reading the whole-page shape as license to capture the landing page whole is the mistake to avoid. Capturing whole is the answer for a single long surface, and the per-section split is the answer for a page of six.
+
+Per-section capture is also what makes the lazy-image wait below load-bearing. A card poster or a case-study figure that never entered the viewport shoots as an empty box, and an empty box reads as a defect in the surface rather than as a harness that outran the fetch. The capture walks the whole page and holds until every image reports pixels, rather than pausing a fixed span. The section below carries the per-engine figures and the gating cases it closed.
 
 ## The walk outran WebKit's lazy fetch, and worker count stood in for machine load
 
@@ -583,7 +607,9 @@ next engine's own defect.
 
 `canon pr evidence`, run by `git-pr`/`git-followup` on every pull request, renders a before/after comparison comment for any changed image whose path carries a literal `evidence` segment. Nothing in this repository used that shape before `feat/readme-screenshot-ci`: the section-capture harness above writes to `.canon/review/screenshots/`, gitignored and carrying no `evidence/` segment, so the comment step had reported `no-evidence` on every prior pull request, unnoticed because a silent no-op and a working comment read identically from the pull request list.
 
-The README's own hero screenshots are the first asset to opt in, at `.github/evidence/readme/{light,dark}.png`, regenerated by `.github/workflows/readme-screenshot.yml` and its `bun run readme-screenshot` local counterpart. `canon/ARCHITECTURE.md` § The root README is a portfolio page carries the decision to route them there. This entry is the mechanism.
+The README's own hero screenshots are the first asset to opt in, at `.github/evidence/readme/{light,dark}.png`, regenerated by `.github/workflows/readme-screenshot.yml` and its `bun run readme-screenshot` local counterpart. The workflow re-captures `src/components/site/header/**` on a pull request and pushes the result back onto that pull request's own branch when the bytes differ, so the hero stays current without anyone maintaining it by hand.
+
+Routing them under `.github/evidence/` rather than beside the README is what opts them into the comparison comment above. `scripts/lib/preview-server.sh` is the preview-build-and-serve bootstrap `scripts/screenshot.sh` already carried, extracted so the capture script holds no second copy of it.
 
 The second consumer is `.github/evidence/surfaces/`, one desktop light still per landing section and case-study route (11 images), regenerated by `.github/workflows/pr-evidence-screenshot.yml` and its `bun run pr-evidence-screenshot` local counterpart. It takes the same shape as the README job: a fork guard, job-scoped `contents: write`, and a push of the delta onto the branch. Both jobs push with the default `GITHUB_TOKEN`, and a push made with that token starts no workflow run. Nothing recaptures the pushed commit and `verify.yml` never runs against it, so the evidence commit becomes the pull request head with checks that ran against its parent. What that commit carries is images under `.github/evidence/` alone, and keeping the default token is a decision to accept that gap rather than to pay a second full run through a token that can retrigger. `git log --all --author=github-actions` was empty when this was written, so neither job's push path has run. It triggers broadly on `src/**` and on `e2e/screenshot.ts`, whose viewport table and surface lists decide every image, rather than one filter per surface, since eleven filters are eleven places a shared surface can be missed. The script copies whatever the harness captured at `desktop--light` instead of holding its own list of surfaces. The 56-image review-capture set stays gitignored and unchanged. A pull request touching both evidence sets gets one combined comparison comment, which nothing here has exercised yet.
 
