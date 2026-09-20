@@ -36,6 +36,7 @@
     "check:full": "./scripts/verify.sh && bun run test:e2e",
     "setup": "./scripts/setup.sh",
     "screenshot": "PREVIEW_PORT=$(bash scripts/worktree-port.sh 4173) && export PREVIEW_PORT && bash scripts/screenshot.sh",
+    "pr-evidence-screenshot": "PREVIEW_PORT=$(bash scripts/worktree-port.sh 4173) && export PREVIEW_PORT && bash scripts/pr-evidence-screenshot.sh",
     "readme-screenshot": "PREVIEW_PORT=$(bash scripts/worktree-port.sh 4173) && export PREVIEW_PORT && bash scripts/readme-screenshot.sh",
     "smoke:prod": "bun e2e/screenshot.ts --check-console-clean --require-base-url"
   },

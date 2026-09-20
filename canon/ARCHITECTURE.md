@@ -387,9 +387,10 @@ same shape `scripts/card-copy.ts` already holds for the OG share-card claim.
 The hero screenshot is regenerated in CI rather than hand-maintained.
 `.github/workflows/readme-screenshot.yml` re-captures
 `src/components/site/header/**` on a pull request and pushes the result back
-onto the PR's own branch when the bytes differ. That is self-terminating: the
-push retriggers the workflow, the recapture finds no diff against what it
-already pushed, and it stops there. `scripts/lib/preview-server.sh` is the
+onto the PR's own branch when the bytes differ. A push made with the default
+`GITHUB_TOKEN` starts no workflow run, so nothing recaptures or re-verifies the
+pushed commit. `canon/context/ci.md` § A pull request comment depends on a path
+convention nobody had adopted carries what that leaves unverified. `scripts/lib/preview-server.sh` is the
 preview-build-and-serve bootstrap `scripts/screenshot.sh` already carried,
 extracted so the new capture script does not hold a second copy of it.
 
