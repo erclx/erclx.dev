@@ -71,6 +71,10 @@ main() {
   run_check "bun run build" "Build failed"
   log_info "Build passed"
 
+  log_step "Rendered copy"
+  run_check "bun run test:rendered" "Rendered copy tests failed"
+  log_info "Rendered copy tests passed"
+
   if [ "$NESTED" = false ]; then
     echo -e "${GREY}└${NC}\n"
     echo -e "${GREEN}✓ Verification passed${NC}"
