@@ -176,4 +176,4 @@ The cascade was absent until 2026-08-22 and the section still read as arriving i
 
 ## Claim annotation
 
-A single phrase in the claim carries a hand-drawn underline that draws on shortly after the claim's fade settles, once per page load. Only one phrase per page may carry an annotation, by editorial rule. Skipped under reduced motion. The claim opened the header until 2026-08-17 and the annotation traveled with the sentence rather than staying on that surface. Mechanism: `.claude/context/motion.md`.
+A single phrase in the claim carries a hand-drawn underline that draws on shortly after the claim's fade settles, once per page load. Only one phrase per page may carry an annotation, by editorial rule. Skipped under reduced motion. The claim opened the header until 2026-08-17 and the annotation traveled with the sentence rather than staying on that surface. Mechanism: `canon/context/motion.md`.

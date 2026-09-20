@@ -63,6 +63,10 @@ main() {
   run_check "bun run check:shell" "Shell check failed"
   log_info "Shell check passed"
 
+  log_step "Record"
+  run_check "bun run check:record" "Record audit failed"
+  log_info "Record audit passed"
+
   log_step "Unit tests"
   run_check "bun run test:run" "Unit tests failed"
   log_info "Unit tests passed"
