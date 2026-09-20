@@ -22,7 +22,7 @@ GitHub Actions workflow for this project.
 
 ## Checks
 
-Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merge. The `deploy` job runs on a push to `main` and on a manual dispatch from any ref, and gates on every verify job either way, which is six legs across four definitions once the e2e matrix fans out.
+Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merge. The `deploy` job runs on a push to `main` and on a manual dispatch from any ref, and gates on every verify job either way, which is seven legs across five definitions once the e2e matrix fans out.
 
 | Check     | Command                 | What it asserts                         |
 | --------- | ----------------------- | --------------------------------------- |
@@ -33,6 +33,7 @@ Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merg
 | Lint      | `bun run lint`          | ESLint passes with zero warnings        |
 | Tests     | `bun run test:coverage` | Vitest passes and coverage is reported  |
 | Build     | `bun run build`         | `astro build` succeeds                  |
+| Rendered  | `bun run test:rendered` | The built pages carry the guarded copy  |
 | E2E       | `bun run test:e2e`      | Playwright passes on one engine per job |
 | Deploy    | `wrangler pages deploy` | Uploads `./dist/` to Cloudflare Pages   |
 
@@ -71,6 +72,16 @@ What it buys is a defect class this project has shipped three times against a jo
 A browser's system libraries and its binaries cache differently, so the two installs cannot share one gate. `actions/cache` restores `~/.cache/ms-playwright` and nothing apt wrote, so `playwright install --with-deps <browser>` under `if: cache-hit != 'true'` installs the libraries exactly once: the first run passes and every warm run after it fails at browser launch rather than at install, which reads as a test defect. WebKit is the leg that reaches on `ubuntu-latest`, where chromium mostly survives without them. `install-deps` runs unconditionally and only the binary download carries the cache gate.
 
 Widening the engines closes only half of that. A rule silently taking its touch branch breaks no existing assertion, so a hover path has to be asserted reachable wherever one is written, beside the behavior it guards rather than in one shared case. `e2e/projects.spec.ts`, `e2e/employers.spec.ts`, and `e2e/contact-dock.spec.ts` each carry one.
+
+## The rendered-copy lane reads the built pages, and the unit run never sees it
+
+`src/test/rendered-copy.test.ts` reads `dist/*.html` through jsdom and carries the footer copy and the share-card tags across the six routes, thirteen assertions moved out of `e2e/footer.spec.ts` and `e2e/share-card.spec.ts`. A text node in a static file cannot differ between engines, so the browser matrix paid three extra times for a disagreement that cannot occur and inherited every settle hazard the browser lane carries.
+
+The lane needs `dist/`, which the unit job never builds. Folding the build in would have turned a 13-second job into a 37-second one to serve a single file, so `rendered-copy` is its own job. It needs `build-verify`, downloads the same artifact the engine legs do, and gates `deploy` without gating `e2e-tests`, so the browser matrix does not wait behind it. The cost is a seventh runner job. `vitest.config.ts` excludes the file from the default run and `vitest.rendered.config.ts` includes only it, which is what `bun run test:rendered` selects. `scripts/verify.sh` runs it straight after its own build, since the lane reads whatever `dist/` holds and a run against an older build would report on copy the page no longer carries. Running the file without a build throws naming the missing page rather than skipping, since a skipped guard reads as a passing one.
+
+Every moved negative assertion carries a positive companion proving its element was found, because a selector matching nothing makes `not.toContain` pass. A page edit turns each one red, checked by editing the footer text, adding a copyright line and the city to the footer, setting `twitter:card` to `summary`, making `og:url` root-relative, lengthening the description past 155 characters, repeating the card's claim in it, and appending `case study` to the title. The absolute image URL survives into `dist/`, since `Astro.site` resolves at build time.
+
+The other 49 markup-only instances stay in `home.spec.ts`, `case-studies.spec.ts`, `projects.spec.ts`, `favicon.spec.ts`, `employers.spec.ts`, `avatar.spec.ts`, and `links.spec.ts`, so the lane is judged before the larger edit is made against it. `e2e/share-card.spec.ts` keeps the one test that fetches the card over the network.
 
 ## A media query keys on a coarse pointer, never on hover
 
@@ -280,9 +291,11 @@ piece is the wall-clock saving a first draft of this entry claimed for it.
 `cast.spec.ts` split into itself and `e2e/cast-scheduler.spec.ts`, carrying
 the three scheduler tests whose 70s of wall-clock watching had been the
 file's own floor. At `workers: 1` with `fullyParallel` off, everything still
-runs serially in one worker, so splitting one file into two changes no total:
-the split earns its place by isolating those tests for whoever converts them
-away from a wall clock, which is v7.5's own scope, not by cutting today's run.
+runs serially in one worker, so splitting one file into two changes no total.
+The split has since paid off in the way it was made for: the scheduler moved
+into a module taking a clock, two of its three policies became fake-clock tests
+in `scheduler.test.ts`, and `e2e/cast-scheduler.spec.ts` holds the one case that
+needs a browser, the tap gate, at about 11 seconds an engine.
 
 The pull request e2e step runs `--only-changed` against the base branch, and
 only when every changed file sits under `e2e/`. These specs drive a served

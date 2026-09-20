@@ -29,6 +29,7 @@
     "test:run": "vitest run --reporter=verbose",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
+    "test:rendered": "vitest run --config vitest.rendered.config.ts",
     "test:e2e": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) playwright test",
     "test:e2e:changed": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) playwright test --only-changed",
     "test:e2e:ui": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) playwright test --ui",

@@ -11,6 +11,7 @@ export default getViteConfig({
       '**/dist/**',
       '**/.astro/**',
       '**/e2e/**',
+      '**/rendered-copy.test.ts',
       '**/.{idea,git,cache,output,temp}/**',
       '.claude/worktrees/**',
       '.canon/**',

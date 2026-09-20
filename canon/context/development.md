@@ -74,7 +74,7 @@ A diff adding a new top-level folder under `src/` drafts that domain's `canon/co
 
 Scope and engines look like two ways to make a run cheaper and only one of them is. Measured on this suite, the full 273 tests run on chromium alone in about 1.9 minutes and 811 across all three engines in about 3.5, so three times the tests cost less than double the wall clock. Locally the engines fill workers that were otherwise idle.
 
-What costs is the serial chain inside one spec, since `fullyParallel` is off. `e2e/cast.spec.ts` holds several full-field captures, and `e2e/cast-scheduler.spec.ts` holds the three wall-clock scheduler tests split out of it, running about 45 and 70 seconds on chromium alone, which was one file's floor before the split. `canon/context/ci.md` § The worker cap was raised twice and rejected twice carries why the split was made and what it does and does not buy: CI pins `workers` to 1, where the two files run back to back on the one worker regardless of the split, and the seam exists so the scheduler tests can be converted off a wall clock on their own rather than to shorten today's run.
+What costs is the serial chain inside one spec, since `fullyParallel` is off. `e2e/cast.spec.ts` holds several full-field captures, and `e2e/cast-scheduler.spec.ts` holds the one scheduler test that needs a browser, the tap gate, split out of it and running about 11 seconds an engine. The other scheduler policies are fake-clock unit tests. `canon/context/ci.md` § The worker cap was raised twice and rejected twice carries why the split was made: CI pins `workers` to 1, where the two files run back to back on the one worker regardless of the split, and the seam let the scheduler tests be converted off a wall clock on their own.
 
 Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/canon/lib/306-test-scope.md` states the resulting directive, and `canon/context/ci.md` § The e2e job is a matrix over the three engines the config defines carries why the matrix exists at all.
 
@@ -161,7 +161,7 @@ Three failures make it throw rather than draw. A page missing any of the five ta
 
 Read a sheet as evidence about this card and never as a screenshot of that app. The chrome is drawn to each host's published shape, so what the sheet proves is what the card does under a given crop and a given line clamp, which is the half that belongs to this repository. A host redesigning its own embed is the half it cannot see, and the caveat under each frame names what that host is known to vary on.
 
-The apex is where it pays. Every host except LinkedIn renders the description, and the card image draws the claim, so a description opening on that same claim prints one sentence twice in a single unfurl. The five route pages carry their own descriptions and never hit it. `e2e/share-card.spec.ts` guards the description against the title and does not guard it against the image, which is the gap this found.
+The apex is where it pays. Every host except LinkedIn renders the description, and the card image draws the claim, so a description opening on that same claim prints one sentence twice in a single unfurl. The five route pages carry their own descriptions and never hit it. `src/test/rendered-copy.test.ts` guards the description against the title and does not guard it against the image, which is the gap this found.
 
 ## Reproduce a suite failure against the suite's own target
 

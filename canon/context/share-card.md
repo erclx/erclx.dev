@@ -28,7 +28,7 @@ One 1200x630 image and one description serve every host.
 - The card's ground is drawn from the same live field the avatar's streamline variant uses. `scripts/share-card.ts` crops a margin of the hero's own `[data-shader-field]` canvas with a pointer held up and to the left of the mark, so the card carries the accent-gradient reveal a real hover produces. It used to be a whole-page capture of the static `page-ground` copy, which mounts with `animate: false` and never redraws after its first paint, so that source could not carry a gradient at all.
 - The crop starts in the left margin rather than the centered 768px column, since the field damps hardest inside the column. `scripts/avatar-field.ts` follows the same rule, and `scripts/lib/capture-field.ts` holds the capture both share.
 - `bun run unfurl` renders all six pages as five hosts compose them and is the harness to check against, not the tags themselves.
-- `bun run share-card` redraws the card and `e2e/share-card.spec.ts` guards it, including that no route title carries `case study`.
+- `bun run share-card` redraws the card and `src/test/rendered-copy.test.ts` guards it, including that no route title carries `case study`.
 
 ## Gotchas
 
