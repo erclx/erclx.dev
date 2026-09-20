@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'src/**'
+      - 'e2e/screenshot.ts'
       - 'scripts/pr-evidence-screenshot.sh'
       - 'scripts/lib/preview-server.sh'
       - '.github/workflows/pr-evidence-screenshot.yml'
@@ -71,9 +72,8 @@ jobs:
           fi
 
       - name: Commit And Push
-        # Self-terminating: this push retriggers this same workflow on the PR,
-        # which captures again, finds no diff against what was just pushed,
-        # and stops here without pushing a second time.
+        # The default GITHUB_TOKEN starts no run on push, so the pushed commit
+        # is neither recaptured nor verified by verify.yml.
         if: steps.diff.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
