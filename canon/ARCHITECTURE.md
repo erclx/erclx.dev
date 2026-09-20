@@ -2,7 +2,7 @@
 
 ## Overview
 
-Static Astro site that renders one page at the erclx.dev apex. The build emits HTML, CSS, and a small JS bundle for any interactive islands. Content is authored once in the parent career repo and flows here through a sync queue.
+Static Astro site that renders one page at the erclx.dev apex. The build emits HTML, CSS, and a small JS bundle for any interactive islands. Content is authored once in the upstream career repo and carried here by hand from a sibling checkout.
 
 For the source and test layout, see `canon/context/development.md` § Layout.
 
@@ -36,13 +36,13 @@ Radix primitives provide accessible interactive components without locking in a 
 
 ### Content read from the parent checkout
 
-Page copy is canonical in the parent career repo, never authored here. This repository is a gitignored clone sitting inside that checkout, so a session here reads the published portfolio copy up the same filesystem rather than waiting for it to be delivered. No handoff message is owed in either direction. This prevents drift between Linkedin, the resume, the github profile, and the live page.
+Page copy is canonical in the upstream career repo, never authored here. That repository sits beside this one on the operator's machine rather than containing it, so a session here reads the published portfolio copy across the filesystem rather than waiting for it to be delivered. No handoff message is owed in either direction. This prevents drift between Linkedin, the resume, the github profile, and the live page.
 
 A wording correction goes to the source and is re-rendered. Nothing compares the two: the upstream check reads a destination table, the portfolio rows name no destination, and it reports them unverifiable rather than diffing anything. A page-side edit therefore reintroduces the drift the split exists to close and no run reports it. Do not close that gap by giving those rows a page path, which would byte-compare markdown against Astro output and fail the upstream pre-push hook on every run.
 
 Figures a case study references are copied into `src/assets/` rather than read across the repository boundary. A build reaching outside its own repository for an asset breaks when that tree moves, and the files are small enough that the second copy costs nothing. What it costs instead is a second place they exist, which no check watches yet.
 
-The copy is read-only here in a stronger sense than the copy rule states, because the parent checkout's pipeline decides what these files look like. All six charts are drawn on pure white, the single most common value in each at 45% to 84% of its pixels, so they suit one of the two themes and this repository cannot change that without editing an artifact its own sync overwrites. The page frames them instead, holding a light plate under a chart in both themes, which is a presentation choice this side owns and reverses on its own. Regenerating the charts per theme upstream is the durable repair and is not queued, so a chart later produced on a dark ground makes the frame wrong with nothing here reporting it. Measured at 252704a on 2026-08-16. <!-- canon-keep-record-root -->
+The copy is read-only here in a stronger sense than the copy rule states, because the upstream checkout's pipeline decides what these files look like. All six charts are drawn on pure white, the single most common value in each at 45% to 84% of its pixels, so they suit one of the two themes and this repository cannot change that without editing an artifact its own sync overwrites. The page frames them instead, holding a light plate under a chart in both themes, which is a presentation choice this side owns and reverses on its own. Regenerating the charts per theme upstream is the durable repair and is not queued, so a chart later produced on a dark ground makes the frame wrong with nothing here reporting it. Measured at 252704a on 2026-08-16. <!-- canon-keep-record-root -->
 
 ### Editorial type pairing replaces Geist
 
@@ -98,7 +98,7 @@ The description never names an employer. Metadata says who someone is and the ti
 
 ### Resume PDF served from `public/`
 
-The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source is `career/assets/resumes/eric-le-cv.pdf` in the parent career repo. Upstream keeps a Swedish `eric-le-cv-sv.pdf` beside it and this site serves the English one alone, since the page it sits on is written in English and the footer holds one résumé slot. Updates land here as a binary copy via the sync queue rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
+The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source is `career/assets/resumes/eric-le-cv.pdf` in the upstream career repo. Upstream keeps a Swedish `eric-le-cv-sv.pdf` beside it and this site serves the English one alone, since the page it sits on is written in English and the footer holds one résumé slot. Updates land here as a hand-carried binary copy rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
 
 ### Cloudflare Pages over Vercel or GitHub Pages
 
@@ -111,7 +111,7 @@ The apex domain already lives in Cloudflare. Pages attaches the custom domain wi
 ### The vector serves the tab, and the rasters serve the surfaces that composite
 
 The mark is a lowercase e followed by a block cursor, drawn in this repository
-rather than synced from the parent checkout. `src/assets/brand/mark.svg` is the
+rather than synced from the upstream checkout. `src/assets/brand/mark.svg` is the
 one drawing and `scripts/brand.ts` renders it to rasters, so the tab, the home screen,
 the avatar, and the bar cannot drift.
 
@@ -398,5 +398,4 @@ The images sit at `.github/evidence/readme/{light,dark}.png` rather than beside 
 
 ## Risks / open questions
 
-- The first build seeds copy directly from career sources. The cutover to the queue-only model after v1 needs a clear marker so future sessions do not fall back to reading career files.
-- `caret.astro` and `stackr.astro` sync against `career/assets/portfolio/caret.md` and `stackr.md`, which do not exist on the career repository's `main` today. Both files, along with the two opening sentences and the `Fix Session Timeout` example they carry, are added by `erclx/career#210`, still open. Until that pull request merges, the sync target for those two routes can still move, and a reword to either file on its branch arrives as fresh drift here with nothing reporting it. Re-check both files against `main` once `erclx/career#210` lands, and until then read the branch it ships from rather than assuming it is `main`.
+- No sync mechanism exists. Nothing under `scripts/` or `src/` and no entry in `package.json` names the career repository or any path into it, so copy reaches this tree through a session reading the sibling checkout by absolute path and writing the Astro file by hand. Nothing compares the two afterwards. The queue the record assumed, and the cutover marker that would have gone with it, are both open work. Measured at 861ab78 on 2026-09-20.

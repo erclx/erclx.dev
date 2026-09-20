@@ -8,7 +8,7 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 - Visitors arriving from search, a Github profile, or a Linkedin link get a coherent summary of who he is and what he ships in one scroll
 - The page reflects the same facts as Linkedin, the resume, and the Github profile without drift
-- Content updates flow from the parent career repo so the page never holds a divergent copy
+- Content updates flow from the upstream career repo so the page never holds a divergent copy
 
 ## Non-goals
 
@@ -67,6 +67,6 @@ The header lost the role, the headline, and the location on 2026-08-17. The clai
 
 ## Constraints
 
-- Content is downstream of the parent career repo. Page copy is canonical there and read across the filesystem, never authored here. A wording change is made at the source and re-rendered.
+- Content is downstream of the career repo. Page copy is canonical there and read across the filesystem, never authored here. A wording change is made at the source and re-rendered.
 - Static rendering by default. Components opt into client-side hydration via `client:*` directives.
 - The apex is the entry point. A route beyond it belongs to one shipped project, added as a scope change rather than ad hoc.
