@@ -8,16 +8,16 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 - Visitors arriving from search, a Github profile, or a Linkedin link get a coherent summary of who he is and what he ships in one scroll
 - The page reflects the same facts as Linkedin, the resume, and the Github profile without drift
-- Content updates flow from the upstream career repo so the page never holds a divergent copy
 
 ## Non-goals
 
 - Blog posts, a dated post feed, or a content management system
 - Authentication, comments, a dashboard, or a backend, except a hosted, cookie-free analytics script
 - Routes beyond the apex and one per shipped project
-- Hand-written copy that diverges from canonical career sources
 
 Analytics stopped being a non-goal on 2026-08-24. Cloudflare Web Analytics already runs on erclx.dev, enabled through the zone's own dashboard rather than through any code in this repository, and had been recording visits for months before the operator noticed. The line still bars every other dashboard or backend, hosted or built here, so the exception stays scoped to analytics rather than opening the door to any third-party service. A visitor count sourced from the host that already proxies the domain costs nothing here to build or maintain.
+
+Copy sourced from the career repository stopped being the model on 2026-09-20, and the non-goal barring hand-written copy that diverged from it went with it. Page copy is authored in this repository now, so a wording change is made here rather than upstream and re-rendered. What that constraint delivered, a page that cannot drift from Linkedin, the résumé, and the Github profile, is still a goal above with nothing behind it, which `canon/ARCHITECTURE.md` § Risks / open questions carries as open.
 
 ## MVP features
 
@@ -67,6 +67,5 @@ The header lost the role, the headline, and the location on 2026-08-17. The clai
 
 ## Constraints
 
-- Content is downstream of the career repo. Page copy is canonical there and read across the filesystem, never authored here. A wording change is made at the source and re-rendered.
 - Static rendering by default. Components opt into client-side hydration via `client:*` directives.
 - The apex is the entry point. A route beyond it belongs to one shipped project, added as a scope change rather than ad hoc.

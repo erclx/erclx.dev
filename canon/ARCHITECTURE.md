@@ -2,7 +2,7 @@
 
 ## Overview
 
-Static Astro site that renders one page at the erclx.dev apex. The build emits HTML, CSS, and a small JS bundle for any interactive islands. Content is authored once in the upstream career repo and carried here by hand from a sibling checkout.
+Static Astro site that renders one page at the erclx.dev apex. The build emits HTML, CSS, and a small JS bundle for any interactive islands. Page copy is authored in this repository.
 
 For the source and test layout, see `canon/context/development.md` § Layout.
 
@@ -33,16 +33,6 @@ The v3 Astro integration is deprecated. v4 ships as a Vite plugin and reads its 
 ### shadcn with the radix base and Nova preset
 
 Radix primitives provide accessible interactive components without locking in a design system. Nova ships a usable starting set of tokens and Lucide icons. Components live in `src/components/ui/` under repo ownership, so the team can edit them directly without forking a package.
-
-### Content read from the parent checkout
-
-Page copy is canonical in the upstream career repo, never authored here. That repository sits beside this one on the operator's machine rather than containing it, so a session here reads the published portfolio copy across the filesystem rather than waiting for it to be delivered. No handoff message is owed in either direction. This prevents drift between Linkedin, the resume, the github profile, and the live page.
-
-A wording correction goes to the source and is re-rendered. Nothing compares the two: the upstream check reads a destination table, the portfolio rows name no destination, and it reports them unverifiable rather than diffing anything. A page-side edit therefore reintroduces the drift the split exists to close and no run reports it. Do not close that gap by giving those rows a page path, which would byte-compare markdown against Astro output and fail the upstream pre-push hook on every run.
-
-Figures a case study references are copied into `src/assets/` rather than read across the repository boundary. A build reaching outside its own repository for an asset breaks when that tree moves, and the files are small enough that the second copy costs nothing. What it costs instead is a second place they exist, which no check watches yet.
-
-The copy is read-only here in a stronger sense than the copy rule states, because the upstream checkout's pipeline decides what these files look like. All six charts are drawn on pure white, the single most common value in each at 45% to 84% of its pixels, so they suit one of the two themes and this repository cannot change that without editing an artifact its own sync overwrites. The page frames them instead, holding a light plate under a chart in both themes, which is a presentation choice this side owns and reverses on its own. Regenerating the charts per theme upstream is the durable repair and is not queued, so a chart later produced on a dark ground makes the frame wrong with nothing here reporting it. Measured at 252704a on 2026-08-16. <!-- canon-keep-record-root -->
 
 ### Editorial type pairing replaces Geist
 
@@ -98,7 +88,7 @@ The description never names an employer. Metadata says who someone is and the ti
 
 ### Resume PDF served from `public/`
 
-The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source is `career/assets/resumes/eric-le-cv.pdf` in the upstream career repo. Upstream keeps a Swedish `eric-le-cv-sv.pdf` beside it and this site serves the English one alone, since the page it sits on is written in English and the footer holds one résumé slot. Updates land here as a hand-carried binary copy rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
+The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source is `career/assets/resumes/eric-le-cv.pdf` in the upstream career repo. Upstream keeps a Swedish `eric-le-cv-sv.pdf` beside it and this site serves the English one alone, since the page it sits on is written in English and the footer holds one résumé slot. Updates land here as a binary copy rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
 
 ### Cloudflare Pages over Vercel or GitHub Pages
 
@@ -398,4 +388,4 @@ The images sit at `.github/evidence/readme/{light,dark}.png` rather than beside 
 
 ## Risks / open questions
 
-- No sync mechanism exists. Nothing under `scripts/` or `src/` and no entry in `package.json` names the career repository or any path into it, so copy reaches this tree through a session reading the sibling checkout by absolute path and writing the Astro file by hand. Nothing compares the two afterwards. The queue the record assumed, and the cutover marker that would have gone with it, are both open work. Measured at 861ab78 on 2026-09-20.
+- The no-drift goal has no mechanism behind it. `canon/REQUIREMENTS.md` § Problem and § Goals still require the page to state the same facts as Linkedin, the résumé, and the Github profile, and the constraint that delivered that was deleted on 2026-09-20 when page copy became this repository's to author. Nothing compares the page against any of the three now. What replaces it is undecided rather than chosen.

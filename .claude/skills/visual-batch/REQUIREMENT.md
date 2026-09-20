@@ -54,7 +54,6 @@ The refusal strings sit in the body, since the runtime loads that file and ignor
 - `stack-ship` cuts the batches into a chain of pull requests and rebases it behind each merge. This declares where the boundary falls and stops at the ship signal.
 - `claude-tasks`, `claude-docs`, `git-stage`, `git-pr`, and `claude-review` are invoked by this skill and own their own steps.
 - A copy correction with no visual change is the copy cycle alone and needs no batch or loop.
-- The content-sync handoff from the career repo belongs to the `landing-page` skill there, which explicitly excludes editing files under `public/erclx.dev/`.
 
 ## Collision
 

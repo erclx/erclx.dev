@@ -100,17 +100,16 @@ An interactive decision is one the operator has to drive: how a gesture feels to
 
 ## The copy cycle
 
-Page copy is canonical upstream at `career/assets/portfolio/` and is read across the filesystem. Never edit rendered text without running all four steps.
+Page copy is authored in this repository. Never edit rendered text without running all four steps.
 
 1. Name the intention. What is this text for, and what is wrong with what it says now?
 2. Draft alternatives, labelled, in chat. Three is usually right.
 3. The operator picks.
-4. Apply the pick to the component and to the upstream source in the same pass.
+4. Apply the pick to the component.
 
 ### Rules
 
 - Show drafts in chat rather than in a file. The operator is choosing, not reviewing a document.
-- Report the upstream edit explicitly in the same message as the component edit. It lands in a different repository, so this branch cannot carry it, no check compares the two, and a page-side edit alone reintroduces the drift the split exists to close. See `canon/ARCHITECTURE.md` § Content read from the parent checkout.
 
 ## Holding the diff
 

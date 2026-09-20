@@ -53,4 +53,4 @@ Added on 2026-08-18, when every shipped project earned a route. This one has no 
 
 ## Copy
 
-Compressed from the technical reference in the parent checkout rather than authored here. The route claims no measured result, because the project has none that a reader could check.
+Authored in this repository. The route claims no measured result, because the project has none that a reader could check.
