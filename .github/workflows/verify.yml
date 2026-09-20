@@ -253,54 +253,39 @@ jobs:
             test-results/
           retention-days: 7
 
+  # Gated on the build alone, and dispatch only, so a reviewer waiting on a
+  # preview does not wait on the browser matrix. The artifact is already built
+  # by then and the matrix says nothing about whether a page renders. What keeps
+  # it safe is the same ref fence production uses: the deploy names the branch,
+  # so an unmerged ref lands on a preview host and cannot reach the apex.
+  preview:
+    name: 🌐 Preview
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    needs: [build-verify]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare Pages
+        uses: ./.github/actions/deploy-pages
+        with:
+          api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  # Production keeps every gate. A push to main is the only thing that reaches
+  # the apex, so nothing ships there without the full suite behind it.
   deploy:
     name: 🚀 Deploy
     runs-on: ubuntu-latest
-    # A dispatch reaches this job from any ref, which is the only way to run it
-    # before it merges. What keeps that safe is the ref itself, below.
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [static-checks, unit-tests, build-verify, e2e-tests]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # This job builds nothing, and it still needs a toolchain. wrangler-action
-      # reads the lockfile the checkout brings in, picks the package manager
-      # behind it, and installs wrangler with that, so a deploy with no bun on
-      # PATH fails before it reaches Cloudflare. Removing these as dead weight
-      # is what broke the deploy on every push after #84.
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Download Build Output
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
-
       - name: Deploy to Cloudflare Pages
-        id: deploy
-        uses: cloudflare/wrangler-action@v3
+        uses: ./.github/actions/deploy-pages
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # Ref-derived, so only main reaches the apex. Every other ref lands on
-          # a preview host, which is what makes a dispatch safe to fire early.
-          command: pages deploy ./dist --project-name=erclx-dev --branch=${{ github.ref_name }}
-
-      # The address a reviewer opens, read out of this log rather than computed
-      # from the branch. Cloudflare flattens a branch into its alias and may
-      # truncate it, so a computed address that is wrong is worse than none.
-      # Only a dispatch has a reviewer waiting on one: a push to main lands on
-      # the apex, whose address nobody needs told to them.
-      - name: Print Preview Alias
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          echo "canon-preview-alias: ${{ steps.deploy.outputs.pages-deployment-alias-url }}"
+          api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

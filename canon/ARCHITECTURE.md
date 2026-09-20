@@ -106,7 +106,11 @@ The apex domain already lives in Cloudflare. Pages attaches the custom domain wi
 
 ### Deploy from GitHub Actions, not the Cloudflare Git integration
 
-`cloudflare/wrangler-action` runs after `static-checks`, `unit-tests`, `build-verify`, and `e2e-tests` pass. CF's native Git integration would deploy on every push without honoring the test gate and would build in CF's environment with a separate bun version. Direct upload from Actions keeps the test gate and the build environment unified with CI.
+`cloudflare/wrangler-action` reaches production after `static-checks`, `unit-tests`, `build-verify`, and `e2e-tests` pass. CF's native Git integration would deploy on every push without honoring the test gate and would build in CF's environment with a separate bun version. Direct upload from Actions keeps the test gate and the build environment unified with CI.
+
+A preview takes a shorter gate than production, and the two are separate jobs for that reason. Production runs on a push to main behind all four. A preview runs on a dispatch behind `build-verify` alone, since the artifact it publishes is already built by then and the browser matrix, which is the whole of the remaining wait, says nothing about whether a page renders. Behind the full gate a preview took about fifteen minutes and `canon pr preview` timed out before the deploy had started. Behind the build it takes about four.
+
+What keeps the shorter gate safe is the ref fence rather than the tests. Both jobs deploy through `.github/actions/deploy-pages`, whose command names the branch, so an unmerged ref lands on a preview host and only main reaches the apex. The composite action exists because the two jobs otherwise carry the same five steps, and a toolchain step dropped from one of them is the failure recorded against #84.
 
 ### The vector serves the tab, and the rasters serve the surfaces that composite
 

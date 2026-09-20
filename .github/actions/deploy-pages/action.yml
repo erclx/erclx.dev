@@ -1,0 +1,55 @@
+name: Deploy to Cloudflare Pages
+description: Publishes the built site to a Pages host named by the ref, and prints the address it landed on.
+
+inputs:
+  api-token:
+    description: Cloudflare API token.
+    required: true
+  account-id:
+    description: Cloudflare account id.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # This action builds nothing, and it still needs a toolchain. wrangler-action
+    # reads the lockfile the checkout brings in, picks the package manager behind
+    # it, and installs wrangler with that, so a deploy with no bun on PATH fails
+    # before it reaches Cloudflare. Removing these as dead weight is what broke
+    # the deploy on every push after #84.
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+
+    - name: Download Build Output
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist
+
+    - name: Deploy
+      id: deploy
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ inputs.api-token }}
+        accountId: ${{ inputs.account-id }}
+        # Ref-derived, so only main reaches the apex. Every other ref lands on a
+        # preview host, which is what makes a deploy safe to fire before merge.
+        command: pages deploy ./dist --project-name=erclx-dev --branch=${{ github.ref_name }}
+
+    # Read out of this log rather than computed from the branch. Cloudflare
+    # flattens a branch into its alias and may truncate it, so a computed
+    # address that is wrong is worse than none.
+    - name: Print Preview Alias
+      shell: bash
+      run: |
+        echo "canon-preview-alias: ${{ steps.deploy.outputs.pages-deployment-alias-url }}"
