@@ -98,7 +98,7 @@ A rule stripping a ring for a fixture has to beat a layered declaration and a us
 
 The tap-target guard asserts its exempt set by reading each element's class list for `min-h-11`, `min-w-11`, or `size-11` alongside a box-display class. `canon/DESIGN.md` § Links carries the exemption itself, which turns on an inline link's `display` resolving to `inline`. A flex parent blockifies a child's computed display, so a guard trusting the computed value would quietly exempt a control that had regressed from `inline-flex` to plain `inline`.
 
-Measured at 63bfea1 on 2026-08-22, at 1440x900 across chromium, firefox, and webkit.
+The two outline readings were measured at 63bfea1 on 2026-08-22, at 1440x900 across chromium, firefox, and webkit. The tap-target reading came from the prose-link decision and carries no stamp of its own.
 
 ## Firefox needs a software GL driver and a pref, and a red engine needs a trace
 
