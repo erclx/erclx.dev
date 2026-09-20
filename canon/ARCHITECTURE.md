@@ -64,4 +64,4 @@ A decision about how something feels to cause is settled by serving candidate tr
 
 ## Risks / open questions
 
-`canon context audit` reads the cap clause above, and `bun run check:record` runs it with `--gate`. `scripts/verify.sh` calls it locally and the `static-checks` job calls it in CI, so a decision past the cap or a stale citation fails both. The verb is fetched with `bunx -y` and unpinned, so a canon release can redden a run.
+`canon context audit` reads the cap clause above, and `bun run check:record` runs it with `--gate`. `scripts/verify.sh` calls it locally and the `static-checks` job calls it in CI, so a decision past the cap or a stale citation fails both. The verb is fetched with `bunx -y` and unpinned, so a canon release can redden a run, and `bun run check` now needs the network, so a push from an offline machine with a cold `bunx` cache fails on a step unrelated to the change.
