@@ -1,0 +1,83 @@
+name: PR Evidence Screenshot
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'scripts/pr-evidence-screenshot.sh'
+      - 'scripts/lib/preview-server.sh'
+      - '.github/workflows/pr-evidence-screenshot.yml'
+
+concurrency:
+  group: pr-evidence-screenshot-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    name: 🖼️ Refresh Surface Evidence
+    runs-on: ubuntu-latest
+    # The default GITHUB_TOKEN cannot push to a fork's branch, so a PR from
+    # outside this repository is skipped rather than left to fail on the push
+    # step below.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Cache Playwright Browser
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-chromium-${{ hashFiles('**/package.json') }}
+
+      - name: Install Playwright System Dependencies
+        # Unconditional: the cache holds browser binaries and nothing apt
+        # wrote, so gating this on a cache hit leaves a warm run launching
+        # chromium without the libraries it needs.
+        run: bunx playwright install-deps chromium
+
+      - name: Install Playwright Browser
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: bunx playwright install chromium
+
+      - name: Capture Surface Screenshots
+        run: bun run pr-evidence-screenshot
+
+      - name: Check For Changes
+        id: diff
+        run: |
+          if git status --porcelain .github/evidence/surfaces | grep -q .; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit And Push
+        # Self-terminating: this push retriggers this same workflow on the PR,
+        # which captures again, finds no diff against what was just pushed,
+        # and stops here without pushing a second time.
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/evidence/surfaces
+          git commit -m "chore(evidence): refresh surface screenshots"
+          git push origin "HEAD:${{ github.head_ref }}"
