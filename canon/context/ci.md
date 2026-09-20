@@ -589,6 +589,10 @@ The second consumer is `.github/evidence/surfaces/`, one desktop light still per
 
 The baseline was captured locally and hashed identically across two consecutive runs on WSL. CI runs on a different OS, so its first run may push a font-rendering delta before it settles.
 
+Both push paths failed the first time either was reached. `git push` fires the husky `pre-push` hook, which runs `scripts/verify.sh`, whose format step shells out to `shfmt`, and the runner installs no `shfmt`, so the push exited 127 and the job failed after the capture had already produced its images. Neither job had run its push step before that: a branch reaches it only by changing an image, and every branch since these workflows shipped either touched no `src/**` or captured bytes identical to the baseline. Both steps now set `HUSKY: 0`, since what they push is PNG bytes a capture produced and `verify.yml` already runs those same checks against the source in its own jobs.
+
+Read that as the general shape rather than as one missing binary. A workflow step that pushes runs every hook a local push runs, against a runner that installed only what the workflow asked for, so any hook reaching a tool outside the job's own setup fails there and nowhere else. A failure of this kind also cannot surface until a branch reaches the step, which for a capture job means a branch that actually moves a rendered surface.
+
 ## Running CI locally
 
 `bun run check` runs the static and unit asserts plus auto-formats first. `bun run check:full` runs verify plus `test:e2e`. If CI fails on format, run `bun run check` locally and commit the diff.
