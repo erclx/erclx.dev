@@ -76,4 +76,4 @@ Cite these rather than restating them. A step reimplemented here rots against th
 
 These rules were written from a run that had already lost its split, and shipped inside it, so the branch carrying them was the case they describe. The operator refused a retro split there: a sweep and an out-of-order fix had welded the slices, two reviews had passed the branch clean, and seven new heads would have thrown that away to reshape work nobody disputed. Read that as the cost of finding it late rather than as the rules being optional.
 
-Most of what is here is not specific to this repository, so the generic half is a candidate for the upstream orchestrator and handback skills once a second stack has used it. Writing it here first keeps each rule beside the measurement that produced it. That promotion is an open question rather than a filed task.
+Most of what is here is not specific to this repository, so the generic half is a candidate for the orchestrator and handback skills once a second stack has used it. Writing it here first keeps each rule beside the measurement that produced it. That promotion is an open question rather than a filed task.

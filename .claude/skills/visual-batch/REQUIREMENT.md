@@ -29,7 +29,7 @@ Without this skill, a session working on a visual surface:
 - Keep each batch's commits contiguous, so the split the table declared is still available at the ship signal, and hand over to `stack-ship` there.
 - Classify a decision as static, motion, or interactive before capturing, and take the matching option from the capture rule.
 - Render and look at every visual change before reporting on it, and prefer a measurement whenever the claim is about a number.
-- Run the four-step copy cycle before changing any rendered text, and report the upstream edit in the same message as the component edit.
+- Run the four-step copy cycle before changing any rendered text.
 - Hold the tree uncommitted across every iteration within a batch, and commit only once the operator has judged that batch.
 - Mark the recommended option in its own label when escalating a choice.
 - Serve an interactive decision as live variants through the harness, and remove the arms and the call site in the change that applies the pick. The harness itself stays, unreferenced, between decisions.

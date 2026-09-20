@@ -157,7 +157,3 @@ All `.sh` files live under `scripts/`. Do not place shell scripts outside `scrip
 - `pre-commit` runs `lint-staged`. ESLint and prettier auto-fix `.astro`, `.tsx`, `.ts`, `.jsx`, `.js` files. Prettier and cspell run on `.json`, `.css`, `.md`, `.mdc`. shfmt and shellcheck run on `.sh`.
 - `commit-msg` runs `commitlint` against the conventional commit format.
 - `pre-push` runs `bun run check`. After pushing, run `git status`. If files changed, commit the diff as `style(<scope>):` and push again.
-
-## The synced résumé PDF
-
-`public/resume.pdf` shows as modified whenever the upstream résumé sync runs, not from a stray edit. It ships in the same commit set as its own `chore(assets): sync resume pdf` commit rather than getting flagged as out of scope.

@@ -17,8 +17,6 @@ erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, 
 
 Analytics stopped being a non-goal on 2026-08-24. Cloudflare Web Analytics already runs on erclx.dev, enabled through the zone's own dashboard rather than through any code in this repository, and had been recording visits for months before the operator noticed. The line still bars every other dashboard or backend, hosted or built here, so the exception stays scoped to analytics rather than opening the door to any third-party service. A visitor count sourced from the host that already proxies the domain costs nothing here to build or maintain.
 
-Copy sourced from the career repository stopped being the model on 2026-09-20, and the non-goal barring hand-written copy that diverged from it went with it. Page copy is authored in this repository now, so a wording change is made here rather than upstream and re-rendered. What that constraint delivered, a page that cannot drift from Linkedin, the résumé, and the Github profile, is still a goal above with nothing behind it, which `canon/ARCHITECTURE.md` § Risks / open questions carries as open.
-
 ## MVP features
 
 1. Header: identity, a greeting, contact links, and the portrait

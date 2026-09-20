@@ -88,7 +88,7 @@ The description never names an employer. Metadata says who someone is and the ti
 
 ### Resume PDF served from `public/`
 
-The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The canonical source is `career/assets/resumes/eric-le-cv.pdf` in the upstream career repo. Upstream keeps a Swedish `eric-le-cv-sv.pdf` beside it and this site serves the English one alone, since the page it sits on is written in English and the footer holds one résumé slot. Updates land here as a binary copy rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
+The footer résumé link points at `/resume.pdf`, which Astro serves from `public/resume.pdf`. The site serves the English résumé alone, since the page it sits on is written in English and the footer holds one résumé slot. The file ships here as a binary copy rather than a hotlink to a GitHub raw URL. On-domain serving keeps the URL clean (`erclx.dev/resume.pdf`) and removes a third-party dependency from the footer CTA.
 
 ### Cloudflare Pages over Vercel or GitHub Pages
 
@@ -100,8 +100,8 @@ The apex domain already lives in Cloudflare. Pages attaches the custom domain wi
 
 ### The vector serves the tab, and the rasters serve the surfaces that composite
 
-The mark is a lowercase e followed by a block cursor, drawn in this repository
-rather than synced from the upstream checkout. `src/assets/brand/mark.svg` is the
+The mark is a lowercase e followed by a block cursor, drawn in this repository.
+`src/assets/brand/mark.svg` is the
 one drawing and `scripts/brand.ts` renders it to rasters, so the tab, the home screen,
 the avatar, and the bar cannot drift.
 
@@ -387,5 +387,3 @@ extracted so the new capture script does not hold a second copy of it.
 The images sit at `.github/evidence/readme/{light,dark}.png` rather than beside the README, since the installed `canon` CLI's `canon pr evidence` renders a before/after comparison comment for any changed image whose path carries a literal `evidence` segment, run by `git-pr`/`git-followup` on every pull request. `canon/context/ci.md` carries the mechanism itself.
 
 ## Risks / open questions
-
-- The no-drift goal has no mechanism behind it. `canon/REQUIREMENTS.md` § Problem and § Goals still require the page to state the same facts as Linkedin, the résumé, and the Github profile, and the constraint that delivered that was deleted on 2026-09-20 when page copy became this repository's to author. Nothing compares the page against any of the three now. What replaces it is undecided rather than chosen.

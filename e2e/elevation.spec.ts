@@ -352,7 +352,7 @@ test.describe('elevated surfaces', () => {
       const plate = page.locator('.figure-plate').first()
       await expect(plate).toHaveCount(1)
 
-      // The charts upstream are drawn on pure white, so the plate under them
+      // The charts are drawn on pure white, so the plate under them
       // reads `--card` and not the elevated surface. Warming this is what puts
       // a white rectangle inside a cream frame.
       const fill = await paintedColor(plate, 'backgroundColor')
