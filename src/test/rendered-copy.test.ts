@@ -389,7 +389,10 @@ describe('the projects section', () => {
   it('renders a poster on a card without a hover video', () => {
     // The browser test also read the poster as visible, which a static file
     // cannot state. This asserts the poster is in the markup and the video is not.
-    const diction = queryAll(home, CARD_SELECTOR).slice(4, 5)
+    const diction = queryAll(home, CARD_SELECTOR).filter(
+      (element) =>
+        collapse(queryAll(element, 'h3')[0]?.textContent) === 'diction',
+    )
 
     expect(diction).toHaveLength(1)
     expect(
@@ -461,6 +464,33 @@ describe('a case study', () => {
 
   it('names the scoped package on the canon route', () => {
     expect(textOf(readPage('/canon'), 'main')).toContain('@erclx/canon')
+  })
+
+  it.each([
+    [
+      '/canon',
+      'A CLI and Claude Code plugin that distributes AI-development rules, skills, and workflows from one source, and coordinates parallel work across separate branches.',
+    ],
+    [
+      '/jobtriage',
+      "A job-search application over Sweden's public JobTech API, with an agent that turns a profile and a question into a visual shortlist. Measured retrieval in the case study.",
+    ],
+    [
+      '/stackr',
+      'Named context tracks for planning and architecture conversations in any AI chat. A VS Code extension on the Marketplace and Open VSX.',
+    ],
+    [
+      '/caret',
+      'A prompt palette that opens where the cursor already is, on three chat sites that each handle text differently. A Chrome extension.',
+    ],
+  ])('carries the source description on %s', (route, description) => {
+    expect(meta(readPage(route), 'meta[name="description"]')).toBe(description)
+  })
+
+  it('states the landing page sentence on the canon route', () => {
+    expect(collapse(textOf(readPage('/canon'), 'main'))).toContain(
+      'is one real session the toolkit ran on itself, with every figure on it read from the repository at build time',
+    )
   })
 
   it('renders the diction claim and sections', () => {
