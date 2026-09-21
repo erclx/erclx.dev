@@ -1,0 +1,310 @@
+---
+import { Image } from 'astro:assets'
+
+import annexDark from '@/assets/projects/annex-dark.png'
+import annexLight from '@/assets/projects/annex-light.png'
+import RouteFoot from '@/components/site/case-study/route-foot.astro'
+import RouteBar from '@/components/site/nav/route-bar.astro'
+import SectionNav from '@/components/site/section-nav/section-nav.astro'
+import BaseLayout from '@/layouts/base.astro'
+import { getLinkTargetAttributes } from '@/lib/links'
+
+const artifactLinks = [
+  { label: 'Recorded demo', href: 'https://annex.erclx.dev' },
+  { label: 'GitHub', href: 'https://github.com/erclx/annex' },
+]
+
+// The route's opening leads the rail, per the note in `jobtriage.astro`.
+const navItems = [
+  { id: 'annex', label: 'annex' },
+  { id: 'what', label: 'what' },
+  { id: 'question', label: 'question' },
+  { id: 'findings', label: 'findings' },
+  { id: 'graph', label: 'graph' },
+  { id: 'refusal', label: 'refusal' },
+  { id: 'freshness', label: 'freshness' },
+  { id: 'limits', label: 'limits' },
+]
+
+const evaluation = [
+  {
+    arm: 'Whole Act in the prompt',
+    recallOriginal: '1.00',
+    recallAmended: '1.00',
+    promptTokens: '1 416 797',
+  },
+  {
+    arm: 'Search only',
+    recallOriginal: '0.61',
+    recallAmended: '0.71',
+    promptTokens: '51 622',
+  },
+  {
+    arm: 'Search plus reference traversal',
+    recallOriginal: '0.83',
+    recallAmended: '0.81',
+    promptTokens: '193 575',
+  },
+]
+
+// The alt text is the annex README's own for the same two files.
+const heroAlt =
+  'The Annex landing page: a description box and twelve recorded questions'
+
+const heroImageClass = 'block h-auto w-full'
+const headingClass =
+  'text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl'
+---
+
+<BaseLayout
+  title="annex · Eric Le"
+  description="An EU AI Act compliance agent that maps a described system to cited articles, and tests whether retrieval helps when the whole law fits in context."
+  surface="case-study"
+>
+  <SectionNav items={navItems} instant />
+
+  <RouteBar here="annex" />
+
+  <main>
+    <section id="annex" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
+      <div class="mx-auto prose-column">
+        <p data-fade class="text-muted-foreground text-label tracking-wide uppercase">
+          Project
+        </p>
+        <h1
+          data-fade
+          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+        >
+          annex
+        </h1>
+        <p data-fade class="text-muted-foreground text-lede mt-4">
+          An EU AI Act compliance agent that maps a described system to cited
+          articles, and tests whether retrieval helps when the whole law fits in
+          context.
+        </p>
+        <ul data-fade class="mt-6 flex flex-wrap gap-x-6">
+          {
+            artifactLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  {...getLinkTargetAttributes(link.href)}
+                  class="text-foreground text-label inline-flex min-h-11 min-w-11 items-center underline-offset-4 hover:underline"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        {/* The landing page the annex README opens on. The two themes are two
+            files, so each shows under its own theme. */}
+        <figure
+          data-fade
+          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+        >
+          <Image
+            src={annexLight}
+            alt={heroAlt}
+            class={`${heroImageClass} dark:hidden`}
+          />
+          <Image
+            src={annexDark}
+            alt={heroAlt}
+            class={`${heroImageClass} hidden dark:block`}
+          />
+        </figure>
+      </div>
+    </section>
+
+    <section id="what" class="page-inset py-16 md:py-20">
+      <div class="mx-auto prose-column">
+        <h2 data-fade class={headingClass}>what</h2>
+        <p data-fade class="text-foreground text-lede mt-6">
+          A user describes an AI system. The agent returns the articles that may
+          attach, cited to the text it read them from, and says so plainly when
+          the law does not settle the question.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          It does not determine whether a system complies. It finds the text a
+          person needs to read.
+        </p>
+      </div>
+    </section>
+
+    <section id="question" class="page-inset py-16 md:py-20">
+      <div class="mx-auto prose-column">
+        <h2 data-fade class={headingClass}>question</h2>
+        <p data-fade class="text-foreground text-lede mt-6">
+          I wanted to know whether retrieval still helped when a model could read
+          the whole EU AI Act.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The Act runs to roughly 90,000 words, which fits inside a large
+          context window. That made the usual answer stop being obvious: if a
+          model can read the whole law, is retrieval still worth building?
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          So rather than assume a vector database belonged in the design, I
+          compared three arms on the same twelve questions. The whole Act in the
+          context window. Vector search alone. Vector search followed by
+          traversal of a graph built from the Act's own cross-references.
+        </p>
+      </div>
+    </section>
+
+    <section id="findings" class="page-inset py-16 md:py-20">
+      <div class="mx-auto prose-column">
+        <h2 data-fade class={headingClass}>findings</h2>
+        <p data-fade class="text-foreground text-lede mt-6">
+          In this twelve-question evaluation, full-context reading had the
+          highest recall.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The largest single improvement anywhere in the evaluation was not an
+          architecture change. It was replacing the embedding model, which is the
+          kind of gain that gets missed by comparing pipelines rather than
+          parts.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          Traversal then recovered more linked obligations on top of the better
+          embeddings, at a measurable cost to precision, because it also surfaces
+          articles that belong to the chain but not to the literal question.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The conclusion is narrower than retrieval not working. Retrieval is not
+          automatically the right answer when the complete, trusted source fits
+          in context.
+        </p>
+
+        {/* Lifted from the annex README's evaluation table, which the career
+            source does not carry yet, with its own sentence as the caption. */}
+        <figure
+          data-fade
+          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+        >
+          <figcaption class="text-muted-foreground font-mono text-label mb-4">
+            The same twelve questions ran three ways on one RTX 5090, 72 runs in
+            all.
+          </figcaption>
+          <table class="font-mono text-label w-full min-w-[32rem]">
+            <thead>
+              <tr class="text-muted-foreground">
+                <th class="text-left font-normal">Arm</th>
+                <th class="text-right font-normal tabular-nums">
+                  Recall, original
+                </th>
+                <th class="text-right font-normal tabular-nums">
+                  Recall, amended
+                </th>
+                <th class="text-right font-normal tabular-nums">
+                  Prompt tokens, original
+                </th>
+              </tr>
+            </thead>
+            <tbody class="text-foreground">
+              {
+                evaluation.map((row) => (
+                  <tr>
+                    <td class="py-1 pr-4">{row.arm}</td>
+                    <td class="py-1 pl-4 text-right tabular-nums">
+                      {row.recallOriginal}
+                    </td>
+                    <td class="py-1 pl-4 text-right tabular-nums">
+                      {row.recallAmended}
+                    </td>
+                    <td class="py-1 pl-4 text-right tabular-nums">
+                      {row.promptTokens}
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </figure>
+      </div>
+    </section>
+
+    <section id="graph" class="page-inset py-16 md:py-20">
+      <div class="mx-auto prose-column">
+        <h2 data-fade class={headingClass}>graph</h2>
+        <p data-fade class="text-foreground text-lede mt-6">
+          The Act cites itself in ordinary sentences, phrases like "in accordance
+          with Article 43" sitting inside running prose. Those citations are
+          parsed into several hundred graph edges programmatically rather than
+          inferred by a model.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          That is what makes a multi-hop question answerable at all. Asking what
+          follows from a system being high-risk walks <code class="font-mono"
+            >Article 6</code
+          > to <code class="font-mono">Annex III</code> to <code class="font-mono"
+            >Articles 8-15</code
+          >, instead of hoping one retrieved passage happens to hold the whole
+          chain.
+        </p>
+      </div>
+    </section>
+
+    <section id="refusal" class="page-inset py-16 md:py-20">
+      <div class="mx-auto prose-column">
+        <h2 data-fade class={headingClass}>refusal</h2>
+        <p data-fade class="text-foreground text-lede mt-6">
+          The refusal is a branch in the pipeline rather than error handling.
+          Where the retrieved and traversed text does not settle a question, the
+          agent says so instead of extrapolating.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The clearest case is a threshold regulators have not defined. Whether a
+          later modification to an already-deployed system counts as substantial
+          enough to trigger full high-risk compliance is not settled by the text,
+          so the agent declines to settle it either.
+        </p>
+      </div>
+    </section>
+
+    <section id="freshness" class="page-inset py-16 md:py-20">
+      <div class="mx-auto prose-column">
+        <h2 data-fade class={headingClass}>freshness</h2>
+        <p data-fade class="text-foreground text-lede mt-6">
+          A Digital Omnibus amendment moved the deadline for standalone high-risk
+          obligations from 2 August 2026 to 2 December 2027, and it took effect
+          while the project was in progress.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          Querying the unamended corpus returns a confidently wrong deadline.
+          Querying the amended corpus returns the right one, with the citation
+          change visible between them. That is a better argument for keeping a
+          corpus current than any sentence about it.
+        </p>
+      </div>
+    </section>
+
+    <section id="limits" class="page-inset py-16 md:py-20">
+      <div class="mx-auto prose-column">
+        <h2 data-fade class={headingClass}>limits</h2>
+        <p data-fade class="text-foreground text-lede mt-6">
+          It names obligations and cites text. The compliance judgment stays with
+          the reader.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The deployed page replays twelve recorded answers rather than calling a
+          model. The generation model needs 30GB of GPU memory and nothing free
+          hosts that, so asking a new question means running the pipeline
+          locally.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <RouteFoot />
+
+  <script>
+    import { initWayHome } from '@/components/site/case-study/way-home'
+    import { initReveal } from '@/lib/reveal'
+
+    initReveal()
+    initWayHome()
+  </script>
+</BaseLayout>
