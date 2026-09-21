@@ -15,7 +15,15 @@ import { CARD_CLAIM } from '../../scripts/card-copy'
 
 const DIST = join(process.cwd(), 'dist')
 
-const ROUTES = ['/', '/canon', '/jobtriage', '/stackr', '/caret', '/diction']
+const ROUTES = [
+  '/',
+  '/canon',
+  '/jobtriage',
+  '/stackr',
+  '/caret',
+  '/diction',
+  '/annex',
+]
 
 // What Google truncates a description at. Every host shows less than this, so a
 // description inside it is inside all of them.
@@ -483,6 +491,10 @@ describe('a case study', () => {
       '/caret',
       'A prompt palette that opens where the cursor already is, on three chat sites that each handle text differently. A Chrome extension.',
     ],
+    [
+      '/annex',
+      'An EU AI Act compliance agent that maps a described system to cited articles, and tests whether retrieval helps when the whole law fits in context.',
+    ],
   ])('carries the source description on %s', (route, description) => {
     expect(meta(readPage(route), 'meta[name="description"]')).toBe(description)
   })
@@ -501,6 +513,22 @@ describe('a case study', () => {
       'scores each sound against what a native speaker actually sounds like',
     )
     expect(queryAll(doc, 'main section[id]')).toHaveLength(6)
+  })
+
+  it('renders the annex claim and sections', () => {
+    const doc = readPage('/annex')
+
+    expect(textOf(doc, 'h1')).toBe('annex')
+    expect(textOf(doc, 'main')).toContain(
+      'tests whether retrieval helps when the whole law fits in context',
+    )
+    expect(queryAll(doc, 'main section[id]')).toHaveLength(8)
+  })
+
+  it('renders the annex evaluation table with its three arms', () => {
+    const doc = readPage('/annex')
+
+    expect(queryAll(doc, 'main table tbody tr')).toHaveLength(3)
   })
 
   it('states the offline claim on the diction route', () => {

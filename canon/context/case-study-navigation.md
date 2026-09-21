@@ -17,7 +17,7 @@ The foot came out on 2026-08-21 and went back the same day. Removing it rested o
 
 ## Layout
 
-- `src/components/site/case-study/` owns the module all five project routes load
+- `src/components/site/case-study/` owns the module all six project routes load
 
 ## Decisions
 
@@ -41,4 +41,4 @@ The foot came out on 2026-08-21 and went back the same day. Removing it rested o
 - That button is `inert` until the route's `h1` passes behind the bar, on the same marker that fades it in. Opacity hides a control from the eye and from nothing else, so a version keyed on opacity alone leaves a tab stop and a 44px tap target sitting over the whole opening screen while painting nothing.
 - A test counts those anchors by region, one in the header and one in the footer, rather than counting two anywhere on the page. A route that grew a third in the body would satisfy a bare count of two and is the case the split assertion catches.
 - Both anchors carry a click test, and which one a test clicks is part of what it asserts. The count above catches a dropped attribute and passes over a broken `href`, so a control nothing clicks is a control nothing covers. Every way-home test briefly pointed at the bar on 2026-08-21, which left the foot with the unwind bound to it and nothing exercising it.
-- `route-foot.astro` owns the closing control for all five routes. It carries the footer landmark as well, so a route that drops the component ends with no `[data-section="footer"]` at all, which is the shape the routes shipped in for part of 2026-08-21.
+- `route-foot.astro` owns the closing control for all six routes. It carries the footer landmark as well, so a route that drops the component ends with no `[data-section="footer"]` at all, which is the shape the routes shipped in for part of 2026-08-21.

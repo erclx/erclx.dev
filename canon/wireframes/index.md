@@ -8,6 +8,7 @@ subtitle: Per-surface ASCII layouts loaded on demand
 Per-surface ASCII layouts loaded on demand
 
 - [About me](about.md): Personal surface directly under the header, carrying where the person is from and one thing that is not work
+- [annex project](annex.md): Sub-page at /annex covering the retrieval question, the measurement, the citation graph, and the refusal path
 - [canon project](canon.md): Long-form sub-page at /canon covering the problem, the single source for standards, the shipped workflow, parallel work, and agent-driven verification
 - [Caret project](caret.md): Sub-page at /caret covering the reuse problem, the trigger palette, and the three-editor adapter
 - [Contact dock](contact-dock.md): Fixed right-margin control carrying contact and the résumé between the hero and the footer, mirroring the section rail on the left

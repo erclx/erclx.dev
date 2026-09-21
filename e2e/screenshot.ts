@@ -23,6 +23,7 @@ const CASE_STUDY_ROUTES = [
   'diction',
   'stackr',
   'caret',
+  'annex',
 ] as const
 
 interface Viewport {

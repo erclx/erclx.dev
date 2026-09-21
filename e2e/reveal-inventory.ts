@@ -35,7 +35,15 @@ function devServerUrl(): string {
 const BASE = process.env.REVEAL_BASE_URL ?? devServerUrl()
 const FILTER = process.env.REVEAL_FILTER?.split(',').map((t) => t.trim())
 
-const ROUTES = ['/', '/canon', '/jobtriage', '/stackr', '/caret', '/diction']
+const ROUTES = [
+  '/',
+  '/canon',
+  '/jobtriage',
+  '/stackr',
+  '/caret',
+  '/diction',
+  '/annex',
+]
 
 /** How long the trace watches, past the 700ms fade plus its longest delay. */
 const TRACE_MS = 1800
