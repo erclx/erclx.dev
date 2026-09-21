@@ -1,7 +1,7 @@
 ---
 title: canon project
-subtitle: Long-form sub-page at /canon covering the adoption thesis, the install taxonomy, and the operating model
-description: Long-form sub-page at /canon covering the adoption thesis, the install taxonomy, and the operating model
+subtitle: Long-form sub-page at /canon covering the problem, the single source for standards, the shipped workflow, parallel work, and agent-driven verification
+description: Long-form sub-page at /canon covering the problem, the single source for standards, the shipped workflow, parallel work, and agent-driven verification
 ---
 
 # canon project
@@ -17,41 +17,27 @@ Reached from the canon project card on the landing page. Carries the depth a vis
 │                                                          │
 │   PROJECT                                                │  ← eyebrow
 │   canon                                                  │  ← display heading
-│   A CLI that installs one set of agent rules, skills,    │  ← the claim, one sentence
-│   and standards into every project and keeps them in     │
-│   step.                                                  │
-│   GitHub   npm                                           │  ← link row, no Project link back to itself
+│   A CLI and Claude Code plugin that distributes           │  ← the claim, one sentence
+│   AI-development rules, skills, and workflows from one   │
+│   source, ...                                            │
+│   GitHub   npm   Live build                              │  ← link row, no Project link back to itself
 │                                                          │
 │   problem                                                │  ← section heading, repeats per section
 │   Every project I started got the same scaffolding ...   │  ← the reason, at lede weight
-│   Every repository re-authors the same agent             │
-│   scaffolding ...                                        │  ← the framing, demoted to body
+│   Drift on this surface is quiet ...                     │  ← the framing, demoted to body
 │                                                          │
-│   thesis                                                 │
-│   ┌────────────────────────────────────────────────┐     │
-│   │ │ pull in its own context                      │     │  ← the three prescriptions, rule-marked
-│   │ │ break work into loops and routines           │     │
-│   │ │ let the agent start other agents             │     │
-│   └────────────────────────────────────────────────┘     │
+│   standards                                              │
+│   Content reaches a project through three separate       │  ← install, sync, build in prose
+│   operations ...                                         │
 │                                                          │
-│   taxonomy                                               │
-│   install   Overwrites. Runs once to bootstrap.          │  ← operation and behavior, mono pairs
-│   sync      Updates only files already present.          │
-│   build     Derives a payload from current state.        │
-│   ┌────────────────────────────────────────────────┐     │
-│   │ content kinds and their merge rule             │     │  ← panel, label and value pairs
-│   └────────────────────────────────────────────────┘     │
+│   workflow                                               │
+│   The rules are not the whole product ...                │
 │                                                          │
-│   model                                                  │
-│   ┌────────────────────────────────────────────────┐     │
-│   │            orchestrator, warm                  │     │  ← panel diagram, one node over two
-│   │                    │                           │     │
-│   │        ┌───────────┴───────────┐               │     │
-│   │   plans and reviews      workers, cold         │     │
-│   └────────────────────────────────────────────────┘     │
+│   parallel                                               │
+│   Work runs across parallel Claude Code sessions ...     │
 │                                                          │
 │   agents                                                 │
-│   Every command has a non-interactive path ...           │
+│   All of it depends on agents being able to drive ...    │
 │                                                          │
 │                                                          │
 │   ← Back to Eric Le                                      │  ← closing way home, on the
@@ -70,7 +56,7 @@ The section-nav rail sits in the left margin from `xl`, tracking the five sectio
 - Two controls lead home and both carry the same arrow, one in the top bar and one at the foot. Neither is boxed. The pair is deliberate: a reader who wants out partway through should not have to reach the end to find the way.
 - The top bar's controls and the rule under them sit at the same measure as the prose, so the frame agrees with the column instead of spanning past it. The foot already closed this way and the bar now matches it.
 - A reader who arrived from the landing page returns to the place they left rather than to the top of it, and the landing page does not replay its reveal animations on the way back. A reader who opened the case study directly lands at the top, since there is nowhere else to return to. Mechanism: `canon/context/case-study-navigation.md`.
-- Every figure here is built from layout and type, so none of them opens on click. The pronunciation case study is the only route carrying charts that do.
+- The page carries one figure, the install still under the opening, and it does not open on click. The pronunciation case study is the only route carrying charts that do.
 
 ## Copy
 

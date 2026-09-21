@@ -1,11 +1,11 @@
 ---
 title: Jobtriage project
-description: Long-form sub-page at /jobtriage covering the problem framing, two-posture system, retrieval evaluation, and agent loop
+description: Long-form sub-page at /jobtriage covering the problem framing, the two demo paths, the canvas, the retrieval evaluation, and the system stack
 ---
 
 # Jobtriage project
 
-Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The landing page name-drops Jobtriage. This page is where a recruiter or technical interviewer reads the depth: the framing, the two-posture system, the retrieval choices the ablation justifies, and the agent loop with its pinned spatial tools. Reuses the landing page's tokens, fonts, and chrome so the site reads as one product despite the extra route.
+Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The landing page name-drops Jobtriage. This page is where a recruiter or technical interviewer reads the depth: the framing, the two demo paths, the canvas with its pinned spatial tools, the retrieval choices the ablation justifies, and the stack. Reuses the landing page's tokens, fonts, and chrome so the site reads as one product despite the extra route.
 
 ## Desktop (≥768px)
 
@@ -15,35 +15,30 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   ─────────────────────────────────────────────────────        │  ← the rule stops at the text column
 │   PROJECT                                                      │  ← eyebrow
 │   Jobtriage                                                    │  ← Fraunces display
-│   Live agent triages Swedish job ads against any profile.      │  ← Inter body, mirrors screencast subtitle
-│   [Live demo]    [GitHub]                                      │  ← header-row CTA links
+│   A job-search application over Sweden's public JobTech API,   │  ← the claim, Inter body
+│   with an agent that turns a profile and a question into a     │
+│   visual shortlist.                                            │
+│   [Live demo]    [GitHub]    [Walkthrough]                     │  ← header-row CTA links
 ├────────────────────────────────────────────────────────────────┤
 │   problem                                                      │  ← section heading
-│   I wanted a project where a language model drove the          │
-│   interface rather than sitting behind it ...                  │  ← the reason, at lede weight
-│   Job boards rank for the platform's monetization, not the     │
-│   candidate's fit. Profile-driven match should be a            │
-│   first-class operation, not a retrieval-as-a-feature bolt-on. │  ← the framing, demoted to body
+│   I was job hunting, and Sweden's job API is public. So I      │  ← the reason, at lede weight
+│   built against it.                                            │
+│   Job boards return a list ...                                 │  ← the framing, demoted to body
 ├────────────────────────────────────────────────────────────────┤
-│   system                                                       │  ← section heading
-│   Two postures share one agent shell.                          │
-│   ┌──────────────────────────────────────────────────────┐     │
-│   │                ┌ agent shell ┐                       │     │
-│   │            ┌───────────┴───────────┐                 │     │
-│   │     ┌ deploy ──────────┐   ┌ local ───────────┐      │     │
-│   │     │ JobTech taxonomy   │   │ SQLite corpus,    │      │     │
-│   │     │ and JobSearch APIs │   │ hybrid retrieval  │      │     │
-│   │     └───────────────────┘   └───────────────────┘      │     │
-│   └──────────────────────────────────────────────────────┘     │
-│   Same prompt, same tools, different data path.               │
-│                                                                │
-│   Frontend: Next.js App Router on Vercel, Vercel AI SDK       │  ← stack list, mono
-│   Backend: FastAPI on Cloud Run europe-west1, 1Gi memory      │
-│   Retrieval: BM25 + multilingual-e5-base dense + RRF over SQLite │
-│   BYOK: Anthropic, OpenAI, Gemini, local Ollama, mock replay  │
-│   Domain: Cloudflare A record fronting Vercel                 │
+│   try                                                          │
+│   Two paths share the same interface ...                       │  ← mock replay and bring your own key
 ├────────────────────────────────────────────────────────────────┤
-│   retrieval                                                    │  ← section heading
+│   canvas                                                       │
+│   The agent does not stop at a paragraph of text ...           │
+│   data tool         → spatial tool                            │  ← two-column mapping list
+│   searchJobs        → placeAds                                │
+│   triageBatch       → groupAds                                │
+│   matchProfile      → connectProfileToAds                     │
+│   compareRoles      → pairAdsForCompare                       │
+│   deadlineWatch     → placeAdsOnTimeline                      │
+│   trackStatus       → markStatus                              │
+├────────────────────────────────────────────────────────────────┤
+│   retrieval                                                    │
 │   50-query Swedish golden set against a 59-ad corpus.         │
 │                                                                │
 │   ┌─ hybrid retrieval ablation ────────────────────────┐      │
@@ -55,20 +50,20 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   └────────────────────────────────────────────────────┘      │
 │                                                                │
 │   ┌─ multilingual encoder comparison (dense) ──────────┐      │
-│   │ encoder          P@1     R@10    dim               │      │
-│   │ MiniLM (en)      0.700   0.855   384               │      │
-│   │ e5-base (ml)     0.780   0.965   768               │      │
-│   │ e5-large (ml)    0.860   0.945   1024              │      │
+│   │ encoder                 P@1     R@10    dim        │      │
+│   │ MiniLM, English         0.700   0.855   384        │      │
+│   │ e5-base, multilingual   0.780   0.965   768        │      │
+│   │ e5-large, multilingual  0.860   0.945   1024       │      │
 │   └────────────────────────────────────────────────────┘      │
 ├────────────────────────────────────────────────────────────────┤
-│   agent                                                        │  ← section heading
-│   data tool         → spatial tool                            │  ← two-column mapping list
-│   searchJobs        → placeAds                                │
-│   triageBatch       → groupAds                                │
-│   matchProfile      → connectProfileToAds                     │
-│   compareRoles      → pairAdsForCompare                       │
-│   deadlineWatch     → placeAdsOnTimeline                      │
-│   trackStatus       → markStatus                              │
+│   system                                                       │
+│   Two postures share one agent shell ...                      │
+│                                                                │
+│   Frontend: Next.js App Router on Vercel, Vercel AI SDK       │  ← stack list, mono
+│   Backend: FastAPI on Cloud Run europe-west1, 1Gi memory      │
+│   Retrieval: BM25 and multilingual-e5-base dense, fused by RRF │
+│   BYOK: Anthropic, OpenAI, Gemini, local Ollama, mock replay  │
+│   Domain: Cloudflare A record fronting Vercel                 │
 │                                                                │
 │   ←  Back to Eric Le                                           │  ← closing way home, on the
 │                                                                │    prose column's left edge
@@ -83,25 +78,27 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 ├──────────────────────────────────┤
 │   PROJECT                        │
 │   Jobtriage                      │
-│   Live agent triages Swedish     │
-│   job ads against any profile.   │
+│   A job-search application over  │
+│   Sweden's public JobTech API... │
 │   [Live demo]                    │
 │   [GitHub]                       │
+│   [Walkthrough]                  │
 ├──────────────────────────────────┤
 │   problem                        │
 │   [body paragraph wraps]         │
 ├──────────────────────────────────┤
-│   system                         │
-│   [diagram stacks the deploy     │
-│    box over the local box]       │
-│   [stack list wraps]             │
+│   try                            │
+│   [body paragraphs wrap]         │
+├──────────────────────────────────┤
+│   canvas                         │
+│   [tool-pairing list wraps as    │
+│    two lines per pair]           │
 ├──────────────────────────────────┤
 │   retrieval                      │
 │   [tables horizontal-scroll]     │
 ├──────────────────────────────────┤
-│   agent                          │
-│   [tool-pairing list wraps as    │
-│    two lines per pair]           │
+│   system                         │
+│   [stack list wraps]             │
 │                                  │
 │   ←  Back to Eric Le             │  ← closing way home
 │                                  │
@@ -118,14 +115,15 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 - The display title sits one step smaller than the landing hero so the page reads as secondary to the apex.
 - Each section opens on a line set one step above the paragraphs under it, and the deck under the title reads at that same step. A reader finds where a section starts by size rather than by shade, which is what the opening line leaned on before the step existed.
 - The page renders static. Long-form depth optimizes for reading speed, so the cascade reveal stays on the landing page where each section is a focal moment.
-- In-page navigation between landing and case study is same-tab. `Live demo` and `GitHub` open in a new tab because they leave the site.
+- In-page navigation between landing and case study is same-tab. `Live demo`, `GitHub`, and `Walkthrough` open in a new tab because they leave the site.
 
 ## Sections
 
-- **Problem.** Two short sentences framing the hook: job boards rank for monetization, not fit, and profile-driven match should be a first-class operation.
-- **System.** A lead on the two-posture split, then a diagram of the shared agent shell branching into a deploy data path (live JobTech APIs) and a local data path (SQLite corpus). Below it, a five-row stack list and a closing paragraph on the mock-replay plus BYOK posture as the differentiator.
-- **Retrieval.** A lead on the 50-query Swedish golden set and 59-ad corpus, then two tables in card containers: the hybrid retrieval ablation and the multilingual encoder comparison. Each carries a caption framing its headline. The ablation notes dense wins P@1 here. The encoder notes e5-large lifts P@1 but gives back recall, so e5-base ships as default.
-- **Agent.** A lead on the pinned spatial tool pairings, a two-column data-tool-to-spatial-tool mapping list, and a closing paragraph on the four React Flow canvas views.
+- **Problem.** The reason first, that the author was job hunting against a public API, then a framing paragraph on why a ranked list is not shaped for a profile-driven decision.
+- **Try.** The two demo paths, a mock replay without a key and a live agent with the reader's own, then the split between the deployed path on live JobTech data and local development on a fixed corpus.
+- **Canvas.** The agent's tool calls driving a React Flow canvas, and a two-column data-tool-to-spatial-tool mapping list under the note that the pairings are pinned in the system prompt.
+- **Retrieval.** A lead saying the evaluation covers the local corpus, the 50-query Swedish golden set and 59-ad corpus, then two tables in card containers: the hybrid retrieval ablation and the multilingual encoder comparison. Each carries a caption framing its headline. The ablation notes dense wins P@1 here, against the usual assumption. The encoder notes e5-large lifts P@1 but gives back recall, so e5-base ships as default.
+- **System.** A lead on the two postures sharing one agent shell, a five-row stack list, and a closing line on the four React Flow canvas views. The route carries no diagram of the shell.
 
 ## Foot
 
