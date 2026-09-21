@@ -674,7 +674,7 @@ test('the availability dot renders no pulse halo under reduced motion', async ({
   expect(halo.animationName).toBe('none')
 })
 
-test('the projects lede reads at the measure the page already holds', async ({
+test('the projects lede runs the full width of the grid under it', async ({
   page,
 }) => {
   // Above lg, where the projects column breaks out to 1024 and every other
@@ -690,17 +690,12 @@ test('the projects lede reads at the measure the page already holds', async ({
       return Math.round(element.getBoundingClientRect().width)
     }
     return {
-      lede: read('#projects .max-w-3xl p'),
-      about: read('#about p'),
-      // The cards the lede introduces, which it is deliberately not level with:
-      // reaching them put the line at 127 characters against the 92 and 93 the
-      // sections either side of it run.
+      lede: read('#projects p'),
       grid: read('#projects .grid'),
     }
   })
 
-  expect(widths.lede).toBe(widths.about)
-  expect(widths.lede).toBeLessThan(widths.grid)
+  expect(widths.lede).toBe(widths.grid)
 })
 
 // The band between a phone and the old breakpoint, where the rail used to be
