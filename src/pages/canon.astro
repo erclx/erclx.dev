@@ -1,7 +1,8 @@
 ---
-import { Image } from 'astro:assets'
+import { getImage } from 'astro:assets'
 
-import installTranscript from '@/assets/projects/canon.png'
+import agentViewPoster from '@/assets/projects/canon-agent-view.png'
+import agentViewDemo from '@/assets/videos/canon.mp4?url'
 import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import RouteBar from '@/components/site/nav/route-bar.astro'
 import SectionNav from '@/components/site/section-nav/section-nav.astro'
@@ -13,6 +14,10 @@ const artifactLinks = [
   { label: 'npm', href: 'https://www.npmjs.com/package/@erclx/canon' },
   { label: 'Live build', href: 'https://canon.erclx.dev' },
 ]
+
+// A `poster` attribute takes a URL rather than an image, so it reaches for the
+// source file unless something derives the optimized one.
+const demoPoster = await getImage({ src: agentViewPoster, format: 'webp' })
 
 // The route's opening leads the rail, per the note in `jobtriage.astro`.
 const navItems = [
@@ -78,17 +83,23 @@ const navItems = [
           }
         </ul>
 
-        {/* The still closes the opening rather than interrupting it, so a
-            reader meets the artifact existing before the argument starts. */}
+        {/* The demo closes the opening rather than interrupting it. It declares
+            `view` so a phone, which cannot hover, plays it on screen. */}
         <figure
-          data-fade          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+          data-media-host="view"
+          data-fade
+          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
-          <Image
-            src={installTranscript}
-            alt="A terminal installing canon as a Claude Code plugin in three commands, ending with the plugin listed as enabled"
-            class="block h-auto w-full"
-            loading="eager"
-          />
+          <video
+            src={agentViewDemo}
+            poster={demoPoster.src}
+            muted
+            loop
+            playsinline
+            preload="none"
+            data-media-video
+            aria-label="canon's landing page, one real session the toolkit ran on itself"
+            class="block h-auto w-full"></video>
         </figure>
       </div>
     </section>
@@ -184,9 +195,11 @@ const navItems = [
 
   <script>
     import { initWayHome } from '@/components/site/case-study/way-home'
+    import { initHoverVideo } from '@/lib/hover-video'
     import { initReveal } from '@/lib/reveal'
 
     initReveal()
     initWayHome()
+    initHoverVideo()
   </script>
 </BaseLayout>

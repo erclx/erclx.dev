@@ -389,14 +389,14 @@ describe('the projects section', () => {
   it('renders a poster on a card without a hover video', () => {
     // The browser test also read the poster as visible, which a static file
     // cannot state. This asserts the poster is in the markup and the video is not.
-    const canon = queryAll(home, CARD_SELECTOR).slice(0, 1)
+    const diction = queryAll(home, CARD_SELECTOR).slice(4, 5)
 
-    expect(canon).toHaveLength(1)
+    expect(diction).toHaveLength(1)
     expect(
-      canon.flatMap((element) => queryAll(element, '[data-media-poster]')),
+      diction.flatMap((element) => queryAll(element, '[data-media-poster]')),
     ).toHaveLength(1)
     expect(
-      canon.flatMap((element) => queryAll(element, '[data-media-video]')),
+      diction.flatMap((element) => queryAll(element, '[data-media-video]')),
     ).toHaveLength(0)
   })
 
