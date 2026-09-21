@@ -39,14 +39,12 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `canon/
 │                                                          │
 │   Experience                                             │
 │                                                          │
-│   I build the layer between a language model and the     │  ← the claim, display face
-│   job it has to do.                                      │
-│   [two body paragraphs elaborating it]                   │
+│   [two body paragraphs, Volvo then independent work]     │
 │                                                          │
 │   Where that happened                                    │
 │   ( ⬤ VOLVO )   ( BAC HA )   ( CHALMERS )                │
 │                                                          │
-│   2026                 ●  shipping independently         │
+│   2026                 ●  independent projects, open to work        │
 │   jun to dec 2025      ○  working out what to build      │
 │   jan 2024 to jun 2025 ○  eighteen months at volvo       │
 │   jun to aug 2023      ○  ten weeks at bac ha, hanoi     │
@@ -67,10 +65,11 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `canon/
 │   Looking for                                            │
 │   ● Open to work                             ( ᴥ )       │  ← status anchors it, character on the rule
 │   ────────────────────────────────────────────────────   │  ← the page's one rule
-│   What I want to build  AI tooling · LLM apps · devex    │
-│   Team                  small to mid · close to product  │
-│   Where                 Sweden, Gothenburg · remote      │
-│   Experience            two years in                     │
+│   What I want to build  AI tools, developer products,    │
+│                         full-stack applications          │
+│   Team                  small to mid, close to product   │
+│   Where                 Sweden, Gothenburg preferred,    │
+│                         remote                           │
 │   Terms                 full-time or contract            │
 │                                                          │
 │              (handwritten signature)                     │  ← no rule above it

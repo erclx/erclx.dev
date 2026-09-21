@@ -931,14 +931,6 @@ test('a grouped list staggers its rows rather than landing them together', async
   expect(reveal.everMidFade).toBe(true)
 })
 
-test('the looking-for section states experience rather than a level band', async ({
-  page,
-}) => {
-  await page.goto('/')
-
-  await expect(page.locator('#looking-for')).toContainText('two years in')
-})
-
 // 375 and 390 are the two commonest phone widths, and both regressed when a
 // decorative hover label shipped on one line: it reached 62px and 47px past the
 // viewport while invisible, which scrolls the whole page sideways.
