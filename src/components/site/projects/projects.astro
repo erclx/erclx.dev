@@ -1,7 +1,8 @@
 ---
+import annexPosterDark from '@/assets/projects/annex-dark.png'
+import annexPoster from '@/assets/projects/annex-light.png'
 import canonPoster from '@/assets/projects/canon-agent-view.png'
 import caretPoster from '@/assets/projects/caret.png'
-import dictionPoster from '@/assets/projects/diction.png'
 import jobtriagePoster from '@/assets/projects/jobtriage.png'
 import stackrPoster from '@/assets/projects/stackr.png'
 import canonVideo from '@/assets/videos/canon.mp4?url'
@@ -20,7 +21,7 @@ const projects = [
     name: 'canon',
     route: '/canon',
     description:
-      'CLI that installs one set of agent rules, skills, and standards into every project and keeps them in step. Installs from npm as @erclx/canon and as a Claude Code plugin.',
+      'Rules and workflows kept drifting across every project I had. I built a CLI and Claude Code plugin that distributes them from one source, carries the plan, review, and ship loop as skills, and coordinates parallel work across separate branches. Available on npm as @erclx/canon, with a live build at canon.erclx.dev.',
     poster: canonPoster,
     videoSrc: canonVideo,
     mediaAlt:
@@ -28,13 +29,14 @@ const projects = [
     links: [
       { label: 'GitHub', href: 'https://github.com/erclx/canon' },
       { label: 'npm', href: 'https://www.npmjs.com/package/@erclx/canon' },
+      { label: 'Live build', href: 'https://canon.erclx.dev' },
     ],
   },
   {
     name: 'Jobtriage',
     route: '/jobtriage',
     description:
-      'Live agent that triages Swedish job ads against a profile. Reachable at jobtriage.erclx.dev without a key, and the case study carries the retrieval numbers.',
+      'I was job hunting, and Sweden\'s job API is public. So I built against it. A job-search application that triages Swedish ads against a profile, with a public demo and the retrieval numbers in the case study.',
     poster: jobtriagePoster,
     videoSrc: jobtriageVideo,
     mediaAlt:
@@ -45,10 +47,24 @@ const projects = [
     ],
   },
   {
+    name: 'annex',
+    route: '/annex',
+    description:
+      'I wanted to know whether retrieval still helped when a model could read the whole EU AI Act. A compliance agent that maps a described system to cited articles, with a case study comparing full-context reading, vector search, and graph traversal.',
+    poster: annexPoster,
+    posterDark: annexPosterDark,
+    mediaAlt:
+      'The Annex landing page: a description box and twelve recorded questions',
+    links: [
+      { label: 'Recorded demo', href: 'https://annex.erclx.dev' },
+      { label: 'GitHub', href: 'https://github.com/erclx/annex' },
+    ],
+  },
+  {
     name: 'Stackr',
     route: '/stackr',
     description:
-      'VS Code extension that stages files across a workspace into one block of LLM context. Installed from the VS Code Marketplace and Open VSX.',
+      'Staging files by hand for every prompt was the actual bottleneck, so I stopped doing it by hand. VS Code extension that stages files across a workspace into one block of LLM context. Installed from the VS Code Marketplace and Open VSX.',
     poster: stackrPoster,
     videoSrc: stackrVideo,
     mediaAlt: 'Stackr — VS Code panel showing staged files and a context preview',
@@ -69,7 +85,7 @@ const projects = [
     name: 'Caret',
     route: '/caret',
     description:
-      'Chrome extension that saves prompts and drops them into Claude, Gemini, and ChatGPT from the chat input. Live on the Chrome Web Store.',
+      'I kept retyping the same prompts across three different chat windows. Chrome extension that saves prompts and drops them into Claude, Gemini, and ChatGPT from the chat input. Live on the Chrome Web Store.',
     poster: caretPoster,
     videoSrc: caretVideo,
     mediaAlt: 'Caret — chat input showing a trigger-character palette of saved prompts',
@@ -81,24 +97,8 @@ const projects = [
       { label: 'GitHub', href: 'https://github.com/erclx/caret' },
     ],
   },
-  {
-    name: 'diction',
-    route: '/diction',
-    description:
-      'Pronunciation trainer that scores each sound against what a native speaker actually sounds like, and reports how often it is wrong. Runs offline with nothing leaving the machine.',
-    poster: dictionPoster,
-    mediaAlt:
-      'diction — a scored passage reading, with the word thought flagged and the th correction shown',
-    mediaPosition: 'left top',
-    links: [
-      { label: 'GitHub', href: 'https://github.com/erclx/diction' },
-    ],
-  },
 ]
 
-// The route each card owns, held as its own field rather than found among the
-// links. It was derived by picking the one internal href out of that list,
-// which stopped working the moment the route stopped being a link in it.
 ---
 
 <section id="projects" data-section="projects" class="page-inset py-16 md:py-20">
@@ -118,13 +118,12 @@ const projects = [
         what they can prove. Every project owns one, which is what stops a card
         with a live link and a card without reading as a ranking, and the routes
         are otherwise reachable only by clicking a card's name. */}
-    {/* The measure every other section on the page holds, rather than the
-        column this one breaks out to. Level with the cards puts the line at
-        127 characters against the 92 and 93 the sections either side run, and
-        leaves the closing word alone on a line of its own. */}
-    <p data-fade class="text-muted-foreground text-body mt-6 max-w-3xl">
+    <p data-fade class="text-muted-foreground text-body mt-6">
       Some of these solved a problem for me first and other people second. Each
-      one has a page here on why it exists and how it works.
+      one has a page here on why it exists and how it works. There is one more
+      at <a href="/diction" class="text-foreground underline underline-offset-4">/diction</a>, a pronunciation trainer
+      that scores each sound against a native distribution and reports how often
+      it is wrong.
     </p>
     {/* The gutter carries the separation the plate used to. It also has to
         clear the halo a hover raises: at a 24px gutter the halo's own box
@@ -163,6 +162,7 @@ const projects = [
                 name={project.name}
                 description={project.description}
                 poster={project.poster}
+                posterDark={project.posterDark}
                 videoSrc={project.videoSrc}
                 mediaAlt={project.mediaAlt}
                 mediaPosition={project.mediaPosition}
