@@ -3,8 +3,6 @@ import { join } from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
-import { CARD_CLAIM } from '../../scripts/card-copy'
-
 /**
  * The copy a visitor reads is the copy the components hold. These assertions
  * read the built pages rather than a browser rendering them, since a text node
@@ -163,23 +161,6 @@ describe('a shared link', () => {
     expect(description.length).toBeLessThanOrEqual(DESCRIPTION_CEILING)
   })
 
-  it.each(ROUTES)(
-    'says something the card does not already draw on %s',
-    (route) => {
-      // The card draws the claim, and every host except LinkedIn prints the
-      // description beside it, so a description carrying that same sentence
-      // prints it twice in one unfurl.
-      const claim = CARD_CLAIM.toLowerCase().replace(/\.$/, '')
-      const description = meta(
-        readPage(route),
-        'meta[property="og:description"]',
-      )
-
-      expect(description).toBeTruthy()
-      expect((description ?? '').toLowerCase()).not.toContain(claim)
-    },
-  )
-
   it.each(ROUTES)('carries no retired wording in the title of %s', (route) => {
     // `case study` promises measured results that two of the five routes do not
     // have, and the retirement has to reach the title a shared link shows.
@@ -261,14 +242,14 @@ describe('the landing page', () => {
 })
 
 describe('the experience section', () => {
-  it('keeps the claim beside the prose depending on it', () => {
+  it('carries the two paragraphs and no claim', () => {
     const experience = textOf(home, '#experience')
 
+    expect(experience).toContain('I spent 18 months at Volvo Technology')
     expect(experience).toContain(
-      'the layer between a language model and the job it has to do',
+      'Since then I have been building independently',
     )
-    expect(experience).toContain('In practice that means agents')
-    expect(experience).toContain('I spend most of my working day')
+    expect(experience).not.toContain('the layer between a language model')
   })
 
   it('renders one entry per beat', () => {

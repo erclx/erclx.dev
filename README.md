@@ -9,8 +9,6 @@
 
 <p align="center"><a href="https://github.com/erclx/erclx.dev/actions/workflows/verify.yml?query=branch%3Amain"><img src="https://github.com/erclx/erclx.dev/actions/workflows/verify.yml/badge.svg?branch=main" alt="Verify status"></a></p>
 
-<p align="center">I build the layer between a language model and the job it has to do.</p>
-
 <p align="center"><a href="https://erclx.dev"><b>erclx.dev</b></a></p>
 
 <picture>

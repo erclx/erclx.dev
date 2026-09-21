@@ -5,16 +5,15 @@
  * site's own Fraunces and the tokens are the ones it ships. A card drawn in a
  * fallback face is a card judged on the wrong letterforms.
  *
- * The mark leads and the claim sits beside it. Two earlier arrangements put the
- * name in the image at display weight, which is the same word twice in one
- * unfurl since every host prints the title alongside. Attribution stays, small
- * and under the claim, because a host shows the domain and not always the
- * person.
+ * The mark leads and the attribution sits small under it, with no sentence,
+ * since the source carries none. Two earlier arrangements put the name in the
+ * image at display weight, which is the same word twice in one unfurl since
+ * every host prints the title alongside, and a third at display weight was
+ * rejected for the same reason. Attribution stays small, because a host shows
+ * the domain and not always the person.
  *
- * The claim runs 22 characters to the line. Judged at 1200 a longer line looks
- * fuller, and a card is met at 400 to 600 in a feed and smaller in a compact
- * unfurl, where the longer setting goes thin and the shorter one holds. Judge
- * this downscaled or the reading is of a size nobody sees.
+ * A card is met at 400 to 600 in a feed and smaller in a compact unfurl, so
+ * judge this downscaled or the reading is of a size nobody sees.
  *
  * The field plate is a margin crop of the hero's own live shader field, with a
  * pointer held at the mark so the card carries the same accent-gradient reveal
@@ -29,7 +28,6 @@ import { readFile, writeFile } from 'node:fs/promises'
 
 import { chromium } from '@playwright/test'
 
-import { CARD_CLAIM as CLAIM } from './card-copy'
 import { captureFieldPlate, renderOnRealPage } from './lib/capture-field'
 
 // The size every host accepts. LinkedIn asks 1200x627 and X 1200x628, both of
@@ -95,14 +93,10 @@ try {
         <img src="data:image/png;base64,${field.toString('base64')}"
           style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
         <div style="position:absolute;inset:0;padding:0 ${MARK_PADDING}px;display:flex;
-          align-items:center;gap:64px">
+          flex-direction:column;justify-content:center;align-items:flex-start;gap:36px">
           <span class="card-mark" style="width:${MARK_SIZE}px;height:${MARK_SIZE}px;flex:none;
             display:block;color:var(--foreground)">${MARK}</span>
-          <div style="display:flex;flex-direction:column;gap:22px">
-            <p style="margin:0;font-family:var(--font-display);font-size:44px;
-              line-height:1.2;color:var(--foreground);max-width:22ch">${CLAIM}</p>
-            <p style="margin:0;font-size:23px;color:var(--muted-foreground)">Eric Le · erclx.dev</p>
-          </div>
+          <p style="margin:0;font-size:23px;color:var(--muted-foreground)">Eric Le · erclx.dev</p>
         </div>
       </div>`,
   })

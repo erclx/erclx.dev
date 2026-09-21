@@ -2,8 +2,8 @@
 import Cast from '@/components/site/experience/cast/cast.astro'
 import Employers from '@/components/site/experience/employers.astro'
 const intro = [
-  'In practice that means agents, the developer tooling around them, and the full-stack work of making either usable by someone else. Some of that was paid work, eighteen months of it at Volvo Technology, and the rest is my own. I came to it from engineering physics and complex adaptive systems at Chalmers.',
-  'I spend most of my working day with coding agents, and the tooling I build comes out of that. When the same rules kept drifting out of sync across my projects, that became a CLI. When staging files for a prompt got tedious, that became an extension.',
+  'I spent 18 months at Volvo Technology building natural-language tools for engineering data. The work started as my master’s thesis and developed into a multi-step SQL pipeline with session memory that engineers on two powertrain teams tested against their own data.',
+  'Since then I have been building independently, following problems that show up in the work itself.',
 ]
 
 interface HistoryEntry {
@@ -19,22 +19,20 @@ const history: HistoryEntry[] = [
   {
     current: true,
     span: 'jan 2026 to present',
-    head: 'shipping independently, open to the next thing',
+    head: 'independent projects, open to work',
     details: [],
   },
   {
     span: 'jun to dec 2025',
     head: 'working out what to build',
-    details: [
-      'Took the time to learn TypeScript and web application development, and to work out where to point AI next.',
-    ],
+    details: [],
   },
   {
     span: 'jan 2024 to jun 2025',
     head: 'volvo technology, gothenburg',
     details: [
-      'The job was an agent that let engineering teams plot and query truck data by asking in plain language.',
-      'It started as my master’s thesis and became a multi-step SQL pipeline with session memory.',
+      'Built tools that let engineering teams plot and query truck test data in plain language.',
+      'Started as a master’s thesis and developed into a multi-step SQL pipeline with session memory.',
     ],
   },
   {
@@ -88,25 +86,12 @@ const artifacts = [
       Experience
     </h2>
 
-    {/* The claim leads this section rather than the hero, and its elaboration
-        follows it here because that paragraph opens on a pronoun standing for
-        the claim. Splitting the two across surfaces left the pronoun with no
-        antecedent on either. */}
-    <p
-      data-fade
-      style="--fade-delay: 100ms"
-      class="font-display text-foreground mt-8 text-3xl leading-tight md:text-4xl"
-    >
-      I build <span data-annotate="underline">the layer</span> between a language
-      model and the job it has to do.
-    </p>
-
     <div class="mt-8 space-y-6">
       {
         intro.map((paragraph, idx) => (
           <p
             data-fade
-            style={`--fade-delay: ${200 + idx * 100}ms`}
+            style={`--fade-delay: ${100 + idx * 100}ms`}
             class="text-muted-foreground text-body"
           >
             {paragraph}
@@ -467,12 +452,10 @@ const artifacts = [
 </style>
 
 <script>
-  import { initAnnotations } from '@/lib/annotate'
   import { hasHoverPointer } from '@/lib/pointer'
 
   import { initChipLife } from './chips'
 
-  initAnnotations()
   initChipLife()
 
   const stage = document.querySelector<HTMLElement>('.experience-stage')
