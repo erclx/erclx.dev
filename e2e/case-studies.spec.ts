@@ -21,6 +21,7 @@ const CASE_STUDY_ROUTES = [
   '/diction',
   '/stackr',
   '/caret',
+  '/annex',
 ]
 
 for (const route of CASE_STUDY_ROUTES) {

@@ -35,7 +35,15 @@ function devServerUrl(): string {
 const BASE = process.env.RHYTHM_BASE_URL ?? devServerUrl()
 const FILTER = process.env.RHYTHM_FILTER?.split(',').map((term) => term.trim())
 
-const ROUTES = ['/', '/canon', '/jobtriage', '/stackr', '/caret', '/diction']
+const ROUTES = [
+  '/',
+  '/canon',
+  '/jobtriage',
+  '/stackr',
+  '/caret',
+  '/diction',
+  '/annex',
+]
 
 interface Boundary {
   readonly page: string
