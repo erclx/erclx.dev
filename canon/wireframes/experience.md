@@ -34,7 +34,7 @@ Where that happened
   ← employer marks, one tone, sized so each reads rather than matching heights
 
  jan 2026 to        ●  shipping independently, open to the next thing
- present            │     ( canon ) ( Jobtriage ) ( Stackr ) ( Caret ) ( diction )
+ present            │     ( canon ) ( Jobtriage ) ( annex ) ( Stackr ) ( Caret )
                     │
  jun to dec 2025    ○  working out what to build
                     │     Took the time to learn TypeScript and web application
@@ -87,7 +87,7 @@ The span column folds into the reading column and leads its own beat, still at l
  │ shipping independently, open to
  │ the next thing
  │   ( canon ) ( Jobtriage )
- │   ( Stackr ) ( Caret ) ( diction )
+ │   ( annex ) ( Stackr ) ( Caret )
  │
  ○ jun to dec 2025
  │ working out what to build

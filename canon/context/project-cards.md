@@ -34,12 +34,14 @@ The projects section. Cards render statically from a config array in `projects.a
 - Tilt batches state in a single rAF loop rather than one loop per card.
 - A card description is the project's own portfolio prose with two edits: drop the leading article, and drop the trailing sentence naming the links, which the card renders as its own row. Everything the source says about what the artifact does and where it is reached stays. The convention is readable off any card that already conforms rather than written down anywhere else.
 - An odd number of cards makes the last one span both columns from `lg`, laying its still beside its text so the closing card keeps a height near the paired ones. The four above it are untouched and the grid stays at two columns. Every card also fills its grid row, so two cards sharing a row share a lower edge rather than leaving a ragged one.
+- The card set is canon, Jobtriage, annex, Stackr, Caret, and diction has no card, by the operator's call of 2026-09-21. Its route is reached from a link in the projects intro, which runs the full width of the grid rather than the page measure.
+- A card takes one still by default, and an optional `posterDark` swaps in a second for the dark theme. The light still hides under `dark:hidden` and the dark one shows under `dark:block`. Only annex sets it, since its route already ships a light and a dark hero. Every other card has one still and one clip for both themes.
 - Tilt rotates up to `MAX_TILT_DEG` (6°) toward the cursor. The inner media slot translates up to `MAX_PARALLAX_PX` (8px) against the rotation for parallax depth. Per-card values lerp toward the target with factor `LERP` of 0.18.
 
 ## Gotchas
 
 - The media slot needs `poster` and `mediaAlt`. A card missing either skips the slot entirely, and tilt still applies while hover-play has nothing to bind.
-- `videoSrc` is optional. A card carrying a still and no clip renders the still, and `hover-video.ts` skips it because its `[data-media-video]` query returns nothing. Two cards ship this way while their screencasts are owed.
+- `videoSrc` is optional. A card carrying a still and no clip renders the still, and `hover-video.ts` skips it because its `[data-media-video]` query returns nothing. Annex ships this way while its screencast is owed.
 - Card stills run `1280x720` or `1280x800` against an `aspect-[11/7]` slot, so `object-cover` crops horizontally under the default top position, roughly 6.5% off each edge at the wider ratio and under 2% at the taller one. A still whose content sits flush left, such as a terminal transcript or an app shell with a sidebar, needs `mediaPosition: 'left top'` or that content is cropped away.
 - A card still shows the artifact running rather than a result it produced. The card names the tool and its route carries the depth, which is the split every card on the page follows. A route reports a measured result only where the project has one.
 - `fadeDelay` on the card uses the array index. Reordering the data array reorders the staggered fade-in.
@@ -70,6 +72,6 @@ The projects section. Cards render statically from a config array in `projects.a
 ## Hidden contracts
 
 - `[data-tilt]` on the card root is the public contract for interactivity. Removing it disables both hover-play and parallax.
-- `[data-media-video]` and `[data-media-poster]` are the inner contracts for the media slot.
+- `[data-media-video]` and `[data-media-poster]` are the inner contracts for the media slot. The dark still carries `[data-media-poster-dark]` instead, so a count of loaded `[data-media-poster]` images still finds one per card, since a lazy image hidden by the theme never loads.
 - The video element preloads `none` and starts muted. Autoplay-with-sound would trigger a browser block.
 - Tilt writes `--tilt-x`, `--tilt-y`, `--parallax-x`, and `--parallax-y` CSS variables on the card and inner slot. The media slot consumes the tilt pair and the image wrapper the parallax pair, both via `[transform:...]` attribute selectors. Renaming any one breaks the visual transform.

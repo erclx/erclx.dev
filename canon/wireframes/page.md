@@ -58,10 +58,10 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `canon/
 │     [card: canon]          [card: Jobtriage]             │
 │   └ ─ ─ ─ ─ ─ ─ ─ ─ ┘   └ ─ ─ ─ ─ ─ ─ ─ ─ ┘         [@]  │  ← contact dock, right margin
 │   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ┐   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ┐              │
-│     [card: Stackr]         [card: Caret]                 │
+│     [card: annex]          [card: Stackr]                │
 │   └ ─ ─ ─ ─ ─ ─ ─ ─ ┘   └ ─ ─ ─ ─ ─ ─ ─ ─ ┘              │
 │   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐          │  ← odd count, so the last spans
-│     [card: diction, still beside text]                   │
+│     [card: Caret, still beside text]                     │
 │   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘          │
 │                                                          │
 │   Looking for                                            │

@@ -13,6 +13,7 @@ interface Props {
   name: string
   description: string
   poster?: ImageMetadata
+  posterDark?: ImageMetadata
   videoSrc?: string
   mediaAlt?: string
   mediaPosition?: string
@@ -26,6 +27,7 @@ const {
   name,
   description,
   poster,
+  posterDark,
   videoSrc,
   mediaAlt,
   mediaPosition = 'top',
@@ -79,9 +81,21 @@ const cardId = name.toLowerCase()
             src={poster}
             alt={mediaAlt}
             style={`object-position: ${mediaPosition}`}
-            class="absolute inset-0 size-full object-cover"
+            class:list={[
+              'absolute inset-0 size-full object-cover',
+              posterDark && 'dark:hidden',
+            ]}
             data-media-poster
           />
+          {posterDark && (
+            <Image
+              src={posterDark}
+              alt={mediaAlt}
+              style={`object-position: ${mediaPosition}`}
+              class="absolute inset-0 hidden size-full object-cover dark:block"
+              data-media-poster-dark
+            />
+          )}
           {videoSrc && (
             <video
               src={videoSrc}

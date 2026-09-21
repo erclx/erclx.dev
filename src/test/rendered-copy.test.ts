@@ -76,7 +76,7 @@ function attributeOf(
 const home = readPage('/')
 const FOOTER = '[data-section="footer"]'
 
-const CARD_NAMES = ['canon', 'Jobtriage', 'Stackr', 'Caret', 'diction']
+const CARD_NAMES = ['canon', 'Jobtriage', 'annex', 'Stackr', 'Caret']
 const CARD_SELECTOR = '#projects article'
 // One per beat in the timeline. The record is a local const inside the
 // component, so the count is stated here rather than derived.
@@ -397,18 +397,29 @@ describe('the projects section', () => {
   it('renders a poster on a card without a hover video', () => {
     // The browser test also read the poster as visible, which a static file
     // cannot state. This asserts the poster is in the markup and the video is not.
-    const diction = queryAll(home, CARD_SELECTOR).filter(
+    const annex = queryAll(home, CARD_SELECTOR).filter(
       (element) =>
-        collapse(queryAll(element, 'h3')[0]?.textContent) === 'diction',
+        collapse(queryAll(element, 'h3')[0]?.textContent) === 'annex',
     )
 
-    expect(diction).toHaveLength(1)
+    expect(annex).toHaveLength(1)
     expect(
-      diction.flatMap((element) => queryAll(element, '[data-media-poster]')),
+      annex.flatMap((element) => queryAll(element, '[data-media-poster]')),
     ).toHaveLength(1)
     expect(
-      diction.flatMap((element) => queryAll(element, '[data-media-video]')),
+      annex.flatMap((element) => queryAll(element, '[data-media-video]')),
     ).toHaveLength(0)
+  })
+
+  it('renders a dark still on the annex card for the dark theme', () => {
+    const annex = queryAll(home, CARD_SELECTOR).filter(
+      (element) =>
+        collapse(queryAll(element, 'h3')[0]?.textContent) === 'annex',
+    )
+
+    expect(
+      annex.flatMap((element) => queryAll(element, '[data-media-poster-dark]')),
+    ).toHaveLength(1)
   })
 
   it('writes the npm scope on the canon card', () => {
@@ -425,7 +436,7 @@ describe('the projects section', () => {
 
   it('renders the description the source carries on the Jobtriage card', () => {
     expect(card(1)).toContain(
-      'Live agent that triages Swedish job ads against a profile',
+      'A job-search application that triages Swedish ads against a profile',
     )
   })
 
@@ -436,14 +447,20 @@ describe('the projects section', () => {
   })
 
   it('renders the description the source carries on the Stackr card', () => {
-    expect(card(2)).toContain(
+    expect(card(3)).toContain(
       'stages files across a workspace into one block of LLM context',
     )
   })
 
   it('renders the description the source carries on the Caret card', () => {
-    expect(card(3)).toContain(
+    expect(card(4)).toContain(
       'saves prompts and drops them into Claude, Gemini, and ChatGPT',
+    )
+  })
+
+  it('opens the annex route from its card', () => {
+    expect(queryAll(home, '#projects a[href="/annex"]').length).toBeGreaterThan(
+      0,
     )
   })
 

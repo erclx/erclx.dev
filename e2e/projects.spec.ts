@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 
-const CARD_NAMES = ['canon', 'Jobtriage', 'Stackr', 'Caret', 'diction']
+const CARD_NAMES = ['canon', 'Jobtriage', 'annex', 'Stackr', 'Caret']
 const POSTER_SELECTOR = '#projects [data-media-poster]'
 
 test('every project card poster loads its image', async ({ page }) => {
