@@ -19,8 +19,8 @@ Added on 2026-08-18, when every shipped project earned a route. This one has no 
 │                                                          │
 │   PROJECT                                                │  ← eyebrow
 │   Stackr                                                 │  ← display heading
-│   Named context tracks for the times a coding agent      │  ← the deck, one sentence
-│   is the wrong tool.                                     │
+│   Named context tracks for planning and architecture     │  ← the deck, one sentence
+│   conversations in any AI chat.                          │
 │   VS Code Marketplace   Open VSX   GitHub                │  ← link row
 │                                                          │
 │ ┌────────────────────────────────────────────────────┐   │  ← the demo, breaking past the prose
@@ -29,7 +29,8 @@ Added on 2026-08-18, when every shipped project earned a route. This one has no 
 │                                                          │
 │   problem                                                │  ← section heading, above the prose
 │   I was assembling context by hand ...                   │  ← the reason, at lede weight
-│   Some work is not agent work ...                        │  ← the framing, demoted to body
+│   Planning a change still wants a chat with the right    │
+│   files in front of it ...                               │  ← the framing, demoted to body
 │                                                          │
 │   tracks                                                 │
 │   A track is a named working set ...                     │
