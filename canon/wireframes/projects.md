@@ -36,7 +36,7 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 │     Live demo   GitHub                                   │
 │   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘    │
 │                                                          │
-│   (Stackr, Caret, diction follow in the same shape)      │
+│   (annex, Stackr, Caret follow in the same shape)        │
 │                                                          │
 └──────────────────────────────────────────────────────────┘
 ```
@@ -47,21 +47,21 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 ┌────────────────────────────────────────────────────────────────────┐
 │   Projects                                                         │
 │                                                                    │
-│   Some of these solved a problem for me first and other people     │  ← opening sentence stops at the page
-│   second. Each one has a page here on why it exists ...            │     measure, short of the grid beside it
+│   Some of these solved a problem for me first and other people second. Each one has a page here  │  ← opening sentences run the full grid width
+│   ... There is one more at /diction, a pronunciation trainer ...                                  │  ← the only link to that route, which has no card
 │                                                                    │
 │  01 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐ 02       │  ← numerals hang into the outer margin
 │       canon                       Jobtriage                        │
 │     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘          │
 │                                 ↑                                  │
 │  03 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐   │ 48px gutter, halo reaches 44px   │
-│       Stackr                      Caret                       04   │
+│       annex                       Stackr                      04   │
 │     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘          │
 │                                                                    │
 │  05 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐          │  ← trailing card closes the section across both columns
-│       ┌──────────────────────┐  diction                            │  ← still on one half, text on the other
-│       │        still         │  Pronunciation trainer ...          │
-│       └──────────────────────┘  GitHub                             │
+│       ┌──────────────────────┐  Caret                              │  ← still on one half, text on the other
+│       │        still         │  I kept retyping the same ...       │
+│       └──────────────────────┘  Chrome Web Store   GitHub          │
 │     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘          │
 │                                                                    │
 └────────────────────────────────────────────────────────────────────┘
@@ -70,8 +70,8 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 ## Behavior
 
 - One line opens the section under its heading, saying that these came out of the author's own work and that each carries a page of its own. It landed on 2026-08-22, into the only section on the page that had opened straight onto its content. A count opened it until 2026-08-14 and came out because a number small enough to count is one to leave unstated.
-- That line runs at the page measure rather than at the column this section breaks out to, so it reads level with the opening paragraphs of about, experience and the closing ask. It ran narrower than its own heading until 2026-08-22, which read as a mistake rather than as a choice. Level with the cards was the other candidate and was rejected on the line it produced: 127 characters against the 92 and 93 the sections either side run, closing on a single word alone on its own line.
-- That line names the routes rather than sorting the cards by what they can prove. Every project owns one, which is what stops a card with a live link and a card without reading as a ranking, and a route is otherwise reachable only by clicking a card's name. A draft splitting the cards on which carry measured results was rejected on both counts, the second being that it was false: all five have a route.
+- That line runs the full width of the grid beneath it, on the operator's call of 2026-09-21. It ran at the page measure before that, level with the opening paragraphs of about, experience and the closing ask, which left it short of the cards and read as unfinished beside them. The longer line and its closing word are the cost.
+- That line names the routes rather than sorting the cards by what they can prove. Every project owns one, which is what stops a card with a live link and a card without reading as a ranking, and a route is otherwise reachable only by clicking a card's name. A draft splitting the cards on which carry measured results was rejected on both counts, the second being that it was false: all six shipped projects have a route.
 - Cards stack in document order. No filtering and no sorting.
 - Every card owns a route and opens it from anywhere on the card. The card name is the link that says so, which is also the one a keyboard reaches: the full-card link is hidden from assistive technology and held out of the tab order.
 - The links inside a card keep their own destinations, including on a card that opens as a whole.
