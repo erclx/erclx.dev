@@ -11,44 +11,17 @@ import { getLinkTargetAttributes } from '@/lib/links'
 const artifactLinks = [
   { label: 'GitHub', href: 'https://github.com/erclx/canon' },
   { label: 'npm', href: 'https://www.npmjs.com/package/@erclx/canon' },
+  { label: 'Live build', href: 'https://canon.erclx.dev' },
 ]
 
 // The route's opening leads the rail, per the note in `jobtriage.astro`.
 const navItems = [
   { id: 'canon', label: 'canon' },
   { id: 'problem', label: 'problem' },
-  { id: 'thesis', label: 'thesis' },
-  { id: 'taxonomy', label: 'taxonomy' },
-  { id: 'model', label: 'model' },
+  { id: 'standards', label: 'standards' },
+  { id: 'workflow', label: 'workflow' },
+  { id: 'parallel', label: 'parallel' },
   { id: 'agents', label: 'agents' },
-]
-
-const operations = [
-  {
-    name: 'install',
-    behavior: 'Overwrites. Runs once to bootstrap a project.',
-  },
-  {
-    name: 'sync',
-    behavior: 'Updates only files already present. Safe to re-run on a cadence.',
-  },
-  {
-    name: 'build',
-    behavior: 'Derives a payload from current state for pasting into any chat.',
-  },
-]
-
-const contentKinds = [
-  { kind: 'configs', rule: 'overwrite' },
-  { kind: 'seeds', rule: 'merge additively, survive user edits' },
-  { kind: 'references', rule: 'copy through an extends chain' },
-  { kind: 'generated', rule: 'derive from target state' },
-]
-
-const prescriptions = [
-  'Give the agent a way to pull in its own context from code, wikis, and discussions',
-  'Break work into loops and routines',
-  'Let the agent start other agents',
 ]
 ---
 
@@ -75,8 +48,10 @@ const prescriptions = [
         <p
           data-fade          class="text-muted-foreground text-lede mt-4"
         >
-          A CLI that installs one set of agent rules, skills, and standards into
-          every project and keeps them in step.
+          A CLI and Claude Code plugin that distributes AI-development rules,
+          skills, and workflows from one source, carries the plan, review, and
+          ship loop as skills, and coordinates parallel work across separate
+          branches.
         </p>
         <p
           data-fade          class="text-muted-foreground text-body mt-3"
@@ -123,218 +98,62 @@ const prescriptions = [
         <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           problem
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
-          Every project I started got the same agent scaffolding typed into it
-          again, and every copy moved away from the last. I wanted one source I
-          could install rather than a folder I kept re-authoring.
+        <p data-fade class="text-foreground text-lede mt-6">
+          Every project I started got the same agent scaffolding typed into it again, and every copy moved away from the last. I wanted one source I could install rather than a folder I kept re-authoring.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          Every repository re-authors the same agent scaffolding. The rules an
-          agent reads, the skills it runs, the prose standards it writes
-          against, the tooling config it verifies with. Each copy starts from
-          the last one and drifts from it, so the same agent gets different
-          instructions depending on which checkout it opened.
-        </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          Drift on this surface is quiet. A rule that fell behind still loads,
-          still reads as authoritative, and produces work against a convention
-          the team abandoned two projects ago. Nothing fails, so nothing
-          reports it.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          Drift on this surface is quiet. A rule that fell behind still loads, still reads as authoritative, and produces work against a convention I had already abandoned somewhere else. Nothing fails, so nothing reports it.
         </p>
       </div>
     </section>
 
-    <section id="thesis" class="page-inset py-16 md:py-20">
+    <section id="standards" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
-          thesis
+          standards
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
-          This is infrastructure that carries a team across a step of AI
-          adoption, rather than tooling one engineer prefers. Four prescriptions
-          are published for the gap between running agents ad hoc and running
-          them as a system. Three of them are what this installs.
+        <p data-fade class="text-foreground text-lede mt-6">
+          Content reaches a project through three separate operations. <code class="font-mono">install</code> overwrites and runs once to bootstrap. <code class="font-mono">sync</code> updates only files already present and is safe to re-run on a cadence. <code class="font-mono">build</code> derives a payload from current state for pasting into any AI chat.
         </p>
-
-        <ul
-          data-fade          class="mt-10 flex flex-col gap-3"
-        >
-          {
-            prescriptions.map((item) => (
-              <li class="text-foreground text-body border-border/60 border-l-2 pl-4">
-                {item}
-              </li>
-            ))
-          }
-        </ul>
-
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
-          The fourth is raising agency and review speed once agents touch code
-          other teams own, which is an organizational permission rather than a
-          thing a CLI can install.
-        </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          The claim stops there deliberately, with the token budget named out
-          loud as the ceiling. A larger claim about autonomous fleets is one
-          question about agent count away from falling over.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          Configs overwrite, seeds merge additively and survive local edits, and rules carry a path glob so a Python rule stays dormant in a TypeScript project. That is what makes an update safe to run without reading it first: a sync cannot introduce a surface the project never asked for, and a seed cannot discard the edits made to it.
         </p>
       </div>
     </section>
 
-    <section id="taxonomy" class="page-inset py-16 md:py-20">
+    <section id="workflow" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
-          taxonomy
+          workflow
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
-          Content reaches a project through three separate operations, and what
-          each one is allowed to touch is the whole design.
+        <p data-fade class="text-foreground text-lede mt-6">
+          The rules are not the whole product. The plan, review, and ship loop ships alongside them as skills a session invokes rather than steps a person remembers.
         </p>
-
-        <dl
-          data-fade          class="mt-10 grid gap-y-2 sm:grid-cols-[6rem_1fr]"
-        >
-          {
-            operations.map((row) => (
-              <div class="contents font-mono text-label">
-                <dt class="text-foreground">{row.name}</dt>
-                <dd class="text-muted-foreground">{row.behavior}</dd>
-              </div>
-            ))
-          }
-        </dl>
-
-        <figure
-          data-fade          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
-        >
-          <figcaption class="text-muted-foreground font-mono text-label mb-4">
-            content kinds and their merge rule
-          </figcaption>
-          <dl class="grid gap-y-2 sm:grid-cols-[8rem_1fr]">
-            {
-              contentKinds.map((row) => (
-                <div class="contents font-mono text-label">
-                  <dt class="text-muted-foreground">{row.kind}</dt>
-                  <dd class="text-foreground">{row.rule}</dd>
-                </div>
-              ))
-            }
-          </dl>
-        </figure>
-
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
-          That taxonomy is what makes an update safe to run without reading it
-          first. A sync that only touches files already present cannot introduce
-          a surface the project never asked for, and a seed that merges rather
-          than replaces cannot discard the edits a team made to it. The cost of
-          pulling the toolkit forward drops to a command, which is the only
-          version of this that a team actually runs.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          Review travels on the pull request itself. One skill posts findings to it, another reads them back, fixes each, and pushes a follow-up, and the review then runs again against only the commits that follow-up added.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          Stacks compose through the same <code class="font-mono">extends</code>
-          field. <code class="font-mono">react</code> extends
-          <code class="font-mono">node</code>, which extends
-          <code class="font-mono">base</code>, and installing one pulls
-          everything it inherits. Rules carry a path glob, so a Python rule
-          stays dormant in a TypeScript project rather than adding noise the
-          agent has to filter.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The workflow it ships is the workflow that built it.
         </p>
       </div>
     </section>
 
-    <section id="model" class="page-inset py-16 md:py-20">
+    <section id="parallel" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
-          model
+          parallel
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
-          The toolkit ships the way of working alongside the files. Sessions
-          split by vantage rather than by capability.
+        <p data-fade class="text-foreground text-lede mt-6">
+          Work runs across parallel Claude Code sessions split by vantage rather than by capability. One warm orchestrator session holds the cross-feature picture, plans features, and reviews pull requests. It edits no tracked file and it merges nothing. Cold worker sessions each take one plan in their own git worktree, implement it, self-check, and stop at the pull request. The human launches workers and owns the merge.
         </p>
-
-        <figure
-          data-fade          class="figure-breakout bg-card mt-10 rounded-lg p-6 md:p-10"
-        >
-          <div class="font-mono text-label flex flex-col items-center gap-6">
-            <div class="border-border text-foreground rounded-md border px-4 py-2">
-              orchestrator, warm
-            </div>
-            <div aria-hidden="true" class="bg-border h-6 w-px"></div>
-            <div aria-hidden="true" class="bg-border h-px w-3/4"></div>
-            <div class="grid w-full grid-cols-1 gap-8 sm:grid-cols-2">
-              <div class="flex flex-col items-center gap-3">
-                <div aria-hidden="true" class="bg-border -mt-8 h-6 w-px"></div>
-                <div class="text-muted-foreground tracking-wide uppercase">
-                  plans and reviews
-                </div>
-                <div
-                  class="border-border text-foreground rounded-md border px-4 py-3 text-center"
-                >
-                  holds the cross-feature picture, edits no tracked file
-                </div>
-              </div>
-              <div class="flex flex-col items-center gap-3">
-                <div aria-hidden="true" class="bg-border -mt-8 h-6 w-px"></div>
-                <div class="text-muted-foreground tracking-wide uppercase">
-                  workers, cold
-                </div>
-                <div
-                  class="border-border text-foreground rounded-md border px-4 py-3 text-center"
-                >
-                  one plan each in its own worktree, stopping at the pull
-                  request
-                </div>
-              </div>
-            </div>
-          </div>
-        </figure>
-
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
-          Review travels on the pull request itself. One skill posts findings to
-          it, another reads them back, fixes each, and pushes a follow-up, and
-          the review then runs again against only the commits that follow-up
-          added. The heading carries the state, so a reader knows whether
-          anything is open without reading the thread.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The two review passes differ by vantage rather than by depth. A worker's self-review asks whether it built the plan and whether it passes, and it is blind to its own misreadings, because the same misreading wrote both the code and the review. The orchestrator's review is a fresh session carrying the roadmap and every sibling branch in flight, so it can question the plan itself.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          The two passes differ by vantage rather than by depth. A worker's
-          self-review asks whether it built the plan and whether it passes, and
-          it is blind to its own misreadings, because the same misreading wrote
-          both the code and the review. The orchestrator's review is a fresh
-          session carrying the roadmap and every sibling branch in flight, so
-          it can question the plan itself.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          What binds the number of tracks is collision between file sets rather than a fixed cap. A candidate opens only where its files are disjoint from every track already running, and what thins as tracks multiply is the review attention each one gets.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          What binds the number of tracks is collision between file sets rather
-          than a fixed cap. A candidate opens only where its files are disjoint
-          from every track already running, and what thins as tracks multiply is
-          the review attention each one gets.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The claim stops there deliberately, with the token budget named out loud as the ceiling. A larger claim about autonomous fleets is one question about agent count away from falling over.
         </p>
       </div>
     </section>
@@ -344,37 +163,17 @@ const prescriptions = [
         <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           agents
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
-          That only works if agents can drive the same tooling without a
-          person sitting at the keyboard.
+        <p data-fade class="text-foreground text-lede mt-6">
+          All of it depends on agents being able to drive the same tooling without a person reading terminal output beside them.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          Every command has a non-interactive path, every listing emits JSON on
-          stdout, and the framed terminal UI goes to stderr. A skill shelling
-          out to the CLI can treat stdout as data without parsing around a
-          progress frame.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          Every command has a non-interactive path, every listing emits JSON on stdout, and the framed terminal UI goes to stderr. A skill shelling out to the CLI can treat stdout as data without parsing around a progress frame.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          Because <code class="font-mono">bash exec</code> drops parent traps,
-          each subcommand re-arms its exit trap before an early JSON exit, so
-          exactly one frame renders per invocation.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          Verification runs on sandbox scenarios rather than unit tests. Each scenario provisions an isolated project state, asserts which files the run was allowed to touch and whether it escaped that scope, and a disposable GitHub remote lets the skills that depend on <code class="font-mono">gh</code> run end to end, including opening a pull request, merging it, and editing its body.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          Verification runs on sandbox scenarios rather than unit tests. Each
-          scenario provisions an isolated project state anchored to a baseline
-          git ref, and a disposable GitHub remote lets the skills that depend on
-          <code class="font-mono">gh</code> run end to end, including opening a pull request,
-          merging it, and editing its body. Naming a scenario through an
-          environment variable routes it non-interactively, so CI and an agent
-          exercise the same path a person would.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          That is the part worth stealing. Testing a workflow that opens pull requests means letting it open real ones somewhere it cannot do damage.
         </p>
       </div>
     </section>

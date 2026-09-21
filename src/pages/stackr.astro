@@ -36,7 +36,7 @@ const navItems = [
 
 <BaseLayout
   title="Stackr · Eric Le"
-  description="Named context tracks for the times a coding agent is the wrong tool. An ASCII tree, live token counts, and no runtime dependencies at all."
+  description="Named context tracks for planning and architecture conversations in any AI chat. An ASCII tree, live token counts, and no runtime dependencies at all."
   surface="case-study"
 >
   <SectionNav items={navItems} instant />
@@ -60,7 +60,8 @@ const navItems = [
         <p
           data-fade          class="text-muted-foreground text-lede mt-4"
         >
-          Named context tracks for the times a coding agent is the wrong tool.
+          Named context tracks for planning and architecture conversations in any AI
+          chat.
         </p>
         <ul
           data-fade          class="mt-6 flex flex-wrap gap-x-6"
@@ -118,15 +119,9 @@ const navItems = [
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
         >
-          Some work is not agent work. Planning a change or arguing about
-          architecture wants a chat with the right files in front of it, and
-          assembling that by hand means opening each one and pasting it in
-          order.
-        </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          The context is the input, and building it was the tedious part.
+          Planning a change or arguing about architecture still wants a chat
+          with the right files in front of it. The context is the input, and
+          building it was the tedious part.
         </p>
       </div>
     </section>
@@ -193,8 +188,7 @@ const navItems = [
           The other constraint is the extension host, which is shared and single
           threaded. Building an ASCII tree from a large stack would block it, so
           the tree builder works in chunks of 500 files and yields between them.
-          Batch deletions use the same pattern. Neither is a general performance
-          concern. Both are specific to running inside an editor you do not own.
+          Batch deletions use the same pattern.
         </p>
       </div>
     </section>

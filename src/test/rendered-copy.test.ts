@@ -454,7 +454,7 @@ describe('a case study', () => {
 
     expect(textOf(doc, 'h1')).toBe('canon')
     expect(textOf(doc, 'main')).toContain(
-      'installs one set of agent rules, skills, and standards into every project',
+      'distributes AI-development rules, skills, and workflows from one source',
     )
     expect(queryAll(doc, 'main section[id]')).toHaveLength(6)
   })

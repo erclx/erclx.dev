@@ -12,6 +12,7 @@ import { getLinkTargetAttributes } from '@/lib/links'
 const artifactLinks = [
   { label: 'Live demo', href: 'https://jobtriage.erclx.dev' },
   { label: 'GitHub', href: 'https://github.com/erclx/jobtriage' },
+  { label: 'Walkthrough', href: 'https://youtu.be/puAueu9ed3o' },
 ]
 
 // A `poster` attribute takes a URL rather than an image, so it reaches for the
@@ -27,17 +28,18 @@ const triagePoster = await getImage({ src: triageCanvas, format: 'webp' })
 const navItems = [
   { id: 'jobtriage', label: 'jobtriage' },
   { id: 'problem', label: 'problem' },
-  { id: 'system', label: 'system' },
+  { id: 'try', label: 'try' },
+  { id: 'canvas', label: 'canvas' },
   { id: 'retrieval', label: 'retrieval' },
-  { id: 'agent', label: 'agent' },
+  { id: 'system', label: 'system' },
 ]
 
 const stack = [
   { key: 'Frontend', value: 'Next.js App Router on Vercel, Vercel AI SDK' },
-  { key: 'Backend', value: 'FastAPI on Cloud Run europe-west1, 1Gi memory' },
+  { key: 'Backend', value: 'FastAPI on Cloud Run `europe-west1`, 1Gi memory' },
   {
     key: 'Retrieval',
-    value: 'BM25 + multilingual-e5-base dense + RRF over SQLite',
+    value: 'BM25 and `multilingual-e5-base` dense, fused by RRF over SQLite',
   },
   {
     key: 'BYOK',
@@ -54,10 +56,14 @@ const ablation = [
 ]
 
 const encoders = [
-  { encoder: 'MiniLM (en)', p1: '0.700', r10: '0.855', dim: '384' },
-  { encoder: 'e5-base (ml)', p1: '0.780', r10: '0.965', dim: '768' },
-  { encoder: 'e5-large (ml)', p1: '0.860', r10: '0.945', dim: '1024' },
+  { encoder: 'MiniLM, English', p1: '0.700', r10: '0.855', dim: '384' },
+  { encoder: 'e5-base, multilingual', p1: '0.780', r10: '0.965', dim: '768' },
+  { encoder: 'e5-large, multilingual', p1: '0.860', r10: '0.945', dim: '1024' },
 ]
+
+// The source marks code spans with backticks, so a value splits on them and
+// every odd piece renders as code.
+const splitCode = (value: string) => value.split('`')
 
 const toolPairings = [
   { data: 'searchJobs', spatial: 'placeAds' },
@@ -93,7 +99,7 @@ const toolPairings = [
         <p
           data-fade          class="text-muted-foreground text-lede mt-4"
         >
-          A live agent that triages Swedish job ads against any profile.
+          A job-search application over Sweden's public JobTech API, with an agent that turns a profile and a question into a visual shortlist.
         </p>
         <ul
           data-fade          class="mt-6 flex flex-wrap gap-x-6"
@@ -141,121 +147,62 @@ const toolPairings = [
         <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
           problem
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
-          I wanted a project where a language model drove the interface rather
-          than sitting behind it. Handing it the canvas, the filters, and the
-          layout is a different problem from returning a good answer.
+        <p data-fade class="text-foreground text-lede mt-6">
+          I was job hunting, and Sweden's job API is public. So I built against it.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          Job boards rank for what the platform earns from rather than for
-          what fits the candidate. Profile-driven match is a first-class
-          operation here rather than a filter bolted onto a search box.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          Job boards return a list. The question that actually matters is which roles fit a particular person, why they fit, which one closes first, and which two are worth putting side by side. That is a profile-driven decision rather than a keyword filter, and it is not what a ranked list is shaped for.
         </p>
       </div>
     </section>
 
-    <section id="system" class="page-inset py-16 md:py-20">
+    <section id="try" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
-          system
+          try
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
-          Two postures share one agent shell: same prompt, same tools,
-          different data path.
+        <p data-fade class="text-foreground text-lede mt-6">
+          Two paths share the same interface. A visitor without a key gets a mock replay of four recorded conversations, enough to drive the canvas in five seconds. A visitor with a key drives the live agent against JobTech data, bringing their own from Anthropic, OpenAI, Gemini, or a local Ollama model.
         </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The deployed path searches the live JobTech taxonomy and JobSearch APIs, so results are current. Local development runs against a fixed corpus instead, which is what makes a retrieval change measurable rather than merely different.
+        </p>
+      </div>
+    </section>
 
-        <figure
-          data-fade          class="figure-breakout bg-card mt-10 rounded-lg p-6 md:p-10"
-        >
-          <div class="font-mono text-label flex flex-col items-center gap-6">
-            <div
-              class="border-border text-foreground rounded-md border px-4 py-2"
-            >
-              agent shell
-            </div>
-            <div
-              aria-hidden="true"
-              class="bg-border h-6 w-px"
-            >
-            </div>
-            <div
-              aria-hidden="true"
-              class="bg-border h-px w-3/4"
-            >
-            </div>
-            <div class="grid w-full grid-cols-1 gap-8 sm:grid-cols-2">
-              <div class="flex flex-col items-center gap-3">
-                <div
-                  aria-hidden="true"
-                  class="bg-border -mt-8 h-6 w-px"
-                >
-                </div>
-                <div
-                  class="text-muted-foreground tracking-wide uppercase"
-                >
-                  deploy
-                </div>
-                <div
-                  class="border-border text-foreground rounded-md border px-4 py-3 text-center"
-                >
-                  JobTech taxonomy and JobSearch APIs
-                </div>
-              </div>
-              <div class="flex flex-col items-center gap-3">
-                <div
-                  aria-hidden="true"
-                  class="bg-border -mt-8 h-6 w-px"
-                >
-                </div>
-                <div
-                  class="text-muted-foreground tracking-wide uppercase"
-                >
-                  local
-                </div>
-                <div
-                  class="border-border text-foreground rounded-md border px-4 py-3 text-center"
-                >
-                  SQLite corpus, hybrid retrieval stack
-                </div>
-              </div>
-            </div>
-          </div>
-        </figure>
-
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
-          The deployed posture runs against the JobTech taxonomy and
-          JobSearch APIs. The local CLI and local dev run the hybrid
-          retrieval stack against a SQLite corpus.
+    <section id="canvas" class="page-inset py-16 md:py-20">
+      <div class="mx-auto prose-column">
+        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+          canvas
+        </h2>
+        <p data-fade class="text-foreground text-lede mt-6">
+          The agent does not stop at a paragraph of text. Its tool calls drive a React Flow canvas, so the same set of ads becomes triage clusters, a deadline timeline, a side-by-side comparison, or a pinned shortlist.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The canvas makes the next decision visible rather than leaving a candidate to reconstruct it from a chat transcript.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          Spatial tool pairings are pinned in the system prompt, so the agent fires a spatial tool after every data tool and the canvas answers the question rather than illustrating it.
         </p>
 
         <dl
-          data-fade          class="mt-10 grid gap-y-2 sm:grid-cols-[8rem_1fr]"
+          data-fade          class="mt-10 grid gap-y-2 sm:grid-cols-[1fr_auto_1fr]"
         >
           {
-            stack.map((row) => (
+            toolPairings.map((pair) => (
               <div class="contents font-mono text-label">
-                <dt class="text-muted-foreground">{row.key}</dt>
-                <dd class="text-foreground">{row.value}</dd>
+                <dt class="text-foreground">{pair.data}</dt>
+                <span
+                  aria-hidden="true"
+                  class="text-muted-foreground hidden sm:inline-block sm:px-4"
+                >
+                  →
+                </span>
+                <dd class="text-foreground">{pair.spatial}</dd>
               </div>
             ))
           }
         </dl>
-
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
-          Two entry paths carry the surface. Mock replay lets a recruiter
-          drive the agent in five seconds with no key. BYOK lets a technical
-          visitor drive it with their own. Most agent demos offer neither.
-        </p>
       </div>
     </section>
 
@@ -267,8 +214,9 @@ const toolPairings = [
         <p
           data-fade          class="text-foreground text-lede mt-6"
         >
-          Both paths depend on the same thing underneath: finding the right
-          ad. That was measured rather than assumed.
+          Finding the right ad is the thing everything else rests on, so it was
+          measured rather than assumed. The evaluation covers the local corpus,
+          not the live JobTech path.
         </p>
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
@@ -331,7 +279,7 @@ const toolPairings = [
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
         >
-          Dense alone takes P@1 by 6 points over hybrid on this corpus.
+          Dense alone takes P@1 by 6 points over hybrid on this corpus, which is the opposite of the result hybrid retrieval is usually assumed to give.
           Hybrid earns its place on adversarial queries where an exact
           keyword carries the match, such as a model name or employer
           jargon. An RRF score floor at
@@ -377,60 +325,41 @@ const toolPairings = [
           English-only MiniLM gives up 11 points of recall@10 against
           e5-base on the Swedish set. e5-large lifts P@1 by another 8 points
           over e5-base and hands back two points of recall@10, so e5-base
-          ships as the balanced default. The MiniLM dense numbers run
-          slightly suppressed because the e5 prefix tokens it never trained
-          on read as noise. The encoder choice carries the result rather
+          ships as the balanced default. The encoder choice carries the result rather
           than decorating it.
         </p>
       </div>
     </section>
 
-    <section id="agent" class="page-inset py-16 md:py-20">
+    <section id="system" class="page-inset py-16 md:py-20">
       <div class="mx-auto prose-column">
         <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
-          agent
+          system
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
-          Retrieval finds the right ad. What the agent does with it once
-          found is a separate problem.
-        </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          Spatial tool pairings are pinned in the system prompt, so the
-          agent fires a spatial tool after every data tool and the canvas
-          answers the question rather than illustrating it.
+        <p data-fade class="text-foreground text-lede mt-6">
+          Two postures share one agent shell: same prompt, same tools, different data path. The deployed posture runs against the JobTech taxonomy and JobSearch APIs. The local CLI and local dev run the hybrid retrieval stack against a SQLite corpus.
         </p>
 
         <dl
-          data-fade          class="mt-10 grid gap-y-2 sm:grid-cols-[1fr_auto_1fr]"
+          data-fade          class="mt-10 grid gap-y-2 sm:grid-cols-[8rem_1fr]"
         >
           {
-            toolPairings.map((pair) => (
+            stack.map((row) => (
               <div class="contents font-mono text-label">
-                <dt class="text-foreground">{pair.data}</dt>
-                <span
-                  aria-hidden="true"
-                  class="text-muted-foreground hidden sm:inline-block sm:px-4"
-                >
-                  →
-                </span>
-                <dd class="text-foreground">{pair.spatial}</dd>
+                <dt class="text-muted-foreground">{row.key}</dt>
+                <dd class="text-foreground">
+                  {splitCode(row.value).map((part, index) =>
+                    index % 2 ? <code class="font-mono">{part}</code> : part,
+                  )}
+                </dd>
               </div>
             ))
           }
         </dl>
 
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
-          React Flow surfaces four canonical views: triage clusters, deadline
-          timeline, side-by-side compare, and pinned shortlist. Each view
-          carries custom nodes rather than the React Flow defaults.
+        <p data-fade class="text-muted-foreground text-body mt-8">
+          React Flow surfaces four canonical views, each carrying custom nodes rather than the React Flow defaults.
         </p>
-
       </div>
     </section>
 
