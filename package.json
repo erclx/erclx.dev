@@ -17,7 +17,7 @@
     "check:spell": "cspell '**' '.*/**' '.*' --no-progress --color --show-context",
     "check:format": "prettier --check --log-level warn --ignore-path .gitignore --ignore-path .prettierignore . && shfmt --diff --indent 2 scripts/",
     "check:shell": "find scripts -name '*.sh' -exec shellcheck --severity=warning {} +",
-    "check:record": "bunx -y @erclx/canon context audit --gate",
+    "check:record": "bunx -y @erclx/canon@4.114.0 context audit --gate",
     "format": "prettier --write --log-level warn --ignore-path .gitignore --ignore-path .prettierignore . && shfmt --write --indent 2 scripts/",
     "prepare": "husky",
     "check": "./scripts/verify.sh",

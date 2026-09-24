@@ -24,19 +24,19 @@ GitHub Actions workflow for this project.
 
 Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merge. The `deploy` job runs on a push to `main` and on a manual dispatch from any ref, and gates on every verify job either way, which is seven legs across five definitions once the e2e matrix fans out.
 
-| Check     | Command                 | What it asserts                                                  |
-| --------- | ----------------------- | ---------------------------------------------------------------- |
-| Format    | `bun run check:format`  | prettier and shfmt are clean                                     |
-| Spell     | `bun run check:spell`   | cspell passes against dictionaries                               |
-| Shell     | `bun run check:shell`   | shellcheck passes at warning level                               |
-| Record    | `bun run check:record`  | `canon context audit --gate` exits clean, fetched with `bunx -y` |
-| Typecheck | `bun run typecheck`     | `astro check` passes                                             |
-| Lint      | `bun run lint`          | ESLint passes with zero warnings                                 |
-| Tests     | `bun run test:coverage` | Vitest passes and coverage is reported                           |
-| Build     | `bun run build`         | `astro build` succeeds                                           |
-| Rendered  | `bun run test:rendered` | The built pages carry the guarded copy                           |
-| E2E       | `bun run test:e2e`      | Playwright passes on one engine per job                          |
-| Deploy    | `wrangler pages deploy` | Uploads `./dist/` to Cloudflare Pages                            |
+| Check     | Command                 | What it asserts                                                            |
+| --------- | ----------------------- | -------------------------------------------------------------------------- |
+| Format    | `bun run check:format`  | prettier and shfmt are clean                                               |
+| Spell     | `bun run check:spell`   | cspell passes against dictionaries                                         |
+| Shell     | `bun run check:shell`   | shellcheck passes at warning level                                         |
+| Record    | `bun run check:record`  | `canon context audit --gate` exits clean, pinned to `@erclx/canon@4.114.0` |
+| Typecheck | `bun run typecheck`     | `astro check` passes                                                       |
+| Lint      | `bun run lint`          | ESLint passes with zero warnings                                           |
+| Tests     | `bun run test:coverage` | Vitest passes and coverage is reported                                     |
+| Build     | `bun run build`         | `astro build` succeeds                                                     |
+| Rendered  | `bun run test:rendered` | The built pages carry the guarded copy                                     |
+| E2E       | `bun run test:e2e`      | Playwright passes on one engine per job                                    |
+| Deploy    | `wrangler pages deploy` | Uploads `./dist/` to Cloudflare Pages                                      |
 
 For the deploy mechanism, custom domain wiring, and secrets, see `canon/context/deployment.md`. The build runs once, in `build-verify`: every e2e leg and `deploy` download that output rather than repeating it, covered below.
 
