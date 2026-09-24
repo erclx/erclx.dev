@@ -30,22 +30,22 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `canon/
 ┌──────────────────────────────────────────────────────────┐
 │ [header band, shader field, fading into the page below]  │  ← runs edge-to-edge, full height
 │   Eric Le                                 [theme toggle] │  ← name at its own tier
-│   Welcome, this is my corner of the internet.            │
+│   I build AI tools, mostly ones I needed myself first.    │
 │   [GitHub] [LinkedIn] [me@erclx.dev]      [portrait]     │
 │                                                          │  ← no rule; the band dissolves
 │   About me                                               │
 │                                                          │
-│   [three body paragraphs, prose only, no figure]         │
+│   [one body paragraph, prose only]                        │
 │                                                          │
 │   Experience                                             │
 │                                                          │
-│   [two body paragraphs, Volvo then independent work]     │
+│   [one body paragraph, the Volvo work]                    │
 │                                                          │
 │   Where that happened                                    │
 │   ( ⬤ VOLVO )   ( BAC HA )   ( CHALMERS )                │
 │                                                          │
-│   2026                 ●  independent projects, open to work        │
-│   jun to dec 2025      ○  working out what to build      │
+│   dec 2025 to present  ●  independent projects, open to work │
+│   sep to dec 2025      ○  learning react and typescript  │
 │   jan 2024 to jun 2025 ○  eighteen months at volvo       │
 │   jun to aug 2023      ○  ten weeks at bac ha, hanoi     │
 │   sep 2022 to jun 2024 ○  msc, chalmers                  │

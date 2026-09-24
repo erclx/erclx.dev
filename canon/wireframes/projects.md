@@ -15,8 +15,8 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 ┌──────────────────────────────────────────────────────────┐
 │   Projects                                               │  ← serif heading, aligned with the grid
 │                                                          │
-│   Some of these solved a problem for me first and        │  ← opening sentence, at the page measure
-│   other people second. Each one has a page here ...      │
+│   One more lives at /diction, a pronunciation trainer    │  ← opening sentence, at the page measure
+│   that scores each sound ...                             │
 │                                                          │
 │   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐    │
 │     ┌──────────────────────────────────────────────┐     │  ← media slot, still with optional hover video
@@ -47,8 +47,8 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 ┌────────────────────────────────────────────────────────────────────┐
 │   Projects                                                         │
 │                                                                    │
-│   Some of these solved a problem for me first and other people second. Each one has a page here  │  ← opening sentences run the full grid width
-│   ... There is one more at /diction, a pronunciation trainer ...                                  │  ← the only link to that route, which has no card
+│   One more lives at /diction, a pronunciation trainer that scores each sound against a native     │  ← the opening sentence runs the full grid width, and is the only link to that route, which has no card
+│   distribution ...                                                                                │
 │                                                                    │
 │  01 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐ 02       │  ← numerals hang into the outer margin
 │       canon                       Jobtriage                        │

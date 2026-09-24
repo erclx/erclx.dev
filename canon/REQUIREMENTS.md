@@ -19,14 +19,14 @@ Analytics stopped being a non-goal on 2026-08-24. Cloudflare Web Analytics alrea
 
 ## MVP features
 
-1. Header: identity, a greeting, contact links, and the portrait
-2. About: where the person is from and one thing that is not work, sitting directly under the header
-3. Experience: two short prose paragraphs on the work so far, and the timeline of beats
+1. Header: identity, one line about the work, contact links, and the portrait
+2. About: one thing that is not work, sitting directly under the header
+3. Experience: one short prose paragraph on the Volvo work, and the timeline of beats
 4. Projects: cards for Jobtriage, Stackr, and Caret pulled from the github profile, plus a trailing one-liner for Toolkit
 5. Looking for: the criteria rows a reader filters on, anchored by the availability signal
 6. Footer: identity links plus a downloadable resume PDF
 
-The header lost the role, the headline, and the location on 2026-08-17. The claim and its elaboration moved to experience, and the claim left the site on 2026-09-21, when the career source dropped it, so experience opens on its two paragraphs. The location moved to the closing ask, where the rows already state it as a filter. The availability signal moved with it.
+The header lost the role, the headline, and the location on 2026-08-17. The claim and its elaboration moved to experience, and the claim left the site on 2026-09-21, when the career source dropped it, so experience opens on its paragraph. The claim's replacement in the header is `I build AI tools, mostly ones I needed myself first.`, which the operator confirmed on 2026-09-24. The location left the About section that day, when the career source dropped it, and the page description now states it. It also sits in the closing ask, where the rows already state it as a filter. The location moved to the closing ask, where the rows already state it as a filter. The availability signal moved with it.
 
 ## Navigation
 

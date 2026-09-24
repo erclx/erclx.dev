@@ -2,44 +2,44 @@
 import Cast from '@/components/site/experience/cast/cast.astro'
 import Employers from '@/components/site/experience/employers.astro'
 const intro = [
-  'I spent 18 months at Volvo Technology building natural-language tools for engineering data. The work started as my master’s thesis and developed into a multi-step SQL pipeline with session memory that engineers on two powertrain teams tested against their own data.',
-  'Since then I have been building independently, following problems that show up in the work itself.',
+  'For 18 months at Volvo Technology I built an agent that let test engineers ask for plots and figures from their logged data in plain language, with no analysis code to write. It began as my master’s thesis and ended on the team’s real PostgreSQL, Excel, and Trino data. For the 2025 version I wrote the framework under it myself, and routed each request into a fixed pipeline after the open-ended agent loop I tried first lost track of its task within a few steps.',
 ]
 
 interface HistoryEntry {
   current?: boolean
   span: string
   head: string
-  // A beat holding two pieces of work carries a line for each, which is why
-  // this is a list rather than the single sentence the others need.
+  // Empty for a beat that states only its head. A beat holding two pieces of
+  // work carries a line for each.
   details: string[]
 }
 
 const history: HistoryEntry[] = [
   {
     current: true,
-    span: 'jan 2026 to present',
+    span: 'dec 2025 to present',
     head: 'independent projects, open to work',
     details: [],
   },
   {
-    span: 'jun to dec 2025',
-    head: 'working out what to build',
-    details: [],
+    span: 'sep to dec 2025',
+    head: 'learning react and typescript',
+    details: [
+      'Worked through The Odin Project’s full-stack JavaScript path, then started Stackr in TypeScript that December.',
+    ],
   },
   {
     span: 'jan 2024 to jun 2025',
     head: 'volvo technology, gothenburg',
     details: [
-      'Built tools that let engineering teams plot and query truck test data in plain language.',
-      'Started as a master’s thesis and developed into a multi-step SQL pipeline with session memory.',
+      'Presented at Generative AI for Automotive USA 2024, an industry conference in Ann Arbor.',
     ],
   },
   {
     span: 'jun to aug 2023',
     head: 'internship at bac ha software, hanoi',
     details: [
-      'Reproduced published GAN architectures in TensorFlow for image inpainting and pre-trained them on GPU.',
+      'Reproduced published GAN architectures in TensorFlow for image generation and image-to-image translation, and trained them on GPU.',
     ],
   },
   {

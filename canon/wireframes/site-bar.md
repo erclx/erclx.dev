@@ -26,7 +26,7 @@ The ground starts at the full width with square corners and contracts to a round
 ```plaintext
 ┌─[viewport]──────────────────────────────────────────────────┐
 │                                                       [☾]   │  ← bar absent, toggle painted
-│   Welcome, this is my corner of the internet.               │    onto the hero's own row
+│   I build AI tools, mostly ones I needed myself first.       │    onto the hero's own row
 │                                                             │
 │   Eric Le                                     (photo)       │
 └─────────────────────────────────────────────────────────────┘

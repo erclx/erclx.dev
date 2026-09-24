@@ -13,14 +13,12 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/evidence/readme/dark.png">
-  <img src=".github/evidence/readme/light.png" alt="The erclx.dev header: a name, a one-line greeting, three contact links, and a circular portrait over a contour field">
+  <img src=".github/evidence/readme/light.png" alt="The erclx.dev header: a name, a line about the work, three contact links, and a circular portrait over a contour field">
 </picture>
 
 ## About
 
-Most of the things I build start with some version of "this should be easier." I tend to get curious about how things work once something starts getting in my way, and that's usually how I end up building my own version.
-
-I'm based in Gothenburg. Outside of building things, I play guitar, listen to a lot of music, play tennis, and travel when I can.
+Outside of building things, I play guitar, listen to a lot of music, play tennis, and travel when I can.
 
 ## Built with
 
