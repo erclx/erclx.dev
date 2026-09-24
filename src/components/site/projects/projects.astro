@@ -21,7 +21,7 @@ const projects = [
     name: 'canon',
     route: '/canon',
     description:
-      'Rules and workflows kept drifting across every project I had. I built a CLI and Claude Code plugin that distributes them from one source, carries the plan, review, and ship loop as skills, and coordinates parallel work across separate branches. Available on npm as @erclx/canon, with a live build at canon.erclx.dev.',
+      'Rules and workflows kept drifting across every project I had. Now every one of my repositories runs on one toolkit, a CLI and Claude Code plugin holding a single copy of the rules and skills my AI coding sessions follow. Available on npm as @erclx/canon, with a live build at canon.erclx.dev.',
     poster: canonPoster,
     videoSrc: canonVideo,
     mediaAlt:
@@ -64,7 +64,7 @@ const projects = [
     name: 'Stackr',
     route: '/stackr',
     description:
-      'Staging files by hand for every prompt was the actual bottleneck, so I stopped doing it by hand. VS Code extension that stages files across a workspace into one block of LLM context. Installed from the VS Code Marketplace and Open VSX.',
+      'Staging files by hand for every prompt was the slowest part of every planning chat. VS Code extension that stages files across a workspace into one block of LLM context. Installed from the VS Code Marketplace and Open VSX.',
     poster: stackrPoster,
     videoSrc: stackrVideo,
     mediaAlt: 'Stackr — VS Code panel showing staged files and a context preview',
@@ -120,11 +120,8 @@ const projects = [
         reached by clicking a card's name, except diction, which has no card
         and is reached from the link in the third sentence. */}
     <p data-fade class="text-muted-foreground text-body mt-6">
-      Some of these solved a problem for me first and other people second. Each
-      one has a page here on why it exists and how it works. There is one more
-      at <a href="/diction" class="text-foreground underline underline-offset-4">/diction</a>, a pronunciation trainer
-      that scores each sound against a native distribution and reports how often
-      it is wrong.
+      One more lives at <a href="/diction" class="text-foreground underline underline-offset-4">/diction</a>, a pronunciation trainer that scores each sound
+      against a native distribution and reports how often it is wrong.
     </p>
     {/* The gutter carries the separation the plate used to. It also has to
         clear the halo a hover raises: at a 24px gutter the halo's own box

@@ -2,46 +2,44 @@
 import Cast from '@/components/site/experience/cast/cast.astro'
 import Employers from '@/components/site/experience/employers.astro'
 const intro = [
-  'In practice that means agents, the developer tooling around them, and the full-stack work of making either usable by someone else. Some of that was paid work, eighteen months of it at Volvo Technology, and the rest is my own. I came to it from engineering physics and complex adaptive systems at Chalmers.',
-  'I spend most of my working day with coding agents, and the tooling I build comes out of that. When the same rules kept drifting out of sync across my projects, that became a CLI. When staging files for a prompt got tedious, that became an extension.',
+  'For 18 months at Volvo Technology I built an agent that let test engineers ask for plots and figures from their logged data in plain language, with no analysis code to write. It began as my master’s thesis and ended on the team’s real PostgreSQL, Excel, and Trino data. For the 2025 version I wrote the framework under it myself, and routed each request into a fixed pipeline after the open-ended agent loop I tried first lost track of its task within a few steps.',
 ]
 
 interface HistoryEntry {
   current?: boolean
   span: string
   head: string
-  // A beat holding two pieces of work carries a line for each, which is why
-  // this is a list rather than the single sentence the others need.
+  // Empty for a beat that states only its head. A beat holding two pieces of
+  // work carries a line for each.
   details: string[]
 }
 
 const history: HistoryEntry[] = [
   {
     current: true,
-    span: 'jan 2026 to present',
-    head: 'shipping independently, open to the next thing',
+    span: 'dec 2025 to present',
+    head: 'independent projects, open to work',
     details: [],
   },
   {
-    span: 'jun to dec 2025',
-    head: 'working out what to build',
+    span: 'sep to dec 2025',
+    head: 'learning react and typescript',
     details: [
-      'Took the time to learn TypeScript and web application development, and to work out where to point AI next.',
+      'Worked through The Odin Project’s full-stack JavaScript path, then started Stackr in TypeScript that December.',
     ],
   },
   {
     span: 'jan 2024 to jun 2025',
     head: 'volvo technology, gothenburg',
     details: [
-      'The job was an agent that let engineering teams plot and query truck data by asking in plain language.',
-      'It started as my master’s thesis and became a multi-step SQL pipeline with session memory.',
+      'Presented at Generative AI for Automotive USA 2024, an industry conference in Ann Arbor.',
     ],
   },
   {
     span: 'jun to aug 2023',
     head: 'internship at bac ha software, hanoi',
     details: [
-      'Reproduced published GAN architectures in TensorFlow for image inpainting and pre-trained them on GPU.',
+      'Reproduced published GAN architectures in TensorFlow for image generation and image-to-image translation, and trained them on GPU.',
     ],
   },
   {
@@ -88,25 +86,12 @@ const artifacts = [
       Experience
     </h2>
 
-    {/* The claim leads this section rather than the hero, and its elaboration
-        follows it here because that paragraph opens on a pronoun standing for
-        the claim. Splitting the two across surfaces left the pronoun with no
-        antecedent on either. */}
-    <p
-      data-fade
-      style="--fade-delay: 100ms"
-      class="font-display text-foreground mt-8 text-3xl leading-tight md:text-4xl"
-    >
-      I build <span data-annotate="underline">the layer</span> between a language
-      model and the job it has to do.
-    </p>
-
     <div class="mt-8 space-y-6">
       {
         intro.map((paragraph, idx) => (
           <p
             data-fade
-            style={`--fade-delay: ${200 + idx * 100}ms`}
+            style={`--fade-delay: ${100 + idx * 100}ms`}
             class="text-muted-foreground text-body"
           >
             {paragraph}
@@ -119,8 +104,8 @@ const artifacts = [
 
     {/* The list opened on `Newest first.` until the spans moved into a column
         of their own. That line existed because the dates were buried inside the
-        head sentences, so the order was not visible; a reader now meets 2026
-        against jun to dec 2025 against jan 2024 down one edge, and the list
+        head sentences, so the order was not visible; a reader now meets dec 2025
+        against sep to dec 2025 against jan 2024 down one edge, and the list
         states its own order. A line explaining what the reader can already see
         is the one kind of caption worth deleting. */}
     <div class="experience-stage mt-10 lg:mt-14">
@@ -467,12 +452,10 @@ const artifacts = [
 </style>
 
 <script>
-  import { initAnnotations } from '@/lib/annotate'
   import { hasHoverPointer } from '@/lib/pointer'
 
   import { initChipLife } from './chips'
 
-  initAnnotations()
   initChipLife()
 
   const stage = document.querySelector<HTMLElement>('.experience-stage')

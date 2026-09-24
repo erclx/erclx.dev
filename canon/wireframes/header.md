@@ -1,13 +1,13 @@
 ---
 title: Header
-description: Full-height top-of-page band on every viewport. Carries a greeting, the name, the portrait, and primary contact links
+description: Full-height top-of-page band on every viewport. Carries the name, one line about the work, the portrait, and primary contact links
 ---
 
 # Header
 
-Appears at the top of the page on every viewport. Carries the name, a greeting, the portrait, and primary contact links. Sits inside a tinted band that runs edge-to-edge, holding the full viewport height from md up and 70svh below it.
+Appears at the top of the page on every viewport. Carries the name, one line about the work, the portrait, and primary contact links. Sits inside a tinted band that runs edge-to-edge, holding the full viewport height from md up and 70svh below it.
 
-The name opens the surface and the greeting sits under it, so one line both opens the page and frames the links that stood bare beneath it. The greeting takes the display face at the lede step, which reads as one masthead rather than as a heading with a caption. `svh` rather than `vh` below md, since a collapsing address bar grows `vh` mid-scroll and would overflow the band the value bounds.
+The name opens the surface and the line sits under it, `I build AI tools, mostly ones I needed myself first.` from the career source, so one line both opens the page and frames the links that stood bare beneath it. The share card draws the same line, held once in `scripts/card-copy.ts`. The line takes the display face at the lede step, which reads as one masthead rather than as a heading with a caption. `svh` rather than `vh` below md, since a collapsing address bar grows `vh` mid-scroll and would overflow the band the value bounds.
 
 The theme toggle sits in the header's own corner rather than on a text row. The portrait floats flush to the column's right edge for 160px from the heading's top, so no row under the name has a free right side.
 
@@ -23,7 +23,7 @@ The emptiness is deliberate. The band is a stage held open for an authored real-
 │                                                             │    own corner
 │   Eric Le                                     (photo)       │  ← display heading,
 │                                               portrait      │    portrait floats in it
-│   Welcome to my corner of the internet.                     │  ← greeting, display face
+│   I build AI tools, mostly ones I needed myself first.        │  ← line, display face
 │   GitHub    LinkedIn    me@erclx.dev                        │  ← contact links row
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
@@ -34,8 +34,9 @@ The emptiness is deliberate. The band is a stage held open for an authored real-
 ```plaintext
 ┌─[tinted band]────────────────────┐
 │                                  │
-│   Welcome to my           [☾]    │
-│   corner of the internet.        │
+│   I build AI tools,       [☾]    │
+│   mostly ones I needed           │
+│   myself first.                  │
 │                                  │
 │   Eric Le                (photo) │
 │                                  │

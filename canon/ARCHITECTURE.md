@@ -32,7 +32,7 @@ No standard installs into this project. The corpus resolves through the toolkit 
 
 What nothing watches is whether an instrument asks about the thing a reader sees. A check reading an element's geometry passes on an element painted nowhere, so a panel can measure at exactly the right size while sitting off screen and a placement check can clear every figure while most of them are unpainted. Assert that a surface is visible where a reader would meet it, not only that it has the right shape, and read the paint rather than the state. Nothing in the suite enforces that about a check yet to be written.
 
-The one content boundary that is enforced is authorship of the bio. `src/components/site/about/bio-copy.ts` holds the two paragraphs the root `README.md` and the site's own About section share verbatim, and `src/components/site/about/bio-copy.test.ts` fails when the two drift apart. `scripts/card-copy.ts` holds the same shape for the share card's claim. Prefer that shape over a second copy whenever one string has to appear on two surfaces.
+The one content boundary that is enforced is authorship of the bio. `src/components/site/about/bio-copy.ts` holds the paragraph the root `README.md` and the site's own About section share verbatim, and `src/components/site/about/bio-copy.test.ts` fails when the two drift apart. `scripts/card-copy.ts` holds the same shape for the line the share card draws. Prefer that shape over a second copy whenever one string has to appear on two surfaces.
 
 ### Agent context split by load cost
 

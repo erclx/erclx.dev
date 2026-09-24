@@ -30,24 +30,22 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `canon/
 ┌──────────────────────────────────────────────────────────┐
 │ [header band, shader field, fading into the page below]  │  ← runs edge-to-edge, full height
 │   Eric Le                                 [theme toggle] │  ← name at its own tier
-│   Welcome, this is my corner of the internet.            │
+│   I build AI tools, mostly ones I needed myself first.    │
 │   [GitHub] [LinkedIn] [me@erclx.dev]      [portrait]     │
 │                                                          │  ← no rule; the band dissolves
 │   About me                                               │
 │                                                          │
-│   [three body paragraphs, prose only, no figure]         │
+│   [one body paragraph, prose only]                        │
 │                                                          │
 │   Experience                                             │
 │                                                          │
-│   I build the layer between a language model and the     │  ← the claim, display face
-│   job it has to do.                                      │
-│   [two body paragraphs elaborating it]                   │
+│   [one body paragraph, the Volvo work]                    │
 │                                                          │
 │   Where that happened                                    │
 │   ( ⬤ VOLVO )   ( BAC HA )   ( CHALMERS )                │
 │                                                          │
-│   2026                 ●  shipping independently         │
-│   jun to dec 2025      ○  working out what to build      │
+│   dec 2025 to present  ●  independent projects, open to work │
+│   sep to dec 2025      ○  learning react and typescript  │
 │   jan 2024 to jun 2025 ○  eighteen months at volvo       │
 │   jun to aug 2023      ○  ten weeks at bac ha, hanoi     │
 │   sep 2022 to jun 2024 ○  msc, chalmers                  │
@@ -67,10 +65,11 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `canon/
 │   Looking for                                            │
 │   ● Open to work                             ( ᴥ )       │  ← status anchors it, character on the rule
 │   ────────────────────────────────────────────────────   │  ← the page's one rule
-│   What I want to build  AI tooling · LLM apps · devex    │
-│   Team                  small to mid · close to product  │
-│   Where                 Sweden, Gothenburg · remote      │
-│   Experience            two years in                     │
+│   What I want to build  AI tools, developer products,    │
+│                         full-stack applications          │
+│   Team                  small to mid, close to product   │
+│   Where                 Sweden, Gothenburg preferred,    │
+│                         remote                           │
 │   Terms                 full-time or contract            │
 │                                                          │
 │              (handwritten signature)                     │  ← no rule above it

@@ -154,8 +154,10 @@ describe('a shared link', () => {
     ).toLowerCase()
 
     // The two render stacked in an unfurl, so a description opening on the
-    // title's own words spends its first line repeating the line above it.
-    const opener = description.split(/[.,]/)[0]?.trim() ?? ''
+    // title's own words spends its first line repeating the line above it. The
+    // opener is the first sentence, since the career source's description
+    // names the person before the role and the title names them too.
+    const opener = description.split('.')[0]?.trim() ?? ''
     expect(title.length).toBeGreaterThan(0)
     expect(opener.length).toBeGreaterThan(0)
     expect(title).not.toContain(opener)
@@ -166,9 +168,9 @@ describe('a shared link', () => {
   it.each(ROUTES)(
     'says something the card does not already draw on %s',
     (route) => {
-      // The card draws the claim, and every host except LinkedIn prints the
-      // description beside it, so a description carrying that same sentence
-      // prints it twice in one unfurl.
+      // The card draws the header's line, and every host
+      // except LinkedIn prints the description beside it, so a description
+      // carrying that same sentence prints it twice in one unfurl.
       const claim = CARD_CLAIM.toLowerCase().replace(/\.$/, '')
       const description = meta(
         readPage(route),
@@ -196,13 +198,18 @@ describe('the header', () => {
     expect(textOf(home, 'h1')).toBe('Eric Le')
   })
 
-  it('states no claim, leaving the stage to the concept layer', () => {
+  it('opens on the line the share card draws', () => {
     expect(queryAll(home, 'header')).toHaveLength(1)
     const header = textOf(home, 'header')
 
-    expect(header).toContain('Welcome to my corner of the internet')
-    expect(header).not.toContain('the layer between a language model')
+    expect(header).toContain(CARD_CLAIM)
     expect(header).not.toContain('In practice that means agents')
+  })
+
+  it.each(ROUTES)('renders no retired claim on %s', (route) => {
+    expect(textOf(readPage(route), 'body')).not.toContain(
+      'the layer between a language model',
+    )
   })
 
   it('leaves the location to the closing ask', () => {
@@ -226,7 +233,6 @@ describe('the about surface', () => {
   it('reads as personal rather than professional', () => {
     const about = textOf(home, '[data-section="about"]')
 
-    expect(about).toContain('this should be easier')
     expect(about).toContain('I play guitar')
     expect(about).not.toContain('agents')
     expect(about).not.toContain('Volvo')
@@ -261,14 +267,12 @@ describe('the landing page', () => {
 })
 
 describe('the experience section', () => {
-  it('keeps the claim beside the prose depending on it', () => {
+  it('carries the Volvo paragraph and no claim', () => {
     const experience = textOf(home, '#experience')
 
-    expect(experience).toContain(
-      'the layer between a language model and the job it has to do',
-    )
-    expect(experience).toContain('In practice that means agents')
-    expect(experience).toContain('I spend most of my working day')
+    expect(experience).toContain('For 18 months at Volvo Technology')
+    expect(experience).toContain('lost track of its task within a few steps')
+    expect(experience).not.toContain('the layer between a language model')
   })
 
   it('renders one entry per beat', () => {
@@ -286,13 +290,13 @@ describe('the experience section', () => {
     ).toBeGreaterThan(0)
   })
 
-  it('carries a line for each of the two pieces of work in one beat', () => {
+  it('carries the conference line on the Volvo beat', () => {
     const volvoBeats = beatsNamed('volvo technology')
 
     expect(volvoBeats).toHaveLength(1)
     expect(
       volvoBeats.flatMap((beat) => queryAll(beat, '.experience-detail')),
-    ).toHaveLength(2)
+    ).toHaveLength(1)
   })
 
   it('marks every entry on the rail', () => {

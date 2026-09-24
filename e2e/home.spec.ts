@@ -931,14 +931,6 @@ test('a grouped list staggers its rows rather than landing them together', async
   expect(reveal.everMidFade).toBe(true)
 })
 
-test('the looking-for section states experience rather than a level band', async ({
-  page,
-}) => {
-  await page.goto('/')
-
-  await expect(page.locator('#looking-for')).toContainText('two years in')
-})
-
 // 375 and 390 are the two commonest phone widths, and both regressed when a
 // decorative hover label shipped on one line: it reached 62px and 47px past the
 // viewport while invisible, which scrolls the whole page sideways.
@@ -1168,6 +1160,13 @@ test('the controls land in the bar when the page opens mid-page', async ({
     .toBeLessThanOrEqual(2)
 })
 
+// Firefox commits a fragment scroll and then corrects it by a pixel once the
+// target's fractional position resolves, measured at 2369 then 2370 with the
+// target's top moving 97 to 96. That correction is a jump settling rather than
+// a glide, so a position within this many pixels of either end is not one the
+// page passed through.
+const SETTLE_TOLERANCE_PX = 2
+
 // A chip's scroll is judged on the positions the page passes through rather
 // than on the declaration behind it. That reads the same on every engine, and
 // it survives the answer moving between a stylesheet and a script, which is
@@ -1176,32 +1175,37 @@ const traceChipScroll = async (
   page: Page,
   frames: number,
 ): Promise<{ start: number; landed: number; passedThrough: boolean }> =>
-  page.evaluate(async (count) => {
-    const chip = document.querySelector<HTMLAnchorElement>('#experience ul a')
-    if (!chip) throw new Error('the experience section carries no chip')
+  page.evaluate(
+    async ({ count, settle }) => {
+      const chip = document.querySelector<HTMLAnchorElement>('#experience ul a')
+      if (!chip) throw new Error('the experience section carries no chip')
 
-    const start = window.scrollY
-    const samples: number[] = []
-    chip.click()
+      const start = window.scrollY
+      const samples: number[] = []
+      chip.click()
 
-    await new Promise<void>((resolve) => {
-      let seen = 0
-      const tick = () => {
-        samples.push(window.scrollY)
-        seen += 1
-        if (seen < count) requestAnimationFrame(tick)
-        else resolve()
+      await new Promise<void>((resolve) => {
+        let seen = 0
+        const tick = () => {
+          samples.push(window.scrollY)
+          seen += 1
+          if (seen < count) requestAnimationFrame(tick)
+          else resolve()
+        }
+        requestAnimationFrame(tick)
+      })
+
+      const landed = samples.at(-1) ?? start
+      return {
+        start,
+        landed,
+        passedThrough: samples.some(
+          (at) => at > start + settle && at < landed - settle,
+        ),
       }
-      requestAnimationFrame(tick)
-    })
-
-    const landed = samples.at(-1) ?? start
-    return {
-      start,
-      landed,
-      passedThrough: samples.some((at) => at > start && at < landed),
-    }
-  }, frames)
+    },
+    { count: frames, settle: SETTLE_TOLERANCE_PX },
+  )
 
 // Holding a position strictly between where the page started and where it
 // landed is the whole difference between the two tests below, and it is the

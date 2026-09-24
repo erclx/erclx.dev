@@ -13,9 +13,9 @@ Per-surface ASCII layouts loaded on demand
 - [Caret project](caret.md): Sub-page at /caret covering the reuse problem, the trigger palette, and the three-editor adapter
 - [Contact dock](contact-dock.md): Fixed right-margin control carrying contact and the résumé between the hero and the footer, mirroring the section rail on the left
 - [diction project](diction.md): Long-form sub-page at /diction covering the calibration failure, the per-sound fix, and the held-out result
-- [Experience](experience.md): The claim, the paragraphs elaborating it, and the career timeline that carries them into the projects section
+- [Experience](experience.md): The paragraph on the Volvo work, and the career timeline that carries them into the projects section
 - [Footer](footer.md): Bottom of the page. Carries a downloadable résumé link plus a colophon and the last deploy date
-- [Header](header.md): Full-height top-of-page band on every viewport. Carries a greeting, the name, the portrait, and primary contact links
+- [Header](header.md): Full-height top-of-page band on every viewport. Carries the name, one line about the work, the portrait, and primary contact links
 - [Jobtriage project](jobtriage.md): Long-form sub-page at /jobtriage covering the problem framing, the two demo paths, the canvas, the retrieval evaluation, and the system stack
 - [Looking-for](looking-for.md): Sits below the projects section as the page's closing call to action. Flat criteria list surfacing recruit-funnel specifics
 - [Page](page.md): Single page at /. Six sections stack vertically over a shared ground, with two margin controls beside them.

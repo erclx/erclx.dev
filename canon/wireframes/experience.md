@@ -1,15 +1,15 @@
 ---
 title: Experience
-description: The claim, the paragraphs elaborating it, and the career timeline that carries them into the projects section
+description: The paragraph on the Volvo work, and the career timeline that carries them into the projects section
 ---
 
 # Experience
 
-Appears between the about surface and the projects section. Opens on the claim and the two paragraphs that elaborate it, then renders the career story as a single commit rail rather than as a list beside a diagram.
+Appears between the about surface and the projects section. Opens on one paragraph on the Volvo work, then renders the career story as a single commit rail rather than as a list beside a diagram.
 
 Renamed from `Origin` on 2026-08-17, because the section holds two degrees and a job rather than where the person is from. Origin in the ordinary sense is what the about surface now carries.
 
-A display heading opens it, matching the about, projects, and looking-for headings so a reader scanning for a section finds all four at the same weight. The claim sits under the heading at display size, the elaboration follows in body prose, then a row of employer marks, and below them a vertical rail runs down the gutter with one dot per beat sitting on it. The newest beat carries a row of chips naming the artifacts it produced.
+A display heading opens it, matching the about, projects, and looking-for headings so a reader scanning for a section finds all four at the same weight. The paragraph follows in body prose, then a row of employer marks, and below them a vertical rail runs down the gutter with one dot per beat sitting on it. The newest beat carries a row of chips naming the artifacts it produced.
 
 ## Desktop (≥768px)
 
@@ -17,15 +17,9 @@ A display heading opens it, matching the about, projects, and looking-for headin
 Experience
   ← display heading, same weight as Projects
 
-I build the layer between a language model and the job it has to do.
-  ← the claim, display face, one phrase carrying an annotation underline
-
-In practice that means agents, the developer tooling around them,
-  and the full-stack work of making either usable by someone else...
-  I came to it from engineering physics and complex adaptive
-  systems at Chalmers.
-I spend most of my working day with coding agents...
-  ← two body paragraphs, muted, the first closing on the degrees
+For 18 months at Volvo Technology I built an agent that let test
+  engineers ask for plots and figures from their logged data...
+  ← one body paragraph, muted
 
 Where that happened
   ← label-size eyebrow, muted
@@ -33,18 +27,17 @@ Where that happened
 ( ⬤ VOLVO )    ( BAC HA )    ( CHALMERS )
   ← employer marks, one tone, sized so each reads rather than matching heights
 
- jan 2026 to        ●  shipping independently, open to the next thing
+ dec 2025 to        ●  independent projects, open to work
  present            │     ( canon ) ( Jobtriage ) ( annex ) ( Stackr ) ( Caret )
                     │
- jun to dec 2025    ○  working out what to build
-                    │     Took the time to learn TypeScript and web application
-                    │     development, and to work out where to point AI next.
+ sep to dec 2025    ○  learning react and typescript
+                    │     Worked through The Odin Project’s full-stack
+                    │     JavaScript path, then started Stackr in TypeScript
+                    │     that December.
                     │
  jan 2024 to        ○  volvo technology, gothenburg
- jun 2025           │     The job was an agent that let engineering teams plot
-                    │     and query truck data by asking in plain language.
-                    │     It started as my master's thesis and became a
-                    │     multi-step SQL pipeline with session memory.
+                    │     Presented at Generative AI for Automotive USA 2024,
+                    │     an industry conference in Ann Arbor.
                     │
  jun to aug 2023    ○  internship at bac ha software, hanoi
                     │     ...
@@ -61,21 +54,18 @@ Where that happened
  ↑ spans in their own column, tabular numerals
 ```
 
-The list opened on `Newest first.` in Fraunces italic at label size until 2026-08-20. It was there because the spans sat inside the head sentences, separated by a middle dot, so the ordering was not visible without reading each row. The spans now hold a column of their own and a reader meets jan 2026 against jun to dec 2025 against jan 2024 down one edge, so the list states its own order and the line restated what was already on screen.
+The list opened on `Newest first.` in Fraunces italic at label size until 2026-08-20. It was there because the spans sat inside the head sentences, separated by a middle dot, so the ordering was not visible without reading each row. The spans now hold a column of their own and a reader meets dec 2025 against sep to dec 2025 against jan 2024 down one edge, so the list states its own order and the line restated what was already on screen.
 
 ## Tablet (600 to 767px)
 
 The same three parts, with the span column narrowed and the span itself set at label size. This width was the flat stack below until 2026-08-22, and it carried no wireframe at all, which is what let the rail disappear across the whole band with nothing describing what a reader was meant to see.
 
 ```plaintext
- jan 2026        ●  shipping independently, open to the
- to present      │  next thing
+ dec 2025        ●  independent projects, open to
+ to present      │  work
                  │    ( canon ) ( Jobtriage ) ( Stackr ) ( Caret )
                  │
- jun to dec 2025 ○  working out what to build
-                 │    Took the time to learn TypeScript and web
-                 │    application development, and to work out where
-                 │    to point AI next.
+ sep to dec 2025 ○  learning react and typescript
 ```
 
 ## Phone (below 600px)
@@ -83,18 +73,14 @@ The same three parts, with the span column narrowed and the span itself set at l
 The span column folds into the reading column and leads its own beat, still at label size. The rail moves to the section's left edge and runs the full height of each beat rather than sitting between two columns, so the beats still read as a sequence at a width that has no room for a column beside them.
 
 ```plaintext
- ● jan 2026 to present
- │ shipping independently, open to
- │ the next thing
+ ● dec 2025 to present
+ │ independent projects, open to
+ │ work
  │   ( canon ) ( Jobtriage )
  │   ( annex ) ( Stackr ) ( Caret )
  │
- ○ jun to dec 2025
- │ working out what to build
- │   Took the time to learn
- │   TypeScript and web application
- │   development, and to work out
- │   where to point AI next.
+ ○ sep to dec 2025
+ │ learning react and typescript
 ```
 
 ## Behavior
@@ -105,10 +91,10 @@ The span column folds into the reading column and leads its own beat, still at l
 - On a phone the span leads the beat instead of holding a column, and the dot aligns to the span, since that is the first line of the beat there. The dot meets whichever line leads at a given width rather than one fixed part of the row.
 - Nothing on this surface takes the monospace face. The heads carried it until 2026-08-17, which made them the largest text in the section and the reason it read louder than its neighbors. Mono now marks literal machine values alone, and no value on this surface is one.
 - Every dot sits exactly on its own row, which a fixed figure could never do once rows started running to different heights.
-- A span carries months rather than a year alone, because a year read as twelve months of work where the record held six. The newest beat holds `jan 2026 to present` for the same reason: a bare `2026` said less than every row under it on a list whose spans carry months.
+- A span carries months rather than a year alone, because a year read as twelve months of work where the record held six. The newest beat holds `dec 2025 to present` for the same reason: a bare `2026` said less than every row under it on a list whose spans carry months.
 - A head names the employer and its city, and states no duration. The span column beside it already carries the length, so a head restating it puts the same fact on one row twice. Both job beats led on a duration until 2026-08-20 and both gave it up together, which is what keeps them reading as a pair.
 - The two job beats name a city and the two degree beats name the university. What a beat leads on is what a reader scanning the column compares, so a beat that drops the pattern reads as a different kind of row rather than as a shorter one.
-- The prose above carries the schooling, and the timeline carries the dates for it. The paragraph closes on the two degrees rather than opening on them, because the section leads on what gets built.
+- The paragraph above states the Volvo work and nothing of the schooling, which the timeline carries in its two degree beats. The section leads on what gets built.
 - One row is highlighted at a time as the "current state" anchor. The first row is highlighted by default. Hovering another row transfers the highlight to it. On leaving the list the highlight walks back row by row to the first row.
 - The walk lingers on the row the reader chose and gathers pace as it returns, because what it shows is a row being let go of rather than another being traveled to.
 - The highlighted dot fills with the warm accent and carries a soft ring, so one warm point marks where the reader is on a timeline that is otherwise muted. The rail marker in `section-nav.md` states position the same way and takes the same color.
@@ -173,7 +159,3 @@ A loop was driven and rejected, and the reason bounds anything proposed here lat
 On scroll-in the heading, then the rows, reveal in a top-to-bottom cascade. The list is watched as one unit and steps its rows 220ms apart, so the cascade holds at any scroll speed rather than depending on which rows happened to cross the viewport edge together. The last of six starts at 1.1s and the list settles inside 1.8s. Mechanism: `canon/context/motion.md`.
 
 The cascade was absent until 2026-08-22 and the section still read as arriving in one block, twice over: the rows had no opacity transition at all, because the row's own `transition` for its active state replaced the reveal's, and the stagger they were given was computed per observer callback, which delivers one row per callback at reading pace.
-
-## Claim annotation
-
-A single phrase in the claim carries a hand-drawn underline that draws on shortly after the claim's fade settles, once per page load. Only one phrase per page may carry an annotation, by editorial rule. Skipped under reduced motion. The claim opened the header until 2026-08-17 and the annotation traveled with the sentence rather than staying on that surface. Mechanism: `canon/context/motion.md`.

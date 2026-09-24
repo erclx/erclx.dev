@@ -7,7 +7,7 @@ description: Sits below the projects section as the page's closing call to actio
 
 Appears below the projects section as the page's closing call to action. Sits flat on the page canvas under a drawn contour, carrying no panel and no tint, so it reads as an editorial block in the flow the experience timeline already uses rather than as a framed widget.
 
-The section pairs a display heading with the availability status and five short criteria rows, one question each. Team shape and location were one merged row until 2026-08-17 and answered neither cleanly. The status moved here from the header on the same day, and it anchors the section rather than joining the rows: a sixth label would add a line to a surface that needs weight instead.
+The section pairs a display heading with the availability status and four short criteria rows, one question each. Team shape and location were one merged row until 2026-08-17 and answered neither cleanly. The status moved here from the header on the same day, and it anchors the section rather than joining the rows: a sixth label would add a line to a surface that needs weight instead.
 
 ## Desktop (≥768px)
 
@@ -19,10 +19,9 @@ The section pairs a display heading with the availability status and five short 
                                                    ( ᴥ )    ← character perched on the contour
    ‿‿⁀‿‿‿⁀‿‿‿‿‿⁀‿‿‿⁀‿‿‿‿‿⁀‿‿‿⁀‿‿‿‿‿⁀‿‿‿⁀‿‿‿‿⁀‿‿‿‿‿    ← drawn contour at the text measure
 
-   What I want to build   AI tooling · LLM apps · devex
-   Team                   small to mid · close to the product
-   Where                  Sweden, Gothenburg preferred · remote
-   Experience             two years in
+   What I want to build   AI tools, developer products, full-stack applications
+   Team                   small to mid, close to the product
+   Where                  Sweden, Gothenburg preferred, remote
    Terms                  full-time or contract
 ```
 
@@ -36,7 +35,7 @@ The section pairs a display heading with the availability status and five short 
 - The status dot takes the size and the ring the experience section's active marker carries, so the two read as one shape language. Its color stays its own: green states availability where the accent states position. The dot centres on a box one cap height tall resting on the label's baseline.
 - The heading names the section and the availability status sits directly under it, anchoring the surface. No build-date stamp and no sixth row, because the status carries the live signal and the rows carry the specificity.
 - The heading takes the display serif at the weight the projects heading carries, reversing the label-size mono kicker on 2026-08-17. That earlier call was measured and it was right about this section on its own: a serif heading does read large over four short rows. What outweighed it is the page rather than the section. Three of the four sections were findable at a glance and this one was not, and a reader scanning for what a stranger is looking for should not have to find a label the size of a row label. Experience moved the same way and for the same reason.
-- Five criteria rows render as a definition list with short fragment values (3-6 words each), not prose sentences.
+- Four criteria rows render as a definition list with short fragment values (3-6 words each), not prose sentences.
 - A gap separates the rows and no rule runs between them. A rule per row made this the last surface on the page reading as a table, on a page whose hero seam, bar, cards, and footer had all stopped drawing lines. The pairing still scans without them, which is the only job the list has.
 - Each row keeps its vertical padding after the rules came off. The left border lighting on hover is an affordance rather than a division, and it needs a row tall enough to draw against.
 - The contour above the rows stays and is not an exception left behind. The character peeks over that edge, which makes it the ledge a drawing sits on rather than table chrome, and removing it leaves the character with nothing to hide behind.

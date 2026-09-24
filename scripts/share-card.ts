@@ -5,13 +5,15 @@
  * site's own Fraunces and the tokens are the ones it ships. A card drawn in a
  * fallback face is a card judged on the wrong letterforms.
  *
- * The mark leads and the claim sits beside it. Two earlier arrangements put the
- * name in the image at display weight, which is the same word twice in one
- * unfurl since every host prints the title alongside. Attribution stays, small
- * and under the claim, because a host shows the domain and not always the
+ * The mark leads and the page header's line sits beside it, with the small
+ * attribution under that line. The line is declared once in
+ * `scripts/card-copy.ts`, since the header shows the same words. Two earlier
+ * arrangements put the name in the image at display weight, which is the same
+ * word twice in one unfurl since every host prints the title alongside.
+ * Attribution stays small, because a host shows the domain and not always the
  * person.
  *
- * The claim runs 22 characters to the line. Judged at 1200 a longer line looks
+ * The line runs 22 characters to the line. Judged at 1200 a longer line looks
  * fuller, and a card is met at 400 to 600 in a feed and smaller in a compact
  * unfurl, where the longer setting goes thin and the shorter one holds. Judge
  * this downscaled or the reading is of a size nobody sees.
