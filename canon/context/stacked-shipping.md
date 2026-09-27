@@ -25,7 +25,7 @@ Four roles run a stack and each gets its own skill. A run is planned and impleme
 
 The split falls where a session boundary falls. A skill is invoked, and the worker and the reviewer invoke from separate sessions, so one file covering both hands each party the other's procedure and leaves each reading past half of it. The cost is that the contract between them spans files, which each half pays by stating the other's obligation in one line: the reviewer holds every finding until the whole stack is read, and the worker walks the whole chain bottom to top, pushing and answering each branch as it finishes it.
 
-The two halves of that contract are not a pair, and reading them as one is what kept the worker's half wrong. A reviewer is looking for something not yet found, and a cross-branch defect exists only in the relation between branches, so concluding before the last one is read is concluding early: on one chain, six pull request bodies each reported a plausible test count and the defect was that all six reported the same one, which no single branch carries. A worker is applying findings that are already complete, so holding discovers nothing and leaves the reviewer idle through one gate run per branch. The worker's half read as the mirror of the reviewer's until 2026-08-22, on the symmetry rather than on either reason.
+The two halves of that contract are not a pair, and reading them as one is what kept the worker's half wrong. A reviewer is looking for something not yet found, and a cross-branch defect exists only in the relation between branches, so concluding before the last one is read is concluding early: on one chain, six pull request bodies each reported a plausible test count and the defect was that all six reported the same one, which no single branch carries. A worker is applying findings that are already complete, so holding discovers nothing and leaves the reviewer idle through one gate run per branch. Mirroring the reviewer's half onto the worker's is the alternative that lost, since it rests on the symmetry rather than on either reason.
 
 Reaching the right skill without loading all four is what this section is for. A session cutting branches wants `stack-ship`, a session reading them wants `stack-review`, and a session answering a handback wants `stack-address`.
 
@@ -71,7 +71,7 @@ Same staleness, inverted signal, and the silent one is the one that merges. The 
 
 `git merge-tree --write-tree <base> <head>` reports whether two trees conflict in one command, without touching the working tree and without a rebase to undo. It belongs at the start of a review rather than after a conflict surfaces.
 
-What produced it: findings were posted on the bottom branch while the branches above were still being read, the bottom was fixed inside the hour, and the branch above was then based on a commit that no longer existed at the head of its own base. The trial merge would have reported it before the first finding was written.
+The case it catches: findings post on the bottom branch while the branches above are still being read, the bottom is fixed inside the hour, and the branch above is then based on a commit that is not the head of its own base. The trial merge reports that before the first finding is written.
 
 ### A rebase leaves no way to tell it was one
 
