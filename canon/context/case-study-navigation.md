@@ -13,8 +13,6 @@ The two are not one control repeated. The bar answers at any scroll position and
 
 A third control sits in the bar beside them and is not a way home. The route's own name returns a reader to the top of the route they are reading, where both controls above leave for the landing page, so it spends none of the two-exit budget that section fixes. Below 1280 it is the only control that reaches the top of a route at all, since the rail is hidden there and the rail's first row is the only other one that does. That band is the reason it exists rather than a consequence of adding it.
 
-The foot came out on 2026-08-21 and went back the same day. Removing it rested on a measurement, that both controls sit on screen together at the foot of every route, and the measurement was right while the conclusion drawn from it was not: a control being reachable is a different question from whether the end of a long read should close on something. The operator read the removed version and reported the page ending too tight, which is the evidence the measurement could not carry. It returned left-aligned rather than at its old full width, on the edge every line of prose starts from, and the tail went from 184px above the control and 48 below to 104 above and 80.
-
 ## Layout
 
 - `src/components/site/case-study/` owns the module all six project routes load
@@ -25,6 +23,7 @@ The foot came out on 2026-08-21 and went back the same day. Removing it rested o
 - The control stays an `<a href="/">` in the markup and the module intercepts the click. A reader with no script, and a crawler, get a working link to the landing page. Rendering a `<button>` instead would trade that away for nothing.
 - Two guards decide whether the upgrade applies. The referrer has to be this origin at path `/`, which is the reader who came from the landing page, and `history.length` has to be at least two, which excludes the tab opened fresh onto the case study where an unwind would leave the site. Failing either leaves the plain link, so the fallback is the correct destination rather than a dead control.
 - A click carrying a modifier or a non-primary button passes through untouched, since the reader is asking for a new tab and the link already does that correctly.
+- The foot keeps its control although both controls sit on screen together at the foot of every route. Removing it on the strength of that measurement lost: a control being reachable is a different question from whether the end of a long read should close on something, and without it the page reads as ending too tight, which is the evidence the measurement cannot carry. The control sits left-aligned on the edge every line of prose starts from rather than at full width, which puts 104px of tail above it and 80 below where the full-width version left 184 and 48.
 
 ## Gotchas
 
@@ -40,5 +39,5 @@ The foot came out on 2026-08-21 and went back the same day. Removing it rested o
 - The bar's route name carries `[data-route-here]` and is a `<button>`, so the by-region count of way-home anchors reads one in the header and one in the footer with it present. A third exit would still fail that assertion, which is what keeps the two contracts separate rather than one counting the other's controls.
 - That button is `inert` until the route's `h1` passes behind the bar, on the same marker that fades it in. Opacity hides a control from the eye and from nothing else, so a version keyed on opacity alone leaves a tab stop and a 44px tap target sitting over the whole opening screen while painting nothing.
 - A test counts those anchors by region, one in the header and one in the footer, rather than counting two anywhere on the page. A route that grew a third in the body would satisfy a bare count of two and is the case the split assertion catches.
-- Both anchors carry a click test, and which one a test clicks is part of what it asserts. The count above catches a dropped attribute and passes over a broken `href`, so a control nothing clicks is a control nothing covers. Every way-home test briefly pointed at the bar on 2026-08-21, which left the foot with the unwind bound to it and nothing exercising it.
-- `route-foot.astro` owns the closing control for all six routes. It carries the footer landmark as well, so a route that drops the component ends with no `[data-section="footer"]` at all, which is the shape the routes shipped in for part of 2026-08-21.
+- Both anchors carry a click test, and which one a test clicks is part of what it asserts. The count above catches a dropped attribute and passes over a broken `href`, so a control nothing clicks is a control nothing covers. A suite whose every way-home test clicks the bar leaves the foot with the unwind bound to it and nothing exercising it.
+- `route-foot.astro` owns the closing control for all six routes. It carries the footer landmark as well, so a route that drops the component ends with no `[data-section="footer"]` at all.

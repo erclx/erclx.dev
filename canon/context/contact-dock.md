@@ -7,7 +7,7 @@ description: The margin control carrying contact and the resume between the hero
 
 ## Overview
 
-A control in the page's right margin carrying GitHub, LinkedIn, the address, and the resume. Lives at `src/components/site/contact-dock/contact-dock.astro` and mounts from the layout, so every surface carries it. It rendered on the landing page alone until 2026-08-20.
+A control in the page's right margin carrying GitHub, LinkedIn, the address, and the resume. Lives at `src/components/site/contact-dock/contact-dock.astro` and mounts from the layout, so every surface carries it, the landing page and every project route alike.
 
 It answers the stretch between the hero and the footer, where the destinations the hero opens with were unreachable for the whole scroll.
 
@@ -17,7 +17,7 @@ It answers the stretch between the hero and the footer, where the destinations t
 
 ## Decisions
 
-- It sits opposite the section rail, so the two margins read as a pair of controls rather than as one control and one ornament. Both now render the same ground, and the rail's arrived second: see `canon/context/section-nav.md`.
+- It sits opposite the section rail, so the two margins read as a pair of controls rather than as one control and one ornament. Both render the same ground: see `canon/context/section-nav.md`.
 - Its ground is the elevated surface token rather than the page's own, resolved from the shared values in `src/styles/global.css`. Drawn from the background it measured 1.02:1 against the page behind it, which is the defect the sticky bar had already closed before this control existed. Reading the shared declaration is what stops the two drifting again.
 - The fill is at its ceiling and cannot be pushed further. In light the elevated token is white against a page at `oklch(0.968)`, so 1.10:1 is the most a fill can separate by and this reaches 1.09:1. More separation has to come from the edge or the shadow, and the two themes disagree about which: the shadow carries light, the edge carries dark.
 - Pointing at a control adds the glow's shadow to the elevation it already carries rather than replacing it. Swapping one for the other makes a lit control appear to drop as it lights.
@@ -26,7 +26,7 @@ It answers the stretch between the hero and the footer, where the destinations t
 - The stack reverses, so the resting mark sits nearest the corner and the set grows up out of it. Rendered in order, the mark sat at the top of a group anchored to the bottom and moved every time the set opened.
 - The resting mark is an at sign rather than an envelope. The envelope is one of the destinations below it, so the control opening the set was drawn as a member of it.
 - The resume is in the dock and stays in the footer. It is the highest-intent link on a page whose job is hiring and it existed once, as the last thing on the page. It renders nearest the resting mark, so the shortest travel from the control belongs to the destination most readers came for.
-- It was built from the rail rather than beside it, and that is what found the defect in both. Copying the rail's gates copied a footer gate that had never fired: it watched a root capped to the top half of the viewport for an element sitting at the bottom of the last screen, so the condition was unreachable by construction. One reading fixed both controls. A second control built independently would have reproduced the bug instead of exposing it.
+- Its gates mirror the rail's rather than being written beside them, so reading one checks the other. A footer gate watching a root capped to the top half of the viewport, for an element sitting at the bottom of the last screen, can never fire, since the condition is unreachable by construction. A second control built independently reproduces a defect like that one, where a mirrored control exposes it in both.
 - The hero was considered as a third home for the resume and declined. The dock arrives at half the hero, so the only stretch it does not cover is the top half of the first screen, and the hero's three links are identity where a resume is a document.
 
 ## Gotchas
@@ -46,4 +46,4 @@ The dock holds to the bottom of every surface and never stands down. The footer 
 
 The rail's own footer gate came out for an unrelated reason, so the two margins arrive and leave together again. See `canon/context/section-nav.md` § Reveal gate.
 
-A claim that a gate rests on gets measured. The footer does not close with the hero's three links, contrary to what both this entry and `canon/ARCHITECTURE.md` asserted before either footer was actually read.
+A claim that a gate rests on gets measured. The footer does not close with the hero's three links, which is easy to assume and false on both surfaces once either footer is read.
