@@ -24,6 +24,11 @@ The reasoning behind Cloudflare Pages and behind deploying from Actions rather t
 - One résumé slot, in English. The page it sits on is written in English and the footer holds one link, so a second language would need a chooser before it needed a file.
 - A change to deploy config itself (redirects, headers, the Pages project settings, DNS) gets checked against a real preview or production deploy before it ships, since the e2e suite runs against a local `astro preview` and never touches the Cloudflare edge. Dispatch a preview deploy for the branch if it has none. Say so explicitly if a live check isn't possible, rather than claiming one happened.
 
+## Gotchas
+
+- A dispatch from a branch leaves a deployment that nothing retires on its own. Direct Upload means Cloudflare holds no git ref, so deleting the branch leaves both the hash host and the branch alias serving, and `wrangler@3.90.0` offers no delete for a Pages deployment. Remove one from **Workers & Pages → erclx-dev → Deployments** in the dashboard, or through the REST API, and treat it as owed by whoever fired the dispatch.
+- Both preview hosts carry `x-robots-tag: noindex` and the apex carries none, so a stale preview stays out of search results while it waits. That bounds the cost of forgetting one rather than removing it.
+
 ## Deploy job
 
 Defined in `.github/workflows/verify.yml`. Triggered on a push to `main` and on a manual dispatch from any ref, gated on the four verify jobs (`static-checks`, `unit-tests`, `build-verify`, `e2e-tests`) either way. `build-verify` is the only job that runs `bun run build`. `deploy` downloads that same `dist/` artifact rather than building its own, so the bytes every engine leg tested are the bytes that ship. See `canon/context/ci.md` for the mechanism and for why a dispatch reaches this job at all. Then:
@@ -36,21 +41,15 @@ command: pages deploy ./dist --project-name=erclx-dev --branch=${{ github.ref_na
 
 The ref supplies the branch, so only a run on `main` marks its upload as a production deployment. Every other ref goes to `<hash>.erclx-dev.pages.dev` and is not aliased to the apex, which is what lets a dispatch exercise the whole job without touching what a visitor sees.
 
-## Pruning a preview
-
-A dispatch from a branch leaves a deployment that nothing retires on its own. Direct Upload means Cloudflare holds no git ref, so deleting the branch leaves both the hash host and the branch alias serving, and `wrangler@3.90.0` offers no delete for a Pages deployment. Remove one from **Workers & Pages → erclx-dev → Deployments** in the dashboard, or through the REST API, and treat it as owed by whoever fired the dispatch.
-
-Both preview hosts carry `x-robots-tag: noindex` and the apex carries none, so a stale preview stays out of search results while it waits. That bounds the cost of forgetting one rather than removing it.
-
 ## A failed deploy on `main` reaches an inbox
 
-GitHub emails the actor when a run fails on the default branch, and that channel is confirmed working: the deploy that broke on 2026-08-24 sent its mail, and the five hours and twenty minutes it sat broken were hours the operator was asleep rather than hours nothing announced it. No notifier is wired here for that reason, and building one would add a second channel answering a question the first already answers.
+GitHub emails the actor when a run fails on the default branch, and that channel is confirmed working: a broken deploy has sent its mail, and the five hours and twenty minutes it sat broken were hours the operator was asleep rather than hours nothing announced it. No notifier is wired here for that reason, and building one would add a second channel answering a question the first already answers.
 
 What the channel cannot do is escalate. A failure arriving overnight waits for morning whatever sends it, so the number to weigh before adding anything is how long the apex can serve stale output, not how the failure is announced.
 
 ## Visitor analytics runs at the edge
 
-Cloudflare Web Analytics has tracked erclx.dev since the zone was added on 2026-04-11, on automatic setup, with EU visitors excluded under the dashboard's own toggle. The edge injects the beacon into every HTML response outside that exclusion, so no script tag lives anywhere in this repository and nothing here has to be maintained for it to keep working. It had been recording for months before the operator noticed.
+Cloudflare Web Analytics tracks erclx.dev from the zone itself, on automatic setup, with EU visitors excluded under the dashboard's own toggle. The edge injects the beacon into every HTML response outside that exclusion, so no script tag lives anywhere in this repository and nothing here has to be maintained for it to keep working, which is also why it can record for months without anyone here noticing.
 
 A fetch from a Swedish vantage point therefore carries no beacon by design rather than by defect. `erclx.dev/cdn-cgi/trace` reports `loc=SE` for that same request, which is how to tell the exclusion from a broken injection before going looking for one.
 
