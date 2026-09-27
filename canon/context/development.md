@@ -24,7 +24,9 @@ Local dev workflow for this project.
 
 For the rationale behind these choices, such as Astro over Next, the shadcn install path, font preload, and the theme toggle as static Astro, see `canon/ARCHITECTURE.md` § Key technical decisions.
 
-## What the React toolchain costs while rendering nothing
+## Decisions
+
+### The React toolchain's cost while rendering nothing
 
 No component opts into hydration. The site ships zero `client:*` directives and holds one unreferenced `.tsx` file at `src/components/ui/button.tsx`, so the React toolchain renders nothing a visitor sees. It stays anyway, because an interactive surface is a plausible next increment and standing the integration back up costs more than carrying it does. `canon/ARCHITECTURE.md` § Key technical decisions holds that call. What belongs here is the bill.
 
@@ -34,9 +36,57 @@ Four more sit behind them and bring the real count to fourteen. `class-variance-
 
 Count the fourteen rather than the ten when weighing a removal. The smaller number reads low against a decision that has been reopened once, and a session auditing the tree without this paragraph proposes removing the toolchain. Measured on 2026-08-15.
 
-## New domain folders
+### What an end-to-end run costs
 
-A diff adding a new top-level folder under `src/` drafts that domain's `canon/context/<domain>.md` entry at ship time, per the context standard (`canon standards context`). `claude-docs` only refreshes an entry that already exists and never creates one on its own.
+Scope and engines look like two ways to make a run cheaper and only one of them is. Measured on this suite, the full 273 tests run on chromium alone in about 1.9 minutes and 811 across all three engines in about 3.5, so three times the tests cost less than double the wall clock. Locally the engines fill workers that were otherwise idle.
+
+What costs is the serial chain inside one spec, since `fullyParallel` is off. `e2e/cast.spec.ts` holds several full-field captures, and `e2e/cast-scheduler.spec.ts` holds the one scheduler test that needs a browser, the tap gate, split out of it and running about 11 seconds an engine. The other scheduler policies are fake-clock unit tests. `canon/context/ci.md` § The worker cap was raised twice and rejected twice carries why the split was made: CI pins `workers` to 1, where the two files run back to back on the one worker regardless of the split, and the seam let the scheduler tests be converted off a wall clock on their own.
+
+Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/canon/lib/306-test-scope.md` states the resulting directive, and `canon/context/ci.md` § The e2e job is a matrix over the three engines the config defines carries why the matrix exists at all.
+
+Turning `fullyParallel` on was measured rather than assumed. It took the full run from about 3:30 to 2:49 and failed two webkit tests, both timing assertions: more contexts on one machine is less processor each, and a reveal stagger read against a wall clock came back at zero. A fifth off the clock does not pay for a suite reporting failures nobody caused.
+
+A question about the running page is answered faster by a script against `bun run dev` than by any suite invocation, since that path pays no build. The suite rebuilds the site and starts a fresh server on every run, because `webServer` runs `bun run build` under `reuseExistingServer: false`.
+
+### Playwright MCP over a static capture
+
+`.mcp.json` registers `@playwright/mcp@latest`. Reach for it when the question needs the page driven rather than photographed: a hover, a click, a viewport change, or a computed style read back off a live element. Reach for `bun run screenshot` when the question is what a surface looks like at rest, which covers layout review and diffing rendered content against the canonical source it came from.
+
+The split matters because the two answer different questions and the static path is far cheaper. A capture that has to be driven into position is the signal to switch, not a reason to add a step to the capture script.
+
+### The device harness's two flags
+
+`DEVICE_MODE=dev` serves the dev server instead of the build. The scenario harness in `src/components/dev/` is gated on `import.meta.env.DEV` and leaves the production tree, so an interactive decision served through it is unreachable from a built page and can only be judged on the machine running it. That is the whole reason the flag exists, and the build stays the default because it is what a visitor receives.
+
+`DEVICE_PATHS` takes a comma-separated list and renders one code per entry. A comparison served as several arms needs one code each, since a query string typed by hand on a tablet is where a live comparison stops being worth running.
+
+```bash
+DEVICE_MODE=dev DEVICE_PATHS="/?arm=0,/?arm=1" bun run device
+```
+
+The dev server serves device work. Astro resolves an optimized image through an endpoint reading the file off disk by absolute path under Vite's `/@fs/` prefix, and against the current Astro and Vite over the LAN address, and again with a foreign `Host` header, which is what a device arriving through the Windows forward actually sends, both the page and an optimized image return 200 with `content-type: image/webp`.
+
+Read that as a server-side reading rather than a browser one. A device still losing its images is the reading that wins, and the flag is opt-in partly for that reason.
+
+## Gotchas
+
+### Reproduce a suite failure against the suite's own target
+
+The Playwright config's `webServer` runs `bun run build` and serves the result with `astro preview`, so the suite exercises the built output rather than the dev server. A probe written to reproduce a suite failure has to point at that preview, not at `bun run dev`.
+
+The two differ in ways that decide whether a defect appears at all. The dev server delivers styles through the Vite client, where the built page links a stylesheet, so any timing that depends on when CSS applies exists only in the build. A startup-measurement defect of that kind reproduces on every run against the preview and never against dev, so a probe aimed at dev reports it fixed when it is not.
+
+Start the preview on the same band the config uses, `4250` plus the worktree offset, and pass its address to the probe.
+
+Write the probe into `e2e/` and delete it when the question is answered. Playwright's `testDir` is that folder, so a spec anywhere else is reported as no tests found, and the scratch location `CLAUDE.md` directs temporary files to is worse than useless here: vitest globs `.canon/tmp/`, so a Playwright spec parked there is collected by `bun run test:run` and fails the whole `check` on a `test.use()` call outside a Playwright runner. The two rules contradict each other on this one file type and the test folder is the side that works.
+
+A suite failure reproduced under the full run and not alone is contention rather than a defect. Re-run the failing spec files on their own engine before classifying one, since the full three-engine run loads the machine enough that image-loading assertions time out while passing in isolation.
+
+### A search that comes back empty against a file that should match
+
+A raw NUL byte anywhere in a source file makes every text tool classify the whole file as binary, so a search returns an honest empty result against a file holding exactly what was searched for. Nothing reports the cause, and the natural next move is to doubt the search term rather than the file.
+
+Check for one whenever a search comes back empty against a file that should not be empty, before rewriting the pattern a third time.
 
 ## Setup
 
@@ -71,18 +121,6 @@ A diff adding a new top-level folder under `src/` drafts that domain's `canon/co
 | `bun run test:e2e:changed` | Run the specs the import graph ties to the working tree, across every engine.                                          |
 | `bun run screenshot`       | Build, preview, then capture screenshots. Pass `SCREENSHOT_FILTER=<term>[,<term>]` to limit capture to named surfaces. |
 
-## What an end-to-end run costs
-
-Scope and engines look like two ways to make a run cheaper and only one of them is. Measured on this suite, the full 273 tests run on chromium alone in about 1.9 minutes and 811 across all three engines in about 3.5, so three times the tests cost less than double the wall clock. Locally the engines fill workers that were otherwise idle.
-
-What costs is the serial chain inside one spec, since `fullyParallel` is off. `e2e/cast.spec.ts` holds several full-field captures, and `e2e/cast-scheduler.spec.ts` holds the one scheduler test that needs a browser, the tap gate, split out of it and running about 11 seconds an engine. The other scheduler policies are fake-clock unit tests. `canon/context/ci.md` § The worker cap was raised twice and rejected twice carries why the split was made: CI pins `workers` to 1, where the two files run back to back on the one worker regardless of the split, and the seam let the scheduler tests be converted off a wall clock on their own.
-
-Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/canon/lib/306-test-scope.md` states the resulting directive, and `canon/context/ci.md` § The e2e job is a matrix over the three engines the config defines carries why the matrix exists at all.
-
-Turning `fullyParallel` on was measured rather than assumed. It took the full run from about 3:30 to 2:49 and failed two webkit tests, both timing assertions: more contexts on one machine is less processor each, and a reveal stagger read against a wall clock came back at zero. A fifth off the clock does not pay for a suite reporting failures nobody caused.
-
-A question about the running page is answered faster by a script against `bun run dev` than by any suite invocation, since that path pays no build. The suite rebuilds the site and starts a fresh server on every run, because `webServer` runs `bun run build` under `reuseExistingServer: false`.
-
 ## Visual verification
 
 Keep `bun run dev` running in the background during landing-page sessions so changes are visible at http://localhost:4321 as they land.
@@ -103,11 +141,7 @@ Keep `bun run dev` running in the background during landing-page sessions so cha
 
 For the capture model and its output path, see `canon/context/ci.md`.
 
-### Playwright MCP over a static capture
-
-`.mcp.json` registers `@playwright/mcp@latest`. Reach for it when the question needs the page driven rather than photographed: a hover, a click, a viewport change, or a computed style read back off a live element. Reach for `bun run screenshot` when the question is what a surface looks like at rest, which covers layout review and diffing rendered content against the canonical source it came from.
-
-The split matters because the two answer different questions and the static path is far cheaper. A capture that has to be driven into position is the signal to switch, not a reason to add a step to the capture script.
+For when to drive the page instead of capturing it, see § Playwright MCP over a static capture.
 
 ## Serving to a real device
 
@@ -123,19 +157,7 @@ Three things the script cannot settle. A VPN on the phone may route local addres
 
 A public tunnel was the alternative and is not installed. It needs no administrator and works from any network, which is genuinely better on both counts, but it puts the dev site on an address anyone holding the link can load, and it needs the Vite host check widened to accept a hostname that changes every run. The forward keeps the page on the local network, where a portfolio still under construction belongs.
 
-### Two flags, and the reason each exists
-
-`DEVICE_MODE=dev` serves the dev server instead of the build. The scenario harness in `src/components/dev/` is gated on `import.meta.env.DEV` and leaves the production tree, so an interactive decision served through it is unreachable from a built page and can only be judged on the machine running it. That is the whole reason the flag exists, and the build stays the default because it is what a visitor receives.
-
-`DEVICE_PATHS` takes a comma-separated list and renders one code per entry. A comparison served as several arms needs one code each, since a query string typed by hand on a tablet is where a live comparison stops being worth running.
-
-```bash
-DEVICE_MODE=dev DEVICE_PATHS="/?arm=0,/?arm=1" bun run device
-```
-
-The dev server serves device work. Astro resolves an optimized image through an endpoint reading the file off disk by absolute path under Vite's `/@fs/` prefix, and against the current Astro and Vite over the LAN address, and again with a foreign `Host` header, which is what a device arriving through the Windows forward actually sends, both the page and an optimized image return 200 with `content-type: image/webp`.
-
-Read that as a server-side reading rather than a browser one. A device still losing its images is the reading that wins, and the flag is opt-in partly for that reason.
+`DEVICE_MODE` and `DEVICE_PATHS` choose what the harness serves, and § The device harness's two flags carries why each exists.
 
 ### A code a session hands over is an image, not blocks
 
@@ -152,7 +174,7 @@ Some decisions cannot be settled from a capture or a recording, since both are p
 - It is unreferenced by default, since it is scaffolding a visual decision reaches for and removes again, and a branch with no open visual decision holds no call site.
 - An unreferenced component is only safe while something tells a session it exists. The `visual-batch` skill names it explicitly rather than leaving discovery to a tree search, which is the arrangement to preserve if either side moves.
 
-`DEVICE_MODE=dev` above exists to get these arms onto a real device, since a production build leaves the whole harness out.
+`DEVICE_MODE=dev`, under § The device harness's two flags, exists to get these arms onto a real device, since a production build leaves the whole harness out.
 
 ## Reading a link preview without pasting one
 
@@ -164,23 +186,9 @@ Read a sheet as evidence about this card and never as a screenshot of that app. 
 
 The apex is where it pays. Every host except LinkedIn renders the description beside the card image, so a description repeating the title prints one sentence twice in a single unfurl. The five route pages carry their own descriptions and never hit it. `src/test/rendered-copy.test.ts` guards the description against the title and against the line the card draws.
 
-## Reproduce a suite failure against the suite's own target
+## Adding a domain folder
 
-The Playwright config's `webServer` runs `bun run build` and serves the result with `astro preview`, so the suite exercises the built output rather than the dev server. A probe written to reproduce a suite failure has to point at that preview, not at `bun run dev`.
-
-The two differ in ways that decide whether a defect appears at all. The dev server delivers styles through the Vite client, where the built page links a stylesheet, so any timing that depends on when CSS applies exists only in the build. A startup-measurement defect chased on 2026-08-19 reproduced on every run against the preview and never once against dev, and several probe cycles were spent on the wrong target before that was noticed.
-
-Start the preview on the same band the config uses, `4250` plus the worktree offset, and pass its address to the probe.
-
-Write the probe into `e2e/` and delete it when the question is answered. Playwright's `testDir` is that folder, so a spec anywhere else is reported as no tests found, and the scratch location `CLAUDE.md` directs temporary files to is worse than useless here: vitest globs `.canon/tmp/`, so a Playwright spec parked there is collected by `bun run test:run` and fails the whole `check` on a `test.use()` call outside a Playwright runner. The two rules contradict each other on this one file type and the test folder is the side that works.
-
-A suite failure reproduced under the full run and not alone is contention rather than a defect. Re-run the failing spec files on their own engine before classifying one, since the full three-engine run loads the machine enough that image-loading assertions time out while passing in isolation.
-
-## A search that comes back empty against a file that should match
-
-A raw NUL byte anywhere in a source file makes every text tool classify the whole file as binary, so a search returns an honest empty result against a file holding exactly what was searched for. Nothing reports the cause, and the natural next move is to doubt the search term rather than the file.
-
-Check for one whenever a search comes back empty against a file that should not be empty, before rewriting the pattern a third time.
+A diff adding a new top-level folder under `src/` drafts that domain's `canon/context/<domain>.md` entry at ship time, per the context standard (`canon standards context`). `claude-docs` only refreshes an entry that already exists and never creates one on its own.
 
 ## Shell scripts
 
@@ -189,5 +197,5 @@ All `.sh` files live under `scripts/`. Do not place shell scripts outside `scrip
 ## Husky hooks
 
 - `pre-commit` runs `lint-staged`. ESLint and prettier auto-fix `.astro`, `.tsx`, `.ts`, `.jsx`, `.js` files. Prettier and cspell run on `.json`, `.css`, `.md`, `.mdc`. shfmt and shellcheck run on `.sh`.
-- `commit-msg` runs `commitlint` against the conventional commit format.
+- `commit-msg` runs `commitlint` against the conventional commit format. `commitlint.config.js` also enforces `no-claude-co-author`, which rejects a message carrying a co-author trailer that credits Claude or Anthropic.
 - `pre-push` runs `bun run check`. After pushing, run `git status`. If files changed, commit the diff as `style(<scope>):` and push again.
