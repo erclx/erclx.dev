@@ -1,25 +1,21 @@
 ---
 title: Experience
-description: The paragraph on the Volvo work, and the career timeline that carries them into the projects section
+description: The career timeline, with the Volvo work on its own beat, that carries the reader into the projects section
 ---
 
 # Experience
 
-Appears between the about surface and the projects section. Opens on one paragraph on the Volvo work, then renders the career story as a single commit rail rather than as a list beside a diagram.
+Appears between the about surface and the projects section. Opens on its heading and renders the career story as a single commit rail rather than as a list beside a diagram.
 
 Renamed from `Origin` on 2026-08-17, because the section holds two degrees and a job rather than where the person is from. Origin in the ordinary sense is what the about surface now carries.
 
-A display heading opens it, matching the about, projects, and looking-for headings so a reader scanning for a section finds all four at the same weight. The paragraph follows in body prose, then a row of employer marks, and below them a vertical rail runs down the gutter with one dot per beat sitting on it. The newest beat carries a row of chips naming the artifacts it produced.
+A display heading opens it, matching the about, projects, and looking-for headings so a reader scanning for a section finds all four at the same weight. A row of employer marks follows it, and below them a vertical rail runs down the gutter with one dot per beat sitting on it. The newest beat carries a row of chips naming the artifacts it produced.
 
 ## Desktop (≥768px)
 
 ```plaintext
 Experience
   ← display heading, same weight as Projects
-
-For 18 months at Volvo Technology I built an agent that let test
-  engineers ask for plots and figures from their logged data...
-  ← one body paragraph, muted
 
 Where that happened
   ← label-size eyebrow, muted
@@ -28,7 +24,10 @@ Where that happened
   ← employer marks, one tone, sized so each reads rather than matching heights
 
  dec 2025 to        ●  independent projects, open to work
- present            │     ( canon ) ( Jobtriage ) ( annex ) ( Stackr ) ( Caret )
+ present            │     Building my own AI agents and developer tools.
+                    │     Everything below runs on canon, my setup for
+                    │     working with coding agents.
+                    │     ( canon ) ( Jobtriage ) ( annex ) ( Stackr ) ( Caret )
                     │
  sep to dec 2025    ○  learning react and typescript
                     │     Worked through The Odin Project’s full-stack
@@ -36,8 +35,11 @@ Where that happened
                     │     that December.
                     │
  jan 2024 to        ○  volvo technology, gothenburg
-                    │     Presented at Generative AI for Automotive USA 2024,
-                    │     an industry conference in Ann Arbor.
+                    │     Built an agent that let test engineers get plots
+                    │     and figures from their truck test data by asking
+                    │     in plain language, ... Presented it at Generative
+                    │     AI for Automotive USA 2024, an industry conference
+                    │     in Ann Arbor.
                     │
  jun to aug 2023    ○  internship at bac ha software, hanoi
                     │     ...
@@ -94,7 +96,7 @@ The span column folds into the reading column and leads its own beat, still at l
 - A span carries months rather than a year alone, because a year read as twelve months of work where the record held six. The newest beat holds `dec 2025 to present` for the same reason: a bare `2026` said less than every row under it on a list whose spans carry months.
 - A head names the employer and its city, and states no duration. The span column beside it already carries the length, so a head restating it puts the same fact on one row twice. Both job beats led on a duration until 2026-08-20 and both gave it up together, which is what keeps them reading as a pair.
 - The two job beats name a city and the two degree beats name the university. What a beat leads on is what a reader scanning the column compares, so a beat that drops the pattern reads as a different kind of row rather than as a shorter one.
-- The paragraph above states the Volvo work and nothing of the schooling, which the timeline carries in its two degree beats. The section leads on what gets built.
+- The Volvo work sits on its own beat rather than in a paragraph above the list. A paragraph opened the section until 2026-09-27, when the career source moved its substance onto the beat, so the section now leads on the timeline itself.
 - One row is highlighted at a time as the "current state" anchor. The first row is highlighted by default. Hovering another row transfers the highlight to it. On leaving the list the highlight walks back row by row to the first row.
 - The walk lingers on the row the reader chose and gathers pace as it returns, because what it shows is a row being let go of rather than another being traveled to.
 - The highlighted dot fills with the warm accent and carries a soft ring, so one warm point marks where the reader is on a timeline that is otherwise muted. The rail marker in `section-nav.md` states position the same way and takes the same color.

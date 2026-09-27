@@ -103,10 +103,10 @@ function beatsNamed(name: string): Element[] {
 }
 
 describe('the footer', () => {
-  it('states how the page was made', () => {
-    expect(textOf(home, FOOTER)).toContain(
-      'Built with coding agents, which is also the work',
-    )
+  it('carries no colophon', () => {
+    expect(textOf(home, FOOTER)).toMatch(/Updated [A-Z][a-z]+ \d{4}/)
+
+    expect(textOf(home, FOOTER)).not.toContain('Built with coding agents')
   })
 
   it('states when the page was last deployed', () => {
@@ -163,6 +163,12 @@ describe('a shared link', () => {
     expect(title).not.toContain(opener)
 
     expect(description.length).toBeLessThanOrEqual(DESCRIPTION_CEILING)
+  })
+
+  it('carries the source description on the landing page', () => {
+    expect(meta(home, 'meta[name="description"]')).toBe(
+      'Eric Le, AI engineer in Gothenburg who builds AI agents, and the projects behind that.',
+    )
   })
 
   it.each(ROUTES)(
@@ -230,12 +236,16 @@ describe('the header', () => {
 })
 
 describe('the about surface', () => {
-  it('reads as personal rather than professional', () => {
-    const about = textOf(home, '[data-section="about"]')
+  it('introduces the person before the work', () => {
+    expect(textOf(home, '[data-section="about"]')).toContain(
+      "I'm Eric, an AI engineer in Gothenburg.",
+    )
+  })
 
-    expect(about).toContain('I play guitar')
-    expect(about).not.toContain('agents')
-    expect(about).not.toContain('Volvo')
+  it('closes on one thing that is not work', () => {
+    expect(textOf(home, '[data-section="about"]')).toContain(
+      'Outside of work I do calisthenics, play tennis, and travel whenever I can.',
+    )
   })
 })
 
@@ -267,12 +277,24 @@ describe('the landing page', () => {
 })
 
 describe('the experience section', () => {
-  it('carries the Volvo paragraph and no claim', () => {
+  it('opens on the timeline with no paragraph above it', () => {
     const experience = textOf(home, '#experience')
 
-    expect(experience).toContain('For 18 months at Volvo Technology')
-    expect(experience).toContain('lost track of its task within a few steps')
+    expect(experience).toContain('volvo technology, gothenburg')
+    expect(experience).not.toContain('For 18 months at Volvo Technology')
     expect(experience).not.toContain('the layer between a language model')
+  })
+
+  it('carries the canon line on the current beat', () => {
+    const current = queryAll(home, '#experience ol > li[aria-current="step"]')
+
+    expect(current).toHaveLength(1)
+    expect(
+      current.flatMap((beat) => queryAll(beat, '.experience-detail')),
+    ).toHaveLength(1)
+    expect(textOf(home, '#experience')).toContain(
+      'Everything below runs on canon, my setup for working with coding agents.',
+    )
   })
 
   it('renders one entry per beat', () => {
@@ -290,13 +312,19 @@ describe('the experience section', () => {
     ).toBeGreaterThan(0)
   })
 
-  it('carries the conference line on the Volvo beat', () => {
+  it('carries the agent and the conference on the Volvo beat', () => {
     const volvoBeats = beatsNamed('volvo technology')
 
     expect(volvoBeats).toHaveLength(1)
     expect(
       volvoBeats.flatMap((beat) => queryAll(beat, '.experience-detail')),
     ).toHaveLength(1)
+    expect(textOf(home, '#experience')).toContain(
+      'Built an agent that let test engineers get plots and figures from their truck test data',
+    )
+    expect(textOf(home, '#experience')).toContain(
+      'Presented it at Generative AI for Automotive USA 2024',
+    )
   })
 
   it('marks every entry on the rail', () => {
@@ -430,6 +458,12 @@ describe('the projects section', () => {
     expect(card(0)).toContain('@erclx/canon')
   })
 
+  it('renders the description the source carries on the canon card', () => {
+    expect(card(0)).toContain(
+      'plan first, build in parallel, review separately, and I decide what merges',
+    )
+  })
+
   it('carries the overlay that opens its route on every card', () => {
     const cards = queryAll(home, CARD_SELECTOR)
     const overlays = queryAll(home, `${CARD_SELECTOR} a[aria-hidden="true"]`)
@@ -440,7 +474,7 @@ describe('the projects section', () => {
 
   it('renders the description the source carries on the Jobtriage card', () => {
     expect(card(1)).toContain(
-      'A job-search application that triages Swedish ads against a profile',
+      'A job-search agent: describe what you want, and it shows the ads that fit, each with a reason. Live to try, and its page has the retrieval numbers.',
     )
   })
 
@@ -462,6 +496,12 @@ describe('the projects section', () => {
     )
   })
 
+  it('renders the description the source carries on the annex card', () => {
+    expect(card(2)).toContain(
+      'retrieval cost about a seventh as much and showed exactly which text it used',
+    )
+  })
+
   it('opens the annex route from its card', () => {
     expect(queryAll(home, '#projects a[href="/annex"]').length).toBeGreaterThan(
       0,
@@ -477,6 +517,20 @@ describe('the projects section', () => {
     expect(
       queryAll(home, '#projects a[href="/diction"]').length,
     ).toBeGreaterThan(0)
+  })
+})
+
+describe('the closing ask', () => {
+  it('names what the source says to build', () => {
+    expect(textOf(home, '#looking-for')).toContain(
+      'AI agents and LLM applications, developer tools, full-stack products',
+    )
+  })
+
+  it('names the team the source asks for', () => {
+    expect(textOf(home, '#looking-for')).toContain(
+      'small to mid, close to the product, with engineers to learn from',
+    )
   })
 })
 

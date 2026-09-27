@@ -19,8 +19,8 @@ The section pairs a display heading with the availability status and four short 
                                                    ( ᴥ )    ← character perched on the contour
    ‿‿⁀‿‿‿⁀‿‿‿‿‿⁀‿‿‿⁀‿‿‿‿‿⁀‿‿‿⁀‿‿‿‿‿⁀‿‿‿⁀‿‿‿‿⁀‿‿‿‿‿    ← drawn contour at the text measure
 
-   What I want to build   AI tools, developer products, full-stack applications
-   Team                   small to mid, close to the product
+   What I want to build   AI agents and LLM applications, developer tools, full-stack products
+   Team                   small to mid, close to the product, with engineers to learn from
    Where                  Sweden, Gothenburg preferred, remote
    Terms                  full-time or contract
 ```

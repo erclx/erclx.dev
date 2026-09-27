@@ -30,16 +30,15 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `canon/
 ┌──────────────────────────────────────────────────────────┐
 │ [header band, shader field, fading into the page below]  │  ← runs edge-to-edge, full height
 │   Eric Le                                 [theme toggle] │  ← name at its own tier
-│   I build AI tools, mostly ones I needed myself first.    │
+│   I build AI agents, and I measure them                  │
+│   before I trust them.                                   │
 │   [GitHub] [LinkedIn] [me@erclx.dev]      [portrait]     │
 │                                                          │  ← no rule; the band dissolves
 │   About me                                               │
 │                                                          │
-│   [one body paragraph, prose only]                        │
+│   [two body paragraphs, prose only]                       │
 │                                                          │
 │   Experience                                             │
-│                                                          │
-│   [one body paragraph, the Volvo work]                    │
 │                                                          │
 │   Where that happened                                    │
 │   ( ⬤ VOLVO )   ( BAC HA )   ( CHALMERS )                │
@@ -65,17 +64,18 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `canon/
 │   Looking for                                            │
 │   ● Open to work                             ( ᴥ )       │  ← status anchors it, character on the rule
 │   ────────────────────────────────────────────────────   │  ← the page's one rule
-│   What I want to build  AI tools, developer products,    │
-│                         full-stack applications          │
-│   Team                  small to mid, close to product   │
+│   What I want to build  AI agents and LLM applications,  │
+│                         developer tools, full-stack      │
+│                         products                         │
+│   Team                  small to mid, close to the       │
+│                         product, with engineers to learn │
+│                         from                             │
 │   Where                 Sweden, Gothenburg preferred,    │
 │                         remote                           │
 │   Terms                 full-time or contract            │
 │                                                          │
 │              (handwritten signature)                     │  ← no rule above it
-│   📎 Résumé      Designed and built with coding agents,  │
-│                  which is also the work.                 │
-│                  Updated August 2026                     │
+│   📎 Résumé                      Updated August 2026     │
 └──────────────────────────────────────────────────────────┘
 ```
 
