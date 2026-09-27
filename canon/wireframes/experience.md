@@ -17,7 +17,7 @@ A display heading opens it, matching the about, projects, and looking-for headin
 Experience
   ← display heading, same weight as Projects
 
-Where that happened
+Where I've worked and studied
   ← label-size eyebrow, muted
 
 ( ⬤ VOLVO )    ( BAC HA )    ( CHALMERS )
@@ -128,7 +128,7 @@ Below 1280 the section carries none. Both margins measure zero there, which is t
 
 ## Employer marks
 
-A row of three marks sits between the prose and the timeline under a muted `Where that happened` label. The section states two degrees and two jobs in text alone, so recognition arrives only after a line has been read, and the marks carry it in a glance.
+A row of three marks sits between the prose and the timeline under a muted `Where I've worked and studied` label. The section states two degrees and two jobs in text alone, so recognition arrives only after a line has been read, and the marks carry it in a glance.
 
 They sit above the timeline rather than on the beats themselves. Only some beats would carry a mark, and a list where some rows are illustrated and others are not reads as a ranking between them rather than as a record.
 

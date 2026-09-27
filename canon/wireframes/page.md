@@ -39,7 +39,7 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `canon/
 │                                                          │
 │   Experience                                             │
 │                                                          │
-│   Where that happened                                    │
+│   Where I've worked and studied                          │
 │   ( ⬤ VOLVO )   ( BAC HA )   ( CHALMERS )                │
 │                                                          │
 │   dec 2025 to present  ●  independent projects, open to work │

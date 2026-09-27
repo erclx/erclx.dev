@@ -674,30 +674,6 @@ test('the availability dot renders no pulse halo under reduced motion', async ({
   expect(halo.animationName).toBe('none')
 })
 
-test('the projects lede runs the full width of the grid under it', async ({
-  page,
-}) => {
-  // Above lg, where the projects column breaks out to 1024 and every other
-  // section stays at 768. Below it all four columns agree and the assertion
-  // would hold whatever the lede declared.
-  await page.setViewportSize({ width: 1440, height: 900 })
-  await page.goto('/')
-
-  const widths = await page.evaluate(() => {
-    const read = (selector: string) => {
-      const element = document.querySelector(selector)
-      if (!element) throw new Error(`no element for ${selector}`)
-      return Math.round(element.getBoundingClientRect().width)
-    }
-    return {
-      lede: read('#projects p'),
-      grid: read('#projects .grid'),
-    }
-  })
-
-  expect(widths.lede).toBe(widths.grid)
-})
-
 // The band between a phone and the old breakpoint, where the rail used to be
 // switched off outright. 767 is the last width that took the flat stack and 620
 // sits inside the range the operator read it at.

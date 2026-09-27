@@ -38,7 +38,7 @@ The header lost the role, the headline, and the location on 2026-08-17. The clai
 
 ## Project cards
 
-- A visitor sees a card for each shipped artifact the author chooses to feature rather than the fixed roster the MVP named, so a newly shipped project can earn a card without a scope change. A shipped project may go without one, as diction does, and its route is then reached from the projects intro
+- A visitor sees a card for each shipped artifact the author chooses to feature rather than the fixed roster the MVP named, so a newly shipped project can earn a card without a scope change. A shipped project may go without a card and without any link from the landing page, as diction does, and its route is then reached by its URL alone
 - Every card carries a still of the artifact rather than a logo or an icon
 - Every card links to wherever a reader installs or opens the artifact, which differs per project
 
@@ -50,7 +50,7 @@ The header lost the role, the headline, and the location on 2026-08-17. The clai
 - That reason is the author's to give. A session may carry one he has already written elsewhere on the site and may not draft a new one, which is the same constraint the about surface carries and for the same reason
 - Each route answers for one project only. A second project earns a second route rather than a section inside the first
 - A route carries the demo the project card can only show small. A card renders its still at 498px against a 1280px recording, where a route reaches 896px and 1216px
-- The landing page stays the entry point, and a route is reached from the project card that owns it or, for a project with no card, from a sentence in the landing page's prose
+- The landing page stays the entry point, and a route is reached from the project card that owns it. A project with no card, which today is diction, gets no landing-page link either, and its route is reached by its URL
 - The label is `Project` on every route and every card link, never `Case study`, which promises measured results that two of the six routes do not have and should not invent
 
 ## Tech stack

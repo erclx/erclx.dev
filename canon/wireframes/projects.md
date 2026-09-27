@@ -5,7 +5,7 @@ description: Below the experience timeline. Shipped tools as unboxed cards, one 
 
 # Projects
 
-Appears below the experience timeline, with about and experience between it and the header. Lists shipped tools as cards, one per shipped project, each linking to the route that project owns. One sentence opens the section under the heading, and no line counts the cards.
+Appears below the experience timeline, with about and experience between it and the header. Lists shipped tools as cards, one per shipped project, each linking to the route that project owns. The section opens straight onto the cards and closes on the last one, and no line counts the cards.
 
 A card carries no outline. Its still, its heading, and its link row sit on the page ground, and the gutter between two cards is what separates them. The dotted frames below mark where a card's bounds fall and are not drawn on the page.
 
@@ -14,9 +14,6 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 ```plaintext
 ┌──────────────────────────────────────────────────────────┐
 │   Projects                                               │  ← serif heading, aligned with the grid
-│                                                          │
-│   One more lives at /diction, a pronunciation trainer    │  ← opening sentence, at the page measure
-│   that scores each sound ...                             │
 │                                                          │
 │   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐    │
 │     ┌──────────────────────────────────────────────┐     │  ← media slot, still with optional hover video
@@ -47,9 +44,6 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 ┌────────────────────────────────────────────────────────────────────┐
 │   Projects                                                         │
 │                                                                    │
-│   One more lives at /diction, a pronunciation trainer that scores each sound against a native     │  ← the opening sentence runs the full grid width, and is the only link to that route, which has no card
-│   distribution ...                                                                                │
-│                                                                    │
 │  01 ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐ 02       │  ← numerals hang into the outer margin
 │       canon                       Jobtriage                        │
 │     └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘   └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘          │
@@ -69,9 +63,9 @@ A card carries no outline. Its still, its heading, and its link row sit on the p
 
 ## Behavior
 
-- One line opens the section under its heading, saying that these came out of the author's own work and that each carries a page of its own. It landed on 2026-08-22, into the only section on the page that had opened straight onto its content. A count opened it until 2026-08-14 and came out because a number small enough to count is one to leave unstated.
-- That line runs the full width of the grid beneath it, on the operator's call of 2026-09-21. It ran at the page measure before that, level with the opening paragraphs of about, experience and the closing ask, which left it short of the cards and read as unfinished beside them. The longer line and its closing word are the cost.
-- That line names the routes rather than sorting the cards by what they can prove. Every project owns one, which is what stops a card with a live link and a card without reading as a ranking, and a route is otherwise reachable only by clicking a card's name. A draft splitting the cards on which carry measured results was rejected on both counts, the second being that it was false: all six shipped projects have a route.
+- The section opens straight onto the cards. An intro sentence under the heading carried the link to diction until 2026-09-28, and a count opened it until 2026-08-14, which came out because a number small enough to count is one to leave unstated.
+- diction has no card and no link anywhere in the section, by the operator's call of 2026-09-28. Its route stays built and is reached by its URL alone.
+- Every project owns a route, which is what stops a card with a live link and a card without reading as a ranking. A draft splitting the cards on which carry measured results was rejected on both counts, the second being that it was false: all six shipped projects have a route.
 - Cards stack in document order. No filtering and no sorting.
 - Every card owns a route and opens it from anywhere on the card. The card name is the link that says so, which is also the one a keyboard reaches: the full-card link is hidden from assistive technology and held out of the tab order.
 - The links inside a card keep their own destinations, including on a card that opens as a whole.

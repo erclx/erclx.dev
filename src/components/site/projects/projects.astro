@@ -109,20 +109,10 @@ const projects = [
     >
       Projects
     </h2>
-    {/* The section opened straight onto the grid, which was the only one on the
-        page with no line under its heading. A count opened it until 2026-08-14
-        and came out because a number small enough to count is one to leave
-        unstated, and nothing replaced it.
-
-        The second sentence names the routes rather than sorting the cards by
-        what they can prove. Every project owns one, which is what stops a card
-        with a live link and a card without reading as a ranking. A route is
-        reached by clicking a card's name, except diction, which has no card
-        and is reached from the link in the third sentence. */}
-    <p data-fade class="text-muted-foreground text-body mt-6">
-      One more lives at <a href="/diction" class="text-foreground underline underline-offset-4">/diction</a>, a pronunciation trainer that scores each sound
-      against a native distribution and reports how often it is wrong.
-    </p>
+    {/* The section opens straight onto the grid and closes on its last card.
+        A route is reached by clicking a card's name, and diction, which has no
+        card, has no link on this page either: its route stays built and is
+        reached by its URL alone. */}
     {/* The gutter carries the separation the plate used to. It also has to
         clear the halo a hover raises: at a 24px gutter the halo's own box
         reached the neighboring card exactly, and its shadow crossed about
