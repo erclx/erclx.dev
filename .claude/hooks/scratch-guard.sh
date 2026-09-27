@@ -48,14 +48,14 @@ session=$(printf '%s' "$input" | jq -r '.session_id // "none"')
 key=$(printf '%s' "$session" | tr -c 'A-Za-z0-9' '_')
 project="${CLAUDE_PROJECT_DIR:-.}"
 if [ -d "$project/.canon" ]; then
-  marker_dir="$project/.canon/tmp/scratch-guard"
+  marker_dir="$project/.canon/tmp/hooks/scratch-guard"
 else
-  marker_dir="$project/.claude/.tmp/scratch-guard"
+  marker_dir="$project/.claude/.tmp/hooks/scratch-guard"
 fi
 marker="$marker_dir/$key"
 [ -f "$marker" ] && exit 0
 mkdir -p "$marker_dir"
 : >"$marker"
 
-msg='Temporary file write outside the project scratch folder. Write temp files to .canon/tmp/<slug>/ in the project root, or .claude/.tmp/<slug>/ where the project carries no .canon/ root, not system temp. See the Scratch rule (055-scratch, under core/ in your installed governance rules).'
+msg='Temporary file write outside the project scratch folder. Write temp files to .canon/tmp/<slug>/ in the project root, or .claude/.tmp/<slug>/ where the project carries no .canon/ root, not system temp. See the Scratch rule (604-scratch, under canon/ in your installed governance rules).'
 jq -nc --arg msg "$msg" '{hookSpecificOutput:{hookEventName:"PreToolUse",additionalContext:$msg}}'
