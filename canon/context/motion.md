@@ -15,14 +15,16 @@ How the landing page's scroll-triggered animation works. Layout and interaction 
 - `src/styles/` owns the fade-and-rise and the bar shape-transition declarations every surface here resolves
 - `e2e/` owns the reveal-selector inventory and the lazy-image walk that waits on what the observer marks
 
-## Traveling to a target
+## Decisions
+
+### Traveling to a target
 
 - The root declares `scroll-behavior: smooth` under `prefers-reduced-motion: no-preference`, and every control that scrolls resolves it rather than naming a behavior. That covers the rail, the bar's home control, and the timeline chips, which had answered the same question three different ways. `canon/ARCHITECTURE.md` § One declaration decides how the page travels states the principle, and this entry carries the reasoning and what it cost.
 - The curve is the engine's. CSSOM-View requires the smooth scroll and defines no timing function, so there is nothing here to tune and no duration to match. Measured over a 3013px trip on 2026-08-24, chromium runs an ease-in-out with a long decay taking 949ms, reaching 82% of the distance by half time, and grows to 1134ms over 4202px. Firefox runs a spring decay at 64% inside the first quarter and holds near 745ms whatever the distance.
 - A caller that means to arrive rather than to travel says `behavior: 'instant'`. Every test harness that walks the page is in that group, and so is the figure dialog. The failure is silent, which is why it is stated here as a rule rather than left to each caller.
 - Read a claim about the glide off the positions the page occupies rather than off a fraction of the distance or a frame count. Both were tried and each described one engine: webkit's automation build collapses the glide into two frames, and firefox does not commit a fragment scroll until the frame after the click.
 
-## A response is gated on a device that has a pointer
+### A response is gated on a device that has a pointer
 
 One rule decides membership, and it is a test rather than a list. A response keyed to a pointer _being over_ something, `:hover`, `pointerenter`, `pointerleave`, `pointermove`, is gated on a device reporting a pointer. A response keyed to a _deliberate act_, a click, a focus, an activation, never is, because touch performs those exactly as a mouse does and gating them takes the page away from the reader rather than giving it back.
 
@@ -32,7 +34,7 @@ One rule decides membership, and it is a test rather than a list. A response key
 - A drawn surface also has to match the density of the screen it is on. The cap sat at 1.5 while a tablet reported 2, so the panel interpolated the difference and softened every contour, which is why the same drawing read crisp in a desktop capture and washed out on the device. The cap matches the display now, and the frame guard is what protects a device that cannot afford it, by measuring what it actually draws rather than refusing up front.
 - Neither of those is visible under device emulation, which reproduces the events and the viewport and not the pointer hardware, the display density, or the engine. `canon/context/development.md` § Serving to a real device carries the harness that answers them.
 
-## The chip row's arrival
+### The chip row's arrival
 
 - The timeline's project chips light in one wave as the row reaches 60% visible, stepped 90ms apart, and the section is then still for the rest of the read. It re-arms only once the row has left the viewport entirely, so the dead band between those two thresholds absorbs a reader parked at the edge of the screen.
 - It is an arrival rather than a schedule because a chip is a control, and decoration is what earns a schedule: a cast member is `aria-hidden` and lives in the margin, so a reader classifies it as scenery, where a chip is a link inside the reading column and a repeat there competes with the sentence around it.
@@ -41,30 +43,20 @@ One rule decides membership, and it is a test rather than a list. A response key
 - Timing is what still separates the two. The arrival swells over 260ms and 400ms where a pointer's answer arrives in 130ms, so an unattended light reads as the row breathing rather than as a blink. Both leave on the shared 520ms.
 - A pointer resting on the row does not suppress the wave, which is the one place this diverges from the cast. Standing down under a hand answers a schedule interrupting a reader repeatedly, and a wave that runs once has nothing to repeat.
 
-## The bar's shape change
+### The bar's shape change
 
 - Both bars contract from full width into a floating pill on scroll, and the shape transition is declared once as `inset 320ms ease, border-radius 320ms ease` on `[data-bar-ground]` in `src/styles/global.css`. The landing bar's ground also fades in on reveal, and that `opacity 200ms ease-out` sits in the same declaration rather than in the component.
-- It has to sit there. `transition` is a shorthand, so a component redeclaring it replaces the list rather than adding to it. `site-bar.astro` asked for the fade on its own ground until 2026-08-25, which reset `transition-property` to `opacity` alone and left the landing bar changing shape in a single frame while a route eased through the same 320ms. Astro scopes a component rule to a `data-astro-cid-*` attribute, so the component selector carried three attribute selectors against the one in the stylesheet and won on specificity.
-- Measured at 1280 across 31 frames, the landing ground held 2 distinct radius values against a route's 21. Read a claim about this off the computed `transition-property` rather than off a capture, since the two surfaces render identically at rest and differ only in how they get there.
+- It has to sit there. `transition` is a shorthand, so a component redeclaring it replaces the list rather than adding to it. Declaring the fade on the ground inside `site-bar.astro` is the placement that lost: it resets `transition-property` to `opacity` alone and leaves the landing bar changing shape in a single frame while a route eases through the same 320ms. Astro scopes a component rule to a `data-astro-cid-*` attribute, so the component selector carries three attribute selectors against the one in the stylesheet and wins on specificity.
+- Measured at 1280 across 31 frames under that component rule, the landing ground held 2 distinct radius values against a route's 21. Read a claim about this off the computed `transition-property` rather than off a capture, since the two surfaces render identically at rest and differ only in how they get there.
 - The border and the shadow are deliberately not in the list. They arrive at once on both bars, which marks the instant the bar detaches from the viewport, where an edge fading up reads as the bar being unsure whether it has.
 - The landing bar's reveal fade and its shape change never overlap. The reveal keys to half the hero and the shape to 320px past its full height, which measures 770px of scroll apart at 1280 and 1440 and 635px at 390.
 - The two bars condense on different gates by design. A route condenses at 240px of raw scroll, and the landing bar at 320px past the hero's own height, so a tall viewport and a short one condense at the same point in the reading rather than at the same pixel.
 - Under `prefers-reduced-motion: reduce` neither bar transitions and both still change shape, so that reader meets two shapes arriving instantly. See `canon/context/site-bar.md` § One ground for two bars, and the shape moves while the row does not.
 
-## Cascade reveal primitive
-
-- Elements that animate in on scroll carry a `data-fade` attribute and an optional `--fade-delay` CSS custom property.
-- On viewport entry the element reveals via a 700ms fade-and-rise. The observer writes the effective delay: everything arriving in one callback sorts by document position, and the whole batch fits inside a 400ms window, so the authored `--fade-delay` states the intended order rather than the timing.
-- An authored delay assumes its surface arrives alone, and a fast scroll breaks that assumption. Several surfaces land in one callback, a card at 800ms finishes after a row below it at 150ms, and the page reveals backwards. Sorting the batch puts that inversion out of reach at any scroll speed, and the window caps the longest wait rather than letting it grow with the batch.
-- `data-visible="true"` set at server render makes the fade a no-op. A route's prose runs the same reveal the landing page runs rather than setting it on every faded element to render static. Measured on `/canon`, prose arrives between 778ms and 1111ms.
-- Under `prefers-reduced-motion: reduce` elements render at final position immediately.
-- `REVEAL_THRESHOLD` and `REVEAL_ROOT_BOTTOM_INSET_PERCENT` are exported and the observer builds its `threshold` and `rootMargin` from them. `e2e/lazy-images.ts` imports the pair, because the walk a test runs has to wait on the elements this module is due to mark, and a walk holding its own copies drifts from these the moment either moves.
-- The cascade defeats a geometry assertion that reads too early. Two cards in one grid row report positions several pixels apart while the later one is still rising, which reads as a layout defect and is not one. A test comparing positions scrolls the surface into view and waits out the longest delay first. Heights are unaffected, since the reveal translates rather than scales, so a height comparison needs no wait.
-
-## A list reveals as a group
+### A list reveals as a group
 
 - A container marked `data-fade-group` is watched instead of its rows, and its rows are stepped by their position in it at 220ms. Its rows are excluded from the batch path entirely, so the two never both write to one element.
-- The batch stagger above cannot produce a cascade, which is worth stating because it looks like it should. It orders whatever arrives in one observer callback, and a reader scrolling at reading pace delivers a six-row list as six callbacks of one element each: measured on the timeline, batch sizes ran 1,1,1,1,1,1,1,1,1,2 under a slow scroll against 3,6 under a fast one. A batch of one is stepped by zero, so the constant is inert in exactly the case a reader is in and raising it changes nothing anyone sees.
+- The batch stagger in § Cascade reveal primitive cannot produce a cascade, which is worth stating because it looks like it should. It orders whatever arrives in one observer callback, and a reader scrolling at reading pace delivers a six-row list as six callbacks of one element each: measured on the timeline, batch sizes ran 1,1,1,1,1,1,1,1,1,2 under a slow scroll against 3,6 under a fast one. A batch of one is stepped by zero, so the constant is inert in exactly the case a reader is in and raising it changes nothing anyone sees.
 - The group's step is scheduled with a timer per row rather than written as a `transition-delay`, because that longhand is reset by any `transition` shorthand a component declares on the same element.
 - The step is read against the 700ms fade rather than chosen freely. Rows closer than about a fifth of it overlap almost entirely and the list reads as one block. At 220ms the last of six starts at 1.1s and the list settles inside 1.8s, judged live against 90 and 140.
 - The threshold is 0 rather than a ratio, since a list taller than the viewport never reaches a share of itself.
@@ -73,7 +65,7 @@ One rule decides membership, and it is a test rather than a list. A response key
 - A project card is a group of its own, which is the same rule applied one level down. The numeral leads and the card follows, and the lead already existed by accident, since the numeral sits above and outside the card and crosses the viewport edge first. It ran 199, 198, 226, and 197ms on the four two-column cards and collapsed to 56ms on the wide one that closes the section, whose geometry differs. Grouping evens it to 222 through 247ms on all five, and it matters most on a phone, where one column makes every card the wide case.
 - Read that pair as the rule rather than as two calls. What can be grouped is whatever a reader meets as one thing on one screen, so a card qualifies where the grid holding it does not.
 
-## What arrives, and what was always there
+### What arrives, and what was always there
 
 - Reveal is opt-in and nothing reported what opted out until `e2e/reveal-inventory.ts` was written. Measured on the landing page before this work: 79 blocks revealed and 8 did not.
 - The footer carried no marker at all across the résumé link, the colophon, and the deploy date, so the last surface on the page was in place before a reader reached it. Its signature keeps its own wipe and takes none. The two blocks are grouped rather than left to the batch path, because they stack at narrow widths and would then cross the edge separately, which is a batch of one and a step of zero.
@@ -89,16 +81,7 @@ One rule decides membership, and it is a test rather than a list. A response key
 - Reaching the end of the document is therefore the moment nothing may still be hidden, whatever an observer decided, and `revealAtDocumentEnd` in `src/lib/reveal.ts` enforces it. A group runs its own staggered reveal from there rather than being marked flat, so the fallback costs the cascade nothing.
 - This is the same class the contact dock hit, where a gate watched a root capped to the top half of the viewport for an element sitting at the bottom of the last screen. Any gate keyed to a share of the viewport is wrong for content anchored to the end of the page. A check at one viewport height proves nothing about it, which is why the guard runs at 800, 1200, and 1600.
 
-## A component can delete the reveal, and nothing reports it
-
-- `transition` is a shorthand, so a component declaring one on a `[data-fade]` element replaces the reveal's outright rather than adding to it. Specificity does not decide it: these rules sit in `@layer utilities` and Astro emits component styles unlayered, and an unlayered declaration beats a layered one at any specificity.
-- The experience rows shipped in that state. They declared a 150ms color and shadow transition for their active state and snapped from 0 to 1 with no fade at all, while carrying every marker a structural inventory reads. Six of the 35 faded elements on the page were affected and only those six.
-- `--reveal-transition` in `:root` is the repair. A component setting `transition` on a faded element opens its list with `var(--reveal-transition)`.
-- That token carries no delay and cannot. A nested `var()` inside an inherited custom property resolves where the property is declared rather than where it is used, so `var(--fade-delay)` written into it resolves against `:root`, falls back to its default, and every element inherits the same baked zero.
-- `e2e/home.spec.ts` guards both halves. One fails when any faded element has no opacity transition, and one fails unless a row is caught part-way through its fade. The second matters on its own: a spread measurement alone passes on a list that snaps at staggered times, which is exactly what shipped.
-- Read the general case rather than the CSS trivia. Three separate mechanisms each produced the same symptom, and a structural check reporting the markers present passed through all three. Watch the paint, not the attribute.
-
-## Availability pulse
+### Availability pulse
 
 - The status dot in the closing ask holds full opacity while a pseudo-element halo scales from its own size to 2.6 and fades, on a 2400ms loop with no end. It is the only always-on animation among the page's content, and it exists because a pulse states that availability is live now rather than printed.
 - The header's shader field also runs without end, and the two do not compete. The field is a ground rather than an element, it carries no edge to track, and it moves at 0.13px per second against a halo completing a cycle every 2400ms. The still copy of that field under the rest of the page does not move at all. See `canon/context/shader-field.md` and `canon/context/page-ground.md`.
@@ -107,7 +90,7 @@ One rule decides membership, and it is a test rather than a list. A response key
 - Two things pulse, and they never share a screen. This dot sits in the closing ask and the portrait's rings sit at the top of the hero, so the reason a second heartbeat was barred, that it competes with the first for the same attention, does not reach a surface a reader has to scroll a page to leave. Read the rule as one pulse per screen rather than one per page.
 - The experience section's active marker still takes none. It states a position rather than a state, it already animates on hover and on the walk back, and it sits between the two above.
 
-## Portrait rings
+### Portrait rings
 
 - The rings are contours of a mound the shader adds to its own stream function, centred on the photo. Nothing draws a ring: a radially falling term makes the field's level sets circles where it dominates, so the lines a reader counts are the field's own, bending where the terrain does and dissolving back into it where the mound runs out.
 - That placement is the whole decision, and it is the one the click ripple already made. Contours are extracted after the term is added, so the relief lighting, the height tint, the sheen, and the pointer's reveal all reach the rings without a second drawing existing to keep in step with the first.
@@ -122,13 +105,47 @@ One rule decides membership, and it is a test rather than a list. A response key
 - Capping the shaded arms' lit arc at the flat ink's own value is the mistake that nearly settled this. The flat ink was tuned against the field's peak contour weight, which is the right comparison for an ink that never varies and the wrong one once it does: peak-to-peak cost 28% of the mean and made both arms dimmer than the baseline before they were anything else.
 - The rings never reach the name at any width. Measured across six from 390 to 1920, the closest approach is 181px against a 94px reach at 390, so drawing them under the content column rather than over it costs nothing. That cost was asserted and then measured away.
 
+### Section motifs
+
+Two surfaces carry a small figure: a character rising into the closing ask, and an aircraft crossing the about surface and coming to rest. Two is a pair rather than a pattern, and the rule below is what decides whether a third is a language or a habit.
+
+- A section earns a figure only when its own copy names the thing the figure draws, at the time the figure is added. The bar governs whether a new figure is added, not whether a shipped one stays. The About copy names neither Vietnam nor the summers the aircraft was admitted against, and the aircraft stays, so a figure already shipped can outlive the correspondence that admitted it.
+- Reject the figure that answers part of the copy, when the copy is what a new figure is being weighed against. A map of Sweden is the figure that lost on this: it left out Vietnam, the clause the paragraph it was weighed against led with, so it illustrated the middle sentence and contradicted the first.
+- One figure per surface, and no surface takes a second. A figure competing with the header portrait is what `canon/wireframes/about.md` bars, and a moving figure clears that bar by arriving rather than by sitting there from the first paint.
+- A figure arrives and stays. Both surfaces reveal on an `IntersectionObserver` at a threshold rather than at any intersection, run once, and never replay, so no figure loops. The availability pulse and the header's ambient field are the only two things that do.
+- Take the fill from the artwork the accent derives from rather than sampling a rendered figure, so a second mark reads as the same language rather than as a near miss of the first.
+- Every figure carries `aria-hidden` and no accessible name, and renders nothing at all under `prefers-reduced-motion: reduce`. A figure carrying information would fail that test, which is another way of stating the first rule.
+- A figure near a section's top edge collides with the sticky bar when a reader arrives from the rail, since the section pins under it. Give that reader the figure at rest rather than declining to render it, and keep the approach for an arrival with clear air under the bar.
+- Read both conditions on demand rather than taking them from an observer callback. An observer reports a threshold being crossed, so a reader who arrives already past it never crosses it again: the gate declines once and no further callback arrives however far they scroll. Scrolling on from a pinned section carries the band further up and out, so the clear air it waits for cannot come.
+
+## Gotchas
+
+### A component can delete the reveal, and nothing reports it
+
+- `transition` is a shorthand, so a component declaring one on a `[data-fade]` element replaces the reveal's outright rather than adding to it. Specificity does not decide it: these rules sit in `@layer utilities` and Astro emits component styles unlayered, and an unlayered declaration beats a layered one at any specificity.
+- The experience rows shipped in that state. They declared a 150ms color and shadow transition for their active state and snapped from 0 to 1 with no fade at all, while carrying every marker a structural inventory reads. Six of the 35 faded elements on the page were affected and only those six.
+- `--reveal-transition` in `:root` is the repair. A component setting `transition` on a faded element opens its list with `var(--reveal-transition)`.
+- That token carries no delay and cannot. A nested `var()` inside an inherited custom property resolves where the property is declared rather than where it is used, so `var(--fade-delay)` written into it resolves against `:root`, falls back to its default, and every element inherits the same baked zero.
+- `e2e/home.spec.ts` guards both halves. One fails when any faded element has no opacity transition, and one fails unless a row is caught part-way through its fade. The second matters on its own: a spread measurement alone passes on a list that snaps at staggered times, which is exactly what shipped.
+- Read the general case rather than the CSS trivia. Three separate mechanisms each produced the same symptom, and a structural check reporting the markers present passed through all three. Watch the paint, not the attribute.
+
+## Cascade reveal primitive
+
+- Elements that animate in on scroll carry a `data-fade` attribute and an optional `--fade-delay` CSS custom property.
+- On viewport entry the element reveals via a 700ms fade-and-rise. The observer writes the effective delay: everything arriving in one callback sorts by document position, and the whole batch fits inside a 400ms window, so the authored `--fade-delay` states the intended order rather than the timing.
+- An authored delay assumes its surface arrives alone, and a fast scroll breaks that assumption. Several surfaces land in one callback, a card at 800ms finishes after a row below it at 150ms, and the page reveals backwards. Sorting the batch puts that inversion out of reach at any scroll speed, and the window caps the longest wait rather than letting it grow with the batch.
+- `data-visible="true"` set at server render makes the fade a no-op. A route's prose runs the same reveal the landing page runs rather than setting it on every faded element to render static. Measured on `/canon`, prose arrives between 778ms and 1111ms.
+- Under `prefers-reduced-motion: reduce` elements render at final position immediately.
+- `REVEAL_THRESHOLD` and `REVEAL_ROOT_BOTTOM_INSET_PERCENT` are exported and the observer builds its `threshold` and `rootMargin` from them. `e2e/lazy-images.ts` imports the pair, because the walk a test runs has to wait on the elements this module is due to mark, and a walk holding its own copies drifts from these the moment either moves.
+- The cascade defeats a geometry assertion that reads too early. Two cards in one grid row report positions several pixels apart while the later one is still rising, which reads as a layout defect and is not one. A test comparing positions scrolls the surface into view and waits out the longest delay first. Heights are unaffected, since the reveal translates rather than scales, so a height comparison needs no wait.
+
 ## Experience timeline
 
 - One timeline row is highlighted at a time. JS owns the active row via `[data-active]`. The first row carries `[data-default-active]` so the no-JS path renders with row one highlighted. The script removes that attribute at init.
 - Hovering a row transfers the highlight. On `pointerleave` of the stage wrapper the highlight walks back row by row to the first row.
-- The walk lingers on the row a reader chose and gathers pace as it returns, at step delays running 160ms down to 83ms across five steps. It depicts letting go of a row rather than traveling to another, so the moment worth holding is the leaving. The reverse shipped until 2026-08-20 and rushed exactly that, then eased into a row nobody had asked about. Judged live at four paces against an even cadence, the reverse, and a curve slow at both ends.
+- The walk lingers on the row a reader chose and gathers pace as it returns, at step delays running 160ms down to 83ms across five steps. It depicts letting go of a row rather than traveling to another, so the moment worth holding is the leaving. Judged live at four paces, it beat an even cadence, a curve slow at both ends, and the reverse, which rushes exactly that leaving and then eases into a row nobody asked about.
 - The active row's dot fills with the accent and takes a soft ring, transitioning at 150ms ease-out alongside the row's color shift.
-- The row also lifts onto the site's glow, drawn behind it and inset outward, so the list carries no plate at rest. It is keyed to the row the list marks rather than to the pointer, which is what lets the plate travel with the dot through the walk. On `:hover` alone it stayed on the row the pointer left and faded there while the dot moved on, lighting two rows by two different means: measured 160ms after leaving, the dot sat two rows from a plate still at 0.66.
+- The row also lifts onto the site's glow, drawn behind it and inset outward, so the list carries no plate at rest. It is keyed to the row the list marks rather than to the pointer, which is what lets the plate travel with the dot through the walk. Keyed to `:hover` alone, the plate stays on the row the pointer left and fades there while the dot walks away, lighting two rows by two different means: measured 160ms after leaving, the dot sat two rows from a plate still at 0.66.
 - The stage carries an engagement flag so the plate leaves once the walk settles. Keying the plate to the marked row alone would put a permanent one under the first row, which is highlighted from first paint.
 - The plate leaves over the site's shared 520ms while the walk steps faster than that, so several rows are lit at once on the way back and the glow cascades up the list. That is the reason the slow steps fall first: the trail is thickest at the start, and a longer first step gives each plate more of its own fade to clear in.
 - The SVG career graph beside the list is gone, and with it the node-to-row hover pairing and the edge-draw stagger it carried. The dots now sit in the row gutter on a single rail, so a row and its dot are one element to hover and there are two fewer moving parts. A session reading this entry for the fan animation is reading a removed feature.
@@ -140,19 +157,6 @@ One rule decides membership, and it is a test rather than a list. A response key
 - The animation is gated on `[data-js="true"]` and `prefers-reduced-motion: no-preference` so no-JS and reduced-motion paths render statically.
 - Filled paths from auto-vectorization preclude `stroke-dashoffset`, so the wipe substitutes for a stroke-draw effect at footer scale.
 
-## Section motifs
-
-Two surfaces carry a small figure: a character rising into the closing ask, and an aircraft crossing the about surface and coming to rest. Two is a pair rather than a pattern, and the rule below is what decides whether a third is a language or a habit.
-
-- A section earns a figure only when its own copy names the thing the figure draws, at the time the figure is added. The aircraft cleared that bar against the paragraph that opened on Vietnam and closed on most summers. The About copy was rewritten on 2026-09-16 to two paragraphs naming neither, and the operator kept the aircraft anyway rather than retiring it, so a figure already shipped can outlive the correspondence that admitted it. The bar governs whether a new figure is added, not whether a shipped one stays.
-- Reject the figure that answers part of the copy, when the copy is what a new figure is being weighed against. A map of Sweden was measured against the paragraph in place at the time and dropped Vietnam, which was the clause it opened on, so it illustrated the middle sentence and contradicted the first.
-- One figure per surface, and no surface takes a second. A figure competing with the header portrait is what `canon/wireframes/about.md` bars, and a moving figure clears that bar by arriving rather than by sitting there from the first paint.
-- A figure arrives and stays. Both surfaces reveal on an `IntersectionObserver` at a threshold rather than at any intersection, run once, and never replay, so no figure loops. The availability pulse and the header's ambient field are the only two things that do.
-- Take the fill from the artwork the accent derives from rather than sampling a rendered figure, so a second mark reads as the same language rather than as a near miss of the first.
-- Every figure carries `aria-hidden` and no accessible name, and renders nothing at all under `prefers-reduced-motion: reduce`. A figure carrying information would fail that test, which is another way of stating the first rule.
-- A figure near a section's top edge collides with the sticky bar when a reader arrives from the rail, since the section pins under it. Give that reader the figure at rest rather than declining to render it, and keep the approach for an arrival with clear air under the bar.
-- Read both conditions on demand rather than taking them from an observer callback. An observer reports a threshold being crossed, so a reader who arrives already past it never crosses it again: the gate declines once and no further callback arrives however far they scroll. Scrolling on from a pinned section carries the band further up and out, so the clear air it waits for cannot come.
-
 ## Flight mechanics
 
 - The aircraft follows one cubic through `offset-path`, with `offset-rotate: auto` taking its angle off the tangent. Two transforms on separate easings compose a path only by disagreeing, and what they compose is a glide followed by a dive, since neither owns the shape.
@@ -161,7 +165,7 @@ Two surfaces carry a small figure: a character rising into the closing ask, and 
 - Read that as the shape the surface keeps producing rather than as one slip. The scale, the trail's weight, and the origin are three values holding one ratio, and the first two were already derived for this reason. The record here carried the corrected 75.6 while the component's own comment still read 48.6, so a figure updated in prose and left in code is what the drift looks like from either side.
 - The contrail's tail pins at the start of the flight and never moves. A fade window travels with the aircraft and everything older has gone to nothing, which is what gives the trail a length without anything being shortened. A tail sliding forward reads as the trail being deleted.
 - The trail's head holds 6% of the flight behind the aircraft. The curve runs 760.8 units and the aircraft renders 75.6 wide, so half of it is 5.0%, and a head closer than that draws inside the tail rather than behind it.
-- The aircraft's own scale therefore bounds that head. At the 48.6 it drew until 2026-08-22 the floor sat at 3.2% and the head cleared it by 21 units. At 75.6 the floor is 5.0% and the clearance is 8. A further scale past about 0.90 puts the nose inside its own trail, so the head moves with it.
+- The aircraft's own scale therefore bounds that head. At 75.6 wide the floor is 5.0% and the head clears it by 8 units. A further scale past about 0.90 puts the nose inside its own trail, so the head moves with it.
 - Both trail animations are sampled from the aircraft's easing and run `linear`. A timing function applies per keyframe interval rather than across an animation, so a multi-step trail and a two-step aircraft compute their positions on different curves and drift apart the moment the trail gains a middle step.
 - Read a position along the curve off its arc length rather than its parameter. A cubic's parameter and the distance it covers are not the same walk.
 - The flight runs 2000ms on a curve covering 17% of the journey in its first quarter. The site's other one-shot animations run 500ms, 700ms, and 1200ms, so this is the longest and stays in the family. An earlier 3600ms spent half its duration on the last 12% of the distance.
