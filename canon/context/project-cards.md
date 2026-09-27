@@ -13,13 +13,6 @@ The projects section. Cards render statically from a config array in `projects.a
 
 - `src/components/site/projects/` owns the section markup, one card's markup, and the pointer tilt module behind the grid
 
-## Layer responsibilities
-
-- `src/components/site/projects/projects.astro` owns the section: the data array of cards and the `<script>` imports that mount interactivity
-- `src/components/site/projects/project-card.astro` owns one card's DOM: poster image, hover video, headline, description, link row, and the overlay anchor that opens the route the card owns
-- `src/lib/hover-video.ts` owns hover-play, and is shared rather than local because a case-study route needs the same behavior. It finds each `[data-media-video]`, resolves its host through `closest('[data-media-host]')`, plays on pointer enter, and pauses and rewinds on leave. A host declaring `data-media-host="view"` also plays on intersection where the pointer cannot hover, which a card deliberately leaves out: its clip is revealed by a hover-driven opacity, so playing it on a touch device would run frames nobody can see.
-- `src/components/site/projects/tilt.ts` owns parallax. Tracks pointer per card with `MAX_TILT_DEG` and `MAX_PARALLAX_PX`, lerps toward the target with `LERP`, runs one rAF loop across all cards.
-
 ## Decisions
 
 - Vanilla TypeScript modules over React islands. Skipping the framework tax is worth the discipline of keeping interactive logic small enough that vanilla TS reads cleaner than a hydrated component.
@@ -28,13 +21,13 @@ The projects section. Cards render statically from a config array in `projects.a
 - Each card carries an id derived from its name in lowercase, and a scroll margin so an in-page jump does not land it against the viewport edge. The experience section's chips target those ids, and an e2e test compares the chip labels against the card headings, so a card added there without a chip fails loudly rather than leaving a dead link. A name carrying a space or punctuation would produce an invalid fragment, which that test is also what catches.
 - A whole-card click reaches the card's route through an absolutely positioned anchor covering the card, with the link row raised above it. Nested anchors are invalid markup, so wrapping the card in one is not available, and the overlay is the shape that leaves the inner links reachable.
 - The overlay carries `aria-hidden` and sits outside the tab order. The card's heading is a link to the same destination with a real label, so exposing the overlay too would announce and tab through one destination twice.
-- The heading is what carries the route. A row link labelled `Project` did it until 2026-08-20 and repeated what the whole card already does, but deleting it alone would have left three of five cards with no keyboard route at all, since the overlay reaches nobody without a pointer. Naming the card and carrying its destination are one job, so one element does both, and every remaining link in the row leaves the site. Verified by tab walk: all five routes reachable, each announced by the project's own name.
+- The heading is what carries the route. A row link labelled `Project` lost because it repeats what the whole card already does, and dropping that link without moving the route onto the heading leaves cards with no keyboard route at all, since the overlay reaches nobody without a pointer. Naming the card and carrying its destination are one job, so one element does both, and every remaining link in the row leaves the site. Verified by tab walk: all five routes reachable, each announced by the project's own name.
 - The route is a field on the project rather than derived by picking the single internal href out of the links list, which would stop working the moment the route stops being a link in it. An e2e test counts the overlays against the cards so a card added without a route fails loudly.
 - The heading link measures 34px tall against the 44px minimum the rest of the page holds. The overlay still catches a tap anywhere on the card, so this is a link under the floor rather than a target a reader cannot hit, and it is queued rather than fixed.
 - Tilt batches state in a single rAF loop rather than one loop per card.
 - A card description is the project's own portfolio prose with two edits: drop the leading article, and drop the trailing sentence naming the links, which the card renders as its own row. Everything the source says about what the artifact does and where it is reached stays. The convention is readable off any card that already conforms rather than written down anywhere else.
 - An odd number of cards makes the last one span both columns from `lg`, laying its still beside its text so the closing card keeps a height near the paired ones. The four above it are untouched and the grid stays at two columns. Every card also fills its grid row, so two cards sharing a row share a lower edge rather than leaving a ragged one.
-- The card set is canon, Jobtriage, annex, Stackr, Caret, and diction has no card, by the operator's call of 2026-09-21. Nothing on the landing page links its route since 2026-09-28, when the operator removed the projects intro sentence that carried the link and added no line in its place. The route stays built and is reached by its URL.
+- The card set is canon, Jobtriage, annex, Stackr, and Caret, and diction has no card, by the operator's call. Nothing on the landing page links its route, since the projects section opens straight onto the grid with no intro sentence to carry one. The route stays built and is reached by its URL alone.
 - A card takes one still by default, and an optional `posterDark` swaps in a second for the dark theme. The light still hides under `dark:hidden` and the dark one shows under `dark:block`. Only annex sets it, since its route already ships a light and a dark hero. Every other card has one still and one clip for both themes.
 - Tilt rotates up to `MAX_TILT_DEG` (6°) toward the cursor. The inner media slot translates up to `MAX_PARALLAX_PX` (8px) against the rotation for parallax depth. Per-card values lerp toward the target with factor `LERP` of 0.18.
 
@@ -53,6 +46,13 @@ The projects section. Cards render statically from a config array in `projects.a
 - Hover-play and tilt both survive the overlay because `pointermove` bubbles to the card and `pointerenter` fires on the card when the pointer crosses any descendant. An overlay that stopped propagation would break both while every automated check still passed.
 - The link row is raised by `z-10` on each `<a>` rather than on the `<ul>`. Raising the list would put its full-width box above the overlay and leave the gaps between links inert.
 
+## Layer responsibilities
+
+- `src/components/site/projects/projects.astro` owns the section: the data array of cards and the `<script>` imports that mount interactivity
+- `src/components/site/projects/project-card.astro` owns one card's DOM: poster image, hover video, headline, description, link row, and the overlay anchor that opens the route the card owns
+- `src/lib/hover-video.ts` owns hover-play, and is shared rather than local because a case-study route needs the same behavior. It finds each `[data-media-video]`, resolves its host through `closest('[data-media-host]')`, plays on pointer enter, and pauses and rewinds on leave. A host declaring `data-media-host="view"` also plays on intersection where the pointer cannot hover, which a card deliberately leaves out: its clip is revealed by a hover-driven opacity, so playing it on a touch device would run frames nobody can see.
+- `src/components/site/projects/tilt.ts` owns parallax. Tracks pointer per card with `MAX_TILT_DEG` and `MAX_PARALLAX_PX`, lerps toward the target with `LERP`, runs one rAF loop across all cards.
+
 ## Visual budget
 
 - At most one muted MP4 per project, dark theme only, ≤500kb, 720p, h.264 baseline. Where a clip exists the poster is a single dark PNG extracted from it, and where none does the still is the card's own `1280x720` or `1280x800` image.
@@ -66,8 +66,8 @@ The projects section. Cards render statically from a config array in `projects.a
 - A pseudo-element on `[data-media-host]` reveals the card's extent under the pointer, and nothing is drawn at rest. It is inset outward from the content rather than added as padding, so the shape is larger than the card and costs no layout. The card isolates, which keeps the shape behind its own content rather than behind the section.
 - The shape reaches 24px for its own box and 20px more for the shadow, against a 48px gutter. A shape wider than the gutter meets its neighbor, so pointing at one card lights the one beside it. The shadow carries no spread for the same reason.
 - The transition is asymmetric: 520ms out and 130ms in, written as a rule on the base state and a second on the hovered one. Arriving late reads as broken, and leaving slowly trails a glow behind a pointer crossing the grid rather than snapping off at every gutter.
-- This card is where the site's glow was authored, and its four values now sit in `src/styles/global.css` with the card reading them back. Every bounded control on the site resolves the same four, so what a pointer does is decided once. The values did not change when they moved. Anything altering them here alters the timeline chips, the section rail, the contact dock, the theme toggle, and the closing-ask rows with it, which is the point rather than a side effect.
-- Tilt moved from the card root onto the media slot when the outline came off. Rotating a card with no visible bounds tilts nothing a reader can see. The pointer target is still the whole card, so the region that answers is unchanged and only the element with visible mass moves.
+- The glow's four values sit in `src/styles/global.css`, and the card reads them back like every other bounded control on the site, so what a pointer does is decided once. Anything altering them alters the timeline chips, the section rail, the contact dock, the theme toggle, and the closing-ask rows with it, which is the point rather than a side effect.
+- Tilt rotates the media slot rather than the card root. The card draws no outline, and rotating a card with no visible bounds tilts nothing a reader can see. The pointer target is still the whole card, so the region that answers is unchanged and only the element with visible mass moves.
 
 ## Hidden contracts
 

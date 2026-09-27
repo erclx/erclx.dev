@@ -13,23 +13,25 @@ description: Scroll-position tracking, reveal gates, and click-lock behind the s
 
 - `src/components/site/section-nav/` owns the rail markup and the row treatment its tracking drives
 
-## Active tracking
+## Decisions
+
+### Active tracking
 
 - A scroll handler recomputes the active section on every `scroll` and `resize`, throttled with `requestAnimationFrame`.
 - The active section is the last one in document order whose top edge has crossed an anchor line at 30% of viewport height from the top (`ANCHOR_RATIO = 0.3`).
 - The handler reads `getBoundingClientRect` on the section elements, never on the project cards inside them, so the active state does not flicker across card boundaries.
 
-## Near-bottom override
+### Near-bottom override
 
 When `scrollY + innerHeight` reaches `document.documentElement.scrollHeight - 4`, the handler forces the active label to the last section. The 4px slack absorbs sub-pixel scroll positions. Without it, a page that bottoms out before the final section crosses the 30% anchor would never mark that section active.
 
-## Click-intent lock
+### Click-intent lock
 
 Clicking a rail link sets the clicked section active immediately and suppresses scroll-based recomputation for 700ms (`CLICK_LOCK_MS`). Without the lock, clicking a section whose smooth scroll cannot fully reach the top resolves the active label to a different section via the near-bottom override.
 
-The 700ms is described here as matching the smooth-scroll duration, and no engine agrees with it. There is no duration to match: CSSOM-View defines no timing function, so the figure belongs to whichever engine is running. Measured over a 3013px trip on 2026-08-24, chromium takes 949ms and firefox 745ms, and chromium's grows with distance, reaching 1134ms over 4202px. The lock therefore expires while chromium is still moving, and recomputation resumes over the tail of the glide. Nothing has reported a wrong label from it, since the tail is the slow part and the page is close to its target by then, and a rail trip is shorter than the chip trips those figures come from. It is a real gap rather than a settled value, and closing it means ending the lock on the scroll settling rather than on a clock.
+The 700ms is meant to match the smooth-scroll duration, and no engine agrees with it. There is no duration to match: CSSOM-View defines no timing function, so the figure belongs to whichever engine is running. Measured over a 3013px trip on 2026-08-24, chromium takes 949ms and firefox 745ms, and chromium's grows with distance, reaching 1134ms over 4202px. The lock therefore expires while chromium is still moving, and recomputation resumes over the tail of the glide. Nothing has reported a wrong label from it, since the tail is the slow part and the page is close to its target by then, and a rail trip is shorter than the chip trips those figures come from. It is a real gap rather than a settled value, and closing it means ending the lock on the scroll settling rather than on a clock.
 
-## Reveal gate
+### Reveal gate
 
 The rail starts hidden and fades in once the first section reaches the anchor. An `IntersectionObserver` on the hero element toggles `data-revealed`, with its `rootMargin` derived from `ANCHOR_RATIO` rather than written beside it. Bidirectional: scrolling back into the hero hides the rail again.
 
@@ -39,7 +41,7 @@ The bar arrives before the rail and always did, at 280px against 570px measured 
 
 Nothing hides the rail near the footer. Looking-for and the footer together barely clear one viewport, so any scroll-position trigger for a footer fade has little to no runway to fire on before the document runs out of scroll room, and forcing one in with a minimum-dwell hold read as a timer disconnected from the reader's own scrolling rather than a response to it. A capture of the rail held visible over a fully-shown footer at 1280x800 and 1920x1080 found no clutter or overlap, so the rail carries looking-for through the rest of the page instead: revealed once and visible until the reader scrolls back into the hero, the same as a project route always behaved. The rail sits in the empty left margin at the footer's own width, clear of the signature, the résumé link, and the deploy date, so the gate was never buying anything a reader would notice losing.
 
-## The active row
+### The active row
 
 The active row carries the contact dock's ground, resolved from the shared values in `src/styles/global.css`, so the two margin controls read as one system. It replaces a 2px accent edge, which stated the same thing in the same color with less of it. See `canon/context/contact-dock.md` for where those values come from and what their fill can and cannot buy.
 
@@ -56,27 +58,19 @@ Under a reduced-motion preference the step is dropped rather than shortened, and
 
 Pointing at a row is a separate claim from being inside one, so a hover adds the site's glow. On the active row it stacks on top of the ground rather than replacing it, for the reason the dock records.
 
-A hover also takes the accent on the row's edge, which it did not until 2026-08-25. Measured across the site, this was the one bounded control whose hover left its border alone: a timeline chip and a dock control both moved theirs to `--accent`, and a rail row moved fill and shadow while its edge held at 1.08:1 against the ground in light and 1.03:1 in dark, which is no edge at all. It reads 2.58:1 and 2.79:1 now, against the active row's own 2.63:1 and 2.92:1. What separates a pointed-at row from the row a reader is inside is the ground, the blur, and the step, rather than the edge on its own.
+A hover also takes the accent on the row's edge, as a timeline chip's and a dock control's hover both do. A hover that moved fill and shadow alone left the edge at 1.08:1 against the ground in light and 1.03:1 in dark, which is no edge at all. With the accent it reads 2.58:1 and 2.79:1, against the active row's own 2.63:1 and 2.92:1. What separates a pointed-at row from the row a reader is inside is the ground, the blur, and the step, rather than the edge on its own.
 
-## The rail's stroke cannot reach its own accent at 1x
-
-Both the active and the hovered row declare `border-color: var(--accent)` and neither paints it on a one-to-one display. The 1px stroke is split across two device rows at roughly 37% and 60% coverage, so its strongest row reads 197,137,106 in light against the declared 164,71,27, and the pill measures 2.63:1 against the ground where a timeline chip's own accent edge measures 5.43:1. At `deviceScaleFactor: 2` both paint the accent exactly.
-
-The cause is the stroke width rather than any of the compositing the rail carries. Widening it to 2px restores the declared color at 1x, while stripping the backdrop filter, the row's transform, its background, its shadow, and the nav's opacity each change nothing. Measured at 1440x900 in both themes on 2026-08-25.
-
-Nothing is queued for it. The repair costs the rail a stop of weight on a retina display where it is already correct, so it wants reading on real hardware before it is taken.
-
-## instant prop
+### instant prop
 
 The `instant` prop names the absence of a scroll gate and nothing else. It stamps `data-instant`, which stops the hero observer attaching, and the script reveals the rail on the frame after the first paint so the opacity transition runs.
 
-It also painted the rail at server render until 2026-08-24, and disabled the transition with it, on the reading that a route is otherwise static and a rail fading alone would look odd. Routes carry the page-wide reveal now, so the rail was the one piece of chrome opting out of a fade that exists around it: measured at first paint on a route, the rail read opacity 1 while the prose beside it read 0.
+Painting the rail at server render with the transition disabled lost, on the reading that a route is otherwise static and a rail fading alone would look odd. Routes carry the page-wide reveal, so a server-painted rail is the one piece of chrome opting out of a fade that exists around it: measured at first paint on a route, that rail read opacity 1 while the prose beside it read 0.
 
 The step's duration is withheld until the rail has placed its first row, through `--rail-step` switched on by `data-settled`. A route marks a row active on the first frame, so a duration standing in the rule sent that row traveling out of the column on load, sampled as `0, 3, 6, 8, 10, 11, 12, 13, 14`. The easing is for a handover between two rows and an arrival is not one. Placing it costs the gesture nothing: a real handover still ramps through 13 values.
 
 Losing `data-revealed` from server render meant a script was the only thing that could ever paint the rail, and a route is the longest read on the site: a no-JS visitor there would have lost the one contents list on the page entirely rather than only its fade-in. The hide is gated on `[data-js='true']` instead, the same escape `[data-fade]` uses, so a route with no script keeps the rail at its native opacity and a working set of fragment anchors rather than an element nothing ever reveals.
 
-## The route's opening leads its rail
+### The route's opening leads its rail
 
 A route's first row points at the section carrying the `h1`, labelled with the project name. Without it the rail named no row for the first 700 to 900px of every route, measured at 1440x900 across all five, because `instant` shows the rail from first paint while the first prose section starts 938 to 1135px down. A position indicator stating no position was the whole opening screen.
 
@@ -93,5 +87,13 @@ What it costs is the project name beside the `h1` on the opening screen, which i
 - A rail row built with `document.createElement` takes none of this component's styles. Astro scopes them to a `data-astro-cid-*` attribute only server-rendered elements carry, so a row added at runtime paints no ground, no border, and no step while still reporting `data-active`. The lead row above was prototyped that way and shipped a row that was active and invisible at once. Read the paint, not the state: a check reading `data-active` reported that arm working, where one reading `backgroundColor`, `borderTopWidth`, and `transform` fails it. This is the same class as the instrument failure `canon/ARCHITECTURE.md` § What a check enforces here, and what nothing watches states, reached through a styling mechanism rather than through a measurement.
 - An earlier max-intersection-ratio `IntersectionObserver` drove active tracking. It flipped the active label to a taller preceding section when the visitor clicked the last, shorter rail item. The scroll-position handler replaced it.
 - No-JS path: the hide-until-revealed rule is scoped to `:global([data-js='true']) .section-nav` rather than to `.section-nav` alone, so without JS the rail keeps its native opacity and pointer events instead of the reveal gate flipping never. Active-row tracking and the smooth-scroll click handler still need JS, but the rail's links are real fragment anchors and the browser's own navigation reaches them regardless.
-- Click handling calls `e.preventDefault()` then `scrollIntoView({ block: 'start' })` with no URL hash side effect. Naming no behavior is what defers to the root's own `scroll-behavior`, which is where the motion preference is read for the whole site. This line claimed a reduced-motion reader got an instant scroll until 2026-08-24, and that had never been true: the call named `smooth` outright, so the one control on the page that most reads as navigation overrode the preference on every engine. See `canon/ARCHITECTURE.md` § One declaration decides how the page travels.
+- Click handling calls `e.preventDefault()` then `scrollIntoView({ block: 'start' })` with no URL hash side effect. Naming no behavior is what defers to the root's own `scroll-behavior`, which is where the motion preference is read for the whole site. A call naming `smooth` outright overrides the preference on every engine, so the one control on the page that most reads as navigation would deny a reduced-motion reader the instant scroll. See `canon/ARCHITECTURE.md` § One declaration decides how the page travels.
 - A footer `IntersectionObserver` with no root margin fired the instant the footer's own border box, carrying roughly 100px of empty top padding before any visible content, touched the bottom of the viewport. That hid the rail while looking-for was still the section on screen. Keying the hide to looking-for's own bottom crossing the 30% anchor closed that case and reopened the one the missing root margin was meant to fix: a viewport tall enough to run out of scroll room before the crossing never hid the rail at all. A minimum-dwell hold fixed that too, at the cost of a fade timed to a clock rather than to the reader's own scrolling.
+
+## Accent stroke at 1x
+
+Both the active and the hovered row declare `border-color: var(--accent)` and neither paints it on a one-to-one display. The 1px stroke is split across two device rows at roughly 37% and 60% coverage, so its strongest row reads 197,137,106 in light against the declared 164,71,27, and the pill measures 2.63:1 against the ground where a timeline chip's own accent edge measures 5.43:1. At `deviceScaleFactor: 2` both paint the accent exactly.
+
+The cause is the stroke width rather than any of the compositing the rail carries. Widening it to 2px restores the declared color at 1x, while stripping the backdrop filter, the row's transform, its background, its shadow, and the nav's opacity each change nothing. Measured at 1440x900 in both themes on 2026-08-25.
+
+Nothing is queued for it. The repair costs the rail a stop of weight on a retina display where it is already correct, so it wants reading on real hardware before it is taken.
