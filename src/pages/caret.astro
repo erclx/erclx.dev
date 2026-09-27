@@ -109,13 +109,13 @@ const navItems = [
           data-fade          class="text-foreground text-lede mt-6"
         >
           I was retyping the same instructions into Claude, Gemini, and ChatGPT
-          several times a day. Each one holds text differently, so there was
-          nowhere to keep a prompt that all three could reach.
+          several times a day. None of them had a way to save a prompt, and a
+          prompt kept in one could not reach the other two.
         </p>
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
         >
-          The gap is small and you cross it many times a day.
+          The gap is small, and it opens every time a chat does.
         </p>
       </div>
     </section>
@@ -138,8 +138,11 @@ const navItems = [
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
         >
-          The symbol is configurable per site, because one that is free on a
-          chat surface collides with a native shortcut on another.
+          The symbol defaults to <code class="font-mono">&gt;</code> and is
+          configurable per site, because Claude claims <code class="font-mono"
+            >/</code
+          > for its own command menu, and a symbol free on one chat site can
+          collide with a shortcut on another.
         </p>
       </div>
     </section>
@@ -173,17 +176,22 @@ const navItems = [
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
         >
-          Writing into either directly bypasses the host's state handling, so each
-          site gets an adapter that synthesizes the events a real keystroke
-          would produce rather than setting the value.
+          Writing into either directly bypasses the host's state handling. So
+          the insertion first offers the host a cancelable <code
+            class="font-mono">beforeinput</code
+          > event, and only if the host lets it through does it insert through
+          the browser's own editing command, which fires the events the host's
+          framework listens for. The adapter is picked by the input's element
+          type, not by site, so one <code class="font-mono">contenteditable</code
+          > adapter serves all three.
         </p>
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
         >
-          The <code class="font-mono">contenteditable</code> adapter walks the DOM
-          to find an absolute cursor position across fragmented text nodes, which
-          is what makes the palette land in the right place rather than near it. Nothing
-          leaves the browser.
+          That adapter walks the DOM to find an absolute cursor position across
+          fragmented text nodes, so the prompt replaces exactly the trigger and
+          the typed query, not the text around them. Prompts stay in the
+          browser, apart from the optional sync that reads them from GitHub.
         </p>
       </div>
     </section>

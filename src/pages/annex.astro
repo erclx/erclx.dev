@@ -58,7 +58,7 @@ const headingClass =
 
 <BaseLayout
   title="annex · Eric Le"
-  description="An EU AI Act compliance agent that maps a described system to cited articles, and tests whether retrieval helps when the whole law fits in context."
+  description="An agent for the EU AI Act that maps a system to the articles that apply, built to test whether retrieval still helps when the whole law fits in context."
   surface="case-study"
 >
   <SectionNav items={navItems} instant />
@@ -78,9 +78,9 @@ const headingClass =
           annex
         </h1>
         <p data-fade class="text-muted-foreground text-lede mt-4">
-          An EU AI Act compliance agent that maps a described system to cited
-          articles, and tests whether retrieval helps when the whole law fits in
-          context.
+          An agent for the EU AI Act that maps a described system to the
+          articles that apply, cited to the text, built to test whether
+          retrieval still helps when the whole law fits in context.
         </p>
         <ul data-fade class="mt-6 flex flex-wrap gap-x-6">
           {
@@ -141,15 +141,18 @@ const headingClass =
           the whole EU AI Act.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          The Act runs to roughly 90,000 words, which fits inside a large
-          context window. That made the usual answer stop being obvious: if a
-          model can read the whole law, is retrieval still worth building?
+          The whole Act comes to about 115,000 tokens, which fits inside the
+          131,072-token window one GPU could hold. That made the usual answer
+          stop being obvious: if a model can read the whole law, is retrieval
+          still worth building?
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
           So rather than assume a vector database belonged in the design, I
-          compared three arms on the same twelve questions. The whole Act in the
-          context window. Vector search alone. Vector search followed by
-          traversal of a graph built from the Act's own cross-references.
+          compared three arms on the same twelve questions: the whole Act in the
+          context window, vector search alone, and vector search followed by a
+          walk along the Act's own cross-references. All three shared the same
+          answer prompt and the same grounding check, so any gap between them
+          came from how each one found the text.
         </p>
       </div>
     </section>
@@ -158,8 +161,29 @@ const headingClass =
       <div class="mx-auto prose-column">
         <h2 data-fade class={headingClass}>findings</h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          In this twelve-question evaluation, full-context reading had the
-          highest recall.
+          Reading the whole Act found every article the answers needed, which
+          is closer to a definition than a result, since that arm was handed
+          every provision and could not miss one. The best retrieval arm found
+          0.83 of them.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          Retrieval still earned its place on cost and on checking. It sent
+          about a seventh of the tokens, and because it knows exactly which
+          passages it sent, every citation in an answer can be checked by code.
+          At the next corpus size up, the whole-document arm is not an option at
+          all.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The cheapest change measured was not an architecture change.
+          Replacing the embedding model moved every retrieval arm's recall by
+          0.20 to 0.25, with no new dependency, which is the kind of gain that
+          gets missed by comparing pipelines rather than parts.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          Traversal then recovered more linked obligations on top of the better
+          embeddings, lifting recall from 0.61 to 0.83 on the original text. On
+          the amended text it cost precision, because it also surfaces articles
+          that belong to the chain but not to the literal question.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
           The conclusion is narrower than retrieval not working. Retrieval is not
@@ -167,8 +191,8 @@ const headingClass =
           in context.
         </p>
 
-        {/* Lifted from the annex README's evaluation table, which the career
-            source does not carry yet, with its own sentence as the caption. */}
+        {/* The evaluation table and the sentence captioning it, both as
+            `annex.md` in the career source carries them. */}
         <figure
           data-fade
           class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
@@ -226,12 +250,12 @@ const headingClass =
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
           That is what makes a multi-hop question answerable at all. Asking what
-          follows from a system being high-risk walks <code class="font-mono"
-            >Article 6</code
-          > to <code class="font-mono">Annex III</code> to <code class="font-mono"
-            >Articles 8-15</code
-          >, instead of hoping one retrieved passage happens to hold the whole
-          chain.
+          follows from a system being high-risk walks from <code
+            class="font-mono">Article 6</code
+          > to every one of <code class="font-mono">Articles 8-15</code> and <code
+            class="font-mono">Article 43</code
+          > in two hops, instead of hoping one retrieved passage happens to hold
+          the whole chain.
         </p>
       </div>
     </section>
@@ -250,6 +274,12 @@ const headingClass =
           enough to trigger full high-risk compliance is not settled by the text,
           so the agent declines to settle it either.
         </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          It is also the weakest thing I measured. Three of the twelve questions
+          are ones the text does not settle, and across every arm and both
+          versions the agent refused correctly on 5 of 18 chances. It refused
+          wrongly on 1 of the 54 questions the text does settle.
+        </p>
       </div>
     </section>
 
@@ -257,9 +287,9 @@ const headingClass =
       <div class="mx-auto prose-column">
         <h2 data-fade class={headingClass}>freshness</h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          A Digital Omnibus amendment moved the deadline for standalone high-risk
-          obligations from 2 August 2026 to 2 December 2027, and it took effect
-          while the project was in progress.
+          A Digital Omnibus amendment in force since 27 July 2026 moved the
+          deadline for standalone high-risk obligations from 2 August 2026 to 2
+          December 2027, so the Act has two versions and both are indexed.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
           Querying the unamended corpus returns a confidently wrong deadline.
@@ -278,8 +308,8 @@ const headingClass =
           the reader.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          The deployed page replays twelve recorded answers rather than calling a
-          model. The generation model needs 30GB of GPU memory and nothing free
+          The deployed page replays twelve questions recorded on both versions of
+          the text rather than calling a model. The generation model needs 30GB of GPU memory and nothing free
           hosts that, so asking a new question means running the pipeline
           locally.
         </p>

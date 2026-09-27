@@ -390,6 +390,12 @@ describe('the experience section', () => {
     expect(marks).toHaveLength(EMPLOYERS.length)
   })
 
+  it('labels the marks with the line the source carries', () => {
+    expect(collapse(textOf(home, '[data-employers] > p'))).toBe(
+      "Where I've worked and studied",
+    )
+  })
+
   it('carries no affordance on the marks, since nothing there is operable', () => {
     expect(queryAll(home, '[data-employers] [role="img"]')).toHaveLength(
       EMPLOYERS.length,
@@ -508,15 +514,22 @@ describe('the projects section', () => {
     )
   })
 
-  it('links to both case studies from a card', () => {
-    // The browser test also read each link as visible, which a static file
-    // cannot state. This asserts the links are declared.
+  it('links to the canon route from its card', () => {
+    // The browser test also read the link as visible, which a static file
+    // cannot state. This asserts the link is declared.
     expect(queryAll(home, '#projects a[href="/canon"]').length).toBeGreaterThan(
       0,
     )
-    expect(
-      queryAll(home, '#projects a[href="/diction"]').length,
-    ).toBeGreaterThan(0)
+  })
+
+  it('links nowhere on the landing page to the diction route', () => {
+    // diction keeps its route but has neither a card nor a line pointing at
+    // it, by the operator's call of 2026-09-28.
+    expect(queryAll(home, 'a[href="/diction"]')).toHaveLength(0)
+  })
+
+  it('drops the intro sentence the source removed', () => {
+    expect(textOf(home, '#projects')).not.toContain('One more lives at')
   })
 })
 
@@ -540,7 +553,7 @@ describe('a case study', () => {
 
     expect(textOf(doc, 'h1')).toBe('canon')
     expect(textOf(doc, 'main')).toContain(
-      'distributes AI-development rules, skills, and workflows from one source',
+      'packaged so any repository can install it',
     )
     expect(queryAll(doc, 'main section[id]')).toHaveLength(6)
   })
@@ -552,15 +565,15 @@ describe('a case study', () => {
   it.each([
     [
       '/canon',
-      'A CLI and Claude Code plugin that distributes AI-development rules, skills, and workflows from one source, and coordinates parallel work across separate branches.',
+      'How I build with AI coding agents, packaged for any repository: one session plans, others build in parallel, a separate session reviews, and I merge.',
     ],
     [
       '/jobtriage',
-      "A job-search application over Sweden's public JobTech API, with an agent that turns a profile and a question into a visual shortlist. Measured retrieval in the case study.",
+      "A job-search agent over Sweden's public JobTech API that turns a profile and a question into a visual shortlist, with its retrieval measured.",
     ],
     [
       '/stackr',
-      'Named context tracks for planning and architecture conversations in any AI chat. A VS Code extension on the Marketplace and Open VSX.',
+      'A VS Code extension that keeps named sets of files and copies each into an AI chat as one block, with the tree on top. On the Marketplace and Open VSX.',
     ],
     [
       '/caret',
@@ -568,7 +581,11 @@ describe('a case study', () => {
     ],
     [
       '/annex',
-      'An EU AI Act compliance agent that maps a described system to cited articles, and tests whether retrieval helps when the whole law fits in context.',
+      'An agent for the EU AI Act that maps a system to the articles that apply, built to test whether retrieval still helps when the whole law fits in context.',
+    ],
+    [
+      '/diction',
+      'A pronunciation trainer that scores each sound against what a native speaker actually sounds like, and reports how often it is wrong. Runs offline.',
     ],
   ])('carries the source description on %s', (route, description) => {
     expect(meta(readPage(route), 'meta[name="description"]')).toBe(description)
@@ -576,7 +593,7 @@ describe('a case study', () => {
 
   it('states the landing page sentence on the canon route', () => {
     expect(collapse(textOf(readPage('/canon'), 'main'))).toContain(
-      'is one real session the toolkit ran on itself, with every figure on it read from the repository at build time',
+      'is one real session the toolkit ran on itself, with every count on it read from the repository at build time',
     )
   })
 
@@ -595,7 +612,7 @@ describe('a case study', () => {
 
     expect(textOf(doc, 'h1')).toBe('annex')
     expect(textOf(doc, 'main')).toContain(
-      'tests whether retrieval helps when the whole law fits in context',
+      'built to test whether retrieval still helps when the whole law fits in context',
     )
     expect(queryAll(doc, 'main section[id]')).toHaveLength(8)
   })
@@ -608,8 +625,16 @@ describe('a case study', () => {
 
   it('states the offline claim on the diction route', () => {
     expect(textOf(readPage('/diction'), 'main')).toContain(
-      'Nothing leaves the machine it runs on',
+      'Runs local and offline.',
     )
+  })
+
+  it.each([
+    ['/jobtriage', 'It passed five.'],
+    ['/stackr', 'Tracks survive a restart of VS Code.'],
+    ['/caret', 'one contenteditable adapter serves all three'],
+  ])('renders the ported body copy on %s', (route, sentence) => {
+    expect(collapse(textOf(readPage(route), 'main'))).toContain(sentence)
   })
 
   it('posters the Jobtriage clip with an optimized derivative', () => {
