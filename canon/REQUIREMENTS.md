@@ -20,13 +20,13 @@ Analytics stopped being a non-goal on 2026-08-24. Cloudflare Web Analytics alrea
 ## MVP features
 
 1. Header: identity, one line about the work, contact links, and the portrait
-2. About: one thing that is not work, sitting directly under the header
-3. Experience: one short prose paragraph on the Volvo work, and the timeline of beats
+2. About: who he is and how he came to agents, then one thing that is not work, sitting directly under the header
+3. Experience: the timeline of beats, with the Volvo work stated on its own beat
 4. Projects: cards for Jobtriage, Stackr, and Caret pulled from the github profile, plus a trailing one-liner for Toolkit
 5. Looking for: the criteria rows a reader filters on, anchored by the availability signal
 6. Footer: identity links plus a downloadable resume PDF
 
-The header lost the role, the headline, and the location on 2026-08-17. The claim and its elaboration moved to experience, and the claim left the site on 2026-09-21, when the career source dropped it, so experience opens on its paragraph. The claim's replacement in the header is `I build AI tools, mostly ones I needed myself first.`, which the operator confirmed on 2026-09-24. The location left the About section that day, when the career source dropped it, and the page description now states it. It also sits in the closing ask, where the rows already state it as a filter. The location moved to the closing ask, where the rows already state it as a filter. The availability signal moved with it.
+The header lost the role, the headline, and the location on 2026-08-17. The claim and its elaboration moved to experience, and the claim left the site on 2026-09-21, when the career source dropped it. The header's line is `I build AI agents, and I measure them before I trust them.` since 2026-09-27, when the career source replaced `I build AI tools, mostly ones I needed myself first.`, which the operator had confirmed on 2026-09-24. The same port cut the Volvo paragraph that opened experience, whose substance now sits on the Volvo beat, and returned the location to the About section, whose opening sentence names it. The page description and the closing ask state it too. The availability signal moved to the closing ask on 2026-08-17.
 
 ## Navigation
 
