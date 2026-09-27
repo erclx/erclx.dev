@@ -1,6 +1,7 @@
-import { expect, type Locator, type Page, test } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 
 import { contrastRatio, paintedColor } from './colors'
+import { expect, test } from './fixtures'
 
 // Guards for the ground every floating control draws.
 //

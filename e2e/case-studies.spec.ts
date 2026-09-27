@@ -1,6 +1,7 @@
-import { expect, type Page, test } from '@playwright/test'
+import type { Page } from '@playwright/test'
 
 import { contrastRatio, paintedColor, relativeLuminance } from './colors'
+import { expect, holdShaderStill, test } from './fixtures'
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 import { WATCHED_SELECTORS } from './reveal-selectors'
 import { settleScroll } from './scroll'
@@ -1023,6 +1024,7 @@ test('a route with no intersection observer still renders its prose', async ({
   browser,
 }) => {
   const context = await browser.newContext()
+  await holdShaderStill(context)
   // The stylesheet hides a marked element whenever scripting is on, so an
   // engine with no observer would hold the whole route hidden. Reduced motion
   // and a failed script escape through the media query and the `data-js` gate,

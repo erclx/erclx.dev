@@ -202,6 +202,8 @@ Read a landing-page animation off an event the platform emits, or off an invaria
 
 This is a fact about a headless software composite rather than about a visitor's machine, where the shader runs on the GPU. It has not been measured on real hardware, so treat it as a constraint on the harness rather than as a performance claim about the page.
 
+The suite now loads the hero still by default through `e2e/fixtures.ts`, so the 44.9ms frame describes a live hero rather than the page a spec usually meets. A spec that opts into `shaderLive` still pays it, as `e2e/header-shader.spec.ts` does. Measured on 2026-09-28 against the chromium project pinned to 4 cores, holding the hero still cut the wall time by 37% at one worker and 40% at two with every test passing, and took the GPU process from about 2.9 cores to 1.15 at one worker.
+
 ## The pull request trigger carries no branch filter
 
 `on: pull_request:` with a `branches: [main]` filter fires no job at all on a pull request targeting anything else. Measured 2026-08-21 against a four-deep stack: the bottom pull request reported five jobs and the three above it reported no checks on their branches, so two of the four could be merged having never been checked until their base landed. The filter also serialized every run in the stack behind a merge.

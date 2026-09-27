@@ -1,5 +1,4 @@
-import { expect, test } from '@playwright/test'
-
+import { expect, test } from './fixtures'
 import { measureLetterShape } from './letter-shape'
 
 const AVATAR_PATHS = [

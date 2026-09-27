@@ -1,7 +1,8 @@
-import { expect, type Locator, type Page, test } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 
 import { REVEAL_THRESHOLD } from '../src/lib/reveal'
 import { ANCHOR_RATIO } from '../src/lib/section-nav'
+import { expect, test } from './fixtures'
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 
 // One per beat.

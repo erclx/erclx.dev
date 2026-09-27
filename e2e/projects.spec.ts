@@ -1,5 +1,4 @@
-import { expect, test } from '@playwright/test'
-
+import { expect, test } from './fixtures'
 import { loadedImageCount, scrollThroughPage } from './lazy-images'
 
 const CARD_NAMES = ['canon', 'Jobtriage', 'annex', 'Stackr', 'Caret']
