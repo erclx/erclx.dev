@@ -7,4 +7,5 @@
  * no page's description repeats it, and importing the script would run it,
  * since that file launches a browser at the top level.
  */
-export const CARD_CLAIM = 'I build AI tools, mostly ones I needed myself first.'
+export const CARD_CLAIM =
+  'I build AI agents, and I measure them before I trust them.'
