@@ -7,15 +7,20 @@ description: Full-height top-of-page band on every viewport. Carries the name, o
 
 Appears at the top of the page on every viewport. Carries the name, one line about the work, the portrait, and primary contact links. Sits inside a tinted band that runs edge-to-edge, holding the full viewport height from md up and 70svh below it.
 
-The name opens the surface and the line sits under it, `I build AI agents and developer tools.` from the career source, so one line both opens the page and frames the links that stood bare beneath it. The line takes the display face at the lede step, which reads as one masthead rather than as a heading with a caption. `svh` rather than `vh` below md, since a collapsing address bar grows `vh` mid-scroll and would overflow the band the value bounds.
-
-The theme toggle sits in the header's own corner rather than on a text row. The portrait floats flush to the column's right edge for 160px from the heading's top, so no row under the name has a free right side.
-
-Three things left this surface on 2026-08-17. The claim and its elaboration moved to experience, because the elaboration opens on a pronoun standing for the claim and splitting the two left that pronoun with no antecedent on either surface. The location moved nowhere: the closing-ask rows already state it as a filter. The availability status moved to the closing ask, where the ask lives.
+The name opens the surface and the line sits under it, so one line both opens the page and frames the links that stood bare beneath it. The line takes the display face at the lede step, which reads as one masthead rather than as a heading with a caption. `svh` rather than `vh` below md, since a collapsing address bar grows `vh` mid-scroll and would overflow the band the value bounds.
 
 The emptiness is deliberate. The band is a stage held open for an authored real-time surface, and a claim competing with it would make that surface decoration. Until that surface ships the header reads sparse, which is a known cost rather than an oversight.
 
-## Desktop (≥768px)
+## Regions
+
+- Band: a tinted band running edge-to-edge behind everything else on the surface, full viewport height from md up and 70svh below it
+- Shader field: an authored WebGL surface rendered behind the band as the page's visual signature. The same drawing continues under the whole page at a fraction of its weight. It replaced a particle canvas on 2026-08-20
+- Theme toggle: in the header's own corner rather than on a text row
+- Name: the display heading that opens the content column
+- Portrait: floats flush to the column's right edge for 160px from the heading's top, so no row under the name has a free right side
+- Line: under the name, in the display face at the lede step
+- Contact links: a row under the line
+- At 768 and wider: the layout drawn below
 
 ```plaintext
 ┌─[tinted band, full viewport height]─────────────────────────┐
@@ -29,7 +34,7 @@ The emptiness is deliberate. The band is a stage held open for an authored real-
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## Narrow (≤320px)
+- Below 768: the band holds 70svh, and the contact links wrap, drawn at 320 below
 
 ```plaintext
 ┌─[tinted band]────────────────────┐
@@ -45,6 +50,21 @@ The emptiness is deliberate. The band is a stage held open for an authored real-
 └──────────────────────────────────┘
 ```
 
+## States
+
+| State             | Reached when                                      | Shows                                                                                        | Evidence       |
+| ----------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------- |
+| `resting`         | The page loads with no pointer on the band        | The band, the field, and the content column at rest                                          | `not captured` |
+| `pointer-resting` | A pointer rests on the band                       | A hill the contours bend around                                                              | `not captured` |
+| `clicked`         | A reader clicks the band outside a link or button | A disturbance moving outward from the click, bending the field it crosses, fading to nothing | `not captured` |
+| `reduced-motion`  | The reader asks for reduced motion                | One drawn frame of the field, answering neither pointer response                             | `not captured` |
+
+## Copy
+
+- Name: `Eric Le`
+- Line: `I build AI agents and developer tools.`, from the career source
+- Contact links, in order: `GitHub`, `LinkedIn`, `me@erclx.dev`
+
 ## Behavior
 
 - The greeting and the theme toggle share one row, with the toggle out of that row's flow so its tap height cannot displace the line it centres on. The toggle renders here and is the page's only one, but it does not stay here: the handoff moves it into a host fixed to the viewport and paints it onto this row, so the same control answers in the hero and in the bar. What sits in this column is the empty slot it was measured from.
@@ -53,11 +73,13 @@ The emptiness is deliberate. The band is a stage held open for an authored real-
 - The portrait sits on a mound the shader adds to its stream function, so the field's own contours close around it and the photo reads as a feature in the terrain rather than an object on top of it. They are the field's lines rather than a drawing in its style, which is what carries the relief, the sheen, and the pointer's reveal onto them. See `canon/context/motion.md` § Portrait rings.
 - The toggle aligns to the greeting's cap height rather than to its line box, because the empty descender space still counts toward a line box's middle.
 - Contact links wrap to a new row when the viewport cannot hold all three on one line. Links are same-tab.
+- The shader field answers a pointer two ways. Resting on it raises a hill the contours bend around, and clicking drops a disturbance that travels outward from where the click landed, bends the field it crosses, and fades to nothing. Both are read as displacement rather than as color, so the band never lights up under a reader.
+- A reader who asks for reduced motion gets neither, since that path draws one frame and listens for nothing. Links and buttons are excluded from the click, so reaching for a destination in the header never disturbs the band behind it.
+- See `canon/context/shader-field.md` for the mount lifecycle, the uniform contract, and the reduced-motion still, and `canon/context/page-ground.md` for the layer under the page.
 
-## Shader field signature
+## Not on this surface
 
-An authored WebGL surface renders behind the header band as the page's visual signature, and the same drawing continues under the whole page at a fraction of its weight. It replaced a particle canvas on 2026-08-20. See `canon/context/shader-field.md` for the mount lifecycle, the uniform contract, and the reduced-motion still, and `canon/context/page-ground.md` for the layer under the page.
-
-The surface answers a pointer two ways. Resting on it raises a hill the contours bend around, and clicking drops a disturbance that travels outward from where the click landed, bends the field it crosses, and fades to nothing. Both are read as displacement rather than as color, so the band never lights up under a reader.
-
-A reader who asks for reduced motion gets neither, since that path draws one frame and listens for nothing. Links and buttons are excluded from the click, so reaching for a destination in the header never disturbs the band behind it.
+- No claim or elaboration. Both moved to experience on 2026-08-17, because the elaboration opens on a pronoun standing for the claim and splitting the two left that pronoun with no antecedent on either surface.
+- No location. It moved nowhere on 2026-08-17: the closing-ask rows already state it as a filter.
+- No availability status. It moved to the closing ask on 2026-08-17, where the ask lives.
+- No light-up under the pointer. The field answers with displacement rather than color.
