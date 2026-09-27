@@ -9,7 +9,13 @@ Sits fixed at the top of the viewport on the landing page, hidden while the read
 
 This is the surface that closes the navigation hole the rail could not. The rail is hidden below 1280px and states position rather than offering reach, so before this bar a reader below that width had no navigation at all.
 
-## Landing page, revealed (≥768px)
+## Regions
+
+- Ground: the shape the bar draws, detached from the viewport edge, holding the same column as the hero. Both bars draw one shared ground rather than a copy per surface, so a reader crossing between the landing page and a route meets the same shape at the same height
+- Home lockup: the mark and the name at the left of the row, one control rather than a mark beside one
+- Route name: centred in the row, on a project route only
+- Theme toggle: at the right of the row, the hero's own control once it has arrived
+- On the landing page, revealed, at 768 and wider: the layout drawn below
 
 ```plaintext
 ┌─[viewport]──────────────────────────────────────────────────┐
@@ -19,9 +25,29 @@ This is the surface that closes the navigation hole the rail could not. The rail
 └─────────────────────────────────────────────────────────────┘
 ```
 
-The ground starts at the full width with square corners and contracts to a rounded shape as the reader scrolls. The row inside it does not move.
+- On a project route: the same ground and column, with the route's name centred between the lockup and the toggle, drawn below
 
-## Landing page, over the hero
+```plaintext
+┌─[viewport]──────────────────────────────────────────────────┐
+│      ╭─[same ground, same column]───────────────────╮       │
+│      │  e▮ Eric Le       diction              [☾]   │       │  ← mark, way home, name returns to route top, toggle
+│      ╰──────────────────────────────────────────────╯       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## States
+
+| State                 | Reached when                                                       | Shows                                                                                                 | Evidence       |
+| --------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- | -------------- |
+| `over-hero`           | The reader is on the landing page and has not passed half the hero | No bar, and the toggle painted onto the hero's own row                                                | `not captured` |
+| `revealed`            | The reader passes half the hero                                    | The bar with its ground at the full width with square corners, the name and the toggle arriving in it | `not captured` |
+| `contracted`          | The reader scrolls on past the reveal                              | The ground contracted to a rounded shape, the row inside it unmoved                                   | `not captured` |
+| `name-hovered`        | A pointer rests on the name, or the name takes keyboard focus      | The name underlined                                                                                   | `not captured` |
+| `route-title-visible` | A reader is on a project route with its own title still on screen  | The route bar with no route name                                                                      | `not captured` |
+| `route-title-passed`  | The route's title passes behind the bar                            | The route name faded in at the centre of the bar                                                      | `not captured` |
+| `reduced-motion`      | The reader asks for reduced motion                                 | The name kept in the hero and the bar showing its own, with the toggle still moving                   | `not captured` |
+
+### Over the hero
 
 ```plaintext
 ┌─[viewport]──────────────────────────────────────────────────┐
@@ -32,21 +58,11 @@ The ground starts at the full width with square corners and contracts to a round
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## Project route
+## Copy
 
-```plaintext
-┌─[viewport]──────────────────────────────────────────────────┐
-│      ╭─[same ground, same column]───────────────────╮       │
-│      │  e▮ Eric Le       diction              [☾]   │       │  ← mark, way home, name returns to route top, toggle
-│      ╰──────────────────────────────────────────────╯       │
-└─────────────────────────────────────────────────────────────┘
-```
-
-The route name is absent while the route's own title is still on screen and fades in once that title passes behind the bar, so the two never state the same thing at once. A route carries no arrow beside the name. The foot carries one on its own control, and the two are separated by a page height rather than by an ornament, so an arrow here would state a second time what the name already does.
-
-The name sits at the centre of the bar's own box, which is what the diagram above has always drawn and what the row did not do until 2026-08-26. Three items under `justify-between` split the free space into two equal gaps, and equal gaps centre the middle item only when the two flanking it match, so the 79px lockup against the 44px toggle left the name 17.5px right of centre at every width and on all five routes. Nothing compared the drawing against the page.
-
-The name is also the route's way back to its own top. Every other control on a route leaves it: the lockup here and the closing foot both target the landing page, and the rail's first row is the only one that returns to the top and is hidden below 1280, which is the band both of the screenshots that prompted this sit in.
+- Home lockup name: `Eric Le`
+- Route name: the route's own name, templated per route, so `diction` in the sketch is a placeholder
+- Route name's accessible name: `Back to top of <route>`, templated
 
 ## Behavior
 
@@ -56,29 +72,29 @@ The name is also the route's way back to its own top. Every other control on a r
 - The mark sits inside that control and outside the name slot, which are different boxes. The slot is the target the flying name is measured against, so the marker stays on the name rather than moving up to the group.
 - The bar switches on and its ground fades in under it. The name and the toggle arrive by riding the scroll and are fully opaque when they land, so a mark fading up beside them was a third timing on the row. The opacity stays on the bar rather than the row, because reduced motion gives the name slot its color back and an always-opaque bar would then show a second name through the whole hero.
 - The bar is `inert` until it is revealed, so nothing inside it takes focus while it is off screen.
+- The route name is absent while the route's own title is still on screen and fades in once that title passes behind the bar, so the two never state the same thing at once.
 - A route's name is `inert` on its own clock, since it is withheld for the opening screen while the bar around it is already reachable. Opacity hides a control from the eye and from nothing else, so without this it was a tab stop and a 44px target across the whole opening screen while painting nothing.
+- The route name sits at the centre of the bar's own box, which is what the diagram above has always drawn.
 - The route row is three columns with equal outer ones rather than a spaced row, so the name centres whatever the two controls beside it weigh. A measured nudge was rejected: the offset is exactly half the difference between them, so it would encode today's two widths and go wrong the moment either moved.
+- The route name is also the route's way back to its own top. Every other control on a route leaves it: the lockup here and the closing foot both target the landing page, and the rail's first row is the only one that returns to the top and is hidden below 1280, which is the band both of the screenshots that prompted this sit in.
 - A route's own bar is the sticky one rather than a second bar above it, so a reader deep in a long route always has a way home without stacking two bars.
-
-## The ground
-
-Both bars draw one shared ground rather than a copy per surface. A reader crossing between the landing page and a route meets the same shape at the same height.
-
-- The ground is the elevated surface token rather than the page background. Drawn from the background it measured 1.002:1 against what sat behind it, so only the text inside said a bar was there. Blurring a flat field returns the same flat field.
-- The shape is detached from the viewport edge, carries an edge and a shadow, and holds no rule under it.
-- It is lightly translucent over a wide blur. Prose passing under a lighter bar reads through it as letterforms, which a wider blur destroys while the backdrop still reads as a wash. Widening it further averages the dark gaps between project cards into the ground and darkens it under near-black text.
-- It contracts on scroll and the row inside holds its position. Everything the hero flies into that row is placed at a measured position, so the shape is the one thing free to move.
-- It eases between the two shapes over 320ms on both surfaces, and the edge and the shadow arrive at once rather than fading with it. The landing bar switched in a single frame until 2026-08-25, because its own component redeclared `transition` on the ground and a shorthand replaces the shared list rather than adding to it.
-
-See `canon/context/site-bar.md` § One ground for two bars, and the shape moves while the row does not for the measured values behind each of these.
-
-## The handoff
-
-The name and the toggle are not duplicated between the hero and the bar. Both travel, and each is one element throughout.
-
+- The ground is the elevated surface token rather than the page background, since a ground drawn from the background left only the text inside to say a bar was there.
+- The ground carries an edge and a shadow.
+- The ground is lightly translucent over a wide blur. Prose passing under a lighter bar reads through it as letterforms, which a wider blur destroys while the backdrop still reads as a wash. Widening it further averages the dark gaps between project cards into the ground and darkens it under near-black text.
+- The ground contracts on scroll and the row inside holds its position. Everything the hero flies into that row is placed at a measured position, so the shape is the one thing free to move.
+- The ground eases between the two shapes on both surfaces, and the edge and the shadow arrive at once rather than fading with it. The landing bar switched in a single frame until 2026-08-25.
+- See `canon/context/site-bar.md` § One ground for two bars, and the shape moves while the row does not for the measured values behind each of the ground's bullets.
+- The name and the toggle are not duplicated between the hero and the bar. Both travel, and each is one element throughout.
 - The name a reader sees while it travels is a third element, fixed and scaling from the hero's display size down to the bar's. The hero's own heading keeps its text for assistive technology and is painted transparent rather than hidden, so the page's only `h1` keeps its accessible name.
 - The toggle is the hero's own control, re-parented into a fixed host. Exactly one exists per page. See `canon/context/theming.md`.
 - Both ride the scroll rather than playing an animation over it, and each travels on its own measurements, so the toggle lands before the name. Syncing them would mean one moving at a rate the scroll does not.
 - Reduced motion keeps the name in the hero and shows the bar's own, which is the same information with none of the travel. The toggle still moves, since its position has to stay continuous for the control to be reachable at every scroll.
+- Placement waits for the stylesheet, and for the hero's arrival wherever that arrival is still coming, before it measures. It gives up waiting after three seconds. Measuring too early put the toggle 868px off its row in WebKit against the built page, and waiting on an arrival that could never come left the bar's slots empty for three seconds on any refresh landing below the hero. See `canon/context/site-bar.md` § A promoted control is measured against the settled page.
 
-Placement waits for the stylesheet, and for the hero's arrival wherever that arrival is still coming, before it measures. It gives up waiting after three seconds. Measuring too early put the toggle 868px off its row in WebKit against the built page, and waiting on an arrival that could never come left the bar's slots empty for three seconds on any refresh landing below the hero. See `canon/context/site-bar.md` § A promoted control is measured against the settled page.
+## Not on this surface
+
+- No rule under the bar.
+- No arrow beside the route name. The foot carries one on its own control, and the two are separated by a page height rather than by an ornament, so an arrow here would state a second time what the name already does.
+- No second bar on a route. The route's own bar is the sticky one.
+- No separate link on the mark.
+- No second theme toggle. The hero's control travels into the bar.
