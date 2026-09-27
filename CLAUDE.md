@@ -11,9 +11,14 @@ Personal landing site. Astro v6 static build with Tailwind v4, deployed to Cloud
 @canon/context/index.md
 @canon/wireframes/index.md
 
+## Commands
+
+- `bun run check`: the gate `.husky/pre-push` runs, so run it before pushing
+
 ## Key paths
 
 - `src/`: Astro source (pages, layouts, components, styles, assets)
+- `canon/DESIGN.md`: design tokens and the visual system
 - `public/`: static files served as-is
 - `scripts/`: build, dev, and capture tooling
 - `e2e/`: Playwright suite plus the capture and inventory harnesses
