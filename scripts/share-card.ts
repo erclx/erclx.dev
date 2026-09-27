@@ -5,9 +5,10 @@
  * site's own Fraunces and the tokens are the ones it ships. A card drawn in a
  * fallback face is a card judged on the wrong letterforms.
  *
- * The mark leads and the page header's line sits beside it, with the small
- * attribution under that line. The line is declared once in
- * `scripts/card-copy.ts`, since the header shows the same words. Two earlier
+ * The mark leads and the card's line sits beside it, with the small
+ * attribution under that line. The line comes from the career source's
+ * `share-card.md` and is declared once in `scripts/card-copy.ts`, since the
+ * header shows the same words today. Two earlier
  * arrangements put the name in the image at display weight, which is the same
  * word twice in one unfurl since every host prints the title alongside.
  * Attribution stays small, because a host shows the domain and not always the
