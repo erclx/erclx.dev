@@ -36,7 +36,7 @@ const navItems = [
 
 <BaseLayout
   title="Stackr · Eric Le"
-  description="Named context tracks for planning and architecture conversations in any AI chat. A VS Code extension on the Marketplace and Open VSX."
+  description="A VS Code extension that keeps named sets of files and copies each into an AI chat as one block, with the tree on top. On the Marketplace and Open VSX."
   surface="case-study"
 >
   <SectionNav items={navItems} instant />
@@ -60,8 +60,8 @@ const navItems = [
         <p
           data-fade          class="text-muted-foreground text-lede mt-4"
         >
-          Named context tracks for planning and architecture conversations in any AI
-          chat.
+          A VS Code extension that keeps named sets of files and copies each one
+          into an AI chat as a single block, with the directory tree on top.
         </p>
         <ul
           data-fade          class="mt-6 flex flex-wrap gap-x-6"
@@ -147,8 +147,9 @@ const navItems = [
         >
           Copying a track emits an ASCII directory tree followed by the file
           contents, which gives the model the shape of the codebase before it
-          reads any of it. Token counts update as the stack changes, amber above
-          5,000 and red above 10,000.
+          reads any of it. Estimated token counts update as the stack changes,
+          per file and for the whole track, and a file turns amber above 5,000
+          and red above 10,000. Tracks survive a restart of VS Code.
         </p>
       </div>
     </section>
@@ -185,10 +186,19 @@ const navItems = [
         <p
           data-fade          class="text-muted-foreground text-body mt-6"
         >
+          Every pull request runs the tests on Ubuntu, macOS, and Windows. A
+          version tag runs them again and, once they pass, publishes to the VS
+          Code Marketplace and Open VSX and attaches the package to a GitHub
+          release.
+        </p>
+        <p
+          data-fade          class="text-muted-foreground text-body mt-6"
+        >
           The other constraint is the extension host, which is shared and single
-          threaded. Building an ASCII tree from a large stack would block it, so
-          the tree builder works in chunks of 500 files and yields between them.
-          Batch deletions use the same pattern.
+          threaded. Building the tree for a large stack would block it, so the
+          tree builder works in chunks of 500 files and yields between them.
+          Cleaning deleted files out of every track yields on time instead,
+          whenever 16 milliseconds have passed.
         </p>
       </div>
     </section>

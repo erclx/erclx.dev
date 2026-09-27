@@ -42,8 +42,9 @@ const stack = [
     value: 'BM25 and `multilingual-e5-base` dense, fused by RRF over SQLite',
   },
   {
-    key: 'BYOK',
-    value: 'Anthropic, OpenAI, Gemini, local Ollama, mock replay',
+    key: 'Providers',
+    value:
+      'Anthropic, OpenAI, Gemini by visitor key, a no-key mock replay, local Ollama in development',
   },
   { key: 'Domain', value: 'Cloudflare A record fronting Vercel' },
 ]
@@ -78,7 +79,7 @@ const toolPairings = [
 
 <BaseLayout
   title="Jobtriage · Eric Le"
-  description="A job-search application over Sweden's public JobTech API, with an agent that turns a profile and a question into a visual shortlist. Measured retrieval in the case study."
+  description="A job-search agent over Sweden's public JobTech API that turns a profile and a question into a visual shortlist, with its retrieval measured."
   surface="case-study"
 >
   <SectionNav items={navItems} instant />
@@ -99,7 +100,7 @@ const toolPairings = [
         <p
           data-fade          class="text-muted-foreground text-lede mt-4"
         >
-          A job-search application over Sweden's public JobTech API, with an agent that turns a profile and a question into a visual shortlist.
+          A job-search agent over Sweden's public JobTech API that turns a profile and a question into a visual shortlist, for any profession.
         </p>
         <ul
           data-fade          class="mt-6 flex flex-wrap gap-x-6"
@@ -148,10 +149,10 @@ const toolPairings = [
           problem
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          I was job hunting, and Sweden's job API is public. So I built against it.
+          Sweden's job board can filter by occupation, region, and deadline. It cannot answer "which of these mention agentic systems and close before Friday", so I built something that could, against the same public API.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          Job boards return a list. The question that actually matters is which roles fit a particular person, why they fit, which one closes first, and which two are worth putting side by side. That is a profile-driven decision rather than a keyword filter, and it is not what a ranked list is shaped for.
+          Job boards return a list. The question a candidate has is which roles fit them, why, which one closes first, and which two are worth putting side by side. That is a decision made against a profile, and a ranked list is not shaped for it.
         </p>
       </div>
     </section>
@@ -162,7 +163,7 @@ const toolPairings = [
           try
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          Two paths share the same interface. A visitor without a key gets a mock replay of four recorded conversations, enough to drive the canvas in five seconds. A visitor with a key drives the live agent against JobTech data, bringing their own from Anthropic, OpenAI, Gemini, or a local Ollama model.
+          Two paths share the same interface. A visitor without a key gets a mock replay of four recorded conversations, enough to drive the canvas. A visitor with a key from Anthropic, OpenAI, or Gemini drives the live agent against JobTech data. The key stays in the browser and is never stored on the server.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
           The deployed path searches the live JobTech taxonomy and JobSearch APIs, so results are current. Local development runs against a fixed corpus instead, which is what makes a retrieval change measurable rather than merely different.
@@ -182,27 +183,27 @@ const toolPairings = [
           The canvas makes the next decision visible rather than leaving a candidate to reconstruct it from a chat transcript.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          Spatial tool pairings are pinned in the system prompt, so the agent fires a spatial tool after every data tool and the canvas answers the question rather than illustrating it.
+          Spatial tool pairings are pinned in the system prompt, so the agent fires a spatial tool after every data tool and the canvas answers the question rather than illustrating it. The table is the local set. The deployed agent carries a smaller one, since corpus tools such as <code class="font-mono">triageBatch</code> and <code class="font-mono">deadlineWatch</code> have nothing to search against live data.
         </p>
 
-        <dl
-          data-fade          class="mt-10 grid gap-y-2 sm:grid-cols-[1fr_auto_1fr]"
-        >
-          {
-            toolPairings.map((pair) => (
-              <div class="contents font-mono text-label">
-                <dt class="text-foreground">{pair.data}</dt>
-                <span
-                  aria-hidden="true"
-                  class="text-muted-foreground hidden sm:inline-block sm:px-4"
-                >
-                  →
-                </span>
-                <dd class="text-foreground">{pair.spatial}</dd>
-              </div>
-            ))
-          }
-        </dl>
+        <table data-fade class="mt-10 font-mono text-label">
+          <thead>
+            <tr class="text-muted-foreground">
+              <th class="pr-8 pb-2 text-left font-normal">Data tool</th>
+              <th class="pb-2 text-left font-normal">Spatial tool</th>
+            </tr>
+          </thead>
+          <tbody class="text-foreground">
+            {
+              toolPairings.map((pair) => (
+                <tr>
+                  <td class="py-1 pr-8">{pair.data}</td>
+                  <td class="py-1">{pair.spatial}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
       </div>
     </section>
 
@@ -323,10 +324,12 @@ const toolPairings = [
           data-fade          class="text-muted-foreground text-body mt-6"
         >
           English-only MiniLM gives up 11 points of recall@10 against
-          e5-base on the Swedish set. e5-large lifts P@1 by another 8 points
-          over e5-base and hands back two points of recall@10, so e5-base
-          ships as the balanced default. The encoder choice carries the result rather
-          than decorating it.
+          e5-base on the Swedish set, and fusing BM25 back in recovers 7 of
+          them. That is the strongest case for keeping hybrid: it holds up when
+          the encoder is weaker than the one it was tuned on. e5-large lifts
+          P@1 by another 8 points over e5-base, for about 70% more memory and
+          dense latency, and hands back two points of recall@10, so e5-base
+          ships as the default.
         </p>
       </div>
     </section>
@@ -359,6 +362,9 @@ const toolPairings = [
 
         <p data-fade class="text-muted-foreground text-body mt-8">
           React Flow surfaces four canonical views, each carrying custom nodes rather than the React Flow defaults.
+        </p>
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The agent is measured too, on ten scripted probes against the live path. It passed five. It picked the right tools 92% of the time and then answered incompletely, which makes the gap a prompt and answer-quality problem rather than a routing one. That is the next thing to fix.
         </p>
       </div>
     </section>

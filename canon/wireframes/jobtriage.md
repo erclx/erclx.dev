@@ -15,14 +15,14 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   ─────────────────────────────────────────────────────        │  ← the rule stops at the text column
 │   PROJECT                                                      │  ← eyebrow
 │   Jobtriage                                                    │  ← Fraunces display
-│   A job-search application over Sweden's public JobTech API,   │  ← the claim, Inter body
-│   with an agent that turns a profile and a question into a     │
-│   visual shortlist.                                            │
+│   A job-search agent over Sweden's public JobTech API that     │  ← the claim, Inter body
+│   turns a profile and a question into a visual shortlist, for  │
+│   any profession.                                              │
 │   [Live demo]    [GitHub]    [Walkthrough]                     │  ← header-row CTA links
 ├────────────────────────────────────────────────────────────────┤
 │   problem                                                      │  ← section heading
-│   I was job hunting, and Sweden's job API is public. So I      │  ← the reason, at lede weight
-│   built against it.                                            │
+│   Sweden's job board can filter by occupation, region, and     │  ← the reason, at lede weight
+│   deadline. It cannot answer ...                               │
 │   Job boards return a list ...                                 │  ← the framing, demoted to body
 ├────────────────────────────────────────────────────────────────┤
 │   try                                                          │
@@ -30,13 +30,13 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 ├────────────────────────────────────────────────────────────────┤
 │   canvas                                                       │
 │   The agent does not stop at a paragraph of text ...           │
-│   data tool         → spatial tool                            │  ← two-column mapping list
-│   searchJobs        → placeAds                                │
-│   triageBatch       → groupAds                                │
-│   matchProfile      → connectProfileToAds                     │
-│   compareRoles      → pairAdsForCompare                       │
-│   deadlineWatch     → placeAdsOnTimeline                      │
-│   trackStatus       → markStatus                              │
+│   Data tool         Spatial tool                              │  ← two-column mapping table, headed
+│   searchJobs        placeAds                                  │
+│   triageBatch       groupAds                                  │
+│   matchProfile      connectProfileToAds                       │
+│   compareRoles      pairAdsForCompare                         │
+│   deadlineWatch     placeAdsOnTimeline                        │
+│   trackStatus       markStatus                                │
 ├────────────────────────────────────────────────────────────────┤
 │   retrieval                                                    │
 │   50-query Swedish golden set against a 59-ad corpus.         │
@@ -62,8 +62,9 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   Frontend: Next.js App Router on Vercel, Vercel AI SDK       │  ← stack list, mono
 │   Backend: FastAPI on Cloud Run europe-west1, 1Gi memory      │
 │   Retrieval: BM25 and multilingual-e5-base dense, fused by RRF │
-│   BYOK: Anthropic, OpenAI, Gemini, local Ollama, mock replay  │
+│   Providers: Anthropic, OpenAI, Gemini by visitor key, ...    │
 │   Domain: Cloudflare A record fronting Vercel                 │
+│   The agent is measured too, on ten scripted probes ...       │  ← closes the section
 │                                                                │
 │   ←  Back to Eric Le                                           │  ← closing way home, on the
 │                                                                │    prose column's left edge
@@ -91,8 +92,8 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 │   [body paragraphs wrap]         │
 ├──────────────────────────────────┤
 │   canvas                         │
-│   [tool-pairing list wraps as    │
-│    two lines per pair]           │
+│   [tool-pairing table, two       │
+│    columns]                      │
 ├──────────────────────────────────┤
 │   retrieval                      │
 │   [tables horizontal-scroll]     │
@@ -119,11 +120,11 @@ Lives at `erclx.dev/jobtriage`, served from `src/pages/jobtriage.astro`. The lan
 
 ## Sections
 
-- **Problem.** The reason first, that the author was job hunting against a public API, then a framing paragraph on why a ranked list is not shaped for a profile-driven decision.
+- **Problem.** The reason first, a question Sweden's job board can filter toward but cannot answer, then a framing paragraph on why a ranked list is not shaped for a decision made against a profile.
 - **Try.** The two demo paths, a mock replay without a key and a live agent with the reader's own, then the split between the deployed path on live JobTech data and local development on a fixed corpus.
-- **Canvas.** The agent's tool calls driving a React Flow canvas, and a two-column data-tool-to-spatial-tool mapping list under the note that the pairings are pinned in the system prompt.
+- **Canvas.** The agent's tool calls driving a React Flow canvas, and a two-column table headed `Data tool` and `Spatial tool` under the note that the pairings are pinned in the system prompt and that the table is the local set.
 - **Retrieval.** A lead saying the evaluation covers the local corpus, the 50-query Swedish golden set and 59-ad corpus, then two tables in card containers: the hybrid retrieval ablation and the multilingual encoder comparison. Each carries a caption framing its headline. The ablation notes dense wins P@1 here, against the usual assumption. The encoder notes e5-large lifts P@1 but gives back recall, so e5-base ships as default.
-- **System.** A lead on the two postures sharing one agent shell, a five-row stack list, and a closing line on the four React Flow canvas views. The route carries no diagram of the shell.
+- **System.** A lead on the two postures sharing one agent shell, a five-row stack list, a line on the four React Flow canvas views, and a closing paragraph on the ten scripted probes the live agent is measured on. The route carries no diagram of the shell.
 
 ## Foot
 
