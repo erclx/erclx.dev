@@ -1,9 +1,6 @@
 ---
 import Cast from '@/components/site/experience/cast/cast.astro'
 import Employers from '@/components/site/experience/employers.astro'
-const intro = [
-  'For 18 months at Volvo Technology I built an agent that let test engineers ask for plots and figures from their logged data in plain language, with no analysis code to write. It began as my master’s thesis and ended on the team’s real PostgreSQL, Excel, and Trino data. For the 2025 version I wrote the framework under it myself, and routed each request into a fixed pipeline after the open-ended agent loop I tried first lost track of its task within a few steps.',
-]
 
 interface HistoryEntry {
   current?: boolean
@@ -19,7 +16,9 @@ const history: HistoryEntry[] = [
     current: true,
     span: 'dec 2025 to present',
     head: 'independent projects, open to work',
-    details: [],
+    details: [
+      'Building my own AI agents and developer tools. Everything below runs on canon, my setup for working with coding agents.',
+    ],
   },
   {
     span: 'sep to dec 2025',
@@ -32,7 +31,7 @@ const history: HistoryEntry[] = [
     span: 'jan 2024 to jun 2025',
     head: 'volvo technology, gothenburg',
     details: [
-      'Presented at Generative AI for Automotive USA 2024, an industry conference in Ann Arbor.',
+      'Built an agent that let test engineers get plots and figures from their truck test data by asking in plain language, from my master’s thesis to the team’s real data. Presented it at Generative AI for Automotive USA 2024, an industry conference in Ann Arbor.',
     ],
   },
   {
@@ -85,20 +84,6 @@ const artifacts = [
     >
       Experience
     </h2>
-
-    <div class="mt-8 space-y-6">
-      {
-        intro.map((paragraph, idx) => (
-          <p
-            data-fade
-            style={`--fade-delay: ${100 + idx * 100}ms`}
-            class="text-muted-foreground text-body"
-          >
-            {paragraph}
-          </p>
-        ))
-      }
-    </div>
 
     <Employers />
 
