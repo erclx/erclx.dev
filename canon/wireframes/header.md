@@ -23,7 +23,8 @@ The emptiness is deliberate. The band is a stage held open for an authored real-
 │                                                             │    own corner
 │   Eric Le                                     (photo)       │  ← display heading,
 │                                               portrait      │    portrait floats in it
-│   I build AI agents, and I measure them before I trust them.│  ← line, display face
+│   I build AI agents, and I measure them before I            │  ← line, display face
+│   trust them.                                               │
 │   GitHub    LinkedIn    me@erclx.dev                        │  ← contact links row
 │                                                             │
 └─────────────────────────────────────────────────────────────┘

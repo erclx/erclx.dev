@@ -26,7 +26,8 @@ The ground starts at the full width with square corners and contracts to a round
 ```plaintext
 ┌─[viewport]──────────────────────────────────────────────────┐
 │                                                       [☾]   │  ← bar absent, toggle painted
-│   I build AI agents, and I measure them before I trust them.│    onto the hero's own row
+│   I build AI agents, and I measure them before I            │    onto the hero's own row
+│   trust them.                                               │
 │                                                             │
 │   Eric Le                                     (photo)       │
 └─────────────────────────────────────────────────────────────┘
