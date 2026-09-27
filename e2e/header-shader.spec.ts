@@ -1,4 +1,6 @@
-import { expect, type Page, test } from '@playwright/test'
+import type { Page } from '@playwright/test'
+
+import { expect, test } from './fixtures'
 
 declare global {
   interface Window {
@@ -6,6 +8,10 @@ declare global {
     __fieldGl: WebGLRenderingContext | null
   }
 }
+
+// This file tests the surface itself, so every assertion in it runs against
+// the loop that ships rather than the still the rest of the suite loads.
+test.use({ shaderLive: true })
 
 const CANVAS = '[data-shader-field]'
 /** How long a window watching for a scheduled frame has to prove one arrived. */
@@ -68,6 +74,36 @@ async function litPercent(page: Page): Promise<number> {
     flat.height = 0
     return (lit / (data.length / 4)) * 100
   }, CANVAS)
+}
+
+/** Frames the page schedules across a fixed window once the surface has drawn. */
+async function framesOnceDrawn(
+  page: Page,
+  baseURL: string | undefined,
+): Promise<number> {
+  await page.addInitScript(instrument)
+  await page.goto(baseURL ?? '/')
+  await page.bringToFront()
+
+  // Settled on the surface itself before the window opens, so a startup frame
+  // scheduled while the surface was drawing is not mistaken for one scheduled
+  // after it stopped.
+  await expect
+    .poll(() => litPercent(page), { timeout: SETTLE_TIMEOUT_MS })
+    .toBeGreaterThan(1)
+  // The site bar polls a frame at a time until the reveals under motion come
+  // to rest, for up to three seconds after load, and those frames would read
+  // as the hero's. It marks the end of that wait on the toggle host.
+  await page.waitForSelector('[data-toggle-host][data-ready]')
+
+  // A duration rather than a settle from here: the claim is about what gets
+  // scheduled across this window, which has no condition to poll for.
+  // FRAME_WINDOW_MS bounds that window alone, wide enough to catch a frame
+  // requested on a still path if one ever were.
+  const before = await page.evaluate(() => window.__frames)
+  await page.waitForTimeout(FRAME_WINDOW_MS)
+  const after = await page.evaluate(() => window.__frames)
+  return after - before
 }
 
 test('the header carries a shader canvas covering the band', async ({
@@ -175,27 +211,33 @@ test('reduced motion schedules no animation frames once drawn', async ({
 }) => {
   const context = await browser.newContext({ reducedMotion: 'reduce' })
   const page = await context.newPage()
-  await page.addInitScript(instrument)
-  await page.goto(baseURL ?? '/')
 
-  // Settled on the still itself before the window opens, so a startup frame
-  // scheduled while the surface was drawing is not mistaken for one scheduled
-  // after it stopped.
-  await expect
-    .poll(() => litPercent(page), { timeout: SETTLE_TIMEOUT_MS })
-    .toBeGreaterThan(1)
-
-  // A duration rather than a settle from here: the claim is that nothing
-  // schedules a frame across this window, which has no condition to poll for.
-  // FRAME_WINDOW_MS bounds that window alone, wide enough to catch a frame
-  // requested on the reduced-motion path if one ever were.
-  const before = await page.evaluate(() => window.__frames)
-  await page.waitForTimeout(FRAME_WINDOW_MS)
-  const after = await page.evaluate(() => window.__frames)
-
-  expect(after - before).toBe(0)
+  expect(await framesOnceDrawn(page, baseURL)).toBe(0)
 
   await context.close()
+})
+
+// The rest of the suite loads the hero still through `./fixtures`, and these
+// two prove that request reaches the page and that opting out of it keeps the
+// loop that ships. Motion is allowed explicitly in both, since under reduced
+// motion the first would pass for the wrong reason.
+test.describe('the harness still', () => {
+  test.use({ contextOptions: { reducedMotion: 'no-preference' } })
+
+  test.describe('under the default fixture', () => {
+    test.use({ shaderLive: false })
+
+    test('schedules no animation frames once drawn', async ({
+      page,
+      baseURL,
+    }) => {
+      expect(await framesOnceDrawn(page, baseURL)).toBe(0)
+    })
+  })
+
+  test('opted out of, keeps scheduling frames', async ({ page, baseURL }) => {
+    expect(await framesOnceDrawn(page, baseURL)).toBeGreaterThan(0)
+  })
 })
 
 test('the heading, links, and toggle stay reachable over the surface', async ({
