@@ -1,5 +1,4 @@
-import { expect, test } from '@playwright/test'
-
+import { expect, holdShaderStill, test } from './fixtures'
 import { settleScroll } from './scroll'
 
 const CARD = '[data-tilt]'
@@ -33,6 +32,7 @@ test.describe('a touch reader', () => {
       isMobile: true,
       viewport: { width: 820, height: 1180 },
     })
+    await holdShaderStill(context)
     const page = await context.newPage()
     await page.goto(baseURL ?? '/')
 
@@ -86,6 +86,7 @@ test.describe('a touch reader', () => {
       isMobile: true,
       viewport: { width: 820, height: 1180 },
     })
+    await holdShaderStill(context)
     const page = await context.newPage()
     await page.goto(baseURL ?? '/')
 

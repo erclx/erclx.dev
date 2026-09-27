@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './fixtures'
 
 test.describe('a shared link', () => {
   test('serves the card at the size every host accepts', async ({

@@ -1,5 +1,3 @@
-import { expect, test } from '@playwright/test'
-
 import {
   MEMBER,
   SCHEDULER_ACT_MS,
@@ -7,6 +5,7 @@ import {
   settleCast,
   WIDE,
 } from './cast-helpers'
+import { expect, holdShaderStill, test } from './fixtures'
 
 // One test, where there were three. The scheduler is a module now, at
 // `src/components/site/experience/cast/scheduler.ts`, driven by an injected
@@ -32,6 +31,7 @@ test.describe('agent cast', () => {
       hasTouch: true,
       isMobile: false,
     })
+    await holdShaderStill(context)
     const page = await context.newPage()
     await page.setViewportSize(WIDE)
     await settleCast(page)

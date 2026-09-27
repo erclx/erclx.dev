@@ -1,5 +1,3 @@
-import { expect, test } from '@playwright/test'
-
 import {
   AMBIENT_BAND,
   BAND_SHARE_CEILING,
@@ -19,6 +17,7 @@ import {
   WIDE,
 } from './cast-helpers'
 import { behaviorGrid } from './cast-inventory'
+import { expect, test } from './fixtures'
 
 /**
  * Settled on the animations existing rather than paused for a span.

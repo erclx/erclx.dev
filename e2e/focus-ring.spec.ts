@@ -1,6 +1,7 @@
-import { expect, type Page, test } from '@playwright/test'
+import type { Page } from '@playwright/test'
 
 import { contrastRatio, paintedColor } from './colors'
+import { expect, test } from './fixtures'
 
 // Guards for the ring a keyboard reader meets.
 //
