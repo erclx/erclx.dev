@@ -466,7 +466,7 @@ describe('the projects section', () => {
 
   it('renders the description the source carries on the canon card', () => {
     expect(card(0)).toContain(
-      'plan first, build in parallel, review separately, and I decide what merges',
+      'planned by an orchestrator, built by workers in parallel, checked by an independent reviewer',
     )
   })
 
@@ -565,7 +565,7 @@ describe('a case study', () => {
   it.each([
     [
       '/canon',
-      'How I build with AI coding agents, packaged for any repository: one session plans, others build in parallel, a separate session reviews, and I merge.',
+      'How I build with AI coding agents, packaged for any repository: one session plans, others build in parallel, and a separate session reviews.',
     ],
     [
       '/jobtriage',
