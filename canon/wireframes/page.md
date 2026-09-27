@@ -30,8 +30,7 @@ A card's bounds are revealed under the pointer instead of drawn at rest. `canon/
 ┌──────────────────────────────────────────────────────────┐
 │ [header band, shader field, fading into the page below]  │  ← runs edge-to-edge, full height
 │   Eric Le                                 [theme toggle] │  ← name at its own tier
-│   I build AI agents, and I measure them                  │
-│   before I trust them.                                   │
+│   I build AI agents and developer tools.                 │
 │   [GitHub] [LinkedIn] [me@erclx.dev]      [portrait]     │
 │                                                          │  ← no rule; the band dissolves
 │   About me                                               │
