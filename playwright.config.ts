@@ -25,11 +25,13 @@ export default defineConfig({
   // `workers` under CI was held at 1 after dispatch runs on 2026-09-05 failed
   // across every engine at 2 and 4. The load behind that starvation was the
   // live hero rendering in SwiftShader, measured on 2026-09-28, and with the
-  // hero held still the count is the one two clean dispatch runs proved, per
-  // canon/context/ci.md. Locally the cap is 4, since Playwright's default of
-  // half the cores pinned a 32-core machine, and never higher anywhere.
+  // hero held still two dispatches at 2 passed every engine, but the first
+  // flaked one firefox and one webkit test, so CI stays at 1 until two runs
+  // come back with no flaky test, per canon/context/ci.md. Locally the
+  // cap is 4, since Playwright's default of half the cores pinned a 32-core
+  // machine, and never higher anywhere.
   retries: isCI ? 2 : 0,
-  workers: isCI ? 2 : 4,
+  workers: isCI ? 1 : 4,
   // The html report is what the failure artifact uploads. Under `list` alone
   // that directory is never written and the upload takes nothing, which leaves
   // a red engine with no trace to read.
