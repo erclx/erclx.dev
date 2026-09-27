@@ -2,8 +2,8 @@
 
 # Routes a shell command that authors prose to the standard governing it.
 #
-# The path-scoped rules under `.claude/rules/canon/claude/` load on a file edit, so
-# every authoring surface that writes a file is already covered. A pull request
+# The path-scoped rules under `.claude/rules/canon/{canon,claude,writing}/` load
+# on a file edit, so every authoring surface that writes a file is already covered. A pull request
 # body written through `gh`, a commit message passed with `-m`, and a branch
 # name given to `git checkout -b` write no file at all, so nothing in that
 # system can fire and the standard goes unread. This closes those three.
@@ -76,7 +76,7 @@ esac
 # between commits.
 session=$(printf '%s' "$input" | jq -r '.session_id // "none"')
 key=$(printf '%s__%s' "$session" "$standard" | tr -c 'A-Za-z0-9' '_')
-marker_dir="$root/.canon/tmp/standards-reminder"
+marker_dir="$root/.canon/tmp/hooks/standards-reminder"
 marker="$marker_dir/$key"
 [ -f "$marker" ] && exit 0
 mkdir -p "$marker_dir"

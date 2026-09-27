@@ -87,6 +87,7 @@ qrcode
 readback
 regen
 scannability
+scrollend
 scroller
 serviceworker
 shadcn
