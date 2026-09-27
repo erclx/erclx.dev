@@ -116,7 +116,8 @@ Magnifying is the first size at which a portrait chart is readable: fitting one 
 - Section headings: `problem`, `data`, `fix`, `holdout`, `beyond`
 - Score table headings: `score`, `what it was`, `what it is now`
 - Foot: `Back to Eric Le`
-- Claim, offline line, section prose, captions, and alt text: cited at `src/pages/diction.astro` rather than duplicated here. The offline line is ported from the career source, and every other string is authored in this repository
+- Claim, offline line, section prose, captions, and alt text: sourced from `career/assets/portfolio/diction.md`, every blockquote rendered as written, and cited at `src/pages/diction.astro` rather than duplicated here
+- Section headings: the lines written in this repository
 - Alt text: states the finding rather than the file
 
 ## Behavior
