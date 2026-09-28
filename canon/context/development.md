@@ -38,11 +38,13 @@ Count the fourteen rather than the ten when weighing a removal. The smaller numb
 
 ### What an end-to-end run costs
 
-Scope and engines look like two ways to make a run cheaper and only one of them is. Measured on this suite, the full 273 tests run on chromium alone in about 1.9 minutes and 811 across all three engines in about 3.5, so three times the tests cost less than double the wall clock. Locally the engines fill workers that were otherwise idle.
+A local run is chromium alone at 4 workers, and `bun run test:e2e:all` adds firefox and webkit. `playwright.config.ts` defines the two extra projects only when `CI` or `E2E_ALL_ENGINES` is set, so a local `--project=webkit` without the script fails on a project Playwright cannot find. The same holds for `bun run check:full`, which calls `test:e2e`, so a green `check:full` is a chromium pass rather than a three-engine one. CI still runs every engine, one per leg.
+
+Both defaults were set on 2026-09-28, after Playwright's own default of half the cores pinned a 32-core machine at 16 workers across three engines. Measured on that machine with the hero held still, the full 213 tests ran on chromium at 4 workers in 87 seconds including the build, with the one-minute load average peaking at 8.8. Chromium renders WebGL through SwiftShader as it does on CI, so it is the most informative single engine to run at the desk, and a regression specific to firefox or webkit surfaces at CI instead.
 
 What costs is the serial chain inside one spec, since `fullyParallel` is off. `e2e/cast.spec.ts` holds several full-field captures, and `e2e/cast-scheduler.spec.ts` holds the one scheduler test that needs a browser, the tap gate, split out of it and running about 11 seconds an engine. The other scheduler policies are fake-clock unit tests. `canon/context/ci.md` § The worker cap was raised twice and rejected twice carries why the split was made: CI pins `workers` to 1, where the two files run back to back on the one worker regardless of the split, and the seam let the scheduler tests be converted off a wall clock on their own.
 
-Dropping to one engine therefore saves close to nothing and gives up the only thing the matrix is for. `.claude/rules/canon/lib/306-test-scope.md` states the resulting directive, and `canon/context/ci.md` § The e2e job is a matrix over the three engines the config defines carries why the matrix exists at all.
+`.claude/rules/canon/lib/306-test-scope.md` still says never to narrow a run by engine and never to pin a default run to one, a directive written when the engines were measured as filling idle workers. That reading predates the cap, and the rule ships from the toolkit rather than from this repository. `canon/context/ci.md` § The e2e job is a matrix over the three engines the config defines carries why the matrix exists at all.
 
 Turning `fullyParallel` on was measured rather than assumed. It took the full run from about 3:30 to 2:49 and failed two webkit tests, both timing assertions: more contexts on one machine is less processor each, and a reveal stagger read against a wall clock came back at zero. A fifth off the clock does not pay for a suite reporting failures nobody caused.
 
@@ -117,8 +119,9 @@ Check for one whenever a search comes back empty against a file that should not 
 | `bun run test`             | Run Vitest in watch mode.                                                                                              |
 | `bun run test:run`         | Run Vitest once with verbose reporter.                                                                                 |
 | `bun run test:coverage`    | Run Vitest with coverage.                                                                                              |
-| `bun run test:e2e`         | Run Playwright E2E tests. Takes a spec path or `-g '<name>'` to narrow the run.                                        |
-| `bun run test:e2e:changed` | Run the specs the import graph ties to the working tree, across every engine.                                          |
+| `bun run test:e2e`         | Run Playwright E2E tests on chromium at 4 workers. Takes a spec path or `-g '<name>'` to narrow the run.               |
+| `bun run test:e2e:all`     | Run the same suite across chromium, firefox, and webkit, which is what CI runs.                                        |
+| `bun run test:e2e:changed` | Run the specs the import graph ties to the working tree, on chromium.                                                  |
 | `bun run screenshot`       | Build, preview, then capture screenshots. Pass `SCREENSHOT_FILTER=<term>[,<term>]` to limit capture to named surfaces. |
 
 ## Visual verification

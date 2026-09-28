@@ -190,7 +190,7 @@ Every step of that walk states `behavior: 'instant'`, and the walk breaks silent
 
 Playwright's own scroll is the case with nothing to pass. It brings an off-screen target into view before it can be clicked or tapped, a minimal scroll puts that target at the top of the viewport under the sticky bar, and the hit test then lands on the bar. Bring the element the interaction is about into view explicitly, rather than leaving the driver to do it.
 
-Verified 2026-08-21 at one worker, the count `playwright.config.ts` pins under CI: three consecutive green webkit legs, plus chromium and firefox. Run a local leg one engine at a time at `--workers=1` when the question is whether something is broken, because the default count adds contention this repair does not remove. The shader paint case fails under a three-engine parallel run and passes at one worker, which is that contention rather than a defect in the surface it reads.
+Verified 2026-08-21 at one worker, the count `playwright.config.ts` pins under CI: three consecutive green webkit legs, plus chromium and firefox. Run a local leg one engine at a time at `--workers=1` when the question is whether something is broken, because the default count adds contention this repair does not remove. A firefox or webkit leg goes through `bun run test:e2e:all --project=<engine>`, since a plain local run defines chromium alone. The shader paint case fails under a three-engine parallel run and passes at one worker, which is that contention rather than a defect in the surface it reads.
 
 ## The landing page runs at a third of a route's frame rate
 
@@ -285,9 +285,24 @@ two full browser contexts without starving the wall-clock timing assertions
 the codebase carries throughout, which is a different and larger claim than
 the `fullyParallel` finding above: that one named two specific webkit
 assertions, and this one is a property of the tier that no single assertion
-fix closes. `workers` stays at 1 until the timing assertions those failures hit
-are rewritten against animation and transition state rather than a wall clock,
-which is v7.5's own scope.
+fix closes.
+
+The load behind that starvation was measured on 2026-09-28 as the live hero
+rendering in SwiftShader, and the suite now holds it still. Two
+`workflow_dispatch` runs of the 213-test suite at 2 workers on the still hero,
+runs 36358272756 and 36358285827, passed every leg: chromium's shards took
+2.6m and 3.3m, then 2.2m and 3.4m, against 4.2m to 5.0m and 6.6m to 8.0m
+across the last three single-worker `main` runs before the still, firefox took
+4.0m against 5.0m to 6.8m, and webkit 6.3m and 6.6m against 7.1m to 7.5m. The
+second run was clean. The first flaked `home.spec.ts` › the portrait sits on a
+mound the field draws contours around on firefox and `cast-scheduler.spec.ts`
+› goes on acting after a member is tapped on a touch screen on webkit, each
+passing on retry, and `retries: 2` hides a starving test as flaky rather than
+failed. `workers` stays at 1, because a raise needs two runs with no flaky test
+on any engine. Read the flake against the baseline too: one of those three
+single-worker runs flaked a webkit chip-glide test, so one worker is not a
+zero-flake floor either, and a third dispatch at 2 is what would separate the
+two.
 
 What survived the rejection is independent of the worker cap, and neither
 piece is the wall-clock saving a first draft of this entry claimed for it.
@@ -321,7 +336,7 @@ confusion, which is what made the worker-count measurement need its own
 `.canon/tasks/v09.7-gate-worker-concurrency.md` carries the per-engine failure
 lists this entry summarizes.
 
-Measured at 2896e77 (workers=2, run 33954276561) and 26b6f2e (workers=4, run 33955347743) on 2026-09-05.
+Measured at 2896e77 (workers=2, run 33954276561) and 26b6f2e (workers=4, run 33955347743) on 2026-09-05, and at ae0b6a1 (workers=2, runs 36358272756 and 36358285827) on 2026-09-28.
 
 ## A settle carries the bound the pause implied, and CPU throttling is not the only way to prove one
 
