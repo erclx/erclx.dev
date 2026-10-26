@@ -58,17 +58,21 @@ const links = [
 ]
 ---
 
-{/* Bottom right, mirroring the section rail on the left, so the two read as a
+{
+  /* Bottom right, mirroring the section rail on the left, so the two read as a
     pair of margin controls rather than as one control and one ornament.
 
     Reversed, so the control that stays put sits nearest the corner and the
     stack grows up out of it. Rendered in order it put the resting mark at the
     top of a group that is anchored to the bottom, so the one thing a reader
-    sees at rest moved every time the stack opened. */}
-{/* Inert until it arrives, matching the sticky bar. The dock is invisible and
+    sees at rest moved every time the stack opened. */
+}
+{
+  /* Inert until it arrives, matching the sticky bar. The dock is invisible and
     takes no pointer until it is revealed, but its four links stay in the tab
     order regardless, so without this a keyboard reader tabs through four
-    destinations that are not on screen and gets no focus ring to follow. */}
+    destinations that are not on screen and gets no focus ring to follow. */
+}
 <div
   data-contact-dock
   data-instant={instant ? 'true' : undefined}
@@ -76,9 +80,11 @@ const links = [
   inert={!instant}
   class="fixed right-6 bottom-6 z-30 flex flex-col-reverse items-end gap-2"
 >
-  {/* Expands the stack where a pointer is not available. It carries the
+  {
+    /* Expands the stack where a pointer is not available. It carries the
       expanded state rather than the links carrying it, so a keyboard reaches
-      the links through ordinary focus and never through this. */}
+      the links through ordinary focus and never through this. */
+  }
   <button
     type="button"
     data-dock-toggle
@@ -88,9 +94,11 @@ const links = [
     class="text-muted-foreground hover:text-foreground inline-flex size-11 items-center justify-center rounded-full"
   >
     <span class="sr-only">Contact</span>
-    {/* An at sign rather than an envelope. The envelope is one of the three
+    {
+      /* An at sign rather than an envelope. The envelope is one of the three
         destinations below, so the control that opens the set was drawn as one
-        member of it. */}
+        member of it. */
+    }
     <svg
       viewBox="0 0 24 24"
       fill="none"
@@ -106,7 +114,11 @@ const links = [
     </svg>
   </button>
 
-  <ul id="contact-dock-links" data-dock-links class="flex flex-col items-end gap-2">
+  <ul
+    id="contact-dock-links"
+    data-dock-links
+    class="flex flex-col items-end gap-2"
+  >
     {
       links.map((link) => (
         <li class="relative flex items-center justify-end">

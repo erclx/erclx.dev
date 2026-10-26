@@ -23,10 +23,12 @@ const {
 } = Astro.props
 ---
 
-{/* `instant` names the absence of a scroll gate and nothing else. It also
+{
+  /* `instant` names the absence of a scroll gate and nothing else. It also
     painted the rail at server render until 2026-08-24, which put the one piece
     of chrome on a route on screen before the prose beside it had begun to
-    arrive. The script reveals it on load instead, so it fades with the page. */}
+    arrive. The script reveals it on load instead, so it fades with the page. */
+}
 <nav
   data-section-nav
   data-instant={instant ? 'true' : undefined}
@@ -230,9 +232,7 @@ const {
     // attribute set in the same frame as the first paint changes nothing a
     // reader sees.
     if (isInstant) {
-      requestAnimationFrame(() =>
-        nav.setAttribute('data-revealed', 'true'),
-      )
+      requestAnimationFrame(() => nav.setAttribute('data-revealed', 'true'))
     }
     if (!isInstant) {
       const hero = document.querySelector<HTMLElement>(

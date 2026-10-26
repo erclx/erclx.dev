@@ -11,42 +11,54 @@ interface Props {
 const { here } = Astro.props
 ---
 
-{/* The stylesheet makes this bar sticky, so it is the way home for the whole
+{
+  /* The stylesheet makes this bar sticky, so it is the way home for the whole
     scroll rather than the first 77px. Its column matches the one the landing
     page's bar uses, so the chrome holds its shape across a navigation even
-    though the prose under it is a different width. */}
-<header data-section="header" class="relative page-inset">
-  {/* The same ground the landing bar renders, so a reader crossing between the
+    though the prose under it is a different width. */
+}
+<header data-section="header" class="page-inset relative">
+  {
+    /* The same ground the landing bar renders, so a reader crossing between the
       two meets one bar. It contracts here on the reader's own scroll, which is
       the state a route can actually show: this bar sits at the top of the page
-      from load, where the landing bar only arrives once the hero has gone. */}
+      from load, where the landing bar only arrives once the hero has gone. */
+  }
   <div data-bar-ground aria-hidden="true"></div>
-  {/* No rule under the bar, matching the landing page's. The blur behind it is
+  {
+    /* No rule under the bar, matching the landing page's. The blur behind it is
       what separates the chrome from the prose passing under it, and a line as
-      well as a blur states the same boundary twice. */}
-  {/* The row arrives with the prose rather than ahead of it. The mark, the
+      well as a blur states the same boundary twice. */
+  }
+  {
+    /* The row arrives with the prose rather than ahead of it. The mark, the
       name and the toggle were the only things on a route already painted while
       everything under them faded up, which read as the chrome belonging to a
       different page than its content. The landing bar is deliberately not
       marked: its name and toggle fly in from the hero on measured positions,
       and an opacity transition there reopens the three placement defects
-      `canon/context/site-bar.md` records. Same arrival, different mechanism. */}
-  {/* Three columns rather than `justify-between`, because equal gaps centre the
+      `canon/context/site-bar.md` records. Same arrival, different mechanism. */
+  }
+  {
+    /* Three columns rather than `justify-between`, because equal gaps centre the
       middle item only when the two flanking it weigh the same. They do not: the
       lockup measures 79px against the toggle's 44px, so the name sat 17.5px
       right of the bar's centre at every width and on every route, which is
       (79 - 44) / 2 exactly. Equal side columns state the relationship the
       centring actually depends on, where a 17.5px nudge would encode today's
-      two control widths and go wrong the moment either moves. */}
+      two control widths and go wrong the moment either moves. */
+  }
   <div
     data-fade
     data-bar-row
     class="relative mx-auto grid max-w-3xl grid-cols-[1fr_auto_1fr] items-center py-4"
   >
-    {/* One control carrying both, the way the landing bar carries them, so the
+    {
+      /* One control carrying both, the way the landing bar carries them, so the
         chrome holds one shape and one hit area as a reader crosses between the
         two surfaces. The mark stays decoration inside the link rather than
-        becoming a second link to the same place. */}
+        becoming a second link to the same place. */
+    }
     <a
       href="/"
       data-way-home
@@ -55,7 +67,8 @@ const { here } = Astro.props
       <BarMark />
       Eric Le
     </a>
-    {/* The name states where the reader is only once the page has stopped
+    {
+      /* The name states where the reader is only once the page has stopped
         stating it. Both on screen together covers the first screen of every
         route, which is the duplication this closes.
 
@@ -65,13 +78,14 @@ const { here } = Astro.props
         returns here and is hidden below 1280. So the one viewport with no
         back-to-top was the one this name is the sole answer on. It carries the
         44px minimum the row already holds from the lockup, so the bar does not
-        grow to gain a hit area. */}
+        grow to gain a hit area. */
+    }
     <button
       type="button"
       data-route-here
       inert
       aria-label={`Back to top of ${here}`}
-      class="text-muted-foreground hover:text-foreground text-label inline-flex min-h-11 min-w-0 cursor-pointer items-center truncate px-4 underline-offset-4 justify-self-center hover:underline"
+      class="text-muted-foreground hover:text-foreground text-label inline-flex min-h-11 min-w-0 cursor-pointer items-center justify-self-center truncate px-4 underline-offset-4 hover:underline"
       >{here}</button
     >
     <div class="justify-self-end">
@@ -128,7 +142,9 @@ const { here } = Astro.props
 
   const here = document.querySelector<HTMLElement>('[data-route-here]')
   const title = document.querySelector<HTMLElement>('main h1')
-  const bar = document.querySelector<HTMLElement>('header[data-section="header"]')
+  const bar = document.querySelector<HTMLElement>(
+    'header[data-section="header"]',
+  )
 
   // Opacity alone hides a control from the eye and from nothing else, so
   // before this the name was a 44px target and a tab stop through the whole

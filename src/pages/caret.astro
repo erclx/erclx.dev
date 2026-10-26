@@ -41,7 +41,7 @@ const navItems = [
 
   <main>
     <section id="caret" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <p
           data-fade
           class="text-muted-foreground text-label tracking-wide uppercase"
@@ -49,19 +49,16 @@ const navItems = [
           Project
         </p>
         <h1
-          data-fade          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+          data-fade
+          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
         >
           Caret
         </h1>
-        <p
-          data-fade          class="text-muted-foreground text-lede mt-4"
-        >
+        <p data-fade class="text-muted-foreground text-lede mt-4">
           A prompt palette that opens where the cursor already is, on three chat
           sites that each handle text differently.
         </p>
-        <ul
-          data-fade          class="mt-6 flex flex-wrap gap-x-6"
-        >
+        <ul data-fade class="mt-6 flex flex-wrap gap-x-6">
           {
             artifactLinks.map((link) => (
               <li>
@@ -77,11 +74,14 @@ const navItems = [
           }
         </ul>
 
-        {/* The demo closes the opening rather than interrupting it. It declares
-            `view` so a phone, which cannot hover, plays it on screen. */}
+        {
+          /* The demo closes the opening rather than interrupting it. It declares
+            `view` so a phone, which cannot hover, plays it on screen. */
+        }
         <figure
           data-media-host="view"
-          data-fade          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+          data-fade
+          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
           <video
             src={caretDemo}
@@ -98,96 +98,78 @@ const navItems = [
     </section>
 
     <section id="problem" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           problem
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
+        <p data-fade class="text-foreground text-lede mt-6">
           I was retyping the same instructions into Claude, Gemini, and ChatGPT
           several times a day. None of them had a way to save a prompt, and a
           prompt kept in one could not reach the other two.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           The gap is small, and it opens every time a chat does.
         </p>
       </div>
     </section>
 
     <section id="trigger" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           trigger
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
+        <p data-fade class="text-foreground text-lede mt-6">
           Typing the trigger symbol at a word boundary opens a palette anchored
           above the cursor. Fuzzy search filters the library and the keyboard
           inserts the prompt without leaving the input.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          The symbol defaults to <code class="font-mono">&gt;</code> and is
-          configurable per site, because Claude claims <code class="font-mono"
-            >/</code
-          > for its own command menu, and a symbol free on one chat site can
-          collide with a shortcut on another.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The symbol defaults to <code class="font-mono">&gt;</code> and is configurable
+          per site, because Claude claims <code class="font-mono">/</code> for its
+          own command menu, and a symbol free on one chat site can collide with a
+          shortcut on another.
         </p>
       </div>
     </section>
 
     <section id="adapters" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           adapters
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
+        <p data-fade class="text-foreground text-lede mt-6">
           The palette is the same everywhere. What happens when you pick a
           prompt is not: each site handles its input differently.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           Three sites, two editor models. Claude and ChatGPT render their inputs
           through <a
             href="https://prosemirror.net/"
             {...getLinkTargetAttributes('https://prosemirror.net/')}
-            class="text-accent underline underline-offset-[3px] decoration-[1px]"
-          >ProseMirror</a>, Gemini uses a plain <code class="font-mono"
-            >contenteditable</code
-          >.
+            class="text-accent underline decoration-[1px] underline-offset-[3px]"
+            >ProseMirror</a
+          >, Gemini uses a plain <code class="font-mono">contenteditable</code>.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           Writing into either directly bypasses the host's state handling. So
           the insertion first offers the host a cancelable <code
             class="font-mono">beforeinput</code
-          > event, and only if the host lets it through does it insert through
-          the browser's own editing command, which fires the events the host's
-          framework listens for. The adapter is picked by the input's element
-          type, not by site, so one <code class="font-mono">contenteditable</code
-          > adapter serves all three.
+          > event, and only if the host lets it through does it insert through the
+          browser's own editing command, which fires the events the host's framework
+          listens for. The adapter is picked by the input's element type, not by site,
+          so one <code class="font-mono">contenteditable</code> adapter serves all
+          three.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           That adapter walks the DOM to find an absolute cursor position across
           fragmented text nodes, so the prompt replaces exactly the trigger and
           the typed query, not the text around them. Prompts stay in the

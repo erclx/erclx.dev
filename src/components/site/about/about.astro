@@ -51,9 +51,10 @@ const CRAFT_ORIGIN = {
 <section
   id="about"
   data-section="about"
-  class="relative page-inset pt-16 pb-20 md:pt-20"
+  class="page-inset relative pt-16 pb-20 md:pt-20"
 >
-  {/* The figure arrives rather than sits. The surface is specified as prose
+  {
+    /* The figure arrives rather than sits. The surface is specified as prose
       alone because a second image would compete with the portrait a reader met
       seconds earlier, and a mark that flies in, settles, and then holds still
       makes a quieter claim than one that is simply placed there.
@@ -61,12 +62,15 @@ const CRAFT_ORIGIN = {
       It rests rather than exits, which is the pattern the character in the
       closing ask already sets: a figure on this page arrives and stays. It
       rests beside the heading rather than above it, because the band above is
-      where the sticky bar lands when a reader jumps here from the rail. */}
+      where the sticky bar lands when a reader jumps here from the rail. */
+  }
   <div class="about-flight" aria-hidden="true">
     <div class="about-flight-track">
-      {/* Drawn in the flight's own coordinates rather than in pixels, so the
+      {
+        /* Drawn in the flight's own coordinates rather than in pixels, so the
           curve scales with the column instead of overshooting it on a narrow
-          screen. */}
+          screen. */
+      }
       <svg
         class="about-flight-stage"
         viewBox="0 0 768 104"
@@ -82,11 +86,13 @@ const CRAFT_ORIGIN = {
           >
             <feGaussianBlur stdDeviation="3.2"></feGaussianBlur>
           </filter>
-          {/* Vapour thins where it stands rather than sliding forward, so
+          {
+            /* Vapour thins where it stands rather than sliding forward, so
               what fades the trail is a window that travels with the aircraft.
               Air further back than the window has gone to nothing on its own,
               which is what gives the trail a length without anything being
-              shortened. */}
+              shortened. */
+          }
           <linearGradient
             id="about-flight-decay"
             gradientUnits="userSpaceOnUse"
@@ -110,11 +116,13 @@ const CRAFT_ORIGIN = {
           </mask>
         </defs>
 
-        {/* The contrail traces the same curve the aircraft flies, so it bends
+        {
+          /* The contrail traces the same curve the aircraft flies, so it bends
             with the path rather than lying flat behind a climbing figure. It is
             a dash the same length throughout, moved along by its own offset, so
             it stays a trail behind the aircraft rather than a route drawn in
-            across the whole section. */}
+            across the whole section. */
+        }
         <path
           class="about-flight-trail"
           d={FLIGHT_PATH}
@@ -127,7 +135,10 @@ const CRAFT_ORIGIN = {
           filter="url(#about-flight-blur)"
           mask="url(#about-flight-decay-mask)"></path>
 
-        <g class="about-flight-craft" style={`--flight-path: path("${FLIGHT_PATH}")`}>
+        <g
+          class="about-flight-craft"
+          style={`--flight-path: path("${FLIGHT_PATH}")`}
+        >
           <path
             d={PLANE_PATH}
             fill="currentColor"
@@ -262,19 +273,19 @@ const CRAFT_ORIGIN = {
      no half-length the trail can be held clear of. */
   @keyframes about-flight-draw {
     0% {
-      stroke-dasharray: 0.0 100;
+      stroke-dasharray: 0 100;
     }
     6.25% {
-      stroke-dasharray: 0.0 100;
+      stroke-dasharray: 0 100;
     }
     12.5% {
-      stroke-dasharray: 0.0 100;
+      stroke-dasharray: 0 100;
     }
     18.75% {
       stroke-dasharray: 3.4 100;
     }
     25% {
-      stroke-dasharray: 11.0 100;
+      stroke-dasharray: 11 100;
     }
     31.25% {
       stroke-dasharray: 21.7 100;
@@ -298,7 +309,7 @@ const CRAFT_ORIGIN = {
       stroke-dasharray: 83.9 100;
     }
     75% {
-      stroke-dasharray: 88.0 100;
+      stroke-dasharray: 88 100;
     }
     81.25% {
       stroke-dasharray: 90.9 100;
@@ -310,7 +321,7 @@ const CRAFT_ORIGIN = {
       stroke-dasharray: 93.7 100;
     }
     100% {
-      stroke-dasharray: 94.0 100;
+      stroke-dasharray: 94 100;
     }
   }
 
@@ -319,13 +330,13 @@ const CRAFT_ORIGIN = {
      the same walk. */
   @keyframes about-flight-window {
     0% {
-      transform: translateX(-70.0px);
+      transform: translateX(-70px);
     }
     6.25% {
       transform: translateX(-59.6px);
     }
     12.5% {
-      transform: translateX(-37.0px);
+      transform: translateX(-37px);
     }
     18.75% {
       transform: translateX(1.3px);
@@ -346,7 +357,7 @@ const CRAFT_ORIGIN = {
       transform: translateX(437.9px);
     }
     56.25% {
-      transform: translateX(513.0px);
+      transform: translateX(513px);
     }
     62.5% {
       transform: translateX(570.6px);
@@ -361,13 +372,13 @@ const CRAFT_ORIGIN = {
       transform: translateX(666.1px);
     }
     87.5% {
-      transform: translateX(680.0px);
+      transform: translateX(680px);
     }
     93.75% {
       transform: translateX(687.7px);
     }
     100% {
-      transform: translateX(690.0px);
+      transform: translateX(690px);
     }
   }
 

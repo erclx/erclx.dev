@@ -14,7 +14,8 @@ const links = [
 ]
 ---
 
-{/* The band holds a share of the viewport below md rather than only the
+{
+  /* The band holds a share of the viewport below md rather than only the
     content's own height, where it read as a squeezed header rather than the
     stage it is. It stops short of the full screen a wider viewport gets,
     because a phone reader would otherwise scroll a whole screen before meeting
@@ -29,30 +30,34 @@ const links = [
     A ratio is invariant to that: the name holds 37% at 1280x800 and 38% at
     1920x1080 where centring ran 43% and 44%. Below md the column already sits
     at 26% inside a band that is 70svh rather than the full screen, so the
-    ratio would push it off the top of its own band. */}
+    ratio would push it off the top of its own band. */
+}
 <header
   data-section="header"
-  class="bg-secondary relative flex min-h-[70svh] items-center overflow-hidden page-inset pt-20 pb-16 md:grid md:min-h-screen md:grid-rows-[2fr_auto_3fr] md:pt-32 md:pb-20"
+  class="bg-secondary page-inset relative flex min-h-[70svh] items-center overflow-hidden pt-20 pb-16 md:grid md:min-h-screen md:grid-rows-[2fr_auto_3fr] md:pt-32 md:pb-20"
 >
-  {/* The canvas renders under reduced motion too, holding a single drawn frame
+  {
+    /* The canvas renders under reduced motion too, holding a single drawn frame
       rather than hiding for an authored stand-in. One surface then answers both
-      preferences and neither can drift from the other. */}
+      preferences and neither can drift from the other. */
+  }
   <canvas
     data-shader-field
     aria-hidden="true"
-    class="pointer-events-none absolute inset-0 size-full"
-  ></canvas>
-  {/* Reached only where WebGL is missing or its context is lost, which the
+    class="pointer-events-none absolute inset-0 size-full"></canvas>
+  {
+    /* Reached only where WebGL is missing or its context is lost, which the
       mount reveals by hand. A band with nothing behind it reads as a broken
-      page rather than a quiet one. */}
+      page rather than a quiet one. */
+  }
   <div
     data-shader-field-fallback
     aria-hidden="true"
     class="text-foreground pointer-events-none absolute inset-0 hidden size-full [&>svg]:size-full"
     set:html={shaderFieldFallback}
-  >
-  </div>
-  {/* The band's ground fades into the page's rather than stopping on an edge.
+  />
+  {
+    /* The band's ground fades into the page's rather than stopping on an edge.
       The hero is a lighter plate than the page in both themes, so a rounded
       corner against a flat section read as a card laid on a different
       document. Fading the plate out removes it where softening its corner
@@ -60,14 +65,16 @@ const links = [
       the canvas paints under this.
 
       Shorter below md, where the band holds 70svh rather than the screen and a
-      desktop-sized fade would take two fifths of it. */}
+      desktop-sized fade would take two fifths of it. */
+  }
   <div
     data-hero-fade
     aria-hidden="true"
     class="pointer-events-none absolute inset-x-0 bottom-0 h-40 md:h-60"
   >
   </div>
-  {/* The toggle sits in the header's own corner. Its old home was the greeting
+  {
+    /* The toggle sits in the header's own corner. Its old home was the greeting
       row, and the greeting moved under the name, where the portrait floats
       flush to the column's right edge for 160px from the heading's top and
       covers every row below it.
@@ -77,13 +84,19 @@ const links = [
       column. `hero-handoff.ts` crosses that gap on the name's travel rather
       than on the vertical one, so moving this anchor changes how far the
       control has to go and not how long it takes. Below md the column is
-      wider than the viewport and the two coincide, so nothing crosses. */}
-  <div data-hero-toggle-home class="absolute top-6 right-6 md:top-10 md:right-10">
+      wider than the viewport and the two coincide, so nothing crosses. */
+  }
+  <div
+    data-hero-toggle-home
+    class="absolute top-6 right-6 md:top-10 md:right-10"
+  >
     <ThemeToggle />
   </div>
-  {/* The shader reads this box and damps its field inside it, so the surface
+  {
+    /* The shader reads this box and damps its field inside it, so the surface
       never competes with the name. The column rather than the heading, since
-      the links sit at the bottom of it and take the least contrast. */}
+      the links sit at the bottom of it and take the least contrast. */
+  }
   <div
     data-header-column
     data-shader-content
@@ -92,19 +105,23 @@ const links = [
     <div>
       <div>
         <div data-fade style="--fade-delay: 150ms">
-          {/* The portrait floats inside the heading, so its top is the heading's
+          {
+            /* The portrait floats inside the heading, so its top is the heading's
               own top at every width rather than a sum of the elements that
               happen to sit above it. Its alt stays empty because alt text on an
               image inside a heading prepends to that heading's accessible name,
-              and the heading already states the name. */}
+              and the heading already states the name. */
+          }
           <h1 class="font-display text-display text-foreground">
-            {/* The float and the size sit on a frame around the image rather
+            {
+              /* The float and the size sit on a frame around the image rather
                 than on the image itself, which is layout rather than a hook: an
                 image is a replaced element, so floating and sizing it directly
                 leaves nothing for the heading's own line box to flow around
                 cleanly. The rings that once hung off this element are drawn by
                 the shader now, and its hook went with them rather than being
-                left behind for a reader that no longer exists. */}
+                left behind for a reader that no longer exists. */
+            }
             <span
               class="relative float-right ml-6 block size-20 md:size-28 lg:size-40"
             >
@@ -117,14 +134,17 @@ const links = [
                 class="border-border/60 bg-muted relative z-[1] size-full rounded-full border object-cover"
               />
             </span>
-            {/* Only the text travels into the sticky bar. The portrait floats
+            {
+              /* Only the text travels into the sticky bar. The portrait floats
                 inside this heading and stays with the hero, so the name is its
-                own element rather than the whole line. */}
+                own element rather than the whole line. */
+            }
             <span data-hero-name>Eric Le</span>
           </h1>
         </div>
         <div data-fade style="--fade-delay: 300ms">
-          {/* The greeting sits under the name rather than over it, so one line
+          {
+            /* The greeting sits under the name rather than over it, so one line
               does both jobs: it still opens the page and it now frames the
               links, which stood bare under the name with nothing introducing
               them. The name leading is what makes the surface read as an
@@ -139,7 +159,8 @@ const links = [
               display step's line box carries about 25px of leading below its
               baseline. Optically the two gaps are 33.5px and 28px, which is
               what makes the three lines read as one block rather than as a
-              name and a separate pair. Measured at 1280 on 2026-08-19. */}
+              name and a separate pair. Measured at 1280 on 2026-08-19. */
+          }
           <p
             data-hero-line
             class="font-display text-lede text-muted-foreground mt-2"

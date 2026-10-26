@@ -12,30 +12,33 @@ const updated = new Date().toLocaleDateString('en-GB', {
 ---
 
 <footer data-section="footer" class="page-inset pb-10 md:pb-16">
-  {/* No rule across the top. The closing ask above ends on five row
+  {
+    /* No rule across the top. The closing ask above ends on five row
       separators, and a sixth line under them read as a stack rather than as a
       division, made worse by this one running wider than the rows it sat
       under: 1152px against 1024, because the footer breaks out to a wider
       measure than the section above it.
 
       What marks the footer instead is the space before it and the signature
-      opening it, which is what a reader was using anyway. */}
+      opening it, which is what a reader was using anyway. */
+  }
   <div class="mx-auto max-w-3xl pt-16 md:pt-20 lg:max-w-5xl">
     <div
       data-signature
       aria-hidden="true"
       class="text-foreground aspect-[716/255] w-[clamp(7rem,_14vw_+_3rem,_16rem)] max-w-full [&>svg]:block [&>svg]:size-full"
       set:html={signatureSvg}
-    >
-    </div>
-    {/* The footer arrived with nothing: it carried no reveal marker at all
+    />
+    {
+      /* The footer arrived with nothing: it carried no reveal marker at all
         while every section above it animated, so a reader scrolling to the end
         met the last surface already in place. The signature is the exception
         and keeps its own wipe.
 
         Grouped rather than left to the batch path, because these two stack at
         narrow widths and would then cross the viewport edge separately, which
-        gives a batch of one and a step of zero. */}
+        gives a batch of one and a step of zero. */
+    }
     <div
       data-fade-group
       class="mt-8 flex flex-col gap-3 md:mt-10 md:flex-row md:items-end md:justify-between md:gap-12"
@@ -63,10 +66,12 @@ const updated = new Date().toLocaleDateString('en-GB', {
         </svg>
         Résumé
       </a>
-      {/* The city left this line rather than moving. The closing ask already
+      {
+        /* The city left this line rather than moving. The closing ask already
           states it as a filter, which is where the scope doc put it, so the
           footer was repeating it beside a year that read as a copyright with
-          its symbol missing. */}
+          its symbol missing. */
+      }
       <div data-fade class="text-muted-foreground text-label md:text-right">
         <p>Updated {updated}</p>
       </div>

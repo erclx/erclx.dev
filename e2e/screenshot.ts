@@ -69,32 +69,28 @@ type Case = SectionCase | PageCase
 const SECTION_CASES: readonly SectionCase[] = LANDING_SECTIONS.flatMap(
   (section) =>
     VIEWPORTS.flatMap((viewport) =>
-      THEMES.map(
-        (theme): SectionCase => ({
-          kind: 'section',
-          url: '/',
-          section,
-          viewport,
-          theme,
-          label: `${section}/${viewport.name}--${theme}`,
-          dir: section,
-        }),
-      ),
+      THEMES.map((theme): SectionCase => ({
+        kind: 'section',
+        url: '/',
+        section,
+        viewport,
+        theme,
+        label: `${section}/${viewport.name}--${theme}`,
+        dir: section,
+      })),
     ),
 )
 
 const PAGE_CASES: readonly PageCase[] = CASE_STUDY_ROUTES.flatMap((route) =>
   ROUTE_VIEWPORTS.flatMap((viewport) =>
-    THEMES.map(
-      (theme): PageCase => ({
-        kind: 'page',
-        url: `/${route}`,
-        viewport,
-        theme,
-        label: `${route}/${viewport.name}--${theme}`,
-        dir: route,
-      }),
-    ),
+    THEMES.map((theme): PageCase => ({
+      kind: 'page',
+      url: `/${route}`,
+      viewport,
+      theme,
+      label: `${route}/${viewport.name}--${theme}`,
+      dir: route,
+    })),
   ),
 )
 

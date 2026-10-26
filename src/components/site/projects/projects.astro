@@ -36,7 +36,7 @@ const projects = [
     name: 'Jobtriage',
     route: '/jobtriage',
     description:
-      'I was job hunting, and Sweden\'s job API is public. So I built against it. A job-search agent: describe what you want, and it shows the ads that fit, each with a reason. Live to try, and its page has the retrieval numbers.',
+      "I was job hunting, and Sweden's job API is public. So I built against it. A job-search agent: describe what you want, and it shows the ads that fit, each with a reason. Live to try, and its page has the retrieval numbers.",
     poster: jobtriagePoster,
     videoSrc: jobtriageVideo,
     mediaAlt:
@@ -67,7 +67,8 @@ const projects = [
       'Staging files by hand for every prompt was the slowest part of every planning chat. VS Code extension that stages files across a workspace into one block of LLM context. Installed from the VS Code Marketplace and Open VSX.',
     poster: stackrPoster,
     videoSrc: stackrVideo,
-    mediaAlt: 'Stackr — VS Code panel showing staged files and a context preview',
+    mediaAlt:
+      'Stackr — VS Code panel showing staged files and a context preview',
     mediaPosition: 'left top',
     links: [
       {
@@ -88,7 +89,8 @@ const projects = [
       'I kept retyping the same prompts across three different chat windows. Chrome extension that saves prompts and drops them into Claude, Gemini, and ChatGPT from the chat input. Live on the Chrome Web Store.',
     poster: caretPoster,
     videoSrc: caretVideo,
-    mediaAlt: 'Caret — chat input showing a trigger-character palette of saved prompts',
+    mediaAlt:
+      'Caret — chat input showing a trigger-character palette of saved prompts',
     links: [
       {
         label: 'Chrome Web Store',
@@ -98,10 +100,13 @@ const projects = [
     ],
   },
 ]
-
 ---
 
-<section id="projects" data-section="projects" class="page-inset py-16 md:py-20">
+<section
+  id="projects"
+  data-section="projects"
+  class="page-inset py-16 md:py-20"
+>
   <div class="mx-auto max-w-3xl lg:max-w-5xl">
     <h2
       data-fade
@@ -109,14 +114,18 @@ const projects = [
     >
       Projects
     </h2>
-    {/* The section opens straight onto the grid and closes on its last card.
+    {
+      /* The section opens straight onto the grid and closes on its last card.
         A route is reached by clicking a card's name, and diction, which has no
         card, has no link on this page either: its route stays built and is
-        reached by its URL alone. */}
-    {/* The gutter carries the separation the plate used to. It also has to
+        reached by its URL alone. */
+    }
+    {
+      /* The gutter carries the separation the plate used to. It also has to
         clear the halo a hover raises: at a 24px gutter the halo's own box
         reached the neighboring card exactly, and its shadow crossed about
-        36px into it, so pointing at one card lit the one beside it. */}
+        36px into it, so pointing at one card lit the one beside it. */
+    }
     <div class="mt-10 grid gap-12 lg:mt-14 lg:grid-cols-2">
       {
         projects.map((project, index) => {
@@ -125,7 +134,8 @@ const projects = [
           const fadeDelay = `${index * 200}ms`
           // An odd count leaves the last card alone in a two-column row, so it
           // closes the section across both columns instead.
-          const isWide = projects.length % 2 === 1 && index === projects.length - 1
+          const isWide =
+            projects.length % 2 === 1 && index === projects.length - 1
           return (
             <div
               data-project-frame
@@ -137,11 +147,11 @@ const projects = [
                 style={`--fade-delay: ${fadeDelay}`}
                 class:list={[
                   'font-display pointer-events-none absolute z-10 leading-none font-semibold select-none',
-                  'top-3 right-5 text-[5rem] text-stone-500/50 dark:text-foreground/12',
-                  'lg:top-0 lg:text-[8rem] lg:text-stone-500/65 lg:dark:text-foreground/15',
+                  'dark:text-foreground/12 top-3 right-5 text-[5rem] text-stone-500/50',
+                  'lg:dark:text-foreground/15 lg:top-0 lg:text-[8rem] lg:text-stone-500/65',
                   isLeftCol
                     ? 'lg:right-auto lg:-left-12'
-                    : 'lg:left-auto lg:-right-12',
+                    : 'lg:-right-12 lg:left-auto',
                 ]}
               >
                 {numeral}
