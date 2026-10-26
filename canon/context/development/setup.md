@@ -7,7 +7,7 @@ description: Local toolchain, package scripts, port bands, the device harness, t
 
 ## Overview
 
-Owns how the project runs on a developer machine, being the toolchain install, the package scripts, the local servers and their ports, and the git hooks that gate a commit or a push. CI calls the same scripts from a workflow, which `canon/context/ci.md` covers.
+Owns how the project runs on a developer machine, being the toolchain install, the package scripts, the local servers and their ports, and the git hooks that gate a commit or a push. CI calls the same scripts from a workflow, which `canon/context/development/ci.md` covers.
 
 Install [Bun](https://bun.sh) with `curl -fsSL https://bun.sh/install | bash`, run `bun install`, then run `bunx playwright install chromium` for the e2e and capture scripts.
 
@@ -83,7 +83,7 @@ Holds the git hooks, which call the same package scripts CI runs.
 Each folder below has no trap of its own, so one line covers it.
 
 - `src/pages/` owns the routes, where the apex composes the landing sections and each project route is its own file
-- `src/components/site/` owns the landing sections and their primitives, and `src/components/ui/` owns the vendored shadcn primitives
+- `src/components/` owns the site's sections under `site/` and the vendored shadcn primitives under `ui/`
 - `src/assets/` owns page media, and `src/test/` owns the Vitest setup
 
 ## Gotchas

@@ -4,4 +4,5 @@ gated = [
   "canon/context/foundations/",
   "canon/context/chrome/",
   "canon/context/sections/",
+  "canon/context/",
 ]
