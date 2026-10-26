@@ -2,7 +2,7 @@
  * Renders a scannable code per address, as an image rather than as terminal
  * blocks.
  *
- * `scripts/device.sh` draws its code with block characters, which is right in a
+ * `scripts/device/serve.sh` draws its code with block characters, which is right in a
  * terminal and useless to a camera anywhere else: a session handing an operator an
  * address it cannot render, or a chat window with its own line height, both
  * turn those blocks into something a camera reads as noise. This draws the same
@@ -13,7 +13,7 @@
  * fails to scan against a busy background and the failure looks like a bad
  * camera rather than a bad image.
  *
- * Run: bun scripts/qr.ts <url> [url...]
+ * Run: bun scripts/device/qr.ts <url> [url...]
  */
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'

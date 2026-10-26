@@ -13,7 +13,7 @@
  * drawn to each host's published shape and is an approximation of it, so read a
  * sheet as evidence about this card and never as a screenshot of that app.
  *
- * Run: bun scripts/unfurl.ts, with the site served at UNFURL_BASE_URL.
+ * Run: bun scripts/brand/unfurl.ts, with the site served at UNFURL_BASE_URL.
  */
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'

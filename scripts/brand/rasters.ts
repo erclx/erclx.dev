@@ -10,7 +10,7 @@
  * each other, so the choice costs almost nothing, and drawing at size is what
  * stays true if the mark ever gains detail that a reduction would average away.
  *
- * Run: bun scripts/brand.ts
+ * Run: bun scripts/brand/rasters.ts
  */
 import { readFile, writeFile } from 'node:fs/promises'
 

@@ -77,11 +77,11 @@
         },
         "card-src/pages/og-card.astro": {
           "disposition": "declined",
-          "reason": "site keeps its own share card pipeline in scripts/share-card.ts"
+          "reason": "site keeps its own share card pipeline in scripts/brand/"
         },
         "card.config.mjs": {
           "disposition": "declined",
-          "reason": "site keeps its own share card pipeline in scripts/share-card.ts"
+          "reason": "site keeps its own share card pipeline in scripts/brand/"
         },
         "e2e/screenshot.ts": {
           "disposition": "customized",
@@ -97,7 +97,7 @@
         },
         "scripts/check-card-exclusion.sh": {
           "disposition": "declined",
-          "reason": "site keeps its own share card pipeline in scripts/share-card.ts"
+          "reason": "site keeps its own share card pipeline in scripts/brand/"
         },
         "scripts/lib/preview-server.sh": {
           "disposition": "customized",

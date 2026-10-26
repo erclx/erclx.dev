@@ -15,13 +15,13 @@
  * capture viewport for a "2x" pass would have changed the field's density
  * along with the size.
  *
- * Run: bun scripts/avatar-field.ts, with the site served at CARD_BASE_URL.
+ * Run: bun scripts/brand/avatar-field.ts, with the site served at CARD_BASE_URL.
  */
 import { readFile, writeFile } from 'node:fs/promises'
 
 import { chromium } from '@playwright/test'
 
-import { captureFieldPlate, renderOnRealPage } from './lib/capture-field'
+import { captureFieldPlate, renderOnRealPage } from './capture-field'
 
 const SITE = process.env.CARD_BASE_URL ?? 'http://localhost:4400'
 const FRAME = 1024
