@@ -1,59 +1,37 @@
 import { defineConfig, devices } from '@playwright/test'
 
 const isCI = !!process.env.CI
-// Set by `test:e2e:all` alone. CI never needs it, since `isCI` already selects
-// every engine, so a local run defaults to chromium and opts into the rest.
-const isAllEngines = isCI || !!process.env.E2E_ALL_ENGINES
-// Set by the CI e2e job alone, once build-verify's dist/ has been downloaded.
-// Unset everywhere else, so a local run always builds its own output.
-const isDistPrebuilt = !!process.env.DIST_PREBUILT
-
-// Own band, clear of dev at 4321 and screenshot at 4173 across every worktree offset.
+// Own band from 4250, clear of `astro dev` on 4321, since a server already
+// holding the port fails a run under `reuseExistingServer: false`.
 const port = 4250 + (Number(process.env.WORKTREE_PORT_OFFSET) || 0)
 const baseURL = `http://localhost:${port}`
 
 export default defineConfig({
   testDir: 'e2e',
   forbidOnly: isCI,
-  // `fullyParallel` stays off, and it was measured rather than assumed. Tests
-  // inside one file run serially without it, so the heaviest file sets a floor
-  // no worker count breaks. Turning it on took the full three-engine run from
-  // about 3:30 to 2:49 and failed two webkit tests, both timing assertions:
-  // more contexts on one machine is less processor each, and a reveal stagger
-  // measured against a wall clock starts reading zero.
-  //
-  // `workers` under CI was held at 1 after dispatch runs on 2026-09-05 failed
-  // across every engine at 2 and 4. The load behind that starvation was the
-  // live hero rendering in SwiftShader, measured on 2026-09-28, and with the
-  // hero held still two dispatches at 2 passed every engine, but the first
-  // flaked one firefox and one webkit test, so CI stays at 1 until two runs
-  // come back with no flaky test, per canon/context/ci.md. Locally the
-  // cap is 4, since Playwright's default of half the cores pinned a 32-core
-  // machine, and never higher anywhere.
+  // Absorbs shared-runner noise on a fresh scaffold with no flake history, at the cost of hiding a real defect until someone reads the run summary.
   retries: isCI ? 2 : 0,
-  workers: isCI ? 1 : 4,
-  // The html report is what the failure artifact uploads. Under `list` alone
-  // that directory is never written and the upload takes nothing, which leaves
-  // a red engine with no trace to read.
-  reporter: isCI ? [['list'], ['html', { open: 'never' }]] : 'html',
+  // No override here: Playwright's own CPU-derived default suits every CI runner
+  reporter: isCI ? 'list' : 'html',
   use: {
     trace: 'on-first-retry',
     baseURL,
+    // Nothing to wait out unless a test asserts motion. Opt back in per test with page.emulateMedia({ reducedMotion: 'no-preference' }).
+    // A top-level `use.reducedMotion` works from Playwright 1.50.
+    // `contextOptions` is the spelling that works on every version.
+    contextOptions: { reducedMotion: 'reduce' },
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    ...(isAllEngines
-      ? [
-          { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-          { name: 'webkit', use: { ...devices['Desktop Safari'] } },
-        ]
-      : []),
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
-    command: isDistPrebuilt
+    command: process.env.DIST_PREBUILT
       ? `bun run preview -- --port ${port}`
       : `bun run build && bun run preview -- --port ${port}`,
     url: baseURL,
     reuseExistingServer: false,
+    env: { ASTRO_PREVIEW_BACKGROUND: '0' },
   },
 })

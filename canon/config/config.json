@@ -79,6 +79,10 @@
           "disposition": "customized",
           "base": "sha256:3e8e4799dfdec37c53e78c3a6db47785e5ceee357e7e99b35b996a2792fcb877"
         },
+        "playwright.config.ts": {
+          "disposition": "customized",
+          "base": "sha256:d9c8805a586b130466c83ee2c74453d5d9f17e2f6682d443085ee9d5e2c9960a"
+        },
         "scripts/check-card-exclusion.sh": {
           "disposition": "declined",
           "reason": "site keeps its own share card pipeline in scripts/share-card.ts"
