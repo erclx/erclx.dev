@@ -191,6 +191,6 @@ All `.sh` files live under `scripts/`. Do not place shell scripts outside `scrip
 
 ## Husky hooks
 
-- `pre-commit` runs `lint-staged`. ESLint and prettier auto-fix `.astro`, `.tsx`, `.ts`, `.jsx`, `.js` files. Prettier and cspell run on `.json`, `.css`, `.md`, `.mdc`. shfmt and shellcheck run on `.sh`.
-- `commit-msg` runs `commitlint` against the conventional commit format. `commitlint.config.js` also enforces `no-claude-co-author`, which rejects a message carrying a co-author trailer that credits Claude or Anthropic.
+- `pre-commit` runs `lint-staged`, which formats staged `.json` and `.md` files with oxfmt and runs `canon indexes regen` on staged `.md` files.
+- `commit-msg` runs `commitlint` against the conventional commit format.
 - `pre-push` runs `bun run check`. After pushing, run `git status`. If files changed, commit the diff as `style(<scope>):` and push again.

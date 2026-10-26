@@ -34,9 +34,9 @@
     "test:e2e:ui": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) playwright test --ui",
     "test:e2e:report": "playwright show-report",
     "check:full": "bun scripts/verify.ts && bun run test:e2e",
-    "screenshot": "PREVIEW_PORT=$(bash scripts/worktree-port.sh 4321) && export PREVIEW_PORT && bash scripts/screenshot.sh",
+    "screenshot": "PREVIEW_PORT=$(bash scripts/worktree-port.sh 4173) && export PREVIEW_PORT && bash scripts/screenshot.sh",
     "pr-evidence-screenshot": "PREVIEW_PORT=$(bash scripts/worktree-port.sh 4173) && export PREVIEW_PORT && bash scripts/pr-evidence-screenshot.sh",
-    "readme-screenshot": "PREVIEW_PORT=$(bash scripts/worktree-port.sh 4321) && export PREVIEW_PORT && bash scripts/readme-screenshot.sh",
+    "readme-screenshot": "PREVIEW_PORT=$(bash scripts/worktree-port.sh 4173) && export PREVIEW_PORT && bash scripts/readme-screenshot.sh",
     "smoke:prod": "bun e2e/screenshot.ts --check-console-clean --require-base-url",
     "format:shell": "find scripts -name '*.sh' -exec shfmt --write --indent 2 {} +"
   },

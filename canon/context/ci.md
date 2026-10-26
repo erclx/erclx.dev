@@ -26,9 +26,8 @@ Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merg
 
 | Check     | Command                 | What it asserts                                                            |
 | --------- | ----------------------- | -------------------------------------------------------------------------- |
-| Format    | `bun run check:format`  | prettier and shfmt are clean                                               |
-| Spell     | `bun run check:spell`   | cspell passes against dictionaries                                         |
-| Shell     | `bun run check:shell`   | shellcheck passes at warning level                                         |
+| Format    | `bun run check:format`  | oxfmt is clean, and prettier on `.astro` files                             |
+| Shell     | `bun run check:shell`   | shfmt is clean and shellcheck passes at warning level                      |
 | Record    | `bun run check:record`  | `canon context audit --gate` exits clean, pinned to `@erclx/canon@4.114.0` |
 | Typecheck | `bun run typecheck`     | `astro check` passes                                                       |
 | Lint      | `bun run lint`          | ESLint passes with zero warnings                                           |
@@ -42,7 +41,7 @@ For the deploy mechanism, custom domain wiring, and secrets, see `canon/context/
 
 ## Runtime
 
-The workflow installs Node 22 via `actions/setup-node` before Bun. cspell v10 and several dev tools require Node ≥22.18. Bun does not satisfy this requirement on its own because it ships its own runtime, not a system Node.
+The workflow installs Node 22 via `actions/setup-node` before Bun. Astro 6 and Vitest 5 require Node 22.12 or later, and the `astro` binary runs under a system Node through its shebang. Bun does not satisfy this requirement on its own because it ships its own runtime, not a system Node.
 
 ## The unit lane guards a comment block that never closes
 
@@ -78,7 +77,7 @@ Widening the engines closes only half of that. A rule silently taking its touch 
 
 `src/test/rendered-copy.test.ts` reads `dist/*.html` through jsdom and carries the footer copy and the share-card tags across the six routes, thirteen assertions moved out of `e2e/footer.spec.ts` and `e2e/share-card.spec.ts`. A text node in a static file cannot differ between engines, so the browser matrix paid three extra times for a disagreement that cannot occur and inherited every settle hazard the browser lane carries.
 
-The lane needs `dist/`, which the unit job never builds. Folding the build in would have turned a 13-second job into a 37-second one to serve a single file, so `rendered-copy` is its own job. It needs `build-verify`, downloads the same artifact the engine legs do, and gates `deploy` without gating `e2e-tests`, so the browser matrix does not wait behind it. The cost is a seventh runner job. `vitest.config.ts` excludes the file from the default run and `vitest.rendered.config.ts` includes only it, which is what `bun run test:rendered` selects. `scripts/verify.sh` runs it straight after its own build, since the lane reads whatever `dist/` holds and a run against an older build would report on copy the page no longer carries. Running the file without a build throws naming the missing page rather than skipping, since a skipped guard reads as a passing one.
+The lane needs `dist/`, which the unit job never builds. Folding the build in would have turned a 13-second job into a 37-second one to serve a single file, so `rendered-copy` is its own job. It needs `build-verify`, downloads the same artifact the engine legs do, and gates `deploy` without gating `e2e-tests`, so the browser matrix does not wait behind it. The cost is a seventh runner job. `vitest.config.ts` excludes the file from the default run and `vitest.rendered.config.ts` includes only it, which is what `bun run test:rendered` selects. The `check` script in `package.json` runs it straight after `scripts/verify.ts` builds, since the lane reads whatever `dist/` holds and a run against an older build would report on copy the page no longer carries. Running the file without a build throws naming the missing page rather than skipping, since a skipped guard reads as a passing one.
 
 Every moved negative assertion carries a positive companion proving its element was found, because a selector matching nothing makes `not.toContain` pass. A page edit turns each one red, checked by editing the footer text, adding a copyright line and the city to the footer, setting `twitter:card` to `summary`, making `og:url` root-relative, lengthening the description past 155 characters, repeating the card's claim in it, and appending `case study` to the title. The absolute image URL survives into `dist/`, since `Astro.site` resolves at build time.
 
@@ -687,7 +686,7 @@ The second consumer is `.github/evidence/surfaces/`, one desktop light still per
 
 The baseline was captured locally and hashed identically across two consecutive runs on WSL. CI runs on a different OS, so its first run may push a font-rendering delta before it settles.
 
-Both push paths failed the first time either was reached. `git push` fires the husky `pre-push` hook, which runs `scripts/verify.sh`, whose format step shells out to `shfmt`, and the runner installs no `shfmt`, so the push exited 127 and the job failed after the capture had already produced its images. Neither job had run its push step before that: a branch reaches it only by changing an image, and every branch since these workflows shipped either touched no `src/**` or captured bytes identical to the baseline. Both steps now set `HUSKY: 0`, since what they push is PNG bytes a capture produced and `verify.yml` already runs those same checks against the source in its own jobs.
+Both push paths failed the first time either was reached. `git push` fires the husky `pre-push` hook, which runs `bun run check`, whose shell step shells out to `shfmt`, and the runner installs no `shfmt`, so the push exited 127 and the job failed after the capture had already produced its images. Neither job had run its push step before that: a branch reaches it only by changing an image, and every branch since these workflows shipped either touched no `src/**` or captured bytes identical to the baseline. Both steps now set `HUSKY: 0`, since what they push is PNG bytes a capture produced and `verify.yml` already runs those same checks against the source in its own jobs.
 
 A preview runs behind a shorter gate than production, and the two are separate jobs for that reason. Production reaches the apex on a push to main behind `static-checks`, `unit-tests`, `build-verify`, and `e2e-tests`. A preview runs on a dispatch behind `build-verify` alone, since the artifact it publishes is already built by then and the browser matrix, which is the whole of the remaining wait, says nothing about whether a page renders. Measured on this branch across two dispatches. Behind the full gate the address printed 11 minutes after the dispatch, against the 15-minute ceiling `canon pr preview` waits out. Behind the build alone it printed in 83 seconds, with the browser matrix still running beside it.
 
