@@ -1,69 +1,29 @@
 # Requirements
 
-## Problem
+Recruiters, collaborators, and visitors arriving from LinkedIn, GitHub, or search find only fragments of Eric Le's story on each of those surfaces, and no one place under his own domain tells it whole.
 
-erclx.dev is the canonical landing page for Eric Le. Recruiters, collaborators, and visitors arriving from Linkedin, Github, or search need a coherent introduction in one place under his own domain. The three external surfaces each tell fragments of the story without a hub.
+This record holds at most 600 words.
 
 ## Goals
 
-- Visitors arriving from search, a Github profile, or a Linkedin link get a coherent summary of who he is and what he ships in one scroll
-- The page reflects the same facts as Linkedin, the resume, and the Github profile without drift
+- A visitor gets a coherent summary of who he is and what he ships in one scroll of the landing page
+- The page states the same facts as LinkedIn, the résumé, and the GitHub profile, without drift
+- A visitor reaches the top of the site from anywhere on it, at any viewport
+- A reader arriving on a project route from a shared link has a way back without scrolling to the end, through one persistent control and one closing affordance
+- Navigation chrome holds one column on every surface, so it does not resize as a reader moves between the landing page and a route
+- A visitor sees a card for each shipped project the author chooses to feature, carrying a still of the artifact and a link to where a reader installs or opens it
+- Every shipped project owns a route answering for that project alone, carrying its demo larger than a card can, and labelled `Project` rather than `Case study`
+- Every route states why the work was started before what it measured, and reports a measured result only where the project has one
 
 ## Non-goals
 
 - Blog posts, a dated post feed, or a content management system
-- Authentication, comments, a dashboard, or a backend, except a hosted, cookie-free analytics script
+- Authentication, comments, a dashboard, or a backend, other than the cookie-free analytics Cloudflare runs from the zone
 - Routes beyond the apex and one per shipped project
-
-Analytics stopped being a non-goal on 2026-08-24. Cloudflare Web Analytics already runs on erclx.dev, enabled through the zone's own dashboard rather than through any code in this repository, and had been recording visits for months before the operator noticed. The line still bars every other dashboard or backend, hosted or built here, so the exception stays scoped to analytics rather than opening the door to any third-party service. A visitor count sourced from the host that already proxies the domain costs nothing here to build or maintain.
-
-## MVP features
-
-1. Header: identity, one line about the work, contact links, and the portrait
-2. About: who he is and how he came to agents, then one thing that is not work, sitting directly under the header
-3. Experience: the timeline of beats, with the Volvo work stated on its own beat
-4. Projects: cards for Jobtriage, Stackr, and Caret pulled from the github profile, plus a trailing one-liner for Toolkit
-5. Looking for: the criteria rows a reader filters on, anchored by the availability signal
-6. Footer: identity links plus a downloadable resume PDF
-
-The header lost the role, the headline, and the location on 2026-08-17. The claim and its elaboration moved to experience, and the claim left the site on 2026-09-21, when the career source dropped it. The header's line is `I build AI agents and developer tools.` since 2026-09-28, when the career source replaced `I build AI agents, and I measure them before I trust them.`, which had itself replaced `I build AI tools, mostly ones I needed myself first.` on 2026-09-27, the line the operator confirmed on 2026-09-24. The same port cut the Volvo paragraph that opened experience, whose substance now sits on the Volvo beat, and returned the location to the About section, whose opening sentence names it. The page description and the closing ask state it too. The availability signal moved to the closing ask on 2026-08-17.
-
-## Navigation
-
-- A visitor can reach the top of the site from anywhere on it, at any viewport. The section rail is hidden below 1280px and states position rather than offering reach, so it does not satisfy this on its own
-- A reader arriving on a project route from a shared link has a way back that does not require scrolling to the end of the page
-- The way back is one persistent control plus one closing affordance. The bar answers at any scroll position and the foot answers when the read is over, so the two differ in what they are for rather than repeating one exit. A third would be repetition
-- That count is of exits, which is what a way back is. A control moving a reader inside the route they are already on is not one of them and does not spend the third slot. The route bar's own name is such a control: it returns a reader to the top of the route rather than out of it, and below 1280 it is the only control that does, since the rail is hidden there
-- Navigation chrome holds one column across every surface, so it does not resize as a reader moves between the landing page and a route
-
-## Project cards
-
-- A visitor sees a card for each shipped artifact the author chooses to feature rather than the fixed roster the MVP named, so a newly shipped project can earn a card without a scope change. A shipped project may go without a card and without any link from the landing page, as diction does, and its route is then reached by its URL alone
-- Every card carries a still of the artifact rather than a logo or an icon
-- Every card links to wherever a reader installs or opens the artifact, which differs per project
-
-## Project routes
-
-- Every shipped project owns a route, so a card carrying a link and a card carrying none never reads as a ranking between them
-- A visitor wanting depth on one project reads its problem framing and how it works without leaving the domain. Where the project has measured results the route carries them, and where it has none it says what the thing does and why it exists rather than manufacturing a number
-- Every route says why the work was started before it says what the work measured, in the first paragraph of its problem section and at that section's largest weight. A reader meets the reason before the evidence on all six, so moving between routes meets one shape rather than six arrangements of the same idea
-- That reason is the author's to give. A session may carry one he has already written elsewhere on the site and may not draft a new one, which is the same constraint the about surface carries and for the same reason
-- Each route answers for one project only. A second project earns a second route rather than a section inside the first
-- A route carries the demo the project card can only show small. A card renders its still at 498px against a 1280px recording, where a route reaches 896px and 1216px
-- The landing page stays the entry point, and a route is reached from the project card that owns it. A project with no card, which today is diction, gets no landing-page link either, and its route is reached by its URL
-- The label is `Project` on every route and every card link, never `Case study`, which promises measured results that two of the six routes do not have and should not invent
-
-## Tech stack
-
-- Astro v6 with static output
-- React for interactive islands
-- Tailwind CSS v4 via `@tailwindcss/vite`
-- shadcn/ui on the radix base with the Nova preset
-- TypeScript strict
-- Bun for runtime, install, and scripts
-- Vitest, Playwright, ESLint, oxfmt, oxlint, and Prettier for `.astro` files
+- A third exit on a project route, since the bar and the foot already answer at any scroll position and at the end of the read
+- A landing-page link to a project that has no card, whose route is reached by its URL alone
 
 ## Constraints
 
-- Static rendering by default. Components opt into client-side hydration via `client:*` directives.
-- The apex is the entry point. A route beyond it belongs to one shipped project, added as a scope change rather than ad hoc.
+- Static rendering by default, with client-side hydration only where a component opts in
+- The reason a route gives for the work is the author's own, so a session carries one he already wrote on the site and never drafts a new one
