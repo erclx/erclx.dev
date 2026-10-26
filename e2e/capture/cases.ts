@@ -1,31 +1,56 @@
+import type { Page } from '@playwright/test'
+
 import type { CaptureCase, CaptureSection } from '../capture-types'
 
 /** Where a case flagged `evidence: true` writes its committed frames. */
-export const EVIDENCE_ROOT = 'e2e/evidence'
+export const EVIDENCE_ROOT = '.github/evidence/surfaces'
 
 /**
- * The landing page's own beats, top to bottom. Every entry is a section a
- * reviewer reads on its own, so a diff lands on the part that moved rather
- * than on one image of the whole page.
+ * The landing page's sections, top to bottom. Each is its own frame, so a
+ * diff lands on the section that moved rather than on one image of the page.
  */
 const HOME_SECTIONS: CaptureSection[] = [
-  { name: 'top', selector: '#top' },
-  { name: 'proof', selector: '#proof' },
-  { name: 'ask', selector: '#ask' },
-  { name: 'rules', selector: '#rules' },
-  { name: 'skills', selector: '#skills' },
-  { name: 'plan', selector: '#plan' },
-  { name: 'dispatch', selector: '#dispatch' },
-  { name: 'workers', selector: '#workers' },
-  { name: 'gate', selector: '#gate' },
-  { name: 'evidence', selector: '#evidence' },
-  { name: 'loop', selector: '#loop' },
-  { name: 'merge', selector: '#merge' },
-  { name: 'provenance', selector: '#provenance' },
-  { name: 'start', selector: '#start' },
-  { name: 'field', selector: '#field' },
-  { name: 'close', selector: '#close' },
+  { name: 'header', selector: '[data-section="header"]' },
+  { name: 'about', selector: '[data-section="about"]' },
+  { name: 'experience', selector: '[data-section="experience"]' },
+  { name: 'projects', selector: '[data-section="projects"]' },
+  { name: 'looking-for', selector: '[data-section="looking-for"]' },
+  { name: 'footer', selector: '[data-section="footer"]' },
 ]
+
+const PROJECT_ROUTES = [
+  'canon',
+  'jobtriage',
+  'annex',
+  'stackr',
+  'caret',
+  'diction',
+] as const
+
+/** The footer's build date moves on every build with no code change. */
+const MASK = ['[data-updated]']
+
+/**
+ * The harness waits for every image to report complete, and two kinds never
+ * do: a lazy poster hidden by the other theme, and the figure dialog's empty
+ * placeholder. Loading the first eagerly and dropping the second's empty
+ * `src` changes nothing a frame shows.
+ */
+const settleImages = async (page: Page): Promise<void> => {
+  await page.addInitScript(() => {
+    document.addEventListener('DOMContentLoaded', () => {
+      for (const image of document.querySelectorAll('img')) {
+        if (image.loading === 'lazy') image.loading = 'eager'
+        if (image.getAttribute('src') === '') image.removeAttribute('src')
+      }
+    })
+  })
+}
+
+const darkScheme = async (page: Page) => {
+  await settleImages(page)
+  await page.emulateMedia({ colorScheme: 'dark' })
+}
 
 export const CASES: CaptureCase[] = [
   {
@@ -33,15 +58,31 @@ export const CASES: CaptureCase[] = [
     theme: 'default',
     route: '/',
     evidence: true,
-    mask: ['.version'],
+    mask: MASK,
     sections: HOME_SECTIONS,
+    setup: settleImages,
   },
   {
     section: 'home',
     theme: 'dark',
     route: '/',
-    mask: ['.version'],
+    mask: MASK,
     sections: HOME_SECTIONS,
-    setup: (page) => page.emulateMedia({ colorScheme: 'dark' }),
+    setup: darkScheme,
   },
+  ...PROJECT_ROUTES.flatMap((route): CaptureCase[] => [
+    {
+      section: route,
+      theme: 'default',
+      route: `/${route}`,
+      evidence: true,
+      setup: settleImages,
+    },
+    {
+      section: route,
+      theme: 'dark',
+      route: `/${route}`,
+      setup: darkScheme,
+    },
+  ]),
 ]

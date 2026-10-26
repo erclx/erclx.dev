@@ -219,24 +219,26 @@ const toolPairings = [
           against live data.
         </p>
 
-        <table data-fade class="text-label mt-10 font-mono">
-          <thead>
-            <tr class="text-muted-foreground">
-              <th class="pr-8 pb-2 text-left font-normal">Data tool</th>
-              <th class="pb-2 text-left font-normal">Spatial tool</th>
-            </tr>
-          </thead>
-          <tbody class="text-foreground">
-            {
-              toolPairings.map((pair) => (
-                <tr>
-                  <td class="py-1 pr-8">{pair.data}</td>
-                  <td class="py-1">{pair.spatial}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
+        <div data-fade class="mt-10 overflow-x-auto">
+          <table class="text-label font-mono">
+            <thead>
+              <tr class="text-muted-foreground">
+                <th class="pr-8 pb-2 text-left font-normal">Data tool</th>
+                <th class="pb-2 text-left font-normal">Spatial tool</th>
+              </tr>
+            </thead>
+            <tbody class="text-foreground">
+              {
+                toolPairings.map((pair) => (
+                  <tr>
+                    <td class="py-1 pr-8">{pair.data}</td>
+                    <td class="py-1">{pair.spatial}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 

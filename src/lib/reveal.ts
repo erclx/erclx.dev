@@ -58,10 +58,9 @@ const GROUP_SELECTOR = '[data-fade-group], [data-project-frame]'
 
 /**
  * How much of an element has to be inside the root before it is marked, and how
- * far the root is inset from the bottom of the viewport. Both are exported
- * because `e2e/lazy-images.ts` walks the page waiting on the elements this
- * observer is due to mark, and a walk holding its own copies drifts from these
- * the moment either moves.
+ * far the root is inset from the bottom of the viewport. Both are exported so a
+ * page walker waits on the elements this observer is due to mark rather than
+ * holding copies that drift.
  */
 export const REVEAL_THRESHOLD = 0.15
 export const REVEAL_ROOT_BOTTOM_INSET_PERCENT = 10
@@ -109,7 +108,7 @@ function observeGroup(group: HTMLElement, pending: (() => void)[]): void {
       // the markup has set nothing for a long time and several surfaces
       // still carry one. Left in place here it would add to the timer
       // rather than replace it, and the two together push the last row of
-      // a list past the ceiling `e2e/home.spec.ts` holds them to.
+      // a long list past the reveal's delay ceiling.
       row.style.setProperty('--fade-delay', '0ms')
       window.setTimeout(
         () => row.setAttribute('data-visible', 'true'),

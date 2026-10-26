@@ -8,9 +8,8 @@ import {
 } from './scheduler'
 
 /**
- * These cover the policies that used to be read off a wall clock in
- * `e2e/cast-scheduler.spec.ts`, where each one cost a 20-second window because
- * the only observable scheduler was the one running in a browser. The gates and
+ * These cover the policies that used to be read off a wall clock in a
+ * browser, where each one cost a 20-second window. The gates and
  * the one-at-a-time rule answer to an injected clock here and prove the same
  * facts in milliseconds.
  *

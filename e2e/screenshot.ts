@@ -1,172 +1,305 @@
+import type { Locator, Page } from '@playwright/test'
 import { chromium } from '@playwright/test'
-import { mkdir, rm } from 'fs/promises'
+import { existsSync } from 'fs'
+import { mkdir } from 'fs/promises'
 import path from 'path'
+import { pathToFileURL } from 'url'
 
-import { settleLazyImages } from './lazy-images'
-import { settleScroll } from './scroll'
+import type {
+  CaptureCase,
+  CaptureModule,
+  CaptureSection,
+  Viewport,
+} from './capture-types'
 
-const LANDING_SECTIONS = [
-  'header',
-  'about',
-  'experience',
-  'projects',
-  'looking-for',
-  'footer',
-] as const
-type Section = (typeof LANDING_SECTIONS)[number]
-
-// A case study is one long prose surface rather than a stack of distinct ones,
-// so it is captured whole and its `id` headings are not capture targets.
-const CASE_STUDY_ROUTES = [
-  'canon',
-  'jobtriage',
-  'diction',
-  'stackr',
-  'caret',
-  'annex',
-] as const
-
-interface Viewport {
-  readonly name: string
-  readonly width: number
-  readonly height: number
-}
-
+/**
+ * The breakpoint buckets every case is crossed with, named by width. 320 is
+ * the base a page has to hold without wrapping or clipping. Committing every
+ * width multiplies the tracked frames by the width count, so only the base and
+ * the desktop width carry `evidence`.
+ */
 const VIEWPORTS: readonly Viewport[] = [
-  { name: 'desktop', width: 1280, height: 800 },
-  { name: 'mobile', width: 390, height: 844 },
-  { name: 'narrow', width: 320, height: 800 },
+  { name: '320', width: 320, height: 800, evidence: true },
+  { name: '768', width: 768, height: 800, evidence: false },
+  { name: '1280', width: 1280, height: 800, evidence: true },
+  { name: '1536', width: 1536, height: 800, evidence: false },
 ]
 
-// Narrow catches a landing section wrapping at 320px. Long-form prose reflows
-// instead of breaking, so a route takes the other two widths only.
-const ROUTE_VIEWPORTS = VIEWPORTS.filter(
-  (viewport) => viewport.name !== 'narrow',
-)
+const CASES_FILE = path.resolve('e2e/capture/cases.ts')
 
-type Theme = 'light' | 'dark'
-const THEMES: readonly Theme[] = ['light', 'dark']
+if (!existsSync(CASES_FILE)) {
+  console.error(
+    'e2e/capture/cases.ts is missing. Run canon tooling sync to seed it.',
+  )
+  process.exit(1)
+}
 
-interface CaseBase {
-  readonly url: string
+const { CASES, EVIDENCE_ROOT } = (await import(
+  pathToFileURL(CASES_FILE).href
+)) as CaptureModule
+
+/** One case at one viewport, which is the unit a filter selects and a context is built for. */
+interface CaptureRun {
+  readonly captureCase: CaptureCase
   readonly viewport: Viewport
-  readonly theme: Theme
   readonly label: string
-  readonly dir: string
 }
 
-interface SectionCase extends CaseBase {
-  readonly kind: 'section'
-  readonly section: Section
-}
-
-interface PageCase extends CaseBase {
-  readonly kind: 'page'
-}
-
-type Case = SectionCase | PageCase
-
-const SECTION_CASES: readonly SectionCase[] = LANDING_SECTIONS.flatMap(
-  (section) =>
-    VIEWPORTS.flatMap((viewport) =>
-      THEMES.map((theme): SectionCase => ({
-        kind: 'section',
-        url: '/',
-        section,
-        viewport,
-        theme,
-        label: `${section}/${viewport.name}--${theme}`,
-        dir: section,
-      })),
-    ),
+const ALL_RUNS: readonly CaptureRun[] = CASES.flatMap((captureCase) =>
+  VIEWPORTS.filter(
+    (viewport) => !captureCase.excludeViewports?.includes(viewport.name),
+  ).map((viewport) => ({
+    captureCase,
+    viewport,
+    label: `${captureCase.section}/${viewport.name}--${captureCase.theme}`,
+  })),
 )
 
-const PAGE_CASES: readonly PageCase[] = CASE_STUDY_ROUTES.flatMap((route) =>
-  ROUTE_VIEWPORTS.flatMap((viewport) =>
-    THEMES.map((theme): PageCase => ({
-      kind: 'page',
-      url: `/${route}`,
-      viewport,
-      theme,
-      label: `${route}/${viewport.name}--${theme}`,
-      dir: route,
-    })),
-  ),
-)
+const args = process.argv.slice(2)
+const checkConsoleClean = args.includes('--check-console-clean')
+const requireBaseUrl = args.includes('--require-base-url')
 
-const ALL_CASES: readonly Case[] = [...SECTION_CASES, ...PAGE_CASES]
+if (requireBaseUrl && !process.env.SCREENSHOT_BASE_URL) {
+  console.error('SCREENSHOT_BASE_URL is required with --require-base-url')
+  process.exit(1)
+}
 
 const BASE_URL = process.env.SCREENSHOT_BASE_URL ?? 'http://localhost:4173'
-const OUT_DIR = '.canon/review/screenshots'
-const SCREENSHOT_FILTER = process.env.SCREENSHOT_FILTER?.trim() || null
 
-const filterTerms = SCREENSHOT_FILTER
-  ? SCREENSHOT_FILTER.split(',')
-      .map((s) => s.trim())
-      .filter(Boolean)
-  : []
+let hostname: string
+try {
+  hostname = new URL(BASE_URL).hostname
+} catch {
+  console.error(`SCREENSHOT_BASE_URL is not a valid URL: ${BASE_URL}`)
+  process.exit(1)
+}
 
-const cases =
+const OUT_DIR = path.join('screenshots', hostname)
+
+const SCREENSHOT_FILTER = process.env.SCREENSHOT_FILTER?.trim() ?? ''
+
+const filterTerms = SCREENSHOT_FILTER.split(',')
+  .map((term) => term.trim())
+  .filter(Boolean)
+
+const RUNS =
   filterTerms.length > 0
-    ? ALL_CASES.filter((c) =>
-        filterTerms.some((term) => c.label.includes(term)),
+    ? ALL_RUNS.filter((run) =>
+        filterTerms.some((term) => run.label.includes(term)),
       )
-    : ALL_CASES
+    : ALL_RUNS
 
-if (filterTerms.length > 0 && cases.length === 0) {
+if (filterTerms.length > 0 && RUNS.length === 0) {
   console.error(
-    `No cases matched SCREENSHOT_FILTER=${SCREENSHOT_FILTER}. Available labels:\n${ALL_CASES.map(
-      (c) => `  ${c.label}`,
+    `No cases matched SCREENSHOT_FILTER=${SCREENSHOT_FILTER}. Available labels:\n${ALL_RUNS.map(
+      (run) => `  ${run.label}`,
     ).join('\n')}`,
   )
   process.exit(1)
 }
 
-if (filterTerms.length > 0) {
-  console.log(
-    `Filtered to ${cases.length} case(s) matching "${SCREENSHOT_FILTER}". Skipping output-dir wipe.`,
+/** Every wait on a lazy load is bounded explicitly. */
+const SETTLE_TIMEOUT = 15_000
+
+/** Marks the chrome a section frame drops, set on the page and read by the screenshot's own stylesheet. */
+const FLOATING_ATTRIBUTE = 'data-capture-floating'
+
+/**
+ * Brings the page to the state a reader arrives at, before anything is shot.
+ * A figure gated on an IntersectionObserver and a frame marked `loading=lazy`
+ * both stay at their start state until something scrolls past them, and a full
+ * page capture scrolls nothing, so each named section is scrolled into view
+ * once and the page then returns to the top. Fonts, images and frames settle
+ * afterwards, since the scroll is what starts the lazy loads.
+ */
+async function settle(
+  page: Page,
+  label: string,
+  sections: readonly CaptureSection[],
+): Promise<CaptureSection[]> {
+  const present: CaptureSection[] = []
+  for (const section of sections) {
+    const element = page.locator(section.selector)
+    // Read the count before scrolling, since a selector matching nothing
+    // otherwise costs the default timeout once per section. A miss is
+    // reported and skipped rather than raised, because the seeded `CASES` name
+    // sections a fresh target's page may not have, and it would otherwise
+    // capture nothing at all. The project owning the
+    // selectors is the one that tests them, which is what the section spec
+    // beside its own page does.
+    if ((await element.count()) === 0) {
+      console.warn(
+        `${label}: no element matches ${section.selector}, named as section "${section.name}". Skipped.`,
+      )
+      continue
+    }
+    present.push(section)
+    await element.scrollIntoViewIfNeeded()
+  }
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await page.evaluate(() => document.fonts.ready.then(() => undefined))
+  // Settle on what the scroll started rather than on a second `networkidle`,
+  // which is a lifecycle event of the navigation and does not re-arm for a
+  // load a scroll triggered afterwards.
+  await page.waitForFunction(
+    () => {
+      if (document.readyState !== 'complete') return false
+      for (const image of document.images) if (!image.complete) return false
+      for (const frame of document.querySelectorAll('iframe')) {
+        try {
+          const inner = frame.contentDocument
+          if (inner === null) continue
+          if (inner.readyState !== 'complete') return false
+          // A frame's own fonts load after its `readyState` reads complete, and
+          // the swap reflows its text. The outer document's fonts never cover
+          // them.
+          if (inner.fonts.status !== 'loaded') return false
+        } catch {
+          // Cross-origin, so there is nothing here to read and nothing to
+          // wait on.
+        }
+      }
+      return true
+    },
+    undefined,
+    { timeout: SETTLE_TIMEOUT },
   )
-} else {
-  await rm(OUT_DIR, { recursive: true, force: true })
+  return present
 }
-await mkdir(OUT_DIR, { recursive: true })
+
+/**
+ * Marks every element the page floats over its own content, which is chrome
+ * such as a sticky bar or a fixed dialog. A section taller than the viewport
+ * is scrolled into view to be shot, and the chrome rides that scroll into the
+ * middle of the frame, painting over the part the frame exists to show. The
+ * mark is an attribute rather than a style, so the rule that acts on it is
+ * carried by the screenshot itself and no state is left behind to restore.
+ *
+ * Marking costs the whole-page frame nothing, since that one is shot before
+ * this runs and carries the chrome where a reader meets it.
+ */
+async function markFloatingChrome(page: Page) {
+  await page.evaluate((attribute) => {
+    for (const node of document.querySelectorAll('body *')) {
+      const { position } = getComputedStyle(node)
+      if (position === 'sticky' || position === 'fixed') {
+        node.setAttribute(attribute, '')
+      }
+    }
+  }, FLOATING_ATTRIBUTE)
+}
+
+/**
+ * Turns a case's mask selectors into the locators every frame paints over. A
+ * selector matching nothing is reported and kept out rather than raised, for
+ * the same reason `settle` gives for a missing section.
+ */
+async function resolveMask(
+  page: Page,
+  label: string,
+  selectors: readonly string[],
+): Promise<Locator[]> {
+  const mask: Locator[] = []
+  for (const selector of selectors) {
+    const element = page.locator(selector)
+    if ((await element.count()) === 0) {
+      console.warn(
+        `${label}: no element matches ${selector}, named as a mask. Skipped.`,
+      )
+      continue
+    }
+    mask.push(element)
+  }
+  return mask
+}
+
+async function shoot(
+  page: Page,
+  dir: string,
+  file: string,
+  mask: Locator[],
+  selector?: string,
+) {
+  await mkdir(dir, { recursive: true })
+  const target = path.join(dir, file)
+  if (selector === undefined) {
+    await page.screenshot({ path: target, fullPage: true, mask })
+  } else {
+    // Floating chrome keeps the space it already occupies, so dropping it out
+    // of its own layer moves nothing and leaves every box the size it was.
+    await page.locator(selector).screenshot({
+      path: target,
+      mask,
+      style: `[${FLOATING_ATTRIBUTE}] { position: static !important; }`,
+    })
+  }
+  console.log(`captured ${target}`)
+}
 
 const browser = await chromium.launch()
+const consoleErrors: string[] = []
+let ranCases = 0
 
-for (const c of cases) {
-  const ctx = await browser.newContext({
-    viewport: { width: c.viewport.width, height: c.viewport.height },
+for (const { captureCase, viewport, label } of RUNS) {
+  if (captureCase.evidence && requireBaseUrl) continue
+
+  ranCases++
+  const context = await browser.newContext({
+    viewport: { width: viewport.width, height: viewport.height },
+    // A page honoring the preference lands its own motion at the end state,
+    // which is what a still frame has to show. Playwright reads it as a
+    // context option, so it reaches no page written beside `viewport` above.
     reducedMotion: 'reduce',
-    colorScheme: c.theme,
   })
-  const page = await ctx.newPage()
+  const page = await context.newPage()
 
-  await page.goto(new URL(c.url, BASE_URL).href)
-  await page.waitForLoadState('networkidle')
-  await settleLazyImages(page)
-
-  const caseDir = path.join(OUT_DIR, c.dir)
-  await mkdir(caseDir, { recursive: true })
-  const file = path.join(caseDir, `${c.viewport.name}--${c.theme}.png`)
-
-  // Settled on the fonts actually being ready to paint, which every capture
-  // needs whether or not it scrolls, rather than paused for a span that
-  // guessed at both a scroll settling and a font swap at once.
-  await page.evaluate(() => document.fonts.ready)
-
-  if (c.kind === 'section') {
-    const target = page.locator(`[data-section="${c.section}"]`).first()
-    await target.waitFor({ state: 'visible', timeout: 10_000 })
-    await target.scrollIntoViewIfNeeded()
-    await settleScroll(page)
-    await target.screenshot({ path: file })
-  } else {
-    await page.screenshot({ path: file, fullPage: true })
+  if (checkConsoleClean) {
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') {
+        consoleErrors.push(`${label}: ${msg.text()}`)
+      }
+    })
   }
 
-  console.log(`captured ${file}`)
+  if (captureCase.setup) await captureCase.setup(page)
 
-  await ctx.close()
+  await page.goto(`${BASE_URL}${captureCase.route}`)
+  await page.waitForLoadState('networkidle')
+
+  const sections = await settle(page, label, captureCase.sections ?? [])
+  const mask = await resolveMask(page, label, captureCase.mask ?? [])
+
+  const sweepDir = path.join(OUT_DIR, captureCase.section)
+  const evidenceDir = path.join(EVIDENCE_ROOT, captureCase.section)
+  const file = `${viewport.name}--${captureCase.theme}.png`
+  const writesEvidence = captureCase.evidence && viewport.evidence
+
+  await shoot(page, sweepDir, file, mask)
+  if (writesEvidence) await shoot(page, evidenceDir, file, mask)
+
+  if (sections.length > 0) await markFloatingChrome(page)
+
+  for (const { name, selector } of sections) {
+    await shoot(page, path.join(sweepDir, name), file, mask, selector)
+    if (writesEvidence) {
+      await shoot(page, path.join(evidenceDir, name), file, mask, selector)
+    }
+  }
+
+  await context.close()
 }
 
 await browser.close()
+
+if (requireBaseUrl && ranCases === 0) {
+  console.error(
+    'every CASES entry is flagged evidence: true, so --require-base-url skipped all of them and checked nothing',
+  )
+  process.exit(1)
+}
+
+if (checkConsoleClean && consoleErrors.length > 0) {
+  console.error('console errors detected:')
+  for (const error of consoleErrors) console.error(`  ${error}`)
+  process.exit(1)
+}

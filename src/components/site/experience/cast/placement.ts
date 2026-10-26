@@ -116,8 +116,7 @@ export interface Cluster {
 // Every mark in the cast appears once. A mood is a pairing of eyes, mouth, and
 // mark, and reusing one across members makes two of them answer a pointer with
 // the same gesture however different their faces are, which is what the shared
-// three dots did to five of them. `e2e/cast.spec.ts` fails a mark used more
-// than twice.
+// three dots did to five of them.
 //
 // The pairs read as beats rather than as states. Determined becomes unleashed,
 // working becomes triumphant, thinking becomes charged, frustrated becomes

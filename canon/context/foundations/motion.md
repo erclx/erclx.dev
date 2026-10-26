@@ -21,7 +21,7 @@ Holds the shared motion modules. `reveal.ts` runs the observer behind `data-fade
 - A container marked `data-fade-group` is watched instead of its rows, which step 220ms apart on timers, since a slow scroll delivers rows one per callback
 - `revealAtDocumentEnd` reveals everything once the document end is reached, since content anchored there never crosses the inset root on a tall screen
 - A response to a pointer being over something is gated on `pointer.ts`, and a click, a focus, or a tap never is, since touch performs those as a mouse does
-- `e2e/lazy-images.ts` imports `REVEAL_THRESHOLD` and `REVEAL_ROOT_BOTTOM_INSET_PERCENT`, so the capture walk waits on the elements the observer marks
+- The e2e suite and the capture harness both run under reduced motion, so neither waits on a reveal and every `data-fade` element is in place
 
 ## Gotchas
 

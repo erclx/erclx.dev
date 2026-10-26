@@ -82,23 +82,5 @@ export default defineConfig([
     files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
     ...vitest.configs.recommended,
   },
-  {
-    files: ['e2e/**/*.spec.ts'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          paths: [
-            {
-              name: '@playwright/test',
-              importNames: ['test', 'expect'],
-              message:
-                "Import from './fixtures', which holds the hero still unless a spec opts into `shaderLive`.",
-            },
-          ],
-        },
-      ],
-    },
-  },
   prettier,
 ])

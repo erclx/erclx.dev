@@ -7,7 +7,7 @@ subtitle: How the site is built, checked, deployed, and shipped
 
 How the site is built, checked, deployed, and shipped
 
-- [CI](ci.md): GitHub Actions workflow triggers and checks
+- [CI](ci.md): The verify workflow's jobs and triggers, the evidence and README capture workflows, the e2e suite, and the screenshot harness
 - [Deployment](deployment.md): Cloudflare Pages Direct Upload, production and preview deploys, custom domains, the API token, and edge analytics
 - [Setup](setup.md): Local toolchain, package scripts, port bands, the device harness, the scenario switcher, and husky hooks
 - [Shipping](shipping.md): Stacked pull request chains, the skills that cut, review, and answer them, the bottom-up merge order, and the git traps under a squash

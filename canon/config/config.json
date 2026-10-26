@@ -67,6 +67,14 @@
       },
       "chain": ["astro", "web", "base", "shell"],
       "dispositions": {
+        ".github/workflows/readme-screenshot.yml": {
+          "disposition": "declined",
+          "reason": "README frames are captured locally with bun run readme-screenshot"
+        },
+        ".github/workflows/verify.yml": {
+          "disposition": "customized",
+          "base": "sha256:0b6e3c9d3f347cf9c732886abbf6d08fbd78a0572568c8d30eb2703dbcc8ce35"
+        },
         "card-src/pages/og-card.astro": {
           "disposition": "declined",
           "reason": "site keeps its own share card pipeline in scripts/share-card.ts"
@@ -75,13 +83,29 @@
           "disposition": "declined",
           "reason": "site keeps its own share card pipeline in scripts/share-card.ts"
         },
+        "e2e/screenshot.ts": {
+          "disposition": "customized",
+          "base": "sha256:91a71054f64ce1455c641c62b4304fe6da154375d12d82ee1b8c0e23f414f13b"
+        },
         "eslint.config.js": {
           "disposition": "customized",
           "base": "sha256:3e8e4799dfdec37c53e78c3a6db47785e5ceee357e7e99b35b996a2792fcb877"
         },
+        "playwright.config.ts": {
+          "disposition": "customized",
+          "base": "sha256:d9c8805a586b130466c83ee2c74453d5d9f17e2f6682d443085ee9d5e2c9960a"
+        },
         "scripts/check-card-exclusion.sh": {
           "disposition": "declined",
           "reason": "site keeps its own share card pipeline in scripts/share-card.ts"
+        },
+        "scripts/lib/preview-server.sh": {
+          "disposition": "customized",
+          "base": "sha256:5e1d0ea671970ba5a4c6a83c0c656f86e4e9e5caa45c6636487793cc6f17c20b"
+        },
+        "scripts/readme-screenshot.sh": {
+          "disposition": "customized",
+          "base": "sha256:48aeea65c89cc68083bc11ca7be123426cf80869c1206e969935bd6eaa5947c0"
         },
         "vitest.config.ts": {
           "disposition": "customized",

@@ -8,16 +8,10 @@
  * thought marks at 62% of 10000ms, so a reader who clicked a member waited five
  * seconds for anything to happen and reported the click as dead.
  *
- * It sits in a plain file rather than inside the component because two things
- * read it: the page, and `e2e/cast-inventory.ts`, which renders every behavior
- * as a labelled grid. A copy in the harness would drift from the page within a
- * pass, and the drift would be invisible because both would still animate.
- *
  * Every rate here answers to `behaviors.ts`, which declares what each one was
- * measured at, and to `e2e/cast.spec.ts`, which fails any behavior spending
- * more than a small share of its cycle inside the band `canon/DESIGN.md`
- * bars. A behavior is either well under that band or crosses it fast and then
- * rests. Nothing idles inside it.
+ * measured at, and to the band `canon/DESIGN.md` bars. A behavior is either
+ * well under that band or crosses it fast and then rests. Nothing idles
+ * inside it.
  *
  * A behavior reads its member's own phase rather than carrying a rate of its
  * own. Rates set independently drift apart and the fastest becomes the thing a
@@ -27,8 +21,7 @@
 
 /* Every part turns about its own box rather than the drawing's origin. Without
    it a wobble swings the limb across the whole figure. This sits here rather
-   than with the layout because it is what makes a transform mean anything, and
-   the inventory harness needs it as much as the page does. */
+   than with the layout because it is what makes a transform mean anything. */
 .cast-member .bn rect {
   transform-box: fill-box;
   transform-origin: center;
@@ -82,10 +75,8 @@
 
   /* --- on a pointer ------------------------------------------------------ */
 
-  /* A reaction runs once for a reader and forever for the inventory, which is
-     one variable rather than two code paths: `e2e/cast-inventory.ts` sets
-     `--cast-loops` and the page never does. A harness with its own rules is a
-     harness that stops describing what ships. */
+  /* A reaction runs once for a reader. `--cast-loops` defaults to one, and an
+     outside harness can raise it without the page carrying a second path. */
 
   /* --- whole body ------------------------------------------------------- */
 
