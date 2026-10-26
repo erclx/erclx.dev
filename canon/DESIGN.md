@@ -59,7 +59,7 @@ Three Fraunces serif elements anchor the page from top to bottom: the hero H1, t
 
 Hero H1 holds the display size. Projects H2 sits one step smaller, and the footer masthead one step under the hero, so the page closes without competing with the opener. Surface-specific sizes live in the relevant `canon/wireframes/<surface>.md`.
 
-The sizes above are flat across every viewport on the landing page. A project route is the one surface that scales its prose and its column together, and `canon/context/layout-measure.md` owns those clamps along with the figure overhang that tracks them.
+The sizes above are flat across every viewport on the landing page. A project route is the one surface that scales its prose and its column together, and `canon/context/foundations/layout.md` owns those clamps along with the figure overhang that tracks them.
 
 ## Spacing
 
@@ -109,7 +109,7 @@ The response set has a single source rather than a set of surfaces kept in agree
 
 Which controls take the glow is decided by the same test the card settled. A control with bounds takes it. A link sitting inline in a paragraph keeps its underline instead, since a ground behind a word reads as a highlighter and fights the sentence around it.
 
-Both sets have ceilings that are lower than their token values suggest, and neither is visible from a token name. `canon/context/theming.md` § What the palette cannot do owns them, including why they are read off painted pixels rather than off composited values.
+Both sets have ceilings that are lower than their token values suggest, and neither is visible from a token name. `canon/context/foundations/theming.md` § Gotchas owns them, including why they are read off painted pixels rather than off composited values.
 
 ## Focus
 
@@ -131,9 +131,9 @@ An inline link is exempt from the site's 44px tap-target minimum when its comput
 
 ## Motion
 
-150ms ease-out for hover and focus state changes. A 700ms fade-and-rise pattern is permitted on entry into the viewport, gated on `[data-js='true']` and `prefers-reduced-motion: no-preference` so the no-JS and reduced-motion experience stays static. Additional ambient and editorial motion lives in the per-surface wireframes and context entries: the hero surface in `canon/context/shader-field.md`, the H1 annotation in `canon/wireframes/header.md`, project card media, card tilt, and section reveal in `canon/wireframes/projects.md`, footer masthead and signature wipe in `canon/wireframes/footer.md`. Anything not named in those entries defaults back to the static rule.
+150ms ease-out for hover and focus state changes. A 700ms fade-and-rise pattern is permitted on entry into the viewport, gated on `[data-js='true']` and `prefers-reduced-motion: no-preference` so the no-JS and reduced-motion experience stays static. Additional ambient and editorial motion lives in the per-surface wireframes and context entries: the hero surface in `canon/context/foundations/ground.md`, the H1 annotation in `canon/wireframes/header.md`, project card media, card tilt, and section reveal in `canon/wireframes/projects.md`, footer masthead and signature wipe in `canon/wireframes/footer.md`. Anything not named in those entries defaults back to the static rule.
 
-Travel to a scroll target eases rather than jumping, declared once on the root under `prefers-reduced-motion: no-preference` so every control resolves it instead of deciding for itself. The curve and the duration belong to the engine, since CSSOM-View defines neither, which puts this outside the numbered rules above rather than beside them. A caller that means to arrive rather than to travel says so explicitly. See `canon/ARCHITECTURE.md` § One declaration decides how the page travels, and `canon/context/motion.md` § Traveling to a target for what it cost.
+Travel to a scroll target eases rather than jumping, declared once on the root under `prefers-reduced-motion: no-preference` so every control resolves it instead of deciding for itself. The curve and the duration belong to the engine, since CSSOM-View defines neither, which puts this outside the numbered rules above rather than beside them. A caller that means to arrive rather than to travel says so explicitly. See `canon/ARCHITECTURE.md` § One declaration decides how the page travels, and `canon/context/foundations/motion.md` for the mechanism.
 
 Ambient motion carries a ceiling the hover rule does not. Motion detected with no fixed reference to judge it against sits near 0.1 to 0.3 degrees per second, roughly 4 to 11px per second at a desk, and anything inside that band pulls the eye without rewarding it. The hero surface's fastest term runs 0.13px per second and renews its pattern over about two minutes, an order of magnitude under the band, which is what lets it read as alive rather than as something to watch. An ambient surface that has to be watched is a defect whatever it draws, and this number is the test rather than a preference.
 

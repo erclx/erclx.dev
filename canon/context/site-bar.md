@@ -34,7 +34,7 @@ The landing bar and a route's bar share one ground rule rather than each declari
 - A ground taken from the page's own background token cannot separate from it. It measured 1.002:1 and 1.003:1, the page laid on the page, and blur alone cannot rescue that, since blurring a flat field returns the same flat field.
 - The shape contracts on scroll and the row inside it does not. The hero flies its name and toggle into the row's slots at measured positions, so a measurement of either has to be taken against a settled shape.
 - A shared declaration is not shared until nothing can replace it. The shape's transition, `inset 320ms ease, border-radius 320ms ease`, sits on `[data-bar-ground]` rather than inside either bar's component, since `transition` is a shorthand and a component rule setting only `transition: opacity` resets `transition-property` to that one property rather than adding to the list.
-- The edge and the shadow stay out of that list deliberately. They arrive at once on both bars, marking the instant the bar detaches from the viewport, where an edge fading up would read as the bar being unsure whether it has. `canon/context/motion.md` § The bar's shape change carries the measured frames.
+- The edge and the shadow stay out of that list deliberately. They arrive at once on both bars, marking the instant the bar detaches from the viewport, where an edge fading up would read as the bar being unsure whether it has. `canon/context/foundations/motion.md` carries where the transition is declared.
 
 Measured at 10c511a on 2026-08-25 at 1280 across chromium, firefox, and webkit.
 
