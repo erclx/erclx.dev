@@ -13,9 +13,7 @@ Per-domain narrative loaded on demand
 - [Case study navigation](case-study-navigation.md): How the way-home controls return a reader to the position on the landing page they left from
 - [CI](ci.md): GitHub Actions workflow triggers and checks
 - [Contact dock](contact-dock.md): The margin control carrying contact and the resume between the hero and the footer, and the gates at both ends
-- [Deployment](deployment.md): Cloudflare Pages deploy pipeline, domain setup, and secret rotation
-- [Development](development/index.md): The local loop and CI
-- [Development](development.md): Local dev workflow, scripts, and husky hooks
+- [Development](development/index.md): How the site is built, checked, deployed, and shipped
 - [Layout measure](layout-measure.md): How the timeline rail and a case-study route's prose and figures hold their geometry as the viewport changes
 - [Motion](motion.md): Scroll-reveal cascade primitive and the per-surface animations on the landing page
 - [Page ground](page-ground.md): The still contour layer under every page, why it damps inside the reading column, and how it tracks two different measures
@@ -24,6 +22,5 @@ Per-domain narrative loaded on demand
 - [Shader field](shader-field.md): The authored WebGL surface behind the hero and under the page, its mount lifecycle, and the reduced-motion still
 - [Share card](share-card.md): The Open Graph card and description a crawler reads, what each one says, and the harnesses that check them
 - [Site bar](site-bar.md): The sticky bar the hero's name and toggle travel into, its shared ground, its measurement timing, and the route bar's centering and back-to-top name
-- [Stacked shipping](stacked-shipping.md): How a chain of dependent pull requests is cut, reviewed, and merged, and what git does under it
 - [Theming](theming.md): Dark mode wiring across the first-paint script, theme toggle, and CSS class variant
 - [Typography](typography.md): Variable font loading, the preload split, and the type scale tokens

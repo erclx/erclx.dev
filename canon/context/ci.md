@@ -37,7 +37,7 @@ Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merg
 | E2E       | `bun run test:e2e`      | Playwright passes on one engine per job                                    |
 | Deploy    | `wrangler pages deploy` | Uploads `./dist/` to Cloudflare Pages                                      |
 
-For the deploy mechanism, custom domain wiring, and secrets, see `canon/context/deployment.md`. The build runs once, in `build-verify`: every e2e leg and `deploy` download that output rather than repeating it, covered below.
+For the deploy mechanism, custom domain wiring, and secrets, see `canon/context/development/deployment.md`. The build runs once, in `build-verify`: every e2e leg and `deploy` download that output rather than repeating it, covered below.
 
 ## Runtime
 
@@ -239,7 +239,7 @@ Measured against the last 100 runs on 2026-08-24, six non-main runs overlapped t
 
 Widening the trigger and keeping `--branch=main` would hand anyone a one-command production deploy of unmerged work, so the two changes are one change. `--branch` reads `${{ github.ref_name }}`, and Cloudflare treats only `main` as production, so the fence is the ref rather than a second condition somebody has to remember to write. A dispatch from a feature branch runs all five steps and lands on `<hash>.erclx-dev.pages.dev`. A dispatch from `main` publishes to the apex, which is the existing behavior and has to survive.
 
-A preview host puts unfinished work on a public address, which is the property `canon/context/development.md` § Serving to a real device rejected a public tunnel over. State that exposure at full size rather than at the tunnel entry's, because a dispatch mints two hosts and only one of them is unguessable. The run produced `5e65eb97.erclx-dev.pages.dev` and an alias at `ci-deploy-verifiable.erclx-dev.pages.dev`, which is the branch name with its slash flattened, so anybody who knows the convention reaches a branch they can name without ever being handed a link.
+A preview host puts unfinished work on a public address, which is the property the device harness in `canon/context/development/setup.md` keeps off a public tunnel. State that exposure at full size rather than at the tunnel entry's, because a dispatch mints two hosts and only one of them is unguessable. The run produced `5e65eb97.erclx-dev.pages.dev` and an alias at `ci-deploy-verifiable.erclx-dev.pages.dev`, which is the branch name with its slash flattened, so anybody who knows the convention reaches a branch they can name without ever being handed a link.
 
 What holds the trade up is that the address is not indexed and not permanent by accident. Both preview hosts answer with `x-robots-tag: noindex` and the apex sends no such header, measured on all three on 2026-08-25, so a preview stays off search results while the apex stays on them. And no address exists until somebody fires the dispatch, which is what separates this from the per-pull-request arm that mints one per branch whether or not anyone wanted it.
 

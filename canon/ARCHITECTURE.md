@@ -6,7 +6,7 @@ Static Astro site that renders one page at the erclx.dev apex and one route per 
 
 This record holds at most 11 decisions.
 
-Every session pays for this file before any work starts, so it carries the system's shape and nothing else: the stack, the delivery, the boundaries a check enforces, the layout, and the principles that change work in more than one domain. A decision about how one surface behaves lives in that domain's entry under `canon/context/`, which `canon/context/index.md` lists. For the source and test layout, see `canon/context/development.md` § Layout.
+Every session pays for this file before any work starts, so it carries the system's shape and nothing else: the stack, the delivery, the boundaries a check enforces, the layout, and the principles that change work in more than one domain. A decision about how one surface behaves lives in that domain's entry under `canon/context/`, which `canon/context/index.md` lists. For the source and test layout, see `canon/context/development/setup.md` § Layout.
 
 ## Key technical decisions
 
@@ -14,7 +14,7 @@ Every session pays for this file before any work starts, so it carries the syste
 
 Astro ships zero JS by default and the page is mostly prose and links, so a framework that shipped a runtime on every visit would spend bytes on nothing a visitor uses. Next was the alternative and it would force that runtime model. React loads only where an island opts into `client:*`, and today nothing does: the site ships zero directives and holds one unreferenced component at `src/components/ui/button.tsx`.
 
-The React toolchain stays anyway. An interactive surface is a plausible next increment and standing the integration back up costs more than carrying it does. Read that as settled rather than as an oversight, since a session auditing the tree without it proposes removing the toolchain. `canon/context/development.md` carries the package bill a removal would have to weigh, which is larger than the direct dependency list suggests.
+The React toolchain stays anyway. An interactive surface is a plausible next increment and standing the integration back up costs more than carrying it does. Read that as settled rather than as an oversight, since a session auditing the tree without it proposes removing the toolchain. `canon/context/development/setup.md` § Gotchas carries the package bill a removal would have to weigh, which is larger than the direct dependency list suggests.
 
 Tailwind v4 arrives through `@tailwindcss/vite` rather than the deprecated v3 Astro integration, and it reads a CSS-first `@theme` block instead of a JS-side `tailwind.config`, which is the same token model shadcn uses. shadcn sits on the radix base with the Nova preset, so the interactive primitives are accessible without locking the project into a design system, and the components live under `src/components/ui/` in this repository rather than behind a package that would have to be forked to edit.
 
@@ -22,7 +22,7 @@ Tailwind v4 arrives through `@tailwindcss/vite` rather than the deprecated v3 As
 
 The apex domain already lives in Cloudflare, so Pages attaches it without a DNS migration and serves the apex and `www` from one project. Vercel and Netlify would need DNS pointed away from Cloudflare or a CNAME-flattening dance, and GitHub Pages serves static files fine but offers no per-PR previews and ties the project's lifecycle to repository settings rather than a host project.
 
-The deploy runs from GitHub Actions through `cloudflare/wrangler-action` rather than through Cloudflare's own Git integration, which would deploy on every push without honoring the test gate and would build in Cloudflare's environment against a separately pinned bun. Direct upload keeps production behind the full check suite and keeps the build environment the same one CI already runs. `canon/context/deployment.md` carries the pipeline, the domain setup, and the shorter gate a preview deploy takes.
+The deploy runs from GitHub Actions through `cloudflare/wrangler-action` rather than through Cloudflare's own Git integration, which would deploy on every push without honoring the test gate and would build in Cloudflare's environment against a separately pinned bun. Direct upload keeps production behind the full check suite and keeps the build environment the same one CI already runs. `canon/context/development/deployment.md` carries the pipeline, the domains, and the preview deploys.
 
 ### What a check enforces here, and what nothing watches
 

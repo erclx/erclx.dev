@@ -32,7 +32,7 @@ One rule decides membership, and it is a test rather than a list. A response key
 
 - The one case the test does not settle on its own is a `pointerdown`-keyed effect. It reads a tap as a press that travels under 10px and is not claimed by a scroll, rather than as a click, since a scroll starting under `pointerdown` alone would otherwise fire the effect every time a reader began scrolling.
 - A drawn surface also has to match the density of the screen it is on. The cap sat at 1.5 while a tablet reported 2, so the panel interpolated the difference and softened every contour, which is why the same drawing read crisp in a desktop capture and washed out on the device. The cap matches the display now, and the frame guard is what protects a device that cannot afford it, by measuring what it actually draws rather than refusing up front.
-- Neither of those is visible under device emulation, which reproduces the events and the viewport and not the pointer hardware, the display density, or the engine. `canon/context/development.md` § Serving to a real device carries the harness that answers them.
+- Neither of those is visible under device emulation, which reproduces the events and the viewport and not the pointer hardware, the display density, or the engine. `canon/context/development/setup.md` carries the device harness that answers them.
 
 ### The chip row's arrival
 
