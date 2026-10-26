@@ -1,6 +1,6 @@
 ---
 name: stack-address
-description: Answers a batch of review findings across a chain of stacked pull requests in one bottom-up pass, rebasing, pushing and answering each branch as the walk finishes it. Use when a stack handback arrives, or when asked to "address the stack review", "fix the findings across the chain", or "push the whole stack". Do NOT use for findings on a single pull request, which is `claude-address-review`, and do NOT use to open a chain, which is `stack-ship`.
+description: Answers a batch of review findings across a chain of stacked pull requests in one bottom-up pass, rebasing, pushing and answering each branch as the walk finishes it. Use when a stack handback arrives, or when asked to "address the stack review", "fix the findings across the chain", or "push the whole stack". Do NOT use for findings on a single pull request, which is `review-address`, and do NOT use to open a chain, which is `stack-ship`.
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, Skill
 ---
 
@@ -60,7 +60,7 @@ Never read the mergeable flag as evidence the base is current. It reports clean 
 Cite these rather than restating them. A step reimplemented here rots against the skill that owns it.
 
 - `canon/context/stacked-shipping.md` carries the git behavior under a stack and the four-role model
-- `claude-address-review` owns how one finding is answered on one branch, applied here per branch
+- `review-address` owns how one finding is answered on one branch, applied here per branch
 - `stack-review` owns the merge order and checks whether a push carried edits
 - `stack-ship` owns the rebase mechanics behind each merge
 - Root `CLAUDE.md` § Commands names the verify commands a fix runs

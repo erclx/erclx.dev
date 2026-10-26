@@ -191,7 +191,7 @@ The apex is where it pays. Every host except LinkedIn renders the description be
 
 ## Adding a domain folder
 
-A diff adding a new top-level folder under `src/` drafts that domain's `canon/context/<domain>.md` entry at ship time, per the context standard (`canon standards context`). `claude-docs` only refreshes an entry that already exists and never creates one on its own.
+A diff adding a new top-level folder under `src/` drafts that domain's `canon/context/<domain>.md` entry at ship time, per the context standard (`canon standards context`). `context-fold` only refreshes an entry that already exists and never creates one on its own.
 
 ## Shell scripts
 
