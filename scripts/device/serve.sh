@@ -82,7 +82,7 @@ elif [[ "$forwarded_to" == "$wsl_address" ]]; then
     # The renderer draws nothing when stdout is not a terminal, which is correct
     # for a code made of block characters and unexplained in a captured log.
     if [[ -t 1 ]]; then
-      "$(dirname "$0")/../node_modules/.bin/qrcode-terminal" \
+      "$(dirname "$0")/../../node_modules/.bin/qrcode-terminal" \
         "http://$windows_address:$port$device_path"
     else
       echo "  Run this in a terminal for a code to scan."

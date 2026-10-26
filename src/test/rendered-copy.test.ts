@@ -3,7 +3,7 @@ import { join } from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
-import { CARD_CLAIM } from '../../scripts/card-copy'
+import { CARD_CLAIM } from '../../scripts/brand/card-copy'
 
 /**
  * The copy a visitor reads is the copy the components hold. These assertions

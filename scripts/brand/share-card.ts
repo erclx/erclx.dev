@@ -7,7 +7,7 @@
  *
  * The mark leads and the card's line sits beside it, with the small
  * attribution under that line. The line comes from the career source's
- * `share-card.md` and is declared once in `scripts/card-copy.ts`, since the
+ * `share-card.md` and is declared once in `scripts/brand/card-copy.ts`, since the
  * header shows the same words today. Two earlier
  * arrangements put the name in the image at display weight, which is the same
  * word twice in one unfurl since every host prints the title alongside.
@@ -24,16 +24,16 @@
  * a real hover produces. It used to be a whole-page capture of the static
  * `page-ground` copy, which mounts with `animate: false` and never redraws
  * after its first paint: that source could not carry a gradient at all,
- * however long a pointer simulation waited. See `scripts/lib/capture-field.ts`.
+ * however long a pointer simulation waited. See `scripts/brand/capture-field.ts`.
  *
- * Run: bun scripts/share-card.ts, with the site served at CARD_BASE_URL.
+ * Run: bun scripts/brand/share-card.ts, with the site served at CARD_BASE_URL.
  */
 import { readFile, writeFile } from 'node:fs/promises'
 
 import { chromium } from '@playwright/test'
 
+import { captureFieldPlate, renderOnRealPage } from './capture-field'
 import { CARD_CLAIM as CLAIM } from './card-copy'
-import { captureFieldPlate, renderOnRealPage } from './lib/capture-field'
 
 // The size every host accepts. LinkedIn asks 1200x627 and X 1200x628, both of
 // which this covers, and Discord scales whatever it is given.
@@ -47,7 +47,7 @@ const OUT = 'public/og.png'
 
 // The hero's own column is a centered `max-width: 48rem` (768px) strip the
 // field damps hardest inside. Cropping from the left margin avoids it, the
-// same rule `scripts/avatar-field.ts` follows.
+// same rule `scripts/brand/avatar-field.ts` follows.
 const COLUMN_MAX = 768
 const MARGIN_BUFFER = 96
 const CAPTURE_W = 3600
@@ -71,7 +71,7 @@ const pointerAt = {
 
 // Read from the one drawing rather than copied into this file, so the card
 // cannot drift from the tab, the home screen, and the avatar that
-// `scripts/brand.ts` renders from the same source. The mark carries no width or
+// `scripts/brand/rasters.ts` renders from the same source. The mark carries no width or
 // height of its own, so the host sizes it.
 const MARK = await readFile('src/assets/brand/mark.svg', 'utf8')
 

@@ -54,12 +54,18 @@ The brand and preview scripts redraw generated assets, and two of them need the 
 
 ### `scripts/`
 
-Holds every shell and Bun script the package scripts call, since no `.sh` file belongs outside this folder. `verify.ts`, `worktree-port.sh`, `screenshot.sh`, and `lib/preview-server.sh` ship from the toolkit, so a tooling sync rewrites them.
+Holds every shell and Bun script the package scripts call, since no `.sh` file belongs outside this folder. The top level holds the toolkit's scripts and the capture entry points, and each project pipeline takes a subfolder.
 
+- `verify.ts`, `worktree-port.sh`, `screenshot.sh`, and `lib/preview-server.sh` ship from the toolkit, so a tooling sync rewrites them
 - `worktree-port.sh` shifts every server's port by a per-worktree offset, so a linked worktree never collides with the main checkout
-- `device.sh` finds the WSL address, checks the Windows port forward against it, and prints the `netsh` command that creates or re-points the forward
+- `brand/` renders the mark, the share card, and the avatars, and `canon/context/foundations/brand.md` covers it
+
+### `scripts/device/`
+
+Holds the harness that serves the site to a phone or tablet on the same network, since a touch defect cannot be judged in a desktop browser's device emulation.
+
+- `serve.sh` finds the WSL address, checks the Windows port forward against it, and prints the `netsh` command that creates or re-points the forward
 - `qr.ts` writes a scannable PNG per address under `.canon/review/qr/`, with a four-module quiet zone so a camera reads it against a busy background
-- `unfurl.ts` reads the tags off the served page rather than the source, since a crawler reads the rendered copy
 
 ### `src/components/dev/`
 
@@ -90,6 +96,6 @@ Each folder below has no trap of its own, so one line covers it.
 
 - Two worktrees can derive the same port offset, since it is `cksum % 50 + 1` of the folder name, so set `WORKTREE_PORT_OFFSET` rather than stop a sibling's server
 - The WSL address changes on every boot, so yesterday's device forward refuses connections while the Windows port still answers. Run `bun run device` to re-point it.
-- `bun run device` draws no code when stdout is not a terminal, so an agent session runs `bun scripts/qr.ts <url>` and hands over the PNG
+- `bun run device` draws no code when stdout is not a terminal, so an agent session runs `bun scripts/device/qr.ts <url>` and hands over the PNG
 - A raw NUL byte makes every search tool read a source file as binary and return nothing, so check for one before rewriting a search that should match
 - Reproduce a suite failure with a probe in `e2e/` against `astro preview` on 4250 plus the offset, since a dev-server probe misses CSS timing defects
