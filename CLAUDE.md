@@ -4,7 +4,7 @@ Personal landing site. Astro v6 static build with Tailwind v4, deployed to Cloud
 
 ## Context
 
-- Before non-trivial work in a domain, read `canon/context/<domain>.md`, and before touching a UI surface read `canon/wireframes/<surface>.md`. Pick which from the index anchors below.
+- Before non-trivial work in a domain, read its entry under `canon/context/`, and before touching a UI surface read its wireframe under `canon/wireframes/`. Find each from the index anchors below.
 
 @canon/REQUIREMENTS.md
 @canon/ARCHITECTURE.md
@@ -13,13 +13,22 @@ Personal landing site. Astro v6 static build with Tailwind v4, deployed to Cloud
 
 ## Commands
 
-- `bun run check`: the gate `.husky/pre-push` runs, so run it before pushing
+- Run `bun run check` to verify and `bun run format` to fix before committing. The pre-push hook runs `check`, which writes nothing.
 
 ## Key paths
 
+### Code
+
+What builds, tests, and deploys the site.
+
 - `src/`: Astro source (pages, layouts, components, styles, assets)
-- `canon/DESIGN.md`: design tokens and the visual system
 - `public/`: static files served as-is
 - `scripts/`: build, dev, and capture tooling
 - `e2e/`: Playwright suite plus the capture and inventory harnesses
-- `.github/workflows/`: CI pipelines for checks/tests/build/deploy, PR label gating, and README screenshot capture
+- `.github/workflows/`: CI pipelines for checks, tests, build, deploy, pull request label gating, and README screenshot capture
+
+### Content
+
+What describes the site rather than builds it.
+
+- `canon/DESIGN.md`: visual intent, pointing at the stylesheet that holds the values
