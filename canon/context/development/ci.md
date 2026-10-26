@@ -19,7 +19,7 @@ Holds the workflows. `verify.yml` carries the jobs below, and `deploy` ships onl
 
 | Job             | What it runs                                            |
 | --------------- | ------------------------------------------------------- |
-| `static-checks` | Typecheck, lint, format, shell, and the context gate    |
+| `static-checks` | Typecheck, lint, format, and the context gate           |
 | `unit-tests`    | `bun run test:coverage`                                 |
 | `build-verify`  | `bun run build`, uploaded as the `dist` artifact        |
 | `rendered-copy` | `bun run test:rendered` against the built pages         |
