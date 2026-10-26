@@ -77,7 +77,7 @@ The page's own inset is not on that scale and cannot be. It is `--page-inset`, a
 
 Anything positioned against the page edge derives from that value rather than picking its own. The sticky bar's detached shape floors its inset at the page inset minus a stated padding, which is what keeps the name off the curve. The two were independent until 2026-08-20, and the gap between them collapsed to 8px on a phone while reading 22px at 768.
 
-That generalizes past the page inset. A value relating two elements is arithmetic over named values, never a literal, and what is banned is a literal standing in for a relationship two other values already fix. A nudge centering one element against another is the shape to refuse: it encodes both of their current widths and goes wrong the moment either one moves. `canon/context/site-bar.md` carries the case that settled it.
+That generalizes past the page inset. A value relating two elements is arithmetic over named values, never a literal, and what is banned is a literal standing in for a relationship two other values already fix. A nudge centering one element against another is the shape to refuse: it encodes both of their current widths and goes wrong the moment either one moves. `canon/context/chrome/site-bar.md` carries the case that settled it.
 
 A mark that has to line up with type derives from the type's own metrics for the same reason. An origin dot centers inside a box one line-height tall, a rail segment spans `calc(1lh / 2)` to the next row rather than a measured offset, and a status dot centers on a box one cap-height tall resting on the label's baseline.
 
