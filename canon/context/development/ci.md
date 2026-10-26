@@ -29,7 +29,8 @@ Holds the workflows. `verify.yml` carries the jobs below, and `deploy` ships onl
 
 The other workflows each own one job.
 
-- `shell.yml` runs shfmt and shellcheck, and `phase-label-gate.yml` rejects a phase label in a pull request body
+- `shell.yml` runs shfmt and shellcheck on pull requests into `main` alone, so a stacked pull request leans on the pre-push `check` for them
+- `phase-label-gate.yml` rejects a phase label in a pull request body
 - `pr-local-preview.yml` drops the local preview line from the evidence comment when a pull request closes
 - A concurrency group cancels a superseded run, except a push to `main` or a dispatch, since either may carry a deploy
 
