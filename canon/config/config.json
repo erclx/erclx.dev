@@ -36,9 +36,58 @@
       "chain": ["astro"]
     },
     "tooling": {
-      "syncedAt": "2026-09-15T12:17:38.134Z",
-      "files": {},
-      "chain": ["astro", "web", "base"]
+      "version": "5.66.0",
+      "syncedAt": "2026-10-26T10:28:57.813Z",
+      "files": {
+        ".editorconfig": "sha256:e1abbbf49097a53874f72d25d8d305c16774d6ada09559e77b3bc647f7c5045c",
+        ".github/workflows/phase-label-gate.yml": "sha256:a4dd2f6e78751e22d2d9ecd8bc4a66f42e7e1022c04d4038a4f6689c791ed64f",
+        ".github/workflows/pr-local-preview.yml": "sha256:29a3541db02f1ffb0e7fbe6ae84e49462c6900728584398c28fe4fb8fa8f5b2d",
+        ".github/workflows/shell.yml": "sha256:6411607bdaf13fd4426612e1e3d13ca85ad5c9b66346cd8c2ef11c3b8d4f44b1",
+        ".husky/commit-msg": "sha256:466995785613d23781be71a1338fec590dec636a8b2a0f13d7b850639358fbeb",
+        ".husky/post-merge": "sha256:ac70b19c4ec53acb87d49eb9b2f2989d93d200de41b5f72ec72fe27c6992e03a",
+        ".husky/post-rewrite": "sha256:4f35974c54e0cf6cb9ce587f8840c24132ea8d7e74ca5ae884ee546f7b878a91",
+        ".husky/pre-commit": "sha256:a7e3ee0be7554bb60837cd7a414e61aa6a51db987390e325a3799cbdc254ddd8",
+        ".husky/pre-push": "sha256:e059070389c708b2bcebd7b96f8787f4bdcedc866539c02af1dfd5d98630eb3e",
+        ".oxfmtrc.json": "sha256:bff2a348476448733c3b1e888add60ffc776faa9d778c9ffa33a0e1ba8088dc9",
+        ".oxlintrc.json": "sha256:89fffa9c7742952bdb5500ef24cf7e4132be3f819121e32071dfe58af75133b5",
+        ".prettierrc": "sha256:b90ed7d374d2063403605fb29d287bed8d40fee793e1f5ba5cb5687c4f3bdc44",
+        ".shellcheckrc": "sha256:d85f8e905e21c014b7d7383dc6d7ac9db3195db4ec39996e371cf5435b2f5b97",
+        "astro.config.mjs": "sha256:7f39932b76b76ed30b1053ad20e76295c7d4e4e85633fec1eb32e0920f8bb61d",
+        "commitlint.config.js": "sha256:741d826bc2a3d77c1097df6c11808f669737158dd5037caed6edfbb15a6966a0",
+        "e2e/capture-types.ts": "sha256:38e736ce0be4040cc8e4887e863ed8d6762fdce9f70a3f58ddd4e5e02434f496",
+        "eslint.config.js": "sha256:3e8e4799dfdec37c53e78c3a6db47785e5ceee357e7e99b35b996a2792fcb877",
+        "scripts/screenshot.sh": "sha256:dc7a583c96c57cc7124842c51ead536c5b29987e52eda8e50eed51f28fbd4d96",
+        "scripts/verify.json": "sha256:5e9e1e78b1f5dafcc39baeba83d140975fbf0df5336c8afdd0267cd4749f1f85",
+        "scripts/verify.ts": "sha256:d8e397f6dff3378551a9f22b4754f2e17dd3ff1beb7e30608ea1932feaf75e39",
+        "scripts/worktree-port.sh": "sha256:3d0f0a5e01f796bda1b8591103aef0509c1c077d160d15dfff565edc4d3a30cb",
+        "src/components/dev/scenarios.astro": "sha256:c2f6a892fce2803a6ef52eeb38b38c68604cd18e796cd2764e264f01a3cd8187",
+        "src/test/setup.ts": "sha256:81c5f1d7ba79bea949bc636250c52d71d18f2d56bfeff58ac15181786b93211d",
+        "tsconfig.json": "sha256:ddc737073d68b79b667bc94f6489e6884f934dac968bf1f63fa0ec93010beca3",
+        "vitest.config.ts": "sha256:86cea8770fd07cb6757e73c70913a49ab042494f719f4b49337e03639ccfb754"
+      },
+      "chain": ["astro", "web", "base", "shell"],
+      "dispositions": {
+        "card-src/pages/og-card.astro": {
+          "disposition": "declined",
+          "reason": "site keeps its own share card pipeline in scripts/share-card.ts"
+        },
+        "card.config.mjs": {
+          "disposition": "declined",
+          "reason": "site keeps its own share card pipeline in scripts/share-card.ts"
+        },
+        "eslint.config.js": {
+          "disposition": "customized",
+          "base": "sha256:3e8e4799dfdec37c53e78c3a6db47785e5ceee357e7e99b35b996a2792fcb877"
+        },
+        "scripts/check-card-exclusion.sh": {
+          "disposition": "declined",
+          "reason": "site keeps its own share card pipeline in scripts/share-card.ts"
+        },
+        "vitest.config.ts": {
+          "disposition": "customized",
+          "base": "sha256:86cea8770fd07cb6757e73c70913a49ab042494f719f4b49337e03639ccfb754"
+        }
+      }
     }
   }
 }

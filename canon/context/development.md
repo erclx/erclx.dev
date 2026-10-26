@@ -50,12 +50,6 @@ Turning `fullyParallel` on was measured rather than assumed. It took the full ru
 
 A question about the running page is answered faster by a script against `bun run dev` than by any suite invocation, since that path pays no build. The suite rebuilds the site and starts a fresh server on every run, because `webServer` runs `bun run build` under `reuseExistingServer: false`.
 
-### Playwright MCP over a static capture
-
-`.mcp.json` registers `@playwright/mcp@latest`. Reach for it when the question needs the page driven rather than photographed: a hover, a click, a viewport change, or a computed style read back off a live element. Reach for `bun run screenshot` when the question is what a surface looks like at rest, which covers layout review and diffing rendered content against the canonical source it came from.
-
-The split matters because the two answer different questions and the static path is far cheaper. A capture that has to be driven into position is the signal to switch, not a reason to add a step to the capture script.
-
 ### The device harness's two flags
 
 `DEVICE_MODE=dev` serves the dev server instead of the build. The scenario harness in `src/components/dev/` is gated on `import.meta.env.DEV` and leaves the production tree, so an interactive decision served through it is unreachable from a built page and can only be judged on the machine running it. That is the whole reason the flag exists, and the build stays the default because it is what a visitor receives.
@@ -100,11 +94,9 @@ Check for one whenever a search comes back empty against a file that should not 
 
 | Command                    | Purpose                                                                                                                |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `bun run check`            | Full verification. Auto-formats, then asserts clean.                                                                   |
+| `bun run check`            | Full verification through `scripts/verify.ts`, then the context gate and the rendered-copy tests. Writes nothing.      |
 | `bun run check:record`     | Run `canon context audit --gate` through `bunx`: citations, decision cap, required sections, index drift.              |
-| `bun run format`           | Auto-fix prettier and shfmt formatting.                                                                                |
-| `bun run clean`            | Wipe `node_modules/`, clear bun cache, reinstall.                                                                      |
-| `bun run update`           | Interactive `bun update` followed by verification.                                                                     |
+| `bun run format`           | Auto-fix oxfmt formatting, and prettier on `.astro` files.                                                             |
 | `bun run dev`              | Start the Astro dev server on port 4321.                                                                               |
 | `bun run device`           | Serve the dev site to a phone or tablet on the same network, printing a QR to scan.                                    |
 | `bun run brand`            | Redraw every brand raster from the one mark source. Run after editing that mark and never by hand.                     |

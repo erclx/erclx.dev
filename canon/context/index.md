@@ -14,6 +14,7 @@ Per-domain narrative loaded on demand
 - [CI](ci.md): GitHub Actions workflow triggers and checks
 - [Contact dock](contact-dock.md): The margin control carrying contact and the resume between the hero and the footer, and the gates at both ends
 - [Deployment](deployment.md): Cloudflare Pages deploy pipeline, domain setup, and secret rotation
+- [Development](development/index.md): The local loop and CI
 - [Development](development.md): Local dev workflow, scripts, and husky hooks
 - [Layout measure](layout-measure.md): How the timeline rail and a case-study route's prose and figures hold their geometry as the viewport changes
 - [Motion](motion.md): Scroll-reveal cascade primitive and the per-surface animations on the landing page

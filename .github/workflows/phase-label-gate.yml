@@ -11,14 +11,18 @@ on:
     types: [submitted, edited]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   phase-label-gate:
     name: 🏷️ Phase Label Gate
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.base.ref == 'main'
+    # Dependabot bodies carry upstream release notes that read as phase labels
+    if: github.event.pull_request.user.login != 'dependabot[bot]' && github.event.pull_request.user.login != 'renovate[bot]' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.base.ref == 'main')
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
