@@ -37,7 +37,7 @@ Defined in `.github/workflows/verify.yml`. All verify jobs must pass before merg
 | E2E       | `bun run test:e2e`      | Playwright passes on one engine per job                                    |
 | Deploy    | `wrangler pages deploy` | Uploads `./dist/` to Cloudflare Pages                                      |
 
-For the deploy mechanism, custom domain wiring, and secrets, see `canon/context/deployment.md`. The build runs once, in `build-verify`: every e2e leg and `deploy` download that output rather than repeating it, covered below.
+For the deploy mechanism, custom domain wiring, and secrets, see `canon/context/development/deployment.md`. The build runs once, in `build-verify`: every e2e leg and `deploy` download that output rather than repeating it, covered below.
 
 ## Runtime
 
@@ -107,7 +107,7 @@ Three instruments went wrong the same way, two of them while the focus-ring swee
 
 A rule stripping a ring for a fixture has to beat a layered declaration and a user-agent default at once, so the strip is written inline, where nothing outranks it.
 
-The tap-target guard asserts its exempt set by reading each element's class list for `min-h-11`, `min-w-11`, or `size-11` alongside a box-display class. `canon/DESIGN.md` § Links carries the exemption itself, which turns on an inline link's `display` resolving to `inline`. A flex parent blockifies a child's computed display, so a guard trusting the computed value would quietly exempt a control that had regressed from `inline-flex` to plain `inline`.
+The tap-target guard asserts its exempt set by reading each element's class list for `min-h-11`, `min-w-11`, or `size-11` alongside a box-display class. `canon/DESIGN.md` § Typography carries the exemption itself, which turns on an inline link's `display` resolving to `inline`. A flex parent blockifies a child's computed display, so a guard trusting the computed value would quietly exempt a control that had regressed from `inline-flex` to plain `inline`.
 
 The two outline readings were measured at 63bfea1 on 2026-08-22, at 1440x900 across chromium, firefox, and webkit. The tap-target reading came from the prose-link decision and carries no stamp of its own.
 
@@ -239,7 +239,7 @@ Measured against the last 100 runs on 2026-08-24, six non-main runs overlapped t
 
 Widening the trigger and keeping `--branch=main` would hand anyone a one-command production deploy of unmerged work, so the two changes are one change. `--branch` reads `${{ github.ref_name }}`, and Cloudflare treats only `main` as production, so the fence is the ref rather than a second condition somebody has to remember to write. A dispatch from a feature branch runs all five steps and lands on `<hash>.erclx-dev.pages.dev`. A dispatch from `main` publishes to the apex, which is the existing behavior and has to survive.
 
-A preview host puts unfinished work on a public address, which is the property `canon/context/development.md` § Serving to a real device rejected a public tunnel over. State that exposure at full size rather than at the tunnel entry's, because a dispatch mints two hosts and only one of them is unguessable. The run produced `5e65eb97.erclx-dev.pages.dev` and an alias at `ci-deploy-verifiable.erclx-dev.pages.dev`, which is the branch name with its slash flattened, so anybody who knows the convention reaches a branch they can name without ever being handed a link.
+A preview host puts unfinished work on a public address, which is the property the device harness in `canon/context/development/setup.md` keeps off a public tunnel. State that exposure at full size rather than at the tunnel entry's, because a dispatch mints two hosts and only one of them is unguessable. The run produced `5e65eb97.erclx-dev.pages.dev` and an alias at `ci-deploy-verifiable.erclx-dev.pages.dev`, which is the branch name with its slash flattened, so anybody who knows the convention reaches a branch they can name without ever being handed a link.
 
 What holds the trade up is that the address is not indexed and not permanent by accident. Both preview hosts answer with `x-robots-tag: noindex` and the apex sends no such header, measured on all three on 2026-08-25, so a preview stays off search results while the apex stays on them. And no address exists until somebody fires the dispatch, which is what separates this from the per-pull-request arm that mints one per branch whether or not anyone wanted it.
 
@@ -247,7 +247,7 @@ A preview outlives the branch that named it, and pruning is manual. The project 
 
 Read what this does not close, because it bounds what the trigger is worth. The only thing standing in for a pre-merge run last time was reading the failure log, and that worked because the error named a missing binary. A deploy failing on credentials, on a project name, or on a Cloudflare-side change gives a far less legible log, and none of those surface any earlier than production unless somebody fires the dispatch. What ships here is the run being available rather than anybody being made to take it.
 
-Do not close any of this by asserting something about the workflow file's contents. A check reading that `deploy` carries a setup step passes on a job that cannot run, which is the instrument class `canon/ARCHITECTURE.md` § What a check enforces here, and what nothing watches records and which shipped again this week. The instrument here is somebody firing the dispatch and reading the deployment URL out of the run log.
+Do not close any of this by asserting something about the workflow file's contents. A check reading that `deploy` carries a setup step passes on a job that cannot run, which is the instrument class that reads a shape rather than what runs. The instrument here is somebody firing the dispatch and reading the deployment URL out of the run log.
 
 Exercised on 2026-08-25 from `ci/deploy-verifiable` rather than reasoned about. Run `32796334703` reached `deploy` after all six verify legs, ran its five steps green, and reported `pages deploy ./dist --project-name=erclx-dev --branch=ci/deploy-verifiable` landing on `5e65eb97.erclx-dev.pages.dev` with an alias at `ci-deploy-verifiable.erclx-dev.pages.dev`. The apex was fetched either side of it and did not move.
 

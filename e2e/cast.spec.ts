@@ -441,8 +441,8 @@ test.describe('agent cast', () => {
   // The margin check reads a cluster's own box, and the power layer is a
   // sibling reaching past that box on every side, so it can paint over the
   // prose while the cluster still measures clear. That is the shape of the
-  // defect `canon/ARCHITECTURE.md` § What a check enforces here, and what
-  // nothing watches records, a panel measuring correctly while sitting off
+  // defect of an instrument reading shape rather than paint, a panel
+  // measuring correctly while sitting off
   // screen: the instrument answers about the wrong element.
   test('keeps every power layer clear of the reading column', async ({
     page,

@@ -6,9 +6,7 @@
  * and judged against a real capture rather than guessed.
  *
  * The crop sits in the hero's right margin, clear of the centered
- * `max-width: 48rem` column the field damps around (see `capture-field.ts`
- * and `canon/wireframes/experience.md`, where a figure hanging into the margin
- * left the text centered while the section read as offset).
+ * `max-width: 48rem` column the field damps around (see `capture-field.ts`).
  *
  * Two sizes come from one CSS-pixel geometry rather than two different
  * capture widths, since the field's own scale divides by the canvas's CSS

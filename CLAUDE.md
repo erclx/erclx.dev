@@ -4,12 +4,10 @@ Personal landing site. Astro v6 static build with Tailwind v4, deployed to Cloud
 
 ## Context
 
-- Before non-trivial work in a domain, read its entry under `canon/context/`, and before touching a UI surface read its wireframe under `canon/wireframes/`. Find each from the index anchors below.
+- Before non-trivial work in a domain, read its entry under `canon/context/`. Find it from the index anchor below.
 
 @canon/REQUIREMENTS.md
-@canon/ARCHITECTURE.md
 @canon/context/index.md
-@canon/wireframes/index.md
 
 ## Commands
 
@@ -24,7 +22,7 @@ What builds, tests, and deploys the site.
 - `src/`: Astro source (pages, layouts, components, styles, assets)
 - `public/`: static files served as-is
 - `scripts/`: build, dev, and capture tooling
-- `e2e/`: Playwright suite plus the capture and inventory harnesses
+- `e2e/`: Playwright suite plus the capture harness
 - `.github/workflows/`: CI pipelines for checks, tests, build, deploy, pull request label gating, and README screenshot capture
 
 ### Content
@@ -32,3 +30,4 @@ What builds, tests, and deploys the site.
 What describes the site rather than builds it.
 
 - `canon/DESIGN.md`: visual intent, pointing at the stylesheet that holds the values
+- `canon/design/`: accepted design references a build matches, empty until one is picked

@@ -1,0 +1,7 @@
+[markdown]
+gated = [
+  "canon/context/development/",
+  "canon/context/foundations/",
+  "canon/context/chrome/",
+  "canon/context/sections/",
+]

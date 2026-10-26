@@ -1,7 +1,7 @@
 /**
  * One member acts on its own every few seconds, and never two at once.
  *
- * `canon/ARCHITECTURE.md` records expressive motion being moved to a pointer on
+ * Expressive motion was moved to a pointer on
  * the reading that a margin full of characters performing at a reader who has
  * not looked at them is the ambient motion problem restated. This does not
  * reverse that. The band `canon/DESIGN.md` bars is *sustained* motion with no
