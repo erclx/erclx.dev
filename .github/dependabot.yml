@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # Actions only, monthly and grouped into one pull request. npm updates are
+  # left to `bun update` by hand, since each one would run the full CI for a
+  # site that publishes nothing.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: ci
