@@ -14,6 +14,11 @@ concurrency:
   # Never interrupt a run carrying a deploy: main, or a dispatch on any ref.
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
 
+env:
+  # Origin for canonical and Open Graph URLs. astro.config.mjs falls back to an
+  # unresolvable placeholder when unset, and build-verify's output is what deploys.
+  ASTRO_SITE: https://erclx.dev
+
 jobs:
   static-checks:
     name: 🔍 Static Checks
