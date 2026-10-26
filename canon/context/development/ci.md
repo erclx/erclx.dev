@@ -35,10 +35,10 @@ The other workflows each own one job.
 
 ### `e2e/`
 
-Holds the Playwright suite and the screenshot harness. The specs cover only what a browser proves, being that every route renders cleanly and holds a 320px width, the card-to-route round trip, and the theme choice.
+Holds the Playwright suite and the screenshot harness. The specs cover only what a browser proves, being clean routes at 320px, the way home and back to the top, one bar width, and the theme choice.
 
 - `playwright.config.ts` runs all three engines under reduced motion and serves the build on 4250 plus the offset, clear of `astro dev`
-- `screenshot.ts` and `capture-types.ts` ship from the toolkit, and `capture/cases.ts` is the one capture file this project edits
+- `screenshot.ts` is customized for one blank line the toolkit's own import-sort rule demands, and `capture/cases.ts` is the capture file this project edits
 - A case flagged `evidence` writes 320 and 1280 frames under `.github/evidence/surfaces/`, and the full sweep goes to the ignored `screenshots/`
 - `cases.ts` loads lazy images eagerly and drops an empty `src`, since the harness waits on every image and two kinds never complete
 - The home cases mask `[data-updated]`, the footer's build date, so a rebuild alone shows no diff
