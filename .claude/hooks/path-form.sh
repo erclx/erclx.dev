@@ -8,14 +8,12 @@
 # and no error appears. This computes the fact a session was asking itself
 # to infer on every response and hands the answer back instead.
 #
-# The entrypoint branch (bare vs. `file://` link) stays prose in
-# governance/rules/claude/566-output.md. CLAUDE_CODE_ENTRYPOINT is not among
-# the environment variables Claude Code documents as passed to a hook
-# subprocess, unlike CLAUDE_PROJECT_DIR, so a hook cannot read it reliably.
+# The link form a response uses comes from the harness's own instruction for
+# its surface, not from this hook or the output rule.
 #
 # The worktree branch comes from the path rather than from `git rev-parse`,
-# the way `tasks-index.sh` and `memory-index.sh` already derive their main
-# root from a path suffix instead of the session. A git call would answer for
+# the way `records-index.sh` already derives its main root from a path suffix
+# instead of the session. A git call would answer for
 # whatever directory the hook's own process happens to run in, which is not
 # necessarily the worktree the write came from.
 

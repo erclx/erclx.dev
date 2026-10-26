@@ -61,7 +61,7 @@ The header lost the role, the headline, and the location on 2026-08-17. The clai
 - shadcn/ui on the radix base with the Nova preset
 - TypeScript strict
 - Bun for runtime, install, and scripts
-- Vitest, Playwright, ESLint, Prettier, cspell
+- Vitest, Playwright, ESLint, oxfmt, oxlint, and Prettier for `.astro` files
 
 ## Constraints
 

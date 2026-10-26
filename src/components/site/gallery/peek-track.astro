@@ -14,15 +14,18 @@ interface Props {
 const { images } = Astro.props
 ---
 
-{/* The scroller, the track, and every slide, shared by the inline gallery and
+{
+  /* The scroller, the track, and every slide, shared by the inline gallery and
     the preview dialog so the same peek carousel renders at two sizes rather
     than existing as two components that could drift. `data-peek-*` is scoped
     by whichever ancestor mounts it (`[data-screenshot-gallery]` or
     `[data-gallery-preview]`), which is what lets one JS engine drive both
-    instances without a second attribute vocabulary. */}
+    instances without a second attribute vocabulary. */
+}
 <div class="screenshot-gallery-scroller" data-peek-scroller>
   <div class="screenshot-gallery-track" data-peek-track>
-    {/* All five load eager rather than the usual one. Every slide sits in the
+    {
+      /* All five load eager rather than the usual one. Every slide sits in the
         route's first section, so none of them is reached by scrolling the
         page, only the carousel, and the browser's native lazy load keys off
         the page's own viewport. A peeking slide is close enough to that
@@ -34,7 +37,8 @@ const { images } = Astro.props
         name, so a label naming the position alone discards the image's own
         alt and hands a screen reader five slides that differ by a number.
         The preview shows the same description as a visible caption, and the
-        label is what says it on the inline mount. */}
+        label is what says it on the inline mount. */
+    }
     {
       images.map((image, index) => (
         <button

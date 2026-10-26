@@ -45,7 +45,7 @@ const navItems = [
 
   <main>
     <section id="stackr" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <p
           data-fade
           class="text-muted-foreground text-label tracking-wide uppercase"
@@ -53,19 +53,16 @@ const navItems = [
           Project
         </p>
         <h1
-          data-fade          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+          data-fade
+          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
         >
           Stackr
         </h1>
-        <p
-          data-fade          class="text-muted-foreground text-lede mt-4"
-        >
+        <p data-fade class="text-muted-foreground text-lede mt-4">
           A VS Code extension that keeps named sets of files and copies each one
           into an AI chat as a single block, with the directory tree on top.
         </p>
-        <ul
-          data-fade          class="mt-6 flex flex-wrap gap-x-6"
-        >
+        <ul data-fade class="mt-6 flex flex-wrap gap-x-6">
           {
             artifactLinks.map((link) => (
               <li>
@@ -81,11 +78,14 @@ const navItems = [
           }
         </ul>
 
-        {/* The demo closes the opening rather than interrupting it. It declares
-            `view` so a phone, which cannot hover, plays it on screen. */}
+        {
+          /* The demo closes the opening rather than interrupting it. It declares
+            `view` so a phone, which cannot hover, plays it on screen. */
+        }
         <figure
           data-media-host="view"
-          data-fade          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+          data-fade
+          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
           <video
             src={stackrDemo}
@@ -102,23 +102,19 @@ const navItems = [
     </section>
 
     <section id="problem" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           problem
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
+        <p data-fade class="text-foreground text-lede mt-6">
           I was assembling context for a planning conversation by opening files
           one at a time and pasting them in order, often enough that it started
           to grate.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           Planning a change or arguing about architecture still wants a chat
           with the right files in front of it. The context is the input, and
           building it was the tedious part.
@@ -127,24 +123,19 @@ const navItems = [
     </section>
 
     <section id="tracks" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           tracks
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
-          A track is a named working set. Fix Session Timeout and Refactor
-          Auth each keep their own staged list and swap on one keystroke, so
-          the context for one piece of work survives while you go and do
-          another.
+        <p data-fade class="text-foreground text-lede mt-6">
+          A track is a named working set. Fix Session Timeout and Refactor Auth
+          each keep their own staged list and swap on one keystroke, so the
+          context for one piece of work survives while you go and do another.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           Copying a track emits an ASCII directory tree followed by the file
           contents, which gives the model the shape of the codebase before it
           reads any of it. Estimated token counts update as the stack changes,
@@ -155,45 +146,35 @@ const navItems = [
     </section>
 
     <section id="runtime" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
           runtime
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
-          The feature runs inside someone else's editor, which makes the
-          runtime itself part of the problem.
+        <p data-fade class="text-foreground text-lede mt-6">
+          The feature runs inside someone else's editor, which makes the runtime
+          itself part of the problem.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           The extension carries no runtime dependencies. Everything runs against
           the VS Code API and the Node standard library, with esbuild bundling
           and every other package sitting in <code class="font-mono"
             >devDependencies</code
           >.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           For code loaded into someone else's editor the dependency tree is the
           risk surface, so removing it beats auditing it.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           Every pull request runs the tests on Ubuntu, macOS, and Windows. A
           version tag runs them again and, once they pass, publishes to the VS
           Code Marketplace and Open VSX and attaches the package to a GitHub
           release.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           The other constraint is the extension host, which is shared and single
           threaded. Building the tree for a large stack would block it, so the
           tree builder works in chunks of 500 files and yields between them.

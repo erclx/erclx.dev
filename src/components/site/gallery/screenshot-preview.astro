@@ -15,7 +15,8 @@ interface Props {
 const { images } = Astro.props
 ---
 
-{/* A bigger mount of the same peek carousel rather than one fixed image with
+{
+  /* A bigger mount of the same peek carousel rather than one fixed image with
     a pair of round arrow buttons. The peek itself is the prev/next
     affordance here, carrying the inline gallery's own language into the
     view a reader opened to look closer, so explicit arrows would repeat
@@ -27,7 +28,8 @@ const { images } = Astro.props
     in height, so stepping resized the whole dialog under the reader:
     measured 958px wide on the first slide against 720px on the last. A fixed
     stage also keeps the track's own `cqw` basis still, so the slides do not
-    resize as a reader steps between them. */}
+    resize as a reader steps between them. */
+}
 <dialog
   data-gallery-preview
   class="bg-card text-foreground fixed inset-0 m-auto max-h-[94dvh] w-[96vw] overflow-hidden rounded-lg p-0 backdrop:bg-black/70"
@@ -57,7 +59,7 @@ const { images } = Astro.props
   <p
     data-gallery-preview-position
     aria-live="polite"
-    class="figure-dialog-count fixed top-4 left-4 z-20 rounded-full px-3 py-1 font-mono text-label tabular-nums"
+    class="figure-dialog-count text-label fixed top-4 left-4 z-20 rounded-full px-3 py-1 font-mono tabular-nums"
   >
   </p>
 
@@ -65,7 +67,7 @@ const { images } = Astro.props
     <PeekTrack images={images} />
     <p
       data-gallery-preview-caption
-      class="text-muted-foreground font-mono text-label mt-4 shrink-0"
+      class="text-muted-foreground text-label mt-4 shrink-0 font-mono"
     >
     </p>
   </div>

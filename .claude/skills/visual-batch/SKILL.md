@@ -1,6 +1,6 @@
 ---
 name: visual-batch
-description: Plans a run of visual work into batches with declared pull request boundaries, then runs each batch as an eyeball loop where the operator judges prototypes and rendered output rather than reading code. Use when asked to work on the landing page or a project route, to change how a surface looks, to rework a section, or when a request arrives as a dump of visual observations. Do NOT use for a copy correction with no visual change, which is the copy cycle alone, and do NOT use to plan a non-visual feature, which is `claude-feature`.
+description: Plans a run of visual work into batches with declared pull request boundaries, then runs each batch as an eyeball loop where the operator judges prototypes and rendered output rather than reading code. Use when asked to work on the landing page or a project route, to change how a surface looks, to rework a section, or when a request arrives as a dump of visual observations. Do NOT use for a copy correction with no visual change, which is the copy cycle alone, and do NOT use to plan a non-visual feature, which is `plan-feature`.
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, AskUserQuestion, Skill
 ---
 
@@ -18,7 +18,7 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 1. Read the dump and group it into batches. One batch is one surface or one coherent change across surfaces. Group by the decision rather than by the component when several items turn out to be one question asked about different surfaces, per `## Sweeping` below.
 2. Name the files each batch touches, before sequencing, because the file sets decide the next step.
 3. Mark each batch dependent or independent by comparing those file sets. A batch sharing no file and no token with another is independent and ships on its own branch.
-4. File one task per batch through `claude-tasks`, carrying the outcomes the operator will judge rather than the implementation.
+4. File one task per batch through `task-board`, carrying the outcomes the operator will judge rather than the implementation.
 5. Put the batch table in chat: batch, surface, depends on, pull request it lands in.
 6. Escalate what the operator's preference decides through `AskUserQuestion`, recommendation first, `(Recommended)` in its label.
 
@@ -124,14 +124,14 @@ Page copy is authored in this repository. Never edit rendered text without runni
 
 Every batch ends the same four ways. Run them in order once the operator has judged the batch, before the next one opens.
 
-1. Run `claude-docs`.
+1. Run `context-fold`.
 2. Commit, per `## Holding the diff` above, carrying that record with the batch.
 3. Re-run `bun run screenshot` for the surfaces the batch touched.
 4. Hand over the address, per `.claude/rules/project/ui/445-screenshot.md` § Handoff.
 
 ### Rules
 
-- Run `claude-docs` per batch rather than per commit or once at ship. Per commit is too often, since outcomes close per batch and not per commit. At the end of the run is too late: the architecture entries then get written from a summary rather than from the measurements that produced them, which is how a record loses the failed attempts and the numbers that decided it. A run that skipped this reported its early batches reading as unrelated changes afterward.
+- Run `context-fold` per batch rather than per commit or once at ship. Per commit is too often, since outcomes close per batch and not per commit. At the end of the run is too late: the architecture entries then get written from a summary rather than from the measurements that produced them, which is how a record loses the failed attempts and the numbers that decided it. A run that skipped this reported its early batches reading as unrelated changes afterward.
 - Run it ahead of the commit rather than behind it. It reads the working tree and untracked files as well as the committed diff, so it needs no commit to see the batch, and a record written afterward sits outside the commit that closes the batch. The next boundary then sweeps it up, and since `stack-ship` cuts one branch per slice in commit order, batch N's record ships on batch N+1's branch.
 - Render the address as a scannable code beside the link wherever the project ships a renderer for one. A link is what the operator opens on the machine they are already at, and the code is the only one of the two a phone can act on, so a handoff carrying the link alone cannot be judged on the device half the decisions are about.
 - Close the batch even when nothing about it looked wrong. The steps run on the batch being finished rather than on a session noticing it needs them, which is what makes them a sequence rather than a judgment.
@@ -144,10 +144,10 @@ The page is personal and reads as one document. Copy is written for a person, in
 
 Cite these rather than restating them. A step reimplemented here rots against the skill that owns it.
 
-- `claude-worktree` enters the worktree this runs in
-- `claude-tasks` writes and archives the task files phase 1 produces
+- `session-worktree` enters the worktree this runs in
+- `task-board` writes and archives the task files phase 1 produces
 - `e2e/inventory.ts` reads every control on every page and groups them by treatment, which is what `## Sweeping` is measured with
-- `claude-docs` refreshes the record at every batch boundary, per `## Closing a batch`
+- `context-fold` refreshes the record at every batch boundary, per `## Closing a batch`
 - `stack-ship` cuts the batches into a chain of pull requests on the ship signal and rebases it behind each merge
 - `git-stage`, `git-pr`, and `git-followup` carry the commits and the pull request
-- `claude-review` and `claude-address-review` run the review pass
+- `review-branch` and `review-address` run the review pass

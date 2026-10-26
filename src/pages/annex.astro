@@ -67,8 +67,11 @@ const headingClass =
 
   <main>
     <section id="annex" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
-      <div class="mx-auto prose-column">
-        <p data-fade class="text-muted-foreground text-label tracking-wide uppercase">
+      <div class="prose-column mx-auto">
+        <p
+          data-fade
+          class="text-muted-foreground text-label tracking-wide uppercase"
+        >
           Project
         </p>
         <h1
@@ -98,8 +101,10 @@ const headingClass =
           }
         </ul>
 
-        {/* The landing page the annex README opens on. The two themes are two
-            files, so each shows under its own theme. */}
+        {
+          /* The landing page the annex README opens on. The two themes are two
+            files, so each shows under its own theme. */
+        }
         <figure
           data-fade
           class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
@@ -119,7 +124,7 @@ const headingClass =
     </section>
 
     <section id="what" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2 data-fade class={headingClass}>what</h2>
         <p data-fade class="text-foreground text-lede mt-6">
           A user describes an AI system. The agent returns the articles that may
@@ -134,11 +139,11 @@ const headingClass =
     </section>
 
     <section id="question" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2 data-fade class={headingClass}>question</h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          I wanted to know whether retrieval still helped when a model could read
-          the whole EU AI Act.
+          I wanted to know whether retrieval still helped when a model could
+          read the whole EU AI Act.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
           The whole Act comes to about 115,000 tokens, which fits inside the
@@ -158,13 +163,13 @@ const headingClass =
     </section>
 
     <section id="findings" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2 data-fade class={headingClass}>findings</h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          Reading the whole Act found every article the answers needed, which
-          is closer to a definition than a result, since that arm was handed
-          every provision and could not miss one. The best retrieval arm found
-          0.83 of them.
+          Reading the whole Act found every article the answers needed, which is
+          closer to a definition than a result, since that arm was handed every
+          provision and could not miss one. The best retrieval arm found 0.83 of
+          them.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
           Retrieval still earned its place on cost and on checking. It sent
@@ -174,10 +179,10 @@ const headingClass =
           all.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          The cheapest change measured was not an architecture change.
-          Replacing the embedding model moved every retrieval arm's recall by
-          0.20 to 0.25, with no new dependency, which is the kind of gain that
-          gets missed by comparing pipelines rather than parts.
+          The cheapest change measured was not an architecture change. Replacing
+          the embedding model moved every retrieval arm's recall by 0.20 to
+          0.25, with no new dependency, which is the kind of gain that gets
+          missed by comparing pipelines rather than parts.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
           Traversal then recovered more linked obligations on top of the better
@@ -186,22 +191,24 @@ const headingClass =
           that belong to the chain but not to the literal question.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          The conclusion is narrower than retrieval not working. Retrieval is not
-          automatically the right answer when the complete, trusted source fits
-          in context.
+          The conclusion is narrower than retrieval not working. Retrieval is
+          not automatically the right answer when the complete, trusted source
+          fits in context.
         </p>
 
-        {/* The evaluation table and the sentence captioning it, both as
-            `annex.md` in the career source carries them. */}
+        {
+          /* The evaluation table and the sentence captioning it, both as
+            `annex.md` in the career source carries them. */
+        }
         <figure
           data-fade
           class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
         >
-          <figcaption class="text-muted-foreground font-mono text-label mb-4">
+          <figcaption class="text-muted-foreground text-label mb-4 font-mono">
             The same twelve questions ran three ways on one RTX 5090, 72 runs in
             all.
           </figcaption>
-          <table class="font-mono text-label w-full min-w-[32rem]">
+          <table class="text-label w-full min-w-[32rem] font-mono">
             <thead>
               <tr class="text-muted-foreground">
                 <th class="text-left font-normal">Arm</th>
@@ -240,13 +247,13 @@ const headingClass =
     </section>
 
     <section id="graph" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2 data-fade class={headingClass}>graph</h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          The Act cites itself in ordinary sentences, phrases like "in accordance
-          with Article 43" sitting inside running prose. Those citations are
-          parsed into several hundred graph edges programmatically rather than
-          inferred by a model.
+          The Act cites itself in ordinary sentences, phrases like "in
+          accordance with Article 43" sitting inside running prose. Those
+          citations are parsed into several hundred graph edges programmatically
+          rather than inferred by a model.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
           That is what makes a multi-hop question answerable at all. Asking what
@@ -254,14 +261,14 @@ const headingClass =
             class="font-mono">Article 6</code
           > to every one of <code class="font-mono">Articles 8-15</code> and <code
             class="font-mono">Article 43</code
-          > in two hops, instead of hoping one retrieved passage happens to hold
-          the whole chain.
+          > in two hops, instead of hoping one retrieved passage happens to hold the
+          whole chain.
         </p>
       </div>
     </section>
 
     <section id="refusal" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2 data-fade class={headingClass}>refusal</h2>
         <p data-fade class="text-foreground text-lede mt-6">
           The refusal is a branch in the pipeline rather than error handling.
@@ -269,10 +276,10 @@ const headingClass =
           agent says so instead of extrapolating.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          The clearest case is a threshold regulators have not defined. Whether a
-          later modification to an already-deployed system counts as substantial
-          enough to trigger full high-risk compliance is not settled by the text,
-          so the agent declines to settle it either.
+          The clearest case is a threshold regulators have not defined. Whether
+          a later modification to an already-deployed system counts as
+          substantial enough to trigger full high-risk compliance is not settled
+          by the text, so the agent declines to settle it either.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
           It is also the weakest thing I measured. Three of the twelve questions
@@ -284,7 +291,7 @@ const headingClass =
     </section>
 
     <section id="freshness" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2 data-fade class={headingClass}>freshness</h2>
         <p data-fade class="text-foreground text-lede mt-6">
           A Digital Omnibus amendment in force since 27 July 2026 moved the
@@ -301,17 +308,17 @@ const headingClass =
     </section>
 
     <section id="limits" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
+      <div class="prose-column mx-auto">
         <h2 data-fade class={headingClass}>limits</h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          It names obligations and cites text. The compliance judgment stays with
-          the reader.
+          It names obligations and cites text. The compliance judgment stays
+          with the reader.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          The deployed page replays twelve questions recorded on both versions of
-          the text rather than calling a model. The generation model needs 30GB of GPU memory and nothing free
-          hosts that, so asking a new question means running the pipeline
-          locally.
+          The deployed page replays twelve questions recorded on both versions
+          of the text rather than calling a model. The generation model needs
+          30GB of GPU memory and nothing free hosts that, so asking a new
+          question means running the pipeline locally.
         </p>
       </div>
     </section>

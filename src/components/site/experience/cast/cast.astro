@@ -14,19 +14,9 @@
 import './motion.css'
 
 import { TEMPERAMENTS } from './behaviors.ts'
-import {
-  POWER_OVERHANG,
-  renderMember,
-  renderPet,
-  renderPower,
-} from './cast.ts'
+import { POWER_OVERHANG, renderMember, renderPet, renderPower } from './cast.ts'
 import type { MoodId } from './faces.ts'
-import {
-  clusterGap,
-  clusters,
-  clusterWidth,
-  memberIndex,
-} from './placement.ts'
+import { clusterGap, clusters, clusterWidth, memberIndex } from './placement.ts'
 
 // `emote` raises the mood's mark, so a member drawing none fires a reaction
 // that animates nothing. That failure is silent, unlike a mood with no
@@ -60,7 +50,11 @@ const reactionsFor = (mood: MoodId, hasMark: boolean) =>
             data-member={memberIndex(cluster, member)}
             data-idle={TEMPERAMENTS[member.mood].idle ?? undefined}
             data-react={reactionsFor(member.mood, member.hasMark ?? false)}
-            data-react-tap={member.tapMood ? reactionsFor(member.tapMood, member.hasTapMark ?? false) : undefined}
+            data-react-tap={
+              member.tapMood
+                ? reactionsFor(member.tapMood, member.hasTapMark ?? false)
+                : undefined
+            }
             style={`--cast-dx: ${member.dx}px; --cast-dy: ${member.dy}px; --cast-size: ${member.size}px; --cast-delay: ${cluster.delay}ms; --cast-offset: ${-(cluster.phase + member.phase)}ms`}
           >
             {/* Behind the body in its own layer, so it can carry a clock the
@@ -285,7 +279,8 @@ const reactionsFor = (mood: MoodId, hasMark: boolean) =>
     const isReacting = (member: HTMLElement) =>
       member.getAnimations({ subtree: true }).some((animation) => {
         const name = String(
-          (animation as unknown as { animationName?: string }).animationName ?? '',
+          (animation as unknown as { animationName?: string }).animationName ??
+            '',
         )
         return (
           animation.playState === 'running' &&

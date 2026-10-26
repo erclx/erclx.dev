@@ -19,37 +19,45 @@ IFS= read -r -d '' -t 2 input
   exit 1
 }
 
+# Two shapes open a pull request. `gh pr create` names itself in the command.
+# git-pr opens one over REST and prints `opened=true` only on that path, since
+# its edit path prints a URL as well and is not an opening.
 command=$(printf '%s' "$input" | jq -r '.tool_input.command // empty')
+stdout=$(printf '%s' "$input" | jq -r '.tool_response.stdout // empty')
+is_hand_opened=false
 case "$command" in
-*"gh pr create"*) ;;
-*) exit 0 ;;
+*"gh pr create"*) is_hand_opened=true ;;
+*)
+  printf '%s\n' "$stdout" | grep -qx 'opened=true' || exit 0
+  ;;
 esac
 
-# gh pr create prints the new pull request's URL to stdout on success, so
+# Either shape prints the new pull request's URL to stdout on success, so
 # matching it is what tells a creation apart from a failed or refused call.
-stdout=$(printf '%s' "$input" | jq -r '.tool_response.stdout // empty')
 url=$(printf '%s' "$stdout" | grep -Eo 'https://github\.com/[^[:space:]]+/pull/[0-9]+' | tail -1)
 [ -n "$url" ] || exit 0
 
 # CLAUDE_PROJECT_DIR is the session's own worktree rather than the main root,
 # so a worker building in a linked worktree would log into a folder that dies
 # with the worktree. The log is a denominator across a wave rather than a
-# per-session record, so strip back to the main root the way tasks-index.sh
-# and memory-index.sh already derive theirs, off a path suffix.
+# per-session record, so strip back to the main root the way
+# records-index.sh already derives its own, off a path suffix.
 root="${CLAUDE_PROJECT_DIR:-.}"
 case "$root" in
 */.claude/worktrees/*) root="${root%/.claude/worktrees/*}" ;;
 esac
-# The log is scratch, so it follows the scratch folder to whichever record root
-# the project carries rather than creating a second one beside it.
-if [ -d "$root/.canon" ]; then
-  log_dir="$root/.canon/tmp/pr/log"
-else
-  log_dir="$root/.claude/.tmp/pr/log"
-fi
+# The log is scratch, so it lives under `.canon/tmp/`.
+log_dir="$root/.canon/tmp/pr/log"
 mkdir -p "$log_dir"
 session=$(printf '%s' "$input" | jq -r '.session_id // "unknown"')
 printf -- '- %s session=%s pr=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$session" "$url" >>"$log_dir/log.md"
 
 msg="Pull request $url just opened. If this session holds a worker's channel obligation, announce it to the controller now, per role-worker."
+# A pull request opened by hand skipped git-pr, so nothing has labelled it.
+# The verb is named only where the installed canon carries it, since a skill
+# can reach a target ahead of the release that ships the verb.
+if [ "$is_hand_opened" = true ] && canon labels apply --help >/dev/null 2>&1; then
+  msg="$msg Run canon labels apply ${url##*/} to label it."
+fi
+
 jq -nc --arg msg "$msg" '{hookSpecificOutput:{hookEventName:"PostToolUse",additionalContext:$msg}}'

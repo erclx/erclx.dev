@@ -93,8 +93,7 @@ const wideImageClass = 'w-full rounded-md'
    length, since what bounds a tall figure is the screen it has to fit inside. */
 const tallFigureClass =
   'figure-plate bg-card mx-auto mt-10 w-fit rounded-lg p-6 md:p-10'
-const tallImageClass =
-  'mx-auto max-h-[min(46rem,78vh)] w-auto rounded-md'
+const tallImageClass = 'mx-auto max-h-[min(46rem,78vh)] w-auto rounded-md'
 const captionClass = 'text-muted-foreground font-mono text-label mt-4'
 const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 ---
@@ -110,29 +109,27 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
 
   <main>
     <section id="diction" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
-      <div class="mx-auto prose-column">
-        <p data-fade class="text-muted-foreground text-label tracking-wide uppercase">
+      <div class="prose-column mx-auto">
+        <p
+          data-fade
+          class="text-muted-foreground text-label tracking-wide uppercase"
+        >
           Project
         </p>
         <h1
-          data-fade          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+          data-fade
+          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
         >
           diction
         </h1>
-        <p
-          data-fade          class="text-muted-foreground text-lede mt-4"
-        >
+        <p data-fade class="text-muted-foreground text-lede mt-4">
           A pronunciation trainer that scores each sound against what a native
           speaker actually sounds like, and reports how often it is wrong.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-3"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-3">
           Runs local and offline. Nothing leaves the machine it runs on.
         </p>
-        <ul
-          data-fade          class="mt-6 flex flex-wrap gap-x-6"
-        >
+        <ul data-fade class="mt-6 flex flex-wrap gap-x-6">
           {
             artifactLinks.map((link) => (
               <li>
@@ -147,7 +144,8 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
             ))
           }
         </ul>
-        {/* The one route that opened straight into prose. Every other route
+        {
+          /* The one route that opened straight into prose. Every other route
             carries a figure in its first section, three of them a clip and one
             a still, so this one read as the unfinished one rather than the
             deliberate one.
@@ -155,7 +153,8 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
             It is the app itself rather than a new asset: five states the card's
             single still could only ever gesture at. A gallery rather than a
             picture, because a static screenshot flattens a tool built around
-            eleven distinct drills into one of them. */}
+            eleven distinct drills into one of them. */
+        }
         <div data-fade>
           <ScreenshotGallery images={galleryImages} />
         </div>
@@ -163,68 +162,64 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
     </section>
 
     <section id="problem" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
-        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
           problem
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
+        <p data-fade class="text-foreground text-lede mt-6">
           I wanted to assess my own English rather than guess at it. The tools
-          that do that are paid and closed, and building it myself meant
-          running the speech models locally and seeing what they were doing.
+          that do that are paid and closed, and building it myself meant running
+          the speech models locally and seeing what they were doing.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           The drill told native speakers they were wrong. It played a word,
           listened to the reading, and flagged the sound when the acoustic
           model's confidence fell below <code class="font-mono">-5.0</code>. One
           number, applied to every sound in English.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           On real speech it failed in both directions at once. A native
-          <code class="font-mono">th</code> came back flagged. A swapped vowel
-          passed, so <em>ship</em> read for <em>sheep</em> and <em>wok</em> for
-          <em>walk</em> cleared the bar. A single cutoff cannot tell a good
-          sound from a bad one, and the reason is the whole finding.
+          <code class="font-mono">th</code> came back flagged. A swapped vowel passed,
+          so <em>ship</em> read for <em>sheep</em> and <em>wok</em> for
+          <em>walk</em> cleared the bar. A single cutoff cannot tell a good sound
+          from a bad one, and the reason is the whole finding.
         </p>
       </div>
     </section>
 
     <section id="data" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
-        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
           data
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
+        <p data-fade class="text-foreground text-lede mt-6">
           <a
             href="https://www.openslr.org/101/"
             {...getLinkTargetAttributes('https://www.openslr.org/101/')}
-            class="text-accent underline underline-offset-[3px] decoration-[1px]"
-          >speechocean762</a> supplies 5,000 English clips from non-native speakers,
-          each phoneme scored 0 to 2 by five human experts. That per-sound score
-          is the ground truth a threshold can be fit against, and the corpus is
-          Apache-2.0, so it ships.
+            class="text-accent underline decoration-[1px] underline-offset-[3px]"
+            >speechocean762</a
+          > supplies 5,000 English clips from non-native speakers, each phoneme scored
+          0 to 2 by five human experts. That per-sound score is the ground truth a
+          threshold can be fit against, and the corpus is Apache-2.0, so it ships.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           <a
             href="https://huggingface.co/facebook/wav2vec2-xlsr-53-espeak-cv-ft"
             {...getLinkTargetAttributes(
               'https://huggingface.co/facebook/wav2vec2-xlsr-53-espeak-cv-ft',
             )}
-            class="text-accent underline underline-offset-[3px] decoration-[1px] font-mono"
-          >wav2vec2-xlsr-53-espeak-cv-ft</a> ran over 2,500 of those clips to read off its
-          confidence in each sound, a measure called Goodness of Pronunciation.
-          Transcription was skipped: the words being read are known in advance,
-          so only the acoustic model has to run, which cut an hours-long sweep
-          to minutes.
+            class="text-accent font-mono underline decoration-[1px] underline-offset-[3px]"
+            >wav2vec2-xlsr-53-espeak-cv-ft</a
+          > ran over 2,500 of those clips to read off its confidence in each sound,
+          a measure called Goodness of Pronunciation. Transcription was skipped: the
+          words being read are known in advance, so only the acoustic model has to
+          run, which cut an hours-long sweep to minutes.
         </p>
 
         <figure data-fade class={tallFigureClass}>
@@ -240,37 +235,33 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           </figcaption>
         </figure>
 
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
-          A native <code class="font-mono">s</code> sits near perfect
-          confidence. A native <code class="font-mono">th</code> averages
+        <p data-fade class="text-muted-foreground text-body mt-8">
+          A native <code class="font-mono">s</code> sits near perfect confidence.
+          A native <code class="font-mono">th</code> averages
           <code class="font-mono">-2.6</code>, because the model is less certain
-          about <code class="font-mono">th</code> even when a native speaker says it correctly. The clean and
-          wrong readings separate for every sound, and each pair sits at its own
-          place on the axis.
+          about <code class="font-mono">th</code> even when a native speaker says
+          it correctly. The clean and wrong readings separate for every sound, and
+          each pair sits at its own place on the axis.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
-          The old <code class="font-mono">-5.0</code> line cuts none of it
-          cleanly. It falls so far left that a mangled
-          <code class="font-mono">th</code> still scores above it and passes,
-          while it clips the low end of confident vowels and flags them.
-          Different sounds do not share a baseline, so one vertical line was
-          never going to work.
+        <p data-fade class="text-muted-foreground text-body mt-6">
+          The old <code class="font-mono">-5.0</code> line cuts none of it cleanly.
+          It falls so far left that a mangled
+          <code class="font-mono">th</code> still scores above it and passes, while
+          it clips the low end of confident vowels and flags them. Different sounds
+          do not share a baseline, so one vertical line was never going to work.
         </p>
       </div>
     </section>
 
     <section id="fix" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
-        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
           fix
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
+        <p data-fade class="text-foreground text-lede mt-6">
           The rule became per-sound. For each phoneme, take the mean and spread
           of its native confidence, then flag a reading only where it falls more
           than 1.6 standard deviations below that sound's own mean. The cut
@@ -290,9 +281,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           </figcaption>
         </figure>
 
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-8">
           All 27 sounds separate, from 0.83 to 0.98. A reliability gate backs
           the rule up: a sound whose confidence failed to separate clean from
           wrong would be held out of the verdict rather than guessed at. Every
@@ -312,9 +301,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           </figcaption>
         </figure>
 
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-8">
           One earlier read had written the long-e vowel off as hopeless, its
           clean and wrong clouds apparently on top of each other. That came from
           comparing clean speech against borderline speech. Set against
@@ -326,52 +313,51 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
     </section>
 
     <section id="holdout" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
-        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
           holdout
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
+        <p data-fade class="text-foreground text-lede mt-6">
           A rule fit to its own data proves nothing, so the thresholds were fit
           on one half of the corpus and measured on the other half, held out
           from start to finish.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           On unseen speech it false-flags native readings 7% of the time and
           catches 66% of genuinely wrong sounds. That operating point is
           deliberate. Nagging a correct speaker erodes trust faster than missing
           an error does, so the cut keeps false alarms low and accepts that a
           third of subtle errors slip past.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           It also fixes the two failures that started this. A native
-          <code class="font-mono">th</code> sits at its own baseline and passes.
-          A substituted vowel drops below its own line and flags.
+          <code class="font-mono">th</code> sits at its own baseline and passes. A
+          substituted vowel drops below its own line and flags.
         </p>
       </div>
     </section>
 
     <section id="beyond" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
-        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
           beyond
         </h2>
-        <p
-          data-fade          class="text-foreground text-lede mt-6"
-        >
+        <p data-fade class="text-foreground text-lede mt-6">
           Calibrating one score set the pattern for every other score the tool
           presents.
         </p>
 
         <figure
-          data-fade          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+          data-fade
+          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
         >
-          <table class="font-mono text-label w-full min-w-[28rem]">
+          <table class="text-label w-full min-w-[28rem] font-mono">
             <thead>
               <tr class="text-muted-foreground">
                 <th class="text-left font-normal">score</th>
@@ -408,9 +394,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           </figcaption>
         </figure>
 
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-8">
           The minimal-pair drill asks a different question from the one the
           phoneme flag was fit for: whether a reading was
           <code class="font-mono">θ</code> rather than
@@ -433,9 +417,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           </figcaption>
         </figure>
 
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-8">
           Fluency correlates with human judgment at 0.39 on held-out clips,
           matching its in-sample fit. That is real and modest, so the score
           reads as directional rather than as a grade. Two of its four features
@@ -458,9 +440,7 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           </figcaption>
         </figure>
 
-        <p
-          data-fade          class="text-muted-foreground text-body mt-8"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-8">
           The interview gaze metric first read a lens-look and a screen-glance
           as identical, since both keep the head inside 15 degrees. The raw yaw
           separates them cleanly, at a median of +1.2 degrees against -7.3.
@@ -470,28 +450,22 @@ const zoomTriggerClass = 'block w-full cursor-zoom-in rounded-md'
           arrive.
         </p>
 
-        <p
-          data-fade          class="text-foreground text-body mt-10"
-        >
+        <p data-fade class="text-foreground text-body mt-10">
           The flag is trustworthy now. The composite accent and prosody scores
           are still labeled directional, and they stay that way until real
           recorded pairs validate them. Calibrating a score presented as truth
           is the hard part, and that part is done.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-6"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-6">
           The whole experiment lives beside the case study in the repository.
           <code class="font-mono">measure.py</code> runs the sweep,
           <code class="font-mono">analyze.py</code> fits the thresholds,
-          <code class="font-mono">validate.py</code> checks them on held-out
-          speech, and <code class="font-mono">plots.py</code> draws these
-          figures. The models and the dataset cache on first download, so a
-          re-run takes minutes.
+          <code class="font-mono">validate.py</code> checks them on held-out speech,
+          and <code class="font-mono">plots.py</code> draws these figures. The models
+          and the dataset cache on first download, so a re-run takes minutes.
         </p>
       </div>
     </section>
-
   </main>
 
   <RouteFoot />

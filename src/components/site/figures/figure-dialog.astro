@@ -2,7 +2,8 @@
 
 ---
 
-{/* The panel takes most of the screen rather than a fixed thousand pixels.
+{
+  /* The panel takes most of the screen rather than a fixed thousand pixels.
     A figure that opened into 1000px was narrower than the plate the page
     already gave it above roughly 1488px of viewport, so a reader who clicked
     to see more saw less.
@@ -17,17 +18,20 @@
     normal flow near the top of the document, so it rendered at minus the
     scroll position and a reader deep in a route opened onto nothing. It was
     invisible for as long as locking the page also reset the scroll to zero,
-    which put an in-flow panel at the top of the viewport by accident. */}
+    which put an in-flow panel at the top of the viewport by accident. */
+}
 <dialog
   data-figure-dialog
   class="bg-card text-foreground fixed inset-0 m-auto max-h-[94dvh] max-w-[96vw] overflow-hidden rounded-lg p-0 backdrop:bg-black/70"
 >
-  {/* Every control is pinned to the viewport rather than to the panel. The
+  {
+    /* Every control is pinned to the viewport rather than to the panel. The
       panel is sized to its picture, so stepping from a portrait to a landscape
       resizes it, and chrome anchored to it moves out from under a pointer that
       has not moved: a reader stepping quickly hit close where next had been.
       Fixed inside a dialog resolves against the viewport, since the top layer
-      is the containing block, so these hold one position for every figure. */}
+      is the containing block, so these hold one position for every figure. */
+  }
   <button
     type="button"
     data-figure-close
@@ -50,10 +54,12 @@
     </svg>
   </button>
 
-  {/* Each step sits on the side it moves toward, so the control's position is
+  {
+    /* Each step sits on the side it moves toward, so the control's position is
       its meaning and neither glyph has to be read. Grouping the two put them
       118px apart in one corner, where a reader worked out which was which,
-      and put next beside close. */}
+      and put next beside close. */
+  }
   <button
     type="button"
     data-figure-prev
@@ -96,12 +102,14 @@
     </svg>
   </button>
 
-  {/* The position stays in the corner opposite close, which is where a gallery
-      states it and where it never competes with the steps. */}
+  {
+    /* The position stays in the corner opposite close, which is where a gallery
+      states it and where it never competes with the steps. */
+  }
   <p
     data-figure-position
     aria-live="polite"
-    class="figure-dialog-count fixed top-4 left-4 z-20 rounded-full px-3 py-1 font-mono text-label tabular-nums"
+    class="figure-dialog-count text-label fixed top-4 left-4 z-20 rounded-full px-3 py-1 font-mono tabular-nums"
   >
   </p>
 
@@ -117,7 +125,7 @@
     />
     <p
       data-figure-dialog-caption
-      class="text-muted-foreground font-mono text-label mt-4 shrink-0"
+      class="text-muted-foreground text-label mt-4 shrink-0 font-mono"
     >
     </p>
   </div>

@@ -28,14 +28,16 @@ const ogImageAlt =
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    {/* The vector leads. It held the tab until 2026-08-15, when the mark was
+    {
+      /* The vector leads. It held the tab until 2026-08-15, when the mark was
         268 stippled dots that averaged to grey at 16px, and the rasters took
         over on that measurement. The mark is three shapes now and the same
         instrument reverses the finding: it peaks at luminance 239 with 48 of
         256 pixels above 180, where the raster it replaces peaked at 221 with
         30. The raster stays as the fallback for an engine that ignores an SVG
         icon, and it is reached only by those engines, since one that reads the
-        vector never requests it. */}
+        vector never requests it. */
+    }
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -58,7 +60,8 @@ const ogImageAlt =
     <meta name="description" content={description} />
     <title>{title}</title>
 
-    {/* Every host reads these same tags and differs only in what it renders
+    {
+      /* Every host reads these same tags and differs only in what it renders
         from them, so there is one image and one set of copy rather than a
         variant per network. The card carries no name, because each of them
         prints the title beside it and a name in both is the same word twice in
@@ -66,7 +69,8 @@ const ogImageAlt =
 
         Absolute rather than root-relative. A crawler fetches the image on its
         own rather than in the page's context, so a leading slash resolves
-        against nothing. `site` in the Astro config is what makes this work. */}
+        against nothing. `site` in the Astro config is what makes this work. */
+    }
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -77,8 +81,10 @@ const ogImageAlt =
     <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:site_name" content="erclx.dev" />
 
-    {/* X shows a thumbnail beside the text without this and the full card with
-        it, so the tag is what decides the size rather than the image. */}
+    {
+      /* X shows a thumbnail beside the text without this and the full card with
+        it, so the tag is what decides the size rather than the image. */
+    }
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -105,12 +111,15 @@ const ogImageAlt =
       surface && `surface-${surface}`,
     ]}
   >
-    {/* A route already renders a top bar of its own, which the stylesheet
+    {
+      /* A route already renders a top bar of its own, which the stylesheet
         makes sticky. Only the landing page needs one mounted, so the two never
-        stack. */}
+        stack. */
+    }
     <PageGround />
     {!isRoute && <SiteBar />}
-    {/* Every surface carries it, where the landing page rendered it alone
+    {
+      /* Every surface carries it, where the landing page rendered it alone
         until 2026-08-20. A route is the longest read on the site and the one
         a shared link lands on, which is the arrival that skips the landing
         page and every contact link on it.
@@ -120,7 +129,8 @@ const ogImageAlt =
         leaves the viewport: measured across a full scroll of a route, the
         intersection ratio reads 1 and only 1, so the control would never
         arrive at all. The rail already answers the same problem the same way
-        on the same surfaces. */}
+        on the same surfaces. */
+    }
     <ContactDock instant={isRoute} />
     <slot />
   </body>

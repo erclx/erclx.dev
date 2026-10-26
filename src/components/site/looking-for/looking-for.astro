@@ -5,7 +5,8 @@
 const criteria = [
   {
     label: 'What I want to build',
-    value: 'AI agents and LLM applications, developer tools, full-stack products',
+    value:
+      'AI agents and LLM applications, developer tools, full-stack products',
   },
   {
     label: 'Team',
@@ -22,7 +23,8 @@ const criteria = [
 ]
 ---
 
-{/* Opens on the page's own interval and closes tighter than it. Every heading
+{
+  /* Opens on the page's own interval and closes tighter than it. Every heading
     boundary on all six pages holds 160px, which this section arrived 28px
     short of while carrying `pt-10` where every other section carries the
     step. That was drift rather than a decision, and `e2e/rhythm.ts` is what
@@ -42,7 +44,8 @@ const criteria = [
     the same interval read as emptiness. It holds 124px against the 172 it
     carried before, both read from the last text in this section down to the
     top of the signature, which is the first thing the footer paints. The 48px
-    between them is this section's own step, `pb-20` against `pb-8`. */}
+    between them is this section's own step, `pb-20` against `pb-8`. */
+}
 <section
   id="looking-for"
   data-section="looking-for"
@@ -56,9 +59,11 @@ const criteria = [
       Looking for
     </h2>
 
-    {/* The availability status anchors this section rather than joining the
+    {
+      /* The availability status anchors this section rather than joining the
         rows below it. It sits at body size in the foreground color because a
-        sixth label would add a line to a section that needs weight. */}
+        sixth label would add a line to a section that needs weight. */
+    }
     <p
       data-fade
       style="--fade-delay: 75ms"
@@ -71,13 +76,15 @@ const criteria = [
     </p>
 
     <div class="looking-stage relative mt-7">
-      {/* The rule is a contour rather than a border. The dog's window takes its
+      {
+        /* The rule is a contour rather than a border. The dog's window takes its
           clip from the same generated geometry, so the line he grips and the
           edge he is cut against cannot disagree.
 
           It carries no `d` until the script runs, and the rows keep their
           border until then, so a reader with no JS gets the straight line
-          rather than no line at all. */}
+          rather than no line at all. */
+      }
       <svg
         class="looking-rule-curve"
         aria-hidden="true"
@@ -85,126 +92,116 @@ const criteria = [
       >
         <defs>
           <linearGradient id="looking-rule-fade" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%" stop-color="var(--rule-ink)" stop-opacity="0" />
-            <stop offset="10%" stop-color="var(--rule-ink)" stop-opacity="1" />
-            <stop offset="90%" stop-color="var(--rule-ink)" stop-opacity="1" />
-            <stop offset="100%" stop-color="var(--rule-ink)" stop-opacity="0" />
+            <stop offset="0%" stop-color="var(--rule-ink)" stop-opacity="0"
+            ></stop>
+            <stop offset="10%" stop-color="var(--rule-ink)" stop-opacity="1"
+            ></stop>
+            <stop offset="90%" stop-color="var(--rule-ink)" stop-opacity="1"
+            ></stop>
+            <stop offset="100%" stop-color="var(--rule-ink)" stop-opacity="0"
+            ></stop>
           </linearGradient>
         </defs>
         <path
           fill="none"
           stroke="url(#looking-rule-fade)"
           stroke-width="2"
-          stroke-linecap="round"
-        ></path>
+          stroke-linecap="round"></path>
       </svg>
-      {/* A window sitting directly on the rule, clipping whatever hangs below
+      {
+        /* A window sitting directly on the rule, clipping whatever hangs below
           it. The rows carried an opaque plate for this instead, which is the
           one surface on the page that hid the ground behind it: every other
           section let the field through and this one read as a solid block.
-          Clipping the thing that needs hiding costs the section nothing. */}
+          Clipping the thing that needs hiding costs the section nothing. */
+      }
       <div
         class="looking-peek-window absolute right-0 bottom-full z-0 aspect-[120/130] w-24 overflow-hidden sm:right-8 md:right-14 md:w-28"
         aria-hidden="true"
       >
-      <div
-        class="looking-peek"
-      >
-        <svg viewBox="0 0 120 130" class="block size-full">
-          <path d="M 14 32 L 30 4 L 42 32 Z" fill="#d4a574" />
-          <path d="M 106 32 L 90 4 L 78 32 Z" fill="#d4a574" />
-          <path d="M 24 28 L 30 14 L 36 28 Z" fill="#faecd3" />
-          <path d="M 96 28 L 90 14 L 84 28 Z" fill="#faecd3" />
-          <path
-            d="M 22 50 Q 22 24 60 24 Q 98 24 98 50 Q 98 80 60 96 Q 22 80 22 50 Z"
-            fill="#d4a574"
-          />
-          <path
-            d="M 30 94 Q 30 116 60 120 Q 90 116 90 94 L 90 130 L 30 130 Z"
-            fill="#d4a574"
-          />
-          <path
-            d="M 36 62 Q 36 56 60 54 Q 84 56 84 62 Q 84 82 60 96 Q 36 82 36 62 Z"
-            fill="#faecd3"
-          />
-          <ellipse cx="42" cy="48" rx="3.5" ry="2" fill="#faecd3" />
-          <ellipse cx="78" cy="48" rx="3.5" ry="2" fill="#faecd3" />
-          <ellipse cx="42" cy="58" rx="2.6" ry="3" fill="#2a1d14" />
-          <ellipse cx="78" cy="58" rx="2.6" ry="3" fill="#2a1d14" />
-          <ellipse cx="60" cy="72" rx="3.6" ry="2.6" fill="#2a1d14" />
-          <path
-            d="M 60 74 L 60 80"
-            stroke="#2a1d14"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            fill="none"
-          />
-          <path
-            d="M 60 80 Q 56 84 51 82"
-            stroke="#2a1d14"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            fill="none"
-          />
-          <path
-            d="M 60 80 Q 64 84 69 82"
-            stroke="#2a1d14"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            fill="none"
-          />
-          <ellipse cx="36" cy="92" rx="9" ry="6.5" fill="#d4a574" />
-          <path
-            d="M 31 88 L 31 94"
-            stroke="#a07a52"
-            stroke-width="1.2"
-            stroke-linecap="round"
-            fill="none"
-          />
-          <path
-            d="M 36 87 L 36 94"
-            stroke="#a07a52"
-            stroke-width="1.2"
-            stroke-linecap="round"
-            fill="none"
-          />
-          <path
-            d="M 41 88 L 41 94"
-            stroke="#a07a52"
-            stroke-width="1.2"
-            stroke-linecap="round"
-            fill="none"
-          />
-          <ellipse cx="84" cy="92" rx="9" ry="6.5" fill="#d4a574" />
-          <path
-            d="M 79 88 L 79 94"
-            stroke="#a07a52"
-            stroke-width="1.2"
-            stroke-linecap="round"
-            fill="none"
-          />
-          <path
-            d="M 84 87 L 84 94"
-            stroke="#a07a52"
-            stroke-width="1.2"
-            stroke-linecap="round"
-            fill="none"
-          />
-          <path
-            d="M 89 88 L 89 94"
-            stroke="#a07a52"
-            stroke-width="1.2"
-            stroke-linecap="round"
-            fill="none"
-          />
-        </svg>
-      </div>
+        <div class="looking-peek">
+          <svg viewBox="0 0 120 130" class="block size-full">
+            <path d="M 14 32 L 30 4 L 42 32 Z" fill="#d4a574"></path>
+            <path d="M 106 32 L 90 4 L 78 32 Z" fill="#d4a574"></path>
+            <path d="M 24 28 L 30 14 L 36 28 Z" fill="#faecd3"></path>
+            <path d="M 96 28 L 90 14 L 84 28 Z" fill="#faecd3"></path>
+            <path
+              d="M 22 50 Q 22 24 60 24 Q 98 24 98 50 Q 98 80 60 96 Q 22 80 22 50 Z"
+              fill="#d4a574"></path>
+            <path
+              d="M 30 94 Q 30 116 60 120 Q 90 116 90 94 L 90 130 L 30 130 Z"
+              fill="#d4a574"></path>
+            <path
+              d="M 36 62 Q 36 56 60 54 Q 84 56 84 62 Q 84 82 60 96 Q 36 82 36 62 Z"
+              fill="#faecd3"></path>
+            <ellipse cx="42" cy="48" rx="3.5" ry="2" fill="#faecd3"></ellipse>
+            <ellipse cx="78" cy="48" rx="3.5" ry="2" fill="#faecd3"></ellipse>
+            <ellipse cx="42" cy="58" rx="2.6" ry="3" fill="#2a1d14"></ellipse>
+            <ellipse cx="78" cy="58" rx="2.6" ry="3" fill="#2a1d14"></ellipse>
+            <ellipse cx="60" cy="72" rx="3.6" ry="2.6" fill="#2a1d14"></ellipse>
+            <path
+              d="M 60 74 L 60 80"
+              stroke="#2a1d14"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              fill="none"></path>
+            <path
+              d="M 60 80 Q 56 84 51 82"
+              stroke="#2a1d14"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              fill="none"></path>
+            <path
+              d="M 60 80 Q 64 84 69 82"
+              stroke="#2a1d14"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              fill="none"></path>
+            <ellipse cx="36" cy="92" rx="9" ry="6.5" fill="#d4a574"></ellipse>
+            <path
+              d="M 31 88 L 31 94"
+              stroke="#a07a52"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              fill="none"></path>
+            <path
+              d="M 36 87 L 36 94"
+              stroke="#a07a52"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              fill="none"></path>
+            <path
+              d="M 41 88 L 41 94"
+              stroke="#a07a52"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              fill="none"></path>
+            <ellipse cx="84" cy="92" rx="9" ry="6.5" fill="#d4a574"></ellipse>
+            <path
+              d="M 79 88 L 79 94"
+              stroke="#a07a52"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              fill="none"></path>
+            <path
+              d="M 84 87 L 84 94"
+              stroke="#a07a52"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              fill="none"></path>
+            <path
+              d="M 89 88 L 89 94"
+              stroke="#a07a52"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              fill="none"></path>
+          </svg>
+        </div>
       </div>
 
-      <div
-        class="looking-rows border-border/60 relative z-10 border-t pt-6"
-      >
-        {/* A gap per row rather than a rule between them. The rules made this
+      <div class="looking-rows border-border/60 relative z-10 border-t pt-6">
+        {
+          /* A gap per row rather than a rule between them. The rules made this
             the last surface on the page reading as a table, on a page whose
             hero seam, bar, cards and footer all stopped drawing lines. Space
             separates the rows now and the pairing still scans, which is the
@@ -217,11 +214,14 @@ const criteria = [
 
             Each row keeps its vertical padding. The left border that lights on
             hover is an affordance rather than a division, and it needs a row
-            tall enough to draw against. */}
-        {/* Grouped like the timeline, so the criteria read down rather than
+            tall enough to draw against. */
+        }
+        {
+          /* Grouped like the timeline, so the criteria read down rather than
             landing together. Seven rows arriving in one observer callback got
             57ms apart against a 700ms fade, and one per callback got nothing
-            at all. See `src/lib/reveal.ts`. */}
+            at all. See `src/lib/reveal.ts`. */
+        }
         <dl data-fade-group class="grid gap-y-2">
           {
             criteria.map((item, idx) => (
@@ -441,9 +441,7 @@ const criteria = [
   const stage = document.querySelector<HTMLElement>('.looking-stage')
   const rows = stage?.querySelector<HTMLElement>('.looking-rows')
   if (stage && rows) {
-    const reduce = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(
@@ -507,7 +505,10 @@ const criteria = [
        * the cost of a curve barely worth drawing at 1920.
        */
       const amplitudeFor = (stageWidth: number) => {
-        const progress = Math.min(1, Math.max(0, (stageWidth - 342) / (768 - 342)))
+        const progress = Math.min(
+          1,
+          Math.max(0, (stageWidth - 342) / (768 - 342)),
+        )
         return 5 + 11 * progress
       }
 

@@ -74,8 +74,10 @@ const artifacts = [
   data-section="experience"
   class="page-inset relative py-16 md:py-20"
 >
-  {/* The cast anchors to this section's own box, so it scatters down the
-      margins beside the timeline rather than against the viewport. */}
+  {
+    /* The cast anchors to this section's own box, so it scatters down the
+      margins beside the timeline rather than against the viewport. */
+  }
   <Cast />
   <div class="mx-auto max-w-3xl">
     <h2
@@ -87,16 +89,20 @@ const artifacts = [
 
     <Employers />
 
-    {/* The list opened on `Newest first.` until the spans moved into a column
+    {
+      /* The list opened on `Newest first.` until the spans moved into a column
         of their own. That line existed because the dates were buried inside the
         head sentences, so the order was not visible; a reader now meets dec 2025
         against sep to dec 2025 against jan 2024 down one edge, and the list
         states its own order. A line explaining what the reader can already see
-        is the one kind of caption worth deleting. */}
+        is the one kind of caption worth deleting. */
+    }
     <div class="experience-stage mt-10 lg:mt-14">
-      {/* The list reveals as one unit with its rows stepped by position, rather
+      {
+        /* The list reveals as one unit with its rows stepped by position, rather
           than each row arriving on its own as it crosses the viewport edge. See
-          `src/lib/reveal.ts`. */}
+          `src/lib/reveal.ts`. */
+      }
       <ol data-fade-group class="experience-list flex flex-col">
         {
           history.map((entry, idx) => (
@@ -110,13 +116,15 @@ const artifacts = [
               <p class="experience-date tabular-nums">{entry.span}</p>
               <span class="experience-gutter" aria-hidden="true">
                 <span class="experience-marker-line">
-                  <span class="experience-marker"></span>
+                  <span class="experience-marker" />
                 </span>
               </span>
               <div class="experience-body">
                 <p class="experience-head">{entry.head}</p>
                 {entry.details.map((detail) => (
-                  <p class="experience-detail text-label mt-2 font-sans">{detail}</p>
+                  <p class="experience-detail text-label mt-2 font-sans">
+                    {detail}
+                  </p>
                 ))}
                 {entry.current && (
                   <ul data-chip-row class="mt-3 flex flex-wrap gap-x-2">
@@ -229,7 +237,8 @@ const artifacts = [
      The stage carries the engagement flag, so the plate leaves once the walk
      settles. Keying it to the active row alone would put a permanent plate
      under the current beat, which is lit from first paint. */
-  .experience-stage[data-engaged='true'] .experience-row[data-active='true']::after {
+  .experience-stage[data-engaged='true']
+    .experience-row[data-active='true']::after {
     opacity: 1;
   }
   .experience-row:last-child {
@@ -395,7 +404,8 @@ const artifacts = [
     .experience-row::after {
       transition: opacity var(--glow-out) ease-out;
     }
-    .experience-stage[data-engaged='true'] .experience-row[data-active='true']::after {
+    .experience-stage[data-engaged='true']
+      .experience-row[data-active='true']::after {
       transition: opacity var(--glow-in) ease-out;
     }
     /* The chip leaves on the site's shared glow timing rather than its own,
@@ -446,7 +456,9 @@ const artifacts = [
   const stage = document.querySelector<HTMLElement>('.experience-stage')
   const list = stage?.querySelector<HTMLOListElement>('.experience-list')
   if (stage && list) {
-    const rows = Array.from(list.querySelectorAll<HTMLLIElement>('.experience-row'))
+    const rows = Array.from(
+      list.querySelectorAll<HTMLLIElement>('.experience-row'),
+    )
     const defaultIdx = Math.max(
       0,
       rows.findIndex((r) => r.dataset.defaultActive === 'true'),

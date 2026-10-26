@@ -1,6 +1,6 @@
 ---
 name: stack-review
-description: Reviews a chain of stacked pull requests as one unit, testing each base against the head below it, reading every branch before posting anything, then posting a close-out on each and one handback naming the branch each finding sits on. Use when asked to "review the stack", "review the chain", "read all four pull requests", or "recommend the merge order". Do NOT use to review a single pull request, which is `claude-pr-review`, and do NOT use to fix what it finds, which is `stack-address`.
+description: Reviews a chain of stacked pull requests as one unit, testing each base against the head below it, reading every branch before posting anything, then posting a close-out on each and one handback naming the branch each finding sits on. Use when asked to "review the stack", "review the chain", "read all four pull requests", or "recommend the merge order". Do NOT use to review a single pull request, which is `review-pr`, and do NOT use to fix what it finds, which is `stack-address`.
 allowed-tools: Bash, Read, Grep, Glob, Skill
 ---
 
@@ -73,6 +73,6 @@ Every branch in a chain is gated on its own, so the whole chain can be green bef
 Cite these rather than restating them. A step reimplemented here rots against the skill that owns it.
 
 - `canon/context/stacked-shipping.md` carries the git behavior under a stack and the four-role model
-- `claude-pr-review` owns what a review looks for on one branch, applied here per branch
+- `review-pr` owns what a review looks for on one branch, applied here per branch
 - `stack-ship` cut the chain and rebases it behind each merge
 - `stack-address` receives the handback and fixes every branch in one pass

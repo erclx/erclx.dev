@@ -41,34 +41,32 @@ const navItems = [
 
   <main>
     <section id="canon" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
-      <div class="mx-auto prose-column">
-        <p data-fade class="text-muted-foreground text-label tracking-wide uppercase">
+      <div class="prose-column mx-auto">
+        <p
+          data-fade
+          class="text-muted-foreground text-label tracking-wide uppercase"
+        >
           Project
         </p>
         <h1
-          data-fade          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+          data-fade
+          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
         >
           canon
         </h1>
-        <p
-          data-fade          class="text-muted-foreground text-lede mt-4"
-        >
+        <p data-fade class="text-muted-foreground text-lede mt-4">
           How I build with AI coding agents, packaged so any repository can
           install it: one session plans, others build in parallel, and a
           separate session reviews.
         </p>
-        <p
-          data-fade          class="text-muted-foreground text-body mt-3"
-        >
+        <p data-fade class="text-muted-foreground text-body mt-3">
           Installs from npm as <code class="font-mono">@erclx/canon</code>, and
           as a Claude Code plugin. Public and MIT licensed. The landing page at
-          <code class="font-mono">canon.erclx.dev</code> is one real session the
-          toolkit ran on itself, with every count on it read from the
-          repository at build time.
+          <code class="font-mono">canon.erclx.dev</code> is one real session the toolkit
+          ran on itself, with every count on it read from the repository at build
+          time.
         </p>
-        <ul
-          data-fade          class="mt-6 flex flex-wrap gap-x-6"
-        >
+        <ul data-fade class="mt-6 flex flex-wrap gap-x-6">
           {
             artifactLinks.map((link) => (
               <li>
@@ -84,8 +82,10 @@ const navItems = [
           }
         </ul>
 
-        {/* The demo closes the opening rather than interrupting it. It declares
-            `view` so a phone, which cannot hover, plays it on screen. */}
+        {
+          /* The demo closes the opening rather than interrupting it. It declares
+            `view` so a phone, which cannot hover, plays it on screen. */
+        }
         <figure
           data-media-host="view"
           data-fade
@@ -106,93 +106,163 @@ const navItems = [
     </section>
 
     <section id="problem" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
-        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
           problem
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          Every project I started got the same agent scaffolding typed into it again, and every copy moved away from the last. I wanted one source I could install rather than a folder I kept re-authoring.
+          Every project I started got the same agent scaffolding typed into it
+          again, and every copy moved away from the last. I wanted one source I
+          could install rather than a folder I kept re-authoring.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          Drift on this surface is quiet. A rule that fell behind still loads, still reads as authoritative, and produces work against a convention I had already abandoned somewhere else. Nothing fails, so nothing reports it.
+          Drift on this surface is quiet. A rule that fell behind still loads,
+          still reads as authoritative, and produces work against a convention I
+          had already abandoned somewhere else. Nothing fails, so nothing
+          reports it.
         </p>
       </div>
     </section>
 
     <section id="standards" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
-        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
           standards
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          Content reaches a project through two operations. <code class="font-mono">install</code> lays it down once. <code class="font-mono">sync</code> updates only files already present, and it is safe to repeat against a project that has edited what it was given, because an install stamp records what the toolkit wrote and so tells a file canon moved from a file the project changed.
+          Content reaches a project through two operations. <code
+            class="font-mono">install</code
+          > lays it down once. <code class="font-mono">sync</code> updates only files
+          already present, and it is safe to repeat against a project that has edited
+          what it was given, because an install stamp records what the toolkit wrote
+          and so tells a file canon moved from a file the project changed.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          Rules carry a path glob, so a Python rule stays dormant in a TypeScript project. The project's own rules live in a folder the sync never walks, and a rule canon has retired is deleted from every project rather than left loading. A sync cannot introduce a surface the project never asked for, and it cannot overwrite a rule the project wrote.
+          Rules carry a path glob, so a Python rule stays dormant in a
+          TypeScript project. The project's own rules live in a folder the sync
+          never walks, and a rule canon has retired is deleted from every
+          project rather than left loading. A sync cannot introduce a surface
+          the project never asked for, and it cannot overwrite a rule the
+          project wrote.
         </p>
       </div>
     </section>
 
     <section id="workflow" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
-        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
           workflow
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          The rules are not the whole product. The plan, review, and ship loop ships alongside them as skills a session invokes rather than steps a person remembers.
+          The rules are not the whole product. The plan, review, and ship loop
+          ships alongside them as skills a session invokes rather than steps a
+          person remembers.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          An idea is sorted first. What the repository can already answer goes to a plan, and what nobody has measured goes to groundwork, a short investigation that ends in a decision. The plan names every file it will touch and gives each open question a suggested answer, so it can be approved in one pass. A worker then writes a failing test before any code, and the checks have to pass before it opens a pull request.
+          An idea is sorted first. What the repository can already answer goes
+          to a plan, and what nobody has measured goes to groundwork, a short
+          investigation that ends in a decision. The plan names every file it
+          will touch and gives each open question a suggested answer, so it can
+          be approved in one pass. A worker then writes a failing test before
+          any code, and the checks have to pass before it opens a pull request.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          Review travels on the pull request itself. One skill posts findings to it, another reads them back, fixes each, and pushes a follow-up, and the review then runs again against only the commits that follow-up added.
+          Review travels on the pull request itself. One skill posts findings to
+          it, another reads them back, fixes each, and pushes a follow-up, and
+          the review then runs again against only the commits that follow-up
+          added.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
           The workflow it ships is the workflow that built it.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          It runs my other repositories the same way, including a private one whose whole job is keeping the copy on my CV, LinkedIn, GitHub profile, and this site in step.
+          It runs my other repositories the same way, including a private one
+          whose whole job is keeping the copy on my CV, LinkedIn, GitHub
+          profile, and this site in step.
         </p>
       </div>
     </section>
 
     <section id="parallel" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
-        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
           parallel
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          Work runs across parallel Claude Code sessions split by vantage rather than by capability, in four roles. One warm orchestrator session holds the cross-feature picture and dispatches the rest as background sessions: a planner writes one plan, a worker builds one plan in its own git worktree and stops at a draft pull request, and a reviewer reads a pull request it did not write. The orchestrator edits no tracked file and merges nothing. I start the orchestrator and merge every pull request.
+          Work runs across parallel Claude Code sessions split by vantage rather
+          than by capability, in four roles. One warm orchestrator session holds
+          the cross-feature picture and dispatches the rest as background
+          sessions: a planner writes one plan, a worker builds one plan in its
+          own git worktree and stops at a draft pull request, and a reviewer
+          reads a pull request it did not write. The orchestrator edits no
+          tracked file and merges nothing. I start the orchestrator and merge
+          every pull request.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          The two review passes differ by vantage rather than by depth. A worker's self-review asks whether it built the plan and whether it passes, and it is blind to its own misreadings, because the same misreading wrote both the code and the review. The independent pass reads the diff, the plan, and the rules, and leaves the author's own summary unread. A dedicated reviewer takes it when a change touches code or several pull requests are waiting, and the orchestrator keeps one pass across every branch in a wave for merge order and overlap.
+          The two review passes differ by vantage rather than by depth. A
+          worker's self-review asks whether it built the plan and whether it
+          passes, and it is blind to its own misreadings, because the same
+          misreading wrote both the code and the review. The independent pass
+          reads the diff, the plan, and the rules, and leaves the author's own
+          summary unread. A dedicated reviewer takes it when a change touches
+          code or several pull requests are waiting, and the orchestrator keeps
+          one pass across every branch in a wave for merge order and overlap.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          What binds the number of tracks is collision between file sets rather than a fixed cap. A candidate opens only where its files are disjoint from every track already running. What thins as tracks multiply is my own read before each merge, and the orchestrator's context as it holds more work in flight.
+          What binds the number of tracks is collision between file sets rather
+          than a fixed cap. A candidate opens only where its files are disjoint
+          from every track already running. What thins as tracks multiply is my
+          own read before each merge, and the orchestrator's context as it holds
+          more work in flight.
         </p>
       </div>
     </section>
 
     <section id="agents" class="page-inset py-16 md:py-20">
-      <div class="mx-auto prose-column">
-        <h2 data-fade class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
           agents
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          All of it depends on agents being able to drive the same tooling without a person reading terminal output beside them.
+          All of it depends on agents being able to drive the same tooling
+          without a person reading terminal output beside them.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          Every command has a non-interactive path, every listing emits JSON on stdout, and the framed terminal UI goes to stderr. A skill shelling out to the CLI can treat stdout as data without parsing around a progress frame.
+          Every command has a non-interactive path, every listing emits JSON on
+          stdout, and the framed terminal UI goes to stderr. A skill shelling
+          out to the CLI can treat stdout as data without parsing around a
+          progress frame.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          A unit suite covers the code whose failures stay invisible at runtime, and the workflow itself is tested on sandbox scenarios. Each scenario provisions an isolated project state, points a headless session at it, and asserts which files the run wrote, whether it escaped that scope, and what its own reply said. A disposable GitHub remote lets the skills that depend on <code class="font-mono">gh</code> run end to end, including opening a pull request, merging it, and editing its body.
+          A unit suite covers the code whose failures stay invisible at runtime,
+          and the workflow itself is tested on sandbox scenarios. Each scenario
+          provisions an isolated project state, points a headless session at it,
+          and asserts which files the run wrote, whether it escaped that scope,
+          and what its own reply said. A disposable GitHub remote lets the
+          skills that depend on <code class="font-mono">gh</code> run end to end,
+          including opening a pull request, merging it, and editing its body.
         </p>
         <p data-fade class="text-muted-foreground text-body mt-6">
-          Testing a workflow that opens pull requests means letting it open real ones somewhere it cannot do damage.
+          Testing a workflow that opens pull requests means letting it open real
+          ones somewhere it cannot do damage.
         </p>
       </div>
     </section>
-
   </main>
 
   <RouteFoot />

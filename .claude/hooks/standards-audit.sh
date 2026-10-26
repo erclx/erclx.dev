@@ -18,12 +18,10 @@ case "$file" in
 *) exit 0 ;;
 esac
 
-# Four record folders, at either root. A skip list fixed at the old spelling
-# audits a project's own session records the moment the move reaches it, which
-# reports findings against prose nobody publishes.
+# Session record folders are skipped, since they hold prose nobody publishes.
 case "$file" in
-*.claude/.tmp/* | *.claude/memory/* | *.claude/review/* | *.claude/plans/*) exit 0 ;;
-*.canon/tmp/* | *.canon/memory/* | *.canon/review/* | *.canon/plans/*) exit 0 ;;
+*.claude/review/* | *.claude/plans/*) exit 0 ;;
+*.canon/tmp/* | *.canon/review/* | *.canon/plans/*) exit 0 ;;
 esac
 
 [ -f "$file" ] || exit 0
@@ -62,13 +60,45 @@ fi
 hits=$(printf '%s' "$record" |
   jq -r '.entries[]?.bans[]? | ":\(.line):\(.column + 1)  \(.kind)  \(.term)"' 2>/dev/null)
 
+# Two advisory measures ride in the same record and never gate. A heading's
+# case is read for the whole file, since it is cheap to fix where it stands. A
+# colon is kept only where the word before it and the colon appear in the text
+# this write carried, since an edit often rewrites part of a line and a
+# whole-line match would drop exactly that case. The verb names that word as
+# `lead`, since slicing `text` at `column` miscounts after an emoji, and a
+# binary predating the field falls back to the slice. A file holds colons nobody is
+# asking this edit to answer for.
+new=$(printf '%s' "$input" |
+  jq -r '[.tool_input.new_string?, .tool_input.content?, (.tool_input.edits[]?.new_string?)] | map(select(. != null)) | join("\n")' 2>/dev/null)
+headings=$(printf '%s' "$record" |
+  jq -r '.entries[]?.headingCase[]? | ":\(.line)  \(.text)"' 2>/dev/null)
+colons=$(printf '%s' "$record" |
+  jq -r --arg new "$new" '.entries[]?.colons[]? | (.lead // (.text[:.column] | sub("^.*\\s"; ""))) as $lead | select($new | contains($lead + ":")) | ":\(.line):\(.column + 1)  \(.text)"' 2>/dev/null)
+
+# Density findings are handed back whole, gating or not, since the verb only
+# returns them for a path in its scope and a finding the push does not fail on
+# yet is the one a rewrite has to clear before its folder is gated.
+density=$(printf '%s' "$record" |
+  jq -r '.entries[]?.density[]? | ":\(.line)  \(.kind)  " + (if .kind == "table-then-list" then "a list follows the table with no lead sentence" elif .limit == null then "opens with neither a paragraph nor a table" else "\(.value) past \(.limit)" end) + (if .gating then "  gating" else "" end)' 2>/dev/null)
+
+# The row count and the wide token report and never gate, so each kind is handed
+# back with the fix its shape takes rather than the seam a density finding
+# splits at. The cell and the trailing list arrive as density findings.
+tables=$(printf '%s' "$record" |
+  jq -r '.entries[]?.tables[]? | ":\(.line)  \(.kind)  " + "\(.value) past \(.limit)"' 2>/dev/null)
+
+# A page marked `kind: reference` carries reference shape findings, handed back
+# whole the same way, since a gated one fails the push like a density finding.
+shape=$(printf '%s' "$record" |
+  jq -r '.entries[]?.referenceShape[]? | ":\(.line)  \(.kind)  \(.text)" + (if .gating then "  gating" else "" end)' 2>/dev/null)
+
 # A set the verb shipped empty measures nothing and would report a clean file.
 # Reading the findings alone turns that narrowed check into a pass, so the field
 # is read beside them.
 empty=$(printf '%s' "$record" |
   jq -r '[.bans.emptySets[]?] | join(", ")' 2>/dev/null)
 
-[ -z "$hits" ] && [ -z "$unread" ] && [ -z "$empty" ] && exit 0
+[ -z "$hits" ] && [ -z "$headings" ] && [ -z "$colons" ] && [ -z "$density" ] && [ -z "$tables" ] && [ -z "$shape" ] && [ -z "$unread" ] && [ -z "$empty" ] && exit 0
 
 nl=$'\n'
 msg=""
@@ -82,7 +112,32 @@ elif [ -n "$empty" ]; then
 fi
 
 if [ -n "$hits" ]; then
-  found=$(printf 'Standards-audit: markdown.md violations in %s. Rewrite the sentence (do not lazy-swap). A code span is the answer only where the token is genuinely an identifier under discussion.\n%s' "$file" "$hits")
+  found=$(printf 'Standards-audit: markdown.md violations in %s. Split the sentence or rewrite it. A colon or a comma standing where the em dash was is the same sentence. A code span is the answer only where the token is genuinely an identifier under discussion.\n%s' "$file" "$hits")
+  msg="${msg:+$msg$nl}$found"
+fi
+
+if [ -n "$headings" ]; then
+  found=$(printf 'Standards-audit: headings in %s are not sentence case. Lowercase every word after the first unless it is a proper noun, and leave a proper noun as it is.\n%s' "$file" "$headings")
+  msg="${msg:+$msg$nl}$found"
+fi
+
+if [ -n "$colons" ]; then
+  found=$(printf 'Standards-audit: this write added a colon in the middle of a sentence in %s. A colon belongs after a label or at the end of a line introducing a list. Split the sentence or rewrite it.\n%s' "$file" "$colons")
+  msg="${msg:+$msg$nl}$found"
+fi
+
+if [ -n "$density" ]; then
+  found=$(printf 'Standards-audit: %s breaks the markdown density limits, being a 350-character paragraph, 2 paragraphs in a row, a 200-character bullet, 5 plain bullets in a row, no H4, and a paragraph or table opening every H3, a 120-character table cell, and no list directly after a table. Split each block at its seam rather than trimming words to pass. A finding marked gating fails the push.\n%s' "$file" "$density")
+  msg="${msg:+$msg$nl}$found"
+fi
+
+if [ -n "$tables" ]; then
+  found=$(printf 'Standards-audit: %s breaks the markdown table limits that report, being 8 body rows and a code span holding a run past 30 characters. These never fail a push. Split a long table into groups each under a lead sentence, and move a wide token out of the table.\n%s' "$file" "$tables")
+  msg="${msg:+$msg$nl}$found"
+fi
+
+if [ -n "$shape" ]; then
+  found=$(printf 'Standards-audit: %s is marked kind: reference and breaks its shape, being an opening, then Output, Refusals, and See also, each at most once and in that order, no H3, and no flag table. Point at the command'"'"'s own --help for flags. A finding marked gating fails the push.\n%s' "$file" "$shape")
   msg="${msg:+$msg$nl}$found"
 fi
 

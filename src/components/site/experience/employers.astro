@@ -43,14 +43,21 @@ const marks = [
 ]
 ---
 
-{/* The section states two degrees and a job in text alone, so recognition
+{
+  /* The section states two degrees and a job in text alone, so recognition
     arrives only after a line has been read. The marks carry it in a glance.
 
     They sit between the prose and the timeline rather than on the beats
     themselves. Only some beats would carry a mark, and a list where some rows
     are illustrated and others are not reads as a ranking between them rather
-    than as a record. */}
-<div data-employers class="mt-10 lg:mt-14" data-fade style="--fade-delay: 350ms">
+    than as a record. */
+}
+<div
+  data-employers
+  class="mt-10 lg:mt-14"
+  data-fade
+  style="--fade-delay: 350ms"
+>
   <p class="text-label text-muted-foreground">Where I've worked and studied</p>
   <ul class="mt-4 flex flex-wrap items-center gap-x-10 gap-y-6">
     {

@@ -48,11 +48,11 @@ The refusal strings sit in the body, since the runtime loads that file and ignor
 
 ## Out of scope
 
-- `claude-feature` plans a feature from a request. This plans a visual run from a dump and owns the batch-to-pull-request mapping, which that skill has no reason to carry.
-- `claude-ux-audit` reads source to find roughness and reports it. This changes surfaces with the operator judging each one, and takes its input from the operator rather than from a scan.
-- `claude-ux-measure` measures what a running interface costs to paint. This measures whatever a visual claim depends on, which is usually geometry or contrast rather than cost.
+- `plan-feature` plans a feature from a request. This plans a visual run from a dump and owns the batch-to-pull-request mapping, which that skill has no reason to carry.
+- `ux-audit` reads source to find roughness and reports it. This changes surfaces with the operator judging each one, and takes its input from the operator rather than from a scan.
+- `ux-measure` measures what a running interface costs to paint. This measures whatever a visual claim depends on, which is usually geometry or contrast rather than cost.
 - `stack-ship` cuts the batches into a chain of pull requests and rebases it behind each merge. This declares where the boundary falls and stops at the ship signal.
-- `claude-tasks`, `claude-docs`, `git-stage`, `git-pr`, and `claude-review` are invoked by this skill and own their own steps.
+- `task-board`, `context-fold`, `git-stage`, `git-pr`, and `review-branch` are invoked by this skill and own their own steps.
 - A copy correction with no visual change is the copy cycle alone and needs no batch or loop.
 
 ## Collision

@@ -15,18 +15,22 @@
  */
 ---
 
-{/* Almost no top padding of its own. The last section closes on `pb-20`, so a
+{
+  /* Almost no top padding of its own. The last section closes on `pb-20`, so a
     footer adding its own full step stacked two closes and put 184px above the
     control against 48 below it, which closed the page tighter than it opened
     the foot. It holds 104px above and 80 below. What is left here is the step
     between the prose ending and the control, not the gap between two
-    sections. */}
+    sections. */
+}
 <footer data-section="footer" class="page-inset pt-4 pb-16 md:pt-6 md:pb-20">
-  <div class="mx-auto prose-column">
-    {/* Arrives with the prose it closes, now that a route's prose reveals. The
+  <div class="prose-column mx-auto">
+    {
+      /* Arrives with the prose it closes, now that a route's prose reveals. The
         bar's copy of this destination deliberately takes no marker: it is
         chrome a reader reaches for at any scroll position, and delaying it
-        would take navigation away to gain nothing. */}
+        would take navigation away to gain nothing. */
+    }
     <a
       href="/"
       data-way-home
