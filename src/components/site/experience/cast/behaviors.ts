@@ -5,9 +5,8 @@
  * whole cast, so a member can be given a temperament without a decision being
  * taken away from every other member.
  *
- * Each entry declares the peak speed it is built to reach. That declaration is
- * what `e2e/cast-motion.ts` measures against, so a keyframe edited without
- * updating its own claim fails rather than drifting quietly. `canon/DESIGN.md`
+ * Each entry declares the peak speed it is built to reach, so a keyframe edited
+ * without updating its own claim reads as drift in review. `canon/DESIGN.md`
  * bars sustained motion between 4 and 11px per second, as motion detected with
  * no fixed reference to judge it against, which pulls the eye without rewarding
  * it. A behavior is therefore either below that band or crosses it fast enough

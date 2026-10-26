@@ -67,7 +67,7 @@ Visual work cannot be judged from a diff. The operator decides by looking, so ev
 
 A dump names the components an operator happened to be looking at. Read past them to the question underneath, because several items are routinely one question asked about different surfaces, and answering them one component at a time is what produced the divergence being reported.
 
-- Inventory the whole site before changing one instance of anything. `e2e/inventory.ts` walks every page and groups every control by what its treatment actually does, which is the reading a per-component look cannot give.
+- Inventory the whole site before changing one instance of anything. `canon inventory run` walks every route and groups elements by what one computed property answers, which is the reading a per-component look cannot give.
 - Judge the answer against every surface it reaches, then change them together. A treatment settled on one component and not its siblings is a new divergence, filed under a fix.
 - Declare the rule that decides membership rather than the treatment alone. `does it have its own box` is a test the next session can apply to a component nobody has built yet, where a list of eight components answers only for those eight.
 - Put the shared values in one declaration and have every component resolve them. Two components holding equal copies are already drifting, and nothing reports it.
@@ -146,7 +146,7 @@ Cite these rather than restating them. A step reimplemented here rots against th
 
 - `session-worktree` enters the worktree this runs in
 - `task-board` writes and archives the task files phase 1 produces
-- `e2e/inventory.ts` reads every control on every page and groups them by treatment, which is what `## Sweeping` is measured with
+- `canon inventory run` reads one computed property across every route and groups the answers, which is what `## Sweeping` is measured with
 - `context-fold` refreshes the record at every batch boundary, per `## Closing a batch`
 - `stack-ship` cuts the batches into a chain of pull requests on the ship signal and rebases it behind each merge
 - `git-stage`, `git-pr`, and `git-followup` carry the commits and the pull request
