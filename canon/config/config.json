@@ -71,6 +71,10 @@
           "disposition": "customized",
           "base": "sha256:690a613c9394cd9ebd9606b73222e094a5d6689486f8d1d8d2be39d38789dc12"
         },
+        ".github/workflows/verify.yml": {
+          "disposition": "customized",
+          "base": "sha256:0b6e3c9d3f347cf9c732886abbf6d08fbd78a0572568c8d30eb2703dbcc8ce35"
+        },
         "card-src/pages/og-card.astro": {
           "disposition": "declined",
           "reason": "site keeps its own share card pipeline in scripts/share-card.ts"

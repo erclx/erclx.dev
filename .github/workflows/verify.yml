@@ -144,37 +144,17 @@ jobs:
         run: bun run test:rendered
 
   e2e-tests:
-    name: 🎭 E2E Tests (${{ matrix.slug }})
+    name: 🎭 E2E Tests (${{ matrix.browser }})
     runs-on: ubuntu-latest
     needs: [static-checks, unit-tests, build-verify]
     strategy:
       # One red engine leaves the other two results readable.
       fail-fast: false
       matrix:
-        include:
-          # Chromium alone splits: it is the only leg still above webkit's
-          # 9.1m floor once divided, so a third shard would mostly idle.
-          - browser: chromium
-            shard: '1/2'
-            slug: chromium-1
-          - browser: chromium
-            shard: '2/2'
-            slug: chromium-2
-          - browser: firefox
-            slug: firefox
-            # Headless firefox creates no GL context without an X display, and
-            # no pref substitutes for one. Chromium carries SwiftShader and
-            # webkit its own path, so neither needs this.
-            wrapper: xvfb-run -a
-          - browser: webkit
-            slug: webkit
+        browser: [chromium, firefox, webkit]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          # --only-changed below diffs HEAD against the base branch, which a
-          # depth-1 checkout carries no history to do.
-          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -215,60 +195,7 @@ jobs:
         run: bunx playwright install ${{ matrix.browser }}
 
       - name: Run E2E Tests
-        # A pull request runs only the specs whose import graph reaches a
-        # changed file, and only when every changed file sits under e2e/.
-        # These specs drive a served build rather than importing it, so a
-        # source file outside e2e/ reaches no spec's import graph at all: on
-        # its own that selects nothing and the fallback below runs everything,
-        # but paired with an edited spec file the selection comes back
-        # non-empty on that spec alone, silently skipping every spec the
-        # source change actually affects. Measured over the last 30 merged
-        # pull requests, 16 touched src/ and e2e/ together against 0 touching
-        # e2e/ alone, so scoping the selection to an e2e/-only diff is what
-        # keeps it from ever under-selecting rather than a defense against a
-        # rare case.
-        #
-        # A push to main and a dispatch run everything, and so does a pull
-        # request whose e2e/-only change reaches no spec at all: a workflow or
-        # dependency edit is exactly the case most likely to break the suite,
-        # so an empty selection is not read as nothing to test.
-        #
-        # A pull request's own run is therefore the wrong instrument for a
-        # worker-count comparison whenever its diff selects a narrow set of
-        # specs, since the leg times it reports are for that set rather than
-        # for the suite. A `workflow_dispatch` run on the branch always takes
-        # the full-suite path below and is what a worker-count reading is
-        # taken from instead.
-        run: |
-          shard_flag=""
-          if [ -n "${{ matrix.shard }}" ]; then
-            shard_flag="--shard=${{ matrix.shard }}"
-          fi
-
-          total=0
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            changed=$(git diff --name-only "origin/${{ github.base_ref }}" HEAD)
-            if [ -n "$changed" ] && ! printf '%s\n' "$changed" | grep -qv '^e2e/'; then
-              total=$(bunx playwright test --project=${{ matrix.browser }} $shard_flag \
-                --only-changed="origin/${{ github.base_ref }}" --list 2>&1 |
-                grep -oP 'Total: \K[0-9]+(?= tests?)')
-            fi
-          fi
-
-          if [ "${total:-0}" -gt 0 ]; then
-            # Defense in depth: total already gates this branch on a nonzero
-            # --list count for this shard, so --pass-with-no-tests guards
-            # only a --list/run disagreement rather than the ordinary path.
-            ${{ matrix.wrapper }} bunx playwright test --project=${{ matrix.browser }} $shard_flag \
-              --only-changed="origin/${{ github.base_ref }}" --pass-with-no-tests
-          else
-            # A zero here can mean no e2e/-only diff, or one whose changed
-            # specs all land in the other shard, and the two are conflated:
-            # the second runs this shard's full half rather than nothing.
-            # Latent today, since none of the last 30 merged pull requests
-            # were e2e/-only. See canon/context/ci.md for the measurement.
-            ${{ matrix.wrapper }} bun run test:e2e --project=${{ matrix.browser }} $shard_flag
-          fi
+        run: bun run test:e2e --project=${{ matrix.browser }}
         env:
           # Tells the webServer command to serve the downloaded dist/ rather
           # than building its own. Unset locally, where a build always runs.
@@ -278,9 +205,8 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          # Unique per leg, including shard: a duplicate artifact name fails
-          # the upload, and two chromium jobs both carry matrix.browser.
-          name: playwright-report-${{ matrix.slug }}
+          # Unique per leg, since a duplicate artifact name fails the upload.
+          name: playwright-report-${{ matrix.browser }}
           # Both, because the report renders the run and test-results carries
           # the traces and the error context a failing engine is read from.
           path: |
@@ -337,6 +263,8 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # The alias output read below first appears in wrangler 3.78.
+          wranglerVersion: '3.90.0'
           # Ref-derived, so only main reaches the apex. Every other ref lands on
           # a preview host, which is what makes a dispatch safe to fire early.
           command: pages deploy ./dist --project-name=erclx-dev --branch=${{ github.ref_name }}
@@ -392,6 +320,8 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # The alias output read below first appears in wrangler 3.78.
+          wranglerVersion: '3.90.0'
           # Ref-derived, so only main reaches the apex. Every other ref lands on
           # a preview host, which is what makes a dispatch safe to fire early.
           command: pages deploy ./dist --project-name=erclx-dev --branch=${{ github.ref_name }}
