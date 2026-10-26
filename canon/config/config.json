@@ -68,8 +68,8 @@
       "chain": ["astro", "web", "base", "shell"],
       "dispositions": {
         ".github/workflows/readme-screenshot.yml": {
-          "disposition": "customized",
-          "base": "sha256:690a613c9394cd9ebd9606b73222e094a5d6689486f8d1d8d2be39d38789dc12"
+          "disposition": "declined",
+          "reason": "README frames are captured locally with bun run readme-screenshot"
         },
         ".github/workflows/verify.yml": {
           "disposition": "customized",

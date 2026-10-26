@@ -29,8 +29,6 @@ Holds the workflows. `verify.yml` carries the jobs below, and `deploy` ships onl
 
 The other workflows each own one job.
 
-- `pr-evidence-screenshot.yml` recaptures the light evidence frames on a pull request touching source and commits them back to the branch
-- `readme-screenshot.yml` recaptures the README's header frames on a pull request touching the header
 - `shell.yml` runs shfmt and shellcheck, and `phase-label-gate.yml` rejects a phase label in a pull request body
 - `pr-local-preview.yml` drops the local preview line from the evidence comment when a pull request closes
 - A concurrency group cancels a superseded run, except a push to `main` or a dispatch, since either may carry a deploy
@@ -49,6 +47,6 @@ Holds the Playwright suite and the screenshot harness. The specs cover only what
 
 - A dispatch from a feature branch deploys to a preview host, since `--branch` reads the ref, so only `main` reaches the apex
 - `deploy` keeps its Node and Bun setup though it builds nothing, since wrangler-action installs wrangler with the lockfile's package manager
-- The evidence and README commits push with `HUSKY: 0`, since the pre-push hook runs `shfmt`, which the runner lacks
-- The bot's evidence commit starts no `verify.yml` run, since the default token triggers nothing on push
+- A commit pushed by `github-actions[bot]` holds its pull request's runs for a maintainer's approval, so no workflow here pushes commits
+- Run `bun run pr-evidence-screenshot` after a visual change, and `bun run readme-screenshot` after a header change, then commit the frames
 - `bun run test:e2e` runs all three engines locally, so pass `--project` only to reproduce a failure an engine reported
