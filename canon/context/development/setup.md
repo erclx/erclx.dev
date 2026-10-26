@@ -83,9 +83,8 @@ Holds the git hooks, which call the same package scripts CI runs.
 Each folder below has no trap of its own, so one line covers it.
 
 - `src/pages/` owns the routes, where the apex composes the landing sections and each project route is its own file
-- `src/layouts/` owns the HTML shell, being the font preload and the first-paint theme script
 - `src/components/site/` owns the landing sections and their primitives, and `src/components/ui/` owns the vendored shadcn primitives
-- `src/assets/` owns page media, `src/lib/` owns shared helpers, `src/styles/` owns the Tailwind entry and tokens, and `src/test/` owns the Vitest setup
+- `src/assets/` owns page media, and `src/test/` owns the Vitest setup
 
 ## Gotchas
 
@@ -93,4 +92,4 @@ Each folder below has no trap of its own, so one line covers it.
 - The WSL address changes on every boot, so yesterday's device forward refuses connections while the Windows port still answers. Run `bun run device` to re-point it.
 - `bun run device` draws no code when stdout is not a terminal, so an agent session runs `bun scripts/qr.ts <url>` and hands over the PNG
 - A raw NUL byte makes every search tool read a source file as binary and return nothing, so check for one before rewriting a search that should match
-- The React toolchain renders nothing yet and costs 14 packages, 4 of them indirect, so weigh 14 when proposing to remove it
+- Reproduce a suite failure with a probe in `e2e/` against `astro preview` on 4250 plus the offset, since a dev-server probe misses CSS timing defects

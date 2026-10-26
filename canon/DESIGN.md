@@ -15,26 +15,26 @@ Engineering depth made visible. The page reads as hand-built rather than assembl
 ## Colors
 
 - Accent marks position, emphasis, prose links, and the focus ring, and two persistent placements on one screen is its ceiling
-- `--primary` keeps the operable role for a control a reader presses, and no rendered surface reads it yet
+- An operated icon rests in muted text and rises to text under a pointer, and `--primary` waits for a pressed control none ships yet
 - Neutrals hold hues 60 to 82, and accent, canvas, and text derive from the icon's rust, cream, and ground
 
-| Role        | Property             | Intent                                                             |
-| ----------- | -------------------- | ------------------------------------------------------------------ |
-| canvas      | `--background`       | warm off-white page in light, the icon's near-black in dark        |
-| text        | `--foreground`       | warm near-black body text                                          |
-| surface     | `--card`             | pure white plates and cards, so a chart drawn on white has no seam |
-| elevated    | `--surface-elevated` | bars and floating controls lifting off the page                    |
-| muted text  | `--muted-foreground` | secondary text and captions, the lowest layer text can take        |
-| accent      | `--accent`           | warm rust for position and emphasis                                |
-| interactive | `--primary`          | a control a reader operates                                        |
-| focus       | `--ring`             | the focus ring, resolving to the accent                            |
-| error       | `--destructive`      | a failure state                                                    |
+| Role        | Property             | Intent                                                       |
+| ----------- | -------------------- | ------------------------------------------------------------ |
+| canvas      | `--background`       | warm off-white page in light, the icon's near-black in dark  |
+| text        | `--foreground`       | warm near-black body text in light, the icon's cream in dark |
+| surface     | `--card`             | pure white cards in light, one step above canvas in dark     |
+| elevated    | `--surface-elevated` | bars and floating controls lifting off the page              |
+| muted text  | `--muted-foreground` | secondary text and captions, the lowest layer text can take  |
+| accent      | `--accent`           | warm rust for position and emphasis                          |
+| interactive | `--primary`          | a pressed control, none shipped yet                          |
+| focus       | `--ring`             | the focus ring, resolving to the accent                      |
+| error       | `--destructive`      | a failure state                                              |
 
 ## Typography
 
 - Fraunces sets display and headings, Inter sets body, lede, and labels, and JetBrains Mono sets code
 - Lede opens a section once at most, since a second lede in one section makes neither read as the opener
-- A prose link is accent text with an always-on underline, since color alone cannot identify it
+- A prose link is accent text with an always-on underline, and an inline link is exempt from the 44px tap minimum
 
 ## Spacing
 
@@ -69,4 +69,4 @@ Engineering depth made visible. The page reads as hand-built rather than assembl
 ## Iconography
 
 - Lucide outline icons at 1.5px stroke, with no custom icons
-- An icon a reader operates takes the operable role rather than the accent
+- An icon a reader operates takes muted text at rest and text under a pointer, never the accent

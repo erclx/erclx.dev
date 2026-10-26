@@ -9,7 +9,7 @@ description: Light and dark through the class variant, the first-paint script, t
 
 Owns how the page picks, switches, and paints light and dark. The `.dark` class on `documentElement` is the only switch, since shadcn keys dark off `@custom-variant dark` rather than a media query. An `is:inline` script in `src/layouts/base.astro` resolves `localStorage.theme` and `prefers-color-scheme` into that class before the body renders.
 
-A module reacting to a theme change observes `class` on `documentElement` with a `MutationObserver`, and an inline script reads a resolved token with `getComputedStyle`. `canon/DESIGN.md` § Color states what each color role means.
+A module reacting to a theme change observes `class` on `documentElement` with a `MutationObserver`, and an inline script reads a resolved token with `getComputedStyle`. `canon/DESIGN.md` § Colors states what each color role means.
 
 ## Layout
 
