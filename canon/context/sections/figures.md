@@ -35,6 +35,6 @@ Holds the diction route's peek carousel, one track component mounted inline and 
 
 - The panel is positioned explicitly, since `relative` drops a modal dialog into flow at the document top and a deep reader opens onto nothing
 - Read the magnified width off the opened picture on its load, since a lazy inline figure reports a natural width of zero
-- The dialog's empty `<img>` stalls a capture waiting on every image, so the capture walk skips an image carrying no source
+- The dialog's empty `<img>` never reports complete, so `e2e/capture/cases.ts` drops its empty `src` before a capture waits on every image
 - A `maxScrollLeft` that wobbles between readings means transformed content is overflowing rather than the box
 - The arrow keys step while fitted and pan while magnified, so a test pressing them reads the dialog's state first

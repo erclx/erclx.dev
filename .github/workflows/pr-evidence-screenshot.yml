@@ -5,7 +5,9 @@ on:
     paths:
       - 'src/**'
       - 'e2e/screenshot.ts'
+      - 'e2e/capture/**'
       - 'scripts/pr-evidence-screenshot.sh'
+      - 'scripts/screenshot.sh'
       - 'scripts/lib/preview-server.sh'
       - '.github/workflows/pr-evidence-screenshot.yml'
 
