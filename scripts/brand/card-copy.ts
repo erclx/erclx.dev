@@ -7,4 +7,4 @@
  * carries it and that no page's description repeats it, and importing the
  * script would run it, since that file launches a browser at the top level.
  */
-export const CARD_CLAIM = 'I build open-source tools for coding with AI agents.'
+export const CARD_CLAIM = 'I build open-source tools for coding with AI agents'
