@@ -171,6 +171,17 @@ const here = Astro.url.pathname.replace(/\/$/, '')
     opacity: 1;
   }
 
+  /* The link to the page the reader is on holds the accent edge a pointer
+     raises on the others, doubled to two pixels, so the mark is a heavier
+     ring as well as a color and does not wait on a hover to show. */
+  [data-dock-links] a[aria-current='page'] {
+    color: var(--foreground);
+    border-color: var(--accent);
+    box-shadow:
+      var(--floating-shadow),
+      inset 0 0 0 1px var(--accent);
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     [data-dock-links] {
       transition:
