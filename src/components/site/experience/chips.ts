@@ -2,12 +2,9 @@
  * Runs one wave of light across the timeline's project chips as the row arrives.
  *
  * The chips are controls rather than decoration, which is what rules a loop out
- * here and does not rule one out for the agent cast a few pixels away. A cast
- * member is `aria-hidden` and leads nowhere, so a reader classifies it as
- * scenery and stops tracking it. A chip is a link, and a control that lights
- * itself on a schedule claims something happened there, which the reader has to
- * check before deciding it meant nothing. The row also sits inside the reading
- * column rather than in the margin beside it.
+ * here. A chip is a link, and a control that lights itself on a schedule claims
+ * something happened there, which the reader has to check before deciding it
+ * meant nothing. The row also sits inside the reading column.
  *
  * So the gesture is spent at the one moment it costs nothing, when the row
  * enters view and attention is already moving, and it says something true: the
@@ -123,12 +120,11 @@ export function initChipLife(): void {
   // The motion preference is the only thing that suppresses the wave, and it is
   // read off the page at the moment of the arrival rather than tracked.
   //
-  // A pointer resting on the row deliberately does not. The agent cast stands
-  // down under a hand because it acts on a schedule, and standing down is what
-  // stops it interrupting a reader repeatedly. A wave that runs once has nothing
-  // to repeat, so the same rule here would only cost that reader the gesture
-  // entirely, with nothing to tell them it was spent. A chip under the pointer
-  // simply keeps the hover treatment, which outranks this one by source order.
+  // A pointer resting on the row deliberately does not. A wave that runs once
+  // has nothing to repeat, so standing down under a hand would only cost that
+  // reader the gesture entirely, with nothing to tell them it was spent. A chip
+  // under the pointer simply keeps the hover treatment, which outranks this one
+  // by source order.
   const watcher = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
