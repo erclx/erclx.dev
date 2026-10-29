@@ -22,9 +22,9 @@ bunx wrangler pages deploy ./dist --project-name=erclx-dev --branch=main
 
 Holds files served verbatim at the domain root, so a file placed here is a public URL the moment it ships.
 
-- `resume.pdf` serves at `erclx.dev/resume.pdf`, which keeps the footer's résumé link on the domain rather than on a third-party host
+- `resume.pdf` serves at `erclx.dev/resume.pdf`, which keeps the closing ask's résumé control on the domain rather than on a third-party host
 - The résumé is an exported copy, so it goes stale silently when the source changes
-- One résumé ships, in English, since the page is English and the footer holds one link
+- One résumé ships, in English, since the page is English and the closing ask holds one résumé control
 
 ## Gotchas
 

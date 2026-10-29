@@ -57,6 +57,37 @@ test.describe('the reading column', () => {
       1,
     )
   })
+
+  test('the footer starts where the closing ask does', async ({ page }) => {
+    await page.goto('/')
+    const ask = await page.locator('#looking-for h2').boundingBox()
+    const footer = await page
+      .locator('[data-section="footer"] nav[aria-label="Elsewhere"]')
+      .boundingBox()
+
+    expect(ask?.x ?? 0).toBeGreaterThan(0)
+    expect(Math.abs((ask?.x ?? 0) - (footer?.x ?? 0))).toBeLessThanOrEqual(1)
+  })
+
+  test('the footer links and the date share a baseline', async ({ page }) => {
+    await page.goto('/')
+    // The text's own box rather than the element's, since a link carries a
+    // 44px target around a 20px line and its box bottom is not its text's.
+    const textBottoms = await page.evaluate(() =>
+      [
+        '[data-section="footer"] nav a',
+        '[data-section="footer"] [data-updated]',
+      ].map((selector) => {
+        const range = document.createRange()
+        range.selectNodeContents(document.querySelector(selector) as Node)
+        const rects = Array.from(range.getClientRects())
+        return rects.at(-1)?.bottom ?? 0
+      }),
+    )
+
+    expect(textBottoms[0]).toBeGreaterThan(0)
+    expect(Math.abs(textBottoms[0] - textBottoms[1])).toBeLessThanOrEqual(0.5)
+  })
 })
 
 test.describe('navigation chrome', () => {

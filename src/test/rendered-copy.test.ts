@@ -130,6 +130,27 @@ describe('the footer', () => {
     expect(textOf(home, '#looking-for')).toContain('Gothenburg')
   })
 
+  it('names where else to find the author', () => {
+    const profiles = queryAll(home, `${FOOTER} nav a`).map((link) =>
+      link.getAttribute('href'),
+    )
+
+    expect(profiles).toEqual([
+      'https://github.com/erclx',
+      'https://www.linkedin.com/in/erclx',
+    ])
+  })
+
+  it('leaves the résumé to the closing ask', () => {
+    expect(
+      queryAll(home, `#looking-for a[href="${EXEMPT_INTERNAL_HREF}"]`),
+    ).toHaveLength(1)
+
+    expect(
+      queryAll(home, `${FOOTER} a[href="${EXEMPT_INTERNAL_HREF}"]`),
+    ).toHaveLength(0)
+  })
+
   it('carries no copyright notice', () => {
     const text = textOf(home, FOOTER)
 
@@ -603,6 +624,23 @@ describe('the closing ask', () => {
     expect(textOf(home, '#looking-for')).toContain('Open to work')
 
     expect(queryAll(home, '#looking-for dl')).toHaveLength(0)
+  })
+
+  it('hands the email to the mail client in the current tab', () => {
+    const selector = '#looking-for a[href="mailto:me@erclx.dev"]'
+
+    expect(queryAll(home, selector)).toHaveLength(1)
+    expect(textOf(home, selector)).toBe('me@erclx.dev')
+    expect(attributeOf(home, selector, 'target')).toBeNull()
+  })
+
+  it('opens the résumé in a new tab and names its format', () => {
+    const selector = `#looking-for a[href="${EXEMPT_INTERNAL_HREF}"]`
+
+    expect(queryAll(home, selector)).toHaveLength(1)
+    expect(textOf(home, selector)).toBe('Résumé (PDF)')
+    expect(attributeOf(home, selector, 'target')).toBe('_blank')
+    expect(attributeOf(home, selector, 'rel')).toBe('noopener')
   })
 })
 
