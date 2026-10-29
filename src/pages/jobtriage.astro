@@ -5,7 +5,6 @@ import triageCanvas from '@/assets/projects/jobtriage.png'
 import canvasViews from '@/assets/videos/jobtriage.mp4?url'
 import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import RouteBar from '@/components/site/nav/route-bar.astro'
-import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import BaseLayout from '@/layouts/base.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
 
@@ -19,13 +18,12 @@ const artifactLinks = [
 // against 43KB for the webp, on the first image the route paints.
 const triagePoster = await getImage({ src: triageCanvas, format: 'webp' })
 
-// The route's opening leads the rail. Without it the rail names no row for the
-// first 700 to 900px of every route, since it is shown from first paint here
-// and the first prose section starts that far down, so a position indicator
-// states no position for the whole opening screen. The label is the heading it
-// points at, which is the rule every other row already follows.
+// The sections the bar links, starting after the route's opening. The route's
+// name in the bar already returns to the top, so a link for the opening would
+// be a second control on one destination, and over the opening screen the
+// name is what states where the reader is. Each label is the heading it points
+// at.
 const navItems = [
-  { id: 'jobtriage', label: 'jobtriage' },
   { id: 'why-i-built-it', label: 'why i built it' },
   { id: 'how-it-works', label: 'how it works' },
   { id: 'what-it-shows', label: 'what it shows' },
@@ -37,9 +35,7 @@ const navItems = [
   description="A job-search agent over Sweden's public JobTech API that turns a profile and a question into a visual shortlist, with its retrieval measured."
   surface="case-study"
 >
-  <SectionNav items={navItems} instant />
-
-  <RouteBar here="Jobtriage" />
+  <RouteBar here="Jobtriage" items={navItems} />
 
   <main>
     <section id="jobtriage" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">

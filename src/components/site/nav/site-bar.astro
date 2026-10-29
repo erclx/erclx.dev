@@ -1,5 +1,6 @@
 ---
 import BarMark from '@/components/site/nav/bar-mark.astro'
+import SectionNav from '@/components/site/section-nav/section-nav.astro'
 ---
 
 {
@@ -77,6 +78,7 @@ import BarMark from '@/components/site/nav/bar-mark.astro'
       <BarMark />
       <span data-bar-name-slot class="text-foreground text-label">Eric Le</span>
     </button>
+    <SectionNav />
     {
       /* The toggle the page renders is the hero's own, moved into the fixed
         host below once the handoff runs. This slot reserves the space it lands
@@ -88,8 +90,8 @@ import BarMark from '@/components/site/nav/bar-mark.astro'
 </div>
 
 <style>
-  /* The bar arrives once the reader is into the content, matching the rail's
-     own gate so the two never appear apart.
+  /* The bar arrives once the reader is into the content, and the section
+     links inside it arrive with it rather than on a gate of their own.
 
      The bar itself switches rather than fading, and the ground under it is
      what fades. The name and the toggle reach this row by riding the scroll,

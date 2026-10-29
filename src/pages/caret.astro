@@ -5,7 +5,6 @@ import caretPoster from '@/assets/projects/caret.png'
 import caretDemo from '@/assets/videos/caret.mp4?url'
 import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import RouteBar from '@/components/site/nav/route-bar.astro'
-import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import BaseLayout from '@/layouts/base.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
 
@@ -21,9 +20,8 @@ const artifactLinks = [
 // source file unless something derives the optimized one.
 const demoPoster = await getImage({ src: caretPoster, format: 'webp' })
 
-// The route's opening leads the rail, per the note in `jobtriage.astro`.
+// The sections the bar links, per the note in `jobtriage.astro`.
 const navItems = [
-  { id: 'caret', label: 'caret' },
   { id: 'why-i-built-it', label: 'why i built it' },
   { id: 'how-it-works', label: 'how it works' },
   { id: 'what-it-shows', label: 'what it shows' },
@@ -35,9 +33,7 @@ const navItems = [
   description="A prompt palette that opens where the cursor already is, on three chat sites that each handle text differently. A Chrome extension."
   surface="case-study"
 >
-  <SectionNav items={navItems} instant />
-
-  <RouteBar here="Caret" />
+  <RouteBar here="Caret" items={navItems} />
 
   <main>
     <section id="caret" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">

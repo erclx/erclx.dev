@@ -5,7 +5,6 @@ import stackrPoster from '@/assets/projects/stackr.png'
 import stackrDemo from '@/assets/videos/stackr.mp4?url'
 import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import RouteBar from '@/components/site/nav/route-bar.astro'
-import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import BaseLayout from '@/layouts/base.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
 
@@ -25,9 +24,8 @@ const artifactLinks = [
 // source file unless something derives the optimized one.
 const demoPoster = await getImage({ src: stackrPoster, format: 'webp' })
 
-// The route's opening leads the rail, per the note in `jobtriage.astro`.
+// The sections the bar links, per the note in `jobtriage.astro`.
 const navItems = [
-  { id: 'stackr', label: 'stackr' },
   { id: 'why-i-built-it', label: 'why i built it' },
   { id: 'how-it-works', label: 'how it works' },
   { id: 'what-it-shows', label: 'what it shows' },
@@ -39,9 +37,7 @@ const navItems = [
   description="A VS Code extension that keeps named sets of files and copies each into an AI chat as one block, with the tree on top. On the Marketplace and Open VSX."
   surface="case-study"
 >
-  <SectionNav items={navItems} instant />
-
-  <RouteBar here="Stackr" />
+  <RouteBar here="Stackr" items={navItems} />
 
   <main>
     <section id="stackr" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">

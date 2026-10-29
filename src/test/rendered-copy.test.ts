@@ -318,7 +318,7 @@ describe('the landing page', () => {
     expect(queryAll(home, '[data-scenario-switcher]')).toHaveLength(0)
   })
 
-  it('tracks every section in the rail', () => {
+  it('links every section in the bar', () => {
     const labels = queryAll(home, '[data-section-nav] a').map((link) =>
       collapse(link.textContent),
     )
@@ -643,7 +643,9 @@ describe('a project route', () => {
     },
   )
 
-  it.each(PROJECT_ROUTES)('tracks every section in the rail on %s', (route) => {
+  // The opening row is left out, since the route's name in the bar already
+  // returns a reader to the top.
+  it.each(PROJECT_ROUTES)('links each section in the bar on %s', (route) => {
     const doc = readPage(route)
     const labels = queryAll(doc, '[data-section-nav] a').map((link) =>
       collapse(link.textContent),
@@ -652,7 +654,7 @@ describe('a project route', () => {
       collapse(heading.textContent),
     )
 
-    expect(labels.slice(1)).toEqual(headings)
+    expect(labels).toEqual(headings)
   })
 
   it.each([

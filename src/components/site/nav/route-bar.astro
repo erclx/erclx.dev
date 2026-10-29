@@ -1,14 +1,18 @@
 ---
 import BarMark from '@/components/site/nav/bar-mark.astro'
+import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 
 interface Props {
   // The route names itself, so a reader arriving from a shared link knows
   // where they are rather than only how to leave.
   here: string
+  // The route's sections after its opening, since the name above already
+  // returns a reader to the top.
+  items: readonly { readonly id: string; readonly label: string }[]
 }
 
-const { here } = Astro.props
+const { here, items } = Astro.props
 ---
 
 {
@@ -84,7 +88,8 @@ const { here } = Astro.props
       class="text-muted-foreground hover:text-foreground text-label inline-flex min-h-11 min-w-0 cursor-pointer items-center justify-self-center truncate px-4 underline-offset-4 hover:underline"
       >{here}</button
     >
-    <div class="justify-self-end">
+    <div class="flex items-center justify-self-end">
+      <SectionNav items={items} />
       <ThemeToggle />
     </div>
   </div>
