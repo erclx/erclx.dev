@@ -18,13 +18,15 @@ const HOME_SECTIONS: CaptureSection[] = [
   { name: 'footer', selector: '[data-section="footer"]' },
 ]
 
-const PROJECT_ROUTES = [
+/** Every route beside the landing page, each captured whole in one frame. */
+const ROUTES = [
   'canon',
   'jobtriage',
   'annex',
   'stackr',
   'caret',
   'frameboard',
+  'resume',
 ] as const
 
 /** The footer's build date moves on every build with no code change. */
@@ -68,7 +70,7 @@ export const CASES: CaptureCase[] = [
     sections: HOME_SECTIONS,
     setup: darkScheme,
   },
-  ...PROJECT_ROUTES.flatMap((route): CaptureCase[] => [
+  ...ROUTES.flatMap((route): CaptureCase[] => [
     {
       section: route,
       theme: 'default',

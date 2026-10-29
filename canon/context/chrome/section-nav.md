@@ -7,7 +7,7 @@ description: The section links in both bars, their scroll tracking, near-bottom 
 
 ## Overview
 
-Owns the section links in the landing bar and in every route bar. A link is marked as the reader's position when its section is the last one in document order whose top has crossed the viewport's middle. The active link carries an accent underline, the one accent mark the bar adds.
+Owns the section links in the landing bar and in every route bar that passes sections. A link is marked as the reader's position when its section is the last one in document order whose top has crossed the viewport's middle. The active link carries an accent underline, the one accent mark the bar adds.
 
 From `md` the links sit inline in the bar's row, right, before the toggle. Below it they fold behind a borderless `Sections` button that opens a sheet as tall as its links, over a scrim. A route links its sections after the opening row, since the breadcrumb's route name already returns to the top.
 
@@ -15,7 +15,7 @@ From `md` the links sit inline in the bar's row, right, before the toggle. Below
 
 ### `src/components/site/section-nav/`
 
-Holds the links and the inline script that tracks position, throttled to one `requestAnimationFrame` per scroll or resize.
+Holds the links and the inline script that tracks position, throttled to one `requestAnimationFrame` per scroll or resize. A route bar passed no sections, as on the résumé, renders none of it, since an empty nav still drew the `Sections` button.
 
 - One list serves both widths, a `popover` element shown inline from `md`, which opens, closes on Escape and a tap outside, and reaches the top layer without a script
 - The sheet hangs from `--bar-height`, which each bar publishes, and the scrim starts there too, so the bar stays undimmed and live

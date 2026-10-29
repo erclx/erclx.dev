@@ -78,7 +78,16 @@ const { here, items } = Astro.props
         <span class="truncate">{here}</span>
       </button>
     </div>
-    <SectionNav items={items} />
+    {
+      /* A route with one section has nothing to jump between, and an empty
+        nav still drew the phone's Sections toggle opening onto nothing. The
+        spacer keeps the toggle on the right edge in its place. */
+      items.length > 0 ? (
+        <SectionNav items={items} />
+      ) : (
+        <span aria-hidden="true" class="ml-auto" />
+      )
+    }
     <ThemeToggle />
   </div>
 </header>

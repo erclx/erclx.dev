@@ -1,11 +1,9 @@
 ---
 import { email, resume } from '@/lib/contact'
 
-// The résumé names its format because it opens a PDF in a new tab, which a
-// reader should know before the tab appears.
 const actions = [
   { link: email, text: email.label, accent: true },
-  { link: resume, text: `${resume.label} (PDF)`, accent: false },
+  { link: resume, text: resume.label, accent: false },
 ]
 ---
 

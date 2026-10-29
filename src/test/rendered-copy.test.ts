@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -15,8 +16,7 @@ import { CARD_CLAIM } from '../../scripts/brand/card-copy'
 
 const DIST = join(process.cwd(), 'dist')
 
-const ROUTES = [
-  '/',
+const PROJECT_ROUTES = [
   '/canon',
   '/frameboard',
   '/stackr',
@@ -25,7 +25,9 @@ const ROUTES = [
   '/annex',
 ]
 
-const PROJECT_ROUTES = ROUTES.filter((route) => route !== '/')
+const RESUME_ROUTE = '/resume'
+
+const ROUTES = ['/', ...PROJECT_ROUTES, RESUME_ROUTE]
 
 // What Google truncates a description at. Every host shows less than this, so a
 // description inside it is inside all of them.
@@ -104,7 +106,8 @@ const EMPLOYERS = [
   'Bac Ha Software',
 ]
 // The résumé PDF is the long-form resource the link rule already exempts, so it
-// carries a new-tab target while sitting behind a root-relative path.
+// carries a new-tab target while sitting behind a root-relative path. Only the
+// résumé route links it, and every other résumé control opens that route.
 const EXEMPT_INTERNAL_HREF = '/resume.pdf'
 
 function card(index: number): string {
@@ -151,12 +154,12 @@ describe('the footer', () => {
 
   it('leaves the résumé to the closing ask', () => {
     expect(
-      queryAll(home, `#looking-for a[href="${EXEMPT_INTERNAL_HREF}"]`),
+      queryAll(home, `#looking-for a[href="${RESUME_ROUTE}"]`),
     ).toHaveLength(1)
 
-    expect(
-      queryAll(home, `${FOOTER} a[href="${EXEMPT_INTERNAL_HREF}"]`),
-    ).toHaveLength(0)
+    expect(queryAll(home, `${FOOTER} a[href="${RESUME_ROUTE}"]`)).toHaveLength(
+      0,
+    )
   })
 
   it('carries no copyright notice', () => {
@@ -626,13 +629,12 @@ describe('the closing ask', () => {
     expect(attributeOf(home, selector, 'target')).toBeNull()
   })
 
-  it('opens the résumé in a new tab and names its format', () => {
-    const selector = `#looking-for a[href="${EXEMPT_INTERNAL_HREF}"]`
+  it('opens the résumé page in the current tab', () => {
+    const selector = `#looking-for a[href="${RESUME_ROUTE}"]`
 
     expect(queryAll(home, selector)).toHaveLength(1)
-    expect(textOf(home, selector)).toBe('Résumé (PDF)')
-    expect(attributeOf(home, selector, 'target')).toBe('_blank')
-    expect(attributeOf(home, selector, 'rel')).toBe('noopener')
+    expect(textOf(home, selector)).toBe('Résumé')
+    expect(attributeOf(home, selector, 'target')).toBeNull()
   })
 })
 
@@ -831,11 +833,105 @@ describe('a link', () => {
     },
   )
 
-  it('keeps the new-tab pairing on the resume link', () => {
-    const selector = `a[href="${EXEMPT_INTERNAL_HREF}"]`
+  it.each(ROUTES.filter((route) => route !== RESUME_ROUTE))(
+    'reaches the résumé through its page on %s',
+    (route) => {
+      const doc = readPage(route)
 
-    expect(queryAll(home, selector).length).toBeGreaterThan(0)
-    expect(attributeOf(home, selector, 'target')).toBe('_blank')
-    expect(attributeOf(home, selector, 'rel')).toBe('noopener')
+      expect(queryAll(doc, `a[href="${RESUME_ROUTE}"]`).length).toBeGreaterThan(
+        0,
+      )
+      expect(queryAll(doc, `a[href="${EXEMPT_INTERNAL_HREF}"]`)).toHaveLength(0)
+    },
+  )
+})
+
+describe('the résumé page', () => {
+  // The page images are committed beside a hash of the PDF they came from, so
+  // a sync that skips `bun run resume-pages` fails here rather than shipping
+  // new text beside old pages.
+  it('draws its page images from the PDF that ships', () => {
+    const pdf = readFileSync(join(process.cwd(), 'public/resume.pdf'))
+    const recorded = readFileSync(
+      join(process.cwd(), 'src/assets/resume/source.sha256'),
+      'utf8',
+    ).trim()
+
+    expect(createHash('sha256').update(pdf).digest('hex')).toBe(recorded)
+  })
+
+  const resumePage = readPage(RESUME_ROUTE)
+
+  it('names itself in the tab beside the site icon', () => {
+    expect(resumePage.title).toBe('Résumé · Eric Le')
+    expect(
+      attributeOf(resumePage, 'link[rel="icon"][type="image/svg+xml"]', 'href'),
+    ).toBe('/favicon.svg')
+  })
+
+  it('states the length and date it read from the PDF', () => {
+    expect(textOf(resumePage, 'main p.text-lede')).toMatch(
+      /^Software developer in Gothenburg\. (One page|Two pages|Three pages), updated [A-Z][a-z]+ \d{4}\.$/,
+    )
+  })
+
+  it('states the same length in its description as in its lede', () => {
+    const length = /(One page|Two pages|Three pages)/.exec(
+      textOf(resumePage, 'main p.text-lede'),
+    )?.[1]
+
+    expect(length).toBeTruthy()
+    expect(meta(resumePage, 'meta[name="description"]')).toBe(
+      `Eric Le's résumé, ${length?.toLowerCase()} to read here, download, or open as a PDF.`,
+    )
+  })
+
+  it('downloads the PDF in place', () => {
+    const download = queryAll(resumePage, 'main a[download]')
+
+    expect(download).toHaveLength(1)
+    expect(download[0]?.getAttribute('href')).toBe(EXEMPT_INTERNAL_HREF)
+    expect(download[0]?.getAttribute('download')).toBe('Eric-Le-resume.pdf')
+    expect(download[0]?.getAttribute('target')).toBeNull()
+  })
+
+  it('opens the PDF in a new tab', () => {
+    const open = queryAll(resumePage, 'main a[target="_blank"]')
+
+    expect(open.map((link) => collapse(link.textContent))).toEqual([
+      'Open PDF',
+      'Open the full PDF',
+    ])
+    for (const link of open) {
+      expect(link.getAttribute('href')).toBe(EXEMPT_INTERNAL_HREF)
+      expect(link.getAttribute('rel')).toBe('noopener')
+    }
+  })
+
+  // The text on each page is the PDF's, so the alt names the page alone and a
+  // screen reader is not read the résumé twice.
+  it('names each page image by its number', () => {
+    const alts = queryAll(resumePage, 'main img[alt^="Résumé"]').map((image) =>
+      image.getAttribute('alt'),
+    )
+
+    expect(alts.length).toBeGreaterThan(0)
+    expect(alts).toEqual(
+      alts.map((_, index) => `Résumé, page ${index + 1} of ${alts.length}`),
+    )
+  })
+
+  it('marks the dock link to itself as the current page', () => {
+    const selector = `[data-contact-dock] a[href="${RESUME_ROUTE}"]`
+
+    expect(queryAll(resumePage, selector)).toHaveLength(1)
+    expect(attributeOf(resumePage, selector, 'aria-current')).toBe('page')
+    expect(
+      queryAll(readPage('/canon'), '[data-contact-dock] a[aria-current]'),
+    ).toHaveLength(0)
+  })
+
+  it('draws no sections menu with nothing to jump between', () => {
+    expect(queryAll(resumePage, '[data-section-nav]')).toHaveLength(0)
   })
 })
