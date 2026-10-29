@@ -105,3 +105,52 @@ test.describe('navigation chrome', () => {
     )
   })
 })
+
+test.describe('the section links', () => {
+  test.use({ viewport: { width: 1440, height: 900 } })
+
+  // Places the section's top a set distance below the middle of the viewport
+  // and reports how far the page sits from its end, since the last section is
+  // forced active within 4px of it and a pass there would prove nothing.
+  const placeBelowCenter = (page: Page, id: string, offset: number) =>
+    page.evaluate(
+      ([target, below]) => {
+        const section = document.getElementById(target as string)
+        if (!section) return -1
+        const top = section.getBoundingClientRect().top + window.scrollY
+        window.scrollTo(0, top - window.innerHeight / 2 - (below as number))
+        return (
+          document.documentElement.scrollHeight -
+          window.innerHeight -
+          window.scrollY
+        )
+      },
+      [id, offset],
+    )
+
+  test('mark Looking for while it holds the middle of the screen', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    const fromEnd = await placeBelowCenter(page, 'looking-for', -40)
+
+    expect(fromEnd).toBeGreaterThan(4)
+    await expect(
+      page.locator('[data-section-nav] a[href="#looking-for"]'),
+    ).toHaveAttribute('aria-current', 'location')
+  })
+
+  test('keep Projects marked until Looking for reaches the middle', async ({
+    page,
+  }) => {
+    await page.goto('/')
+
+    const fromEnd = await placeBelowCenter(page, 'looking-for', 40)
+
+    expect(fromEnd).toBeGreaterThan(4)
+    await expect(
+      page.locator('[data-section-nav] a[href="#projects"]'),
+    ).toHaveAttribute('aria-current', 'location')
+  })
+})
