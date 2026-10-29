@@ -80,7 +80,7 @@ const CARD_NAMES = ['canon', 'Jobtriage', 'annex', 'Stackr', 'Caret']
 const CARD_SELECTOR = '#projects article'
 // One per beat in the timeline. The record is a local const inside the
 // component, so the count is stated here rather than derived.
-const EXPERIENCE_ENTRY_COUNT = 6
+const EXPERIENCE_ENTRY_COUNT = 5
 const EMPLOYERS = [
   'Volvo Group',
   'Chalmers University of Technology',
@@ -293,7 +293,7 @@ describe('the experience section', () => {
       current.flatMap((beat) => queryAll(beat, '.experience-detail')),
     ).toHaveLength(1)
     expect(textOf(home, '#experience')).toContain(
-      'Everything below runs on canon, my setup for working with coding agents.',
+      'Building canon and Frameboard, open-source tools for coding with AI agents, after earlier extensions for VS Code and Chrome.',
     )
   })
 
@@ -323,7 +323,7 @@ describe('the experience section', () => {
       'Built an agent that let test engineers get plots and figures from their truck test data',
     )
     expect(textOf(home, '#experience')).toContain(
-      'Presented it at Generative AI for Automotive USA 2024',
+      'Presented it remotely at Generative AI for Automotive USA 2024',
     )
   })
 
@@ -534,16 +534,16 @@ describe('the projects section', () => {
 })
 
 describe('the closing ask', () => {
-  it('names what the source says to build', () => {
+  it('states the one sentence the source carries', () => {
     expect(textOf(home, '#looking-for')).toContain(
-      'AI agents and LLM applications, developer tools, full-stack products',
+      'Open to developer roles in Gothenburg or remote, full-time or contract.',
     )
   })
 
-  it('names the team the source asks for', () => {
-    expect(textOf(home, '#looking-for')).toContain(
-      'small to mid, close to the product, with engineers to learn from',
-    )
+  it('carries no criteria list the source dropped', () => {
+    expect(textOf(home, '#looking-for')).toContain('Open to work')
+
+    expect(queryAll(home, '#looking-for dl')).toHaveLength(0)
   })
 })
 
