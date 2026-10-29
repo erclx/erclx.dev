@@ -27,6 +27,9 @@ export function initHoverVideo(): void {
     let pendingPlay = false
 
     const play = () => {
+      // A host can carry one clip per theme, and the stylesheet hides the
+      // other, so only the clip on screen is fetched and played.
+      if (getComputedStyle(video).display === 'none') return
       if (pendingPlay) return
       pendingPlay = true
       video.currentTime = 0
