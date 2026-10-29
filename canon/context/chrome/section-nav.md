@@ -1,31 +1,37 @@
 ---
 title: Section nav
-description: The left-margin rail's scroll tracking, near-bottom override, click lock, reveal gate, active-row step, and the route's opening row
+description: The section links in both bars, their scroll tracking, near-bottom override, click lock, the `Sections` menu below `md`, and the route's links after its opening
 ---
 
 # Section nav
 
 ## Overview
 
-Owns the fixed left-margin rail on the landing page and every project route. It names the section a reader is in, which is the last one in document order whose top has crossed an anchor 30% down the viewport. The rail is hidden below 1280 and states position rather than reach.
+Owns the section links in the landing bar and in every route bar. A link is marked as the reader's position when its section is the last one in document order whose top has crossed the viewport's middle. The active link carries an accent underline, the one accent mark the bar adds.
 
-On the landing page the rail fades in as the first section crosses that anchor and hides again back in the hero. A route passes `instant`, so its rail shows from the first frame with a row for the section carrying the `h1`.
+From `md` the links sit inline in the bar's row, right, before the toggle. Below it they fold behind a borderless `Sections` button that opens a sheet as tall as its links, over a scrim. A route links its sections after the opening row, since the breadcrumb's route name already returns to the top.
 
 ## Layout
 
 ### `src/components/site/section-nav/`
 
-Holds the rail markup and the inline script that tracks position, throttled to one `requestAnimationFrame` per scroll or resize.
+Holds the links and the inline script that tracks position, throttled to one `requestAnimationFrame` per scroll or resize.
 
-- The handler reads each section's box rather than the cards inside it, so the active row never flickers across a card boundary
-- Within 4px of the document's end the last section is forced active, since a short final section never reaches the anchor otherwise
-- A click sets its row active and locks recomputation for 700ms, though chromium's glide can run 1134ms, so the lock ends on a clock rather than a settle
-- The hero observer's `rootMargin` derives from `ANCHOR_RATIO`, so the rail appears exactly as the first section crosses the anchor
-- The active row takes the contact dock's ground and steps right with a `transform`, so the rail never reflows on a handover
+- One list serves both widths, a `popover` element the stylesheet shows inline from `md`, so a label is written once and the tracker marks one set
+- The popover attribute gives the open, Escape, the tap outside, and the top layer without a script, so a reader with none still reaches every section
+- The sheet hangs from `--bar-height`, which each bar publishes, and the scrim starts there too, so the bar stays undimmed and live
+- The handler reads each section's box rather than the cards inside it, so the mark never flickers across a card boundary
+- Within 4px of the document's end the last section is forced active, which still covers a last section shorter than half the viewport
+- A click marks its link, closes the sheet, and locks recomputation for 700ms, though chromium's glide can run 1134ms, so the lock ends on a clock rather than a settle
+
+### `src/lib/section-nav.ts`
+
+Holds `ANCHOR_RATIO`, the share of the viewport a section's top crosses before it is marked. It is 0.5, since at 0.3 a 292px closing section above a 317px footer marked Looking for only inside the end-of-page override at 1440x900.
 
 ## Gotchas
 
-- A row built with `document.createElement` takes none of the component's scoped styles, so it reports `data-active` while painting nothing
+- The links carry no reveal of their own, so they arrive, hide, and turn inert with the bar they sit in
 - A click calls `scrollIntoView` naming no behavior, so the root's motion preference decides, and naming `smooth` overrides reduced motion
-- The hide-until-revealed rule is scoped to `[data-js='true']`, so a reader with no script keeps a visible rail of working fragment anchors
-- The 1px accent edge splits across two device rows at 1x and paints near 2.6:1, where it paints exactly at device scale 2
+- The browser restores focus to the button only when it sat inside the sheet, and WebKit never focuses a clicked button, so the script returns it on close
+- Crossing into `md` with the sheet open would paint the inline row in the top layer, so a width change closes the sheet first
+- A display rule on the popover outranks the browser's hiding of a closed one, so the sheet's own rules stay inside the narrow media query
