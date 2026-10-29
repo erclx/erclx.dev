@@ -23,18 +23,17 @@ const actions = [
     `canon/DESIGN.md` names as the one to refuse. The step matches every
     sibling instead and one boundary reads seven percent wide.
 
-    The close is the deliberate half. A boundary arriving on a heading has
-    something that stops the eye and says new content, and this one arrives on
-    the signature, which is decoration and hidden from assistive technology, so
-    the same interval read as emptiness. It holds 124px against the 172 it
-    carried before, both read from the last text in this section down to the
-    top of the signature, which is the first thing the footer paints. The 48px
-    between them is this section's own step, `pb-20` against `pb-8`. */
+    The close is this section's own step, `pb-16` and `pb-20` from `md`. It
+    once held tighter on the argument that a boundary arriving on the
+    signature, which is decoration and hidden from assistive technology, reads
+    as emptiness where a heading would stop the eye. The section read cramped
+    that way, so a design-pick round gave every vertical gap one more step and
+    the close now sits on its own room rather than borrowing the footer's. */
 }
 <section
   id="looking-for"
   data-section="looking-for"
-  class="page-inset pt-16 pb-8 md:pt-20"
+  class="page-inset pt-16 pb-16 md:pt-20 md:pb-20"
 >
   <div class="mx-auto max-w-3xl">
     <h2
@@ -60,7 +59,7 @@ const actions = [
       Open to work
     </p>
 
-    <div class="looking-stage relative mt-7">
+    <div class="looking-stage relative mt-11">
       {
         /* The rule is a contour rather than a border. The dog's window takes its
           clip from the same generated geometry, so the line he grips and the
@@ -101,7 +100,7 @@ const actions = [
           Clipping the thing that needs hiding costs the section nothing. */
       }
       <div
-        class="looking-peek-window absolute right-0 bottom-full z-0 aspect-[120/130] w-24 overflow-hidden sm:right-8 md:right-14 md:w-28"
+        class="looking-peek-window absolute right-8 bottom-full z-0 aspect-[120/130] w-24 overflow-hidden min-[360px]:right-16 md:right-32 md:w-28"
         aria-hidden="true"
       >
         <div class="looking-peek">
@@ -187,7 +186,7 @@ const actions = [
         </div>
       </div>
 
-      <div class="looking-rows border-border/60 relative z-10 border-t pt-6">
+      <div class="looking-rows border-border/60 relative z-10 border-t pt-9">
         <p
           data-fade
           style="--fade-delay: 150ms"
@@ -207,7 +206,7 @@ const actions = [
         <div
           data-fade
           style="--fade-delay: 225ms"
-          class="mt-6 flex flex-wrap gap-3"
+          class="mt-8 flex flex-wrap gap-3"
         >
           {
             actions.map(({ link, text, accent }) => (
