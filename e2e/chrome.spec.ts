@@ -42,6 +42,23 @@ test.describe('the way back to the top', () => {
   })
 })
 
+test.describe('the reading column', () => {
+  test.use({ viewport: { width: 1440, height: 900 } })
+
+  test('the projects heading starts where the about heading does', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    const about = await page.locator('#about h2').boundingBox()
+    const projects = await page.locator('#projects h2').boundingBox()
+
+    expect(about?.x ?? 0).toBeGreaterThan(0)
+    expect(Math.abs((about?.x ?? 0) - (projects?.x ?? 0))).toBeLessThanOrEqual(
+      1,
+    )
+  })
+})
+
 test.describe('navigation chrome', () => {
   test.use({ viewport: DESKTOP })
 
