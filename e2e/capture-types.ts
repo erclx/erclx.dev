@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test'
 
-/** One addressable part of a route, captured beside the whole-page frame. */
+/** One addressable part of a route, captured in place of the whole-page frame. */
 export interface CaptureSection {
   name: string
   selector: string
@@ -23,6 +23,7 @@ export interface CaptureCase {
   evidence?: boolean
   /** Selectors painted over in every frame the case writes, for a value that moves between runs with no code change. */
   mask?: readonly string[]
+  /** When present, the case writes one frame per section and no whole-page frame. */
   sections?: CaptureSection[]
   setup?: (page: Page) => Promise<void>
 }
