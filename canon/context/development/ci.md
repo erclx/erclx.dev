@@ -39,15 +39,15 @@ The other workflows each own one job.
 Holds the Playwright suite and the screenshot harness. The specs cover only what a browser proves, being clean routes at 320px, the way home and back to the top, one bar width, and the theme choice.
 
 - `playwright.config.ts` runs all three engines under reduced motion and serves the build on 4250 plus the offset, clear of `astro dev`
-- `screenshot.ts` is customized for one blank line the toolkit's own import-sort rule demands, and `capture/cases.ts` is the capture file this project edits
+- `screenshot.ts` departs from the toolkit seed, so a tooling sync conflicts there, and `capture/cases.ts` is this project's capture file
 - A case flagged `evidence` writes 320 and 1280 frames under `.github/evidence/surfaces/`, and the full sweep goes to the ignored `screenshots/`
-- `cases.ts` loads lazy images eagerly and drops an empty `src`, since the harness waits on every image and two kinds never complete
-- The home cases mask `[data-updated]`, the footer's build date, so a rebuild alone shows no diff
+- A case naming sections writes a frame per section and no whole-page one, narrowed by `SCREENSHOT_SECTIONS`, and a route case keeps its one frame
+- `cases.ts` loads lazy images eagerly and drops an empty `src`, and the home cases mask `[data-updated]`, so a rebuild alone shows no diff
 
 ## Gotchas
 
 - A dispatch from a feature branch deploys to a preview host, since `--branch` reads the ref, so only `main` reaches the apex
 - `deploy` keeps its Node and Bun setup though it builds nothing, since wrangler-action installs wrangler with the lockfile's package manager
 - A commit pushed by `github-actions[bot]` holds its pull request's runs for a maintainer's approval, so no workflow here pushes commits
-- Run `bun run pr-evidence-screenshot` after a visual change, and `bun run readme-screenshot` after a header change, then commit the frames
+- Run `bun run pr-evidence-screenshot [section...]` after a visual change, naming the sections it touched, and `bun run readme-screenshot` after a header change, then commit the frames
 - `bun run test:e2e` runs all three engines locally, so pass `--project` only to reproduce a failure an engine reported

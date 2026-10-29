@@ -82,16 +82,49 @@ const filterTerms = SCREENSHOT_FILTER.split(',')
   .map((term) => term.trim())
   .filter(Boolean)
 
-const RUNS =
+const SCREENSHOT_SECTIONS = process.env.SCREENSHOT_SECTIONS?.trim() ?? ''
+
+const sectionTerms = SCREENSHOT_SECTIONS.split(',')
+  .map((term) => term.trim())
+  .filter(Boolean)
+
+const SECTION_NAMES = [
+  ...new Set(
+    CASES.flatMap((captureCase) =>
+      (captureCase.sections ?? []).map((section) => section.name),
+    ),
+  ),
+]
+
+const unknownSections = sectionTerms.filter(
+  (term) => !SECTION_NAMES.includes(term),
+)
+
+if (unknownSections.length > 0) {
+  console.error(
+    `Unknown SCREENSHOT_SECTIONS: ${unknownSections.join(', ')}. Available sections:\n${SECTION_NAMES.map(
+      (name) => `  ${name}`,
+    ).join('\n')}`,
+  )
+  process.exit(1)
+}
+
+/** A case with no sections has nothing a section filter could name, so a narrowed run skips it. */
+const FILTERED_RUNS =
   filterTerms.length > 0
     ? ALL_RUNS.filter((run) =>
         filterTerms.some((term) => run.label.includes(term)),
       )
     : ALL_RUNS
 
-if (filterTerms.length > 0 && RUNS.length === 0) {
+const RUNS =
+  sectionTerms.length > 0
+    ? FILTERED_RUNS.filter((run) => (run.captureCase.sections ?? []).length > 0)
+    : FILTERED_RUNS
+
+if ((filterTerms.length > 0 || sectionTerms.length > 0) && RUNS.length === 0) {
   console.error(
-    `No cases matched SCREENSHOT_FILTER=${SCREENSHOT_FILTER}. Available labels:\n${ALL_RUNS.map(
+    `No cases matched SCREENSHOT_FILTER=${SCREENSHOT_FILTER} and SCREENSHOT_SECTIONS=${SCREENSHOT_SECTIONS}. Available labels:\n${ALL_RUNS.map(
       (run) => `  ${run.label}`,
     ).join('\n')}`,
   )
@@ -175,8 +208,8 @@ async function settle(
  * mark is an attribute rather than a style, so the rule that acts on it is
  * carried by the screenshot itself and no state is left behind to restore.
  *
- * Marking costs the whole-page frame nothing, since that one is shot before
- * this runs and carries the chrome where a reader meets it.
+ * A case without sections shoots its one frame before this runs, so that
+ * frame carries the chrome where a reader meets it.
  */
 async function markFloatingChrome(page: Page) {
   await page.evaluate((attribute) => {
@@ -266,7 +299,10 @@ for (const { captureCase, viewport, label } of RUNS) {
   await page.goto(`${BASE_URL}${captureCase.route}`)
   await page.waitForLoadState('networkidle')
 
-  const sections = await settle(page, label, captureCase.sections ?? [])
+  const named = (captureCase.sections ?? []).filter(
+    ({ name }) => sectionTerms.length === 0 || sectionTerms.includes(name),
+  )
+  const sections = await settle(page, label, named)
   const mask = await resolveMask(page, label, captureCase.mask ?? [])
 
   const sweepDir = path.join(OUT_DIR, captureCase.section)
@@ -274,8 +310,12 @@ for (const { captureCase, viewport, label } of RUNS) {
   const file = `${viewport.name}--${captureCase.theme}.png`
   const writesEvidence = captureCase.evidence && viewport.evidence
 
-  await shoot(page, sweepDir, file, mask)
-  if (writesEvidence) await shoot(page, evidenceDir, file, mask)
+  // A case naming sections is read through them, so its whole-page frame is
+  // not written. A section missing from the page is skipped, not replaced.
+  if (captureCase.sections === undefined) {
+    await shoot(page, sweepDir, file, mask)
+    if (writesEvidence) await shoot(page, evidenceDir, file, mask)
+  }
 
   if (sections.length > 0) await markFloatingChrome(page)
 

@@ -12,7 +12,7 @@ Personal landing site. Astro v6 static build with Tailwind v4, deployed to Cloud
 ## Commands
 
 - Run `bun run check` to verify and `bun run format` to fix before committing. The pre-push hook runs `check`, which writes nothing.
-- Run `bun run pr-evidence-screenshot` after a visual change, and `bun run readme-screenshot` after a header change, then commit the frames they write.
+- Run `bun run pr-evidence-screenshot [section...]` after a visual change, and `bun run readme-screenshot` after a header change, then commit the frames they write.
 
 ## Key paths
 
