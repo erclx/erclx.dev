@@ -29,6 +29,7 @@ Engineering depth made visible. The page reads as hand-built rather than assembl
 | interactive | `--primary`          | a pressed control, none shipped yet                          |
 | focus       | `--ring`             | the focus ring, resolving to the accent                      |
 | error       | `--destructive`      | a failure state                                              |
+| figure      | `--figure-fill`      | the tan every drawn figure fills with, one value both themes |
 
 ## Typography
 

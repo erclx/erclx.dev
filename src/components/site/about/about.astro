@@ -1,29 +1,36 @@
 ---
 import { BIO_PARAGRAPHS as paragraphs } from './bio-copy'
 
-// Swept-wing airliner seen from above, pointing right, symmetric about y=30.
-// Drawn here rather than sourced, since the repository carries no icon set and
-// a single figure does not earn one.
+// Airliner seen from above, pointing right, symmetric about y=30: a fuselage,
+// swept wings and tailplanes a shade lighter, and two engine nacelles. Drawn
+// here rather than sourced, since the repository carries no icon set and a
+// single figure does not earn one.
 //
 // It draws at 78px wide. The contrail's weight is set separately from the
 // craft's scale, so the two are held at the ratio they were tuned at rather
 // than moving alone.
-const PLANE_PATH = [
-  'M114 30',
-  'C100 26 88 25 72 25',
-  'L48 3 L40 5 L58 26',
-  'L26 27 L14 11 L7 13 L18 28',
-  'L6 30',
-  'L18 32 L7 47 L14 49 L26 33',
-  'L58 34 L40 55 L48 57 L72 35',
-  'C88 35 100 34 114 30 Z',
-].join(' ')
+//
+// The span is what the drawing below covers, written beside it because the
+// centre and the nose are both read off it.
+const CRAFT_SPAN = { left: 5.5, right: 117, top: 2.5, bottom: 57.5 }
 
 // One cubic from off the left edge to where the aircraft comes to rest. The
 // shape lives here rather than emerging from two transforms disagreeing about
 // their easings, which is what produced a glide followed by a dive. Both the
-// aircraft and its contrail read this string, so they cannot drift apart.
-const FLIGHT_PATH = 'M -70 8 C 190 12 430 26 690 41'
+// aircraft and its contrail read this string, so they cannot drift apart. The
+// points are held apart from the string because the racket reads the end point
+// and the tangent into it.
+const FLIGHT = {
+  from: { x: -70, y: 8 },
+  pull: { x: 190, y: 12 },
+  push: { x: 430, y: 26 },
+  to: { x: 690, y: 41 },
+}
+const FLIGHT_PATH = `M ${FLIGHT.from.x} ${FLIGHT.from.y} C ${FLIGHT.pull.x} ${FLIGHT.pull.y} ${FLIGHT.push.x} ${FLIGHT.push.y} ${FLIGHT.to.x} ${FLIGHT.to.y}`
+
+// The stage's width in its own units. The stage scales by width alone, so one
+// of its units is the same fraction of the column at every viewport.
+const STAGE_WIDTH = 768
 
 // The craft's scale, and the trail's weight derived from it rather than written
 // beside it. The two were tuned together at 0.45 and 5, so the ratio is what
@@ -33,18 +40,42 @@ const FLIGHT_PATH = 'M -70 8 C 190 12 430 26 690 41'
 const CRAFT_SCALE = 0.7
 const TRAIL_STROKE = +(CRAFT_SCALE * (5 / 0.45)).toFixed(3)
 
-// The drawing spans x 6 to 114 and is symmetric about y=30, so this is its own
-// centre. The craft rides the flight path by its origin, which makes the origin
-// the one point the contrail leaves from, so it has to be that centre at every
-// scale. Derived rather than written, because the pair that stated it by hand
-// was correct at 0.45 and silently wrong the moment the scale moved: at 0.7 it
-// put the origin 15 units ahead of the fuselage and 7.5 below its centreline,
-// which is the trail leaving from beside the aircraft rather than behind it.
-const CRAFT_CENTRE = { x: 60, y: 30 }
+// The drawing's own centre, read off its span. The craft rides the flight path
+// by its origin, which makes the origin the one point the contrail leaves from,
+// so it has to be that centre at every scale. Derived rather than written,
+// because the pair that stated it by hand was correct at 0.45 and silently
+// wrong the moment the scale moved: at 0.7 it put the origin 15 units ahead of
+// the fuselage and 7.5 below its centreline, which is the trail leaving from
+// beside the aircraft rather than behind it.
+const CRAFT_CENTRE = {
+  x: (CRAFT_SPAN.left + CRAFT_SPAN.right) / 2,
+  y: (CRAFT_SPAN.top + CRAFT_SPAN.bottom) / 2,
+}
 const CRAFT_ORIGIN = {
   x: +(-CRAFT_CENTRE.x * CRAFT_SCALE).toFixed(3),
   y: +(-CRAFT_CENTRE.y * CRAFT_SCALE).toFixed(3),
 }
+
+// Where the nose comes to rest, in stage units. The craft lands on the curve's
+// end turned to its tangent there, which is the last control point's heading,
+// and the nose sits on the centreline, so only its run ahead of the centre
+// carries. The racket's right edge is set this far in from the column's, as a
+// share of it, so the two meet at any width rather than at the one a pixel
+// inset was measured at.
+const LANDING_HEADING = Math.atan2(
+  FLIGHT.to.y - FLIGHT.push.y,
+  FLIGHT.to.x - FLIGHT.push.x,
+)
+const NOSE_X =
+  FLIGHT.to.x +
+  (CRAFT_SPAN.right - CRAFT_CENTRE.x) * CRAFT_SCALE * Math.cos(LANDING_HEADING)
+const RACKET_INSET = +(((STAGE_WIDTH - NOSE_X) / STAGE_WIDTH) * 100).toFixed(3)
+
+// Matched by content rather than by position, so the racket stays with the
+// line naming tennis when the bio reorders.
+const RACKET_LINE = paragraphs.findIndex((paragraph) =>
+  /\btennis\b/i.test(paragraph),
+)
 ---
 
 <section
@@ -72,7 +103,7 @@ const CRAFT_ORIGIN = {
       }
       <svg
         class="about-flight-stage"
-        viewBox="0 0 768 104"
+        viewBox={`0 0 ${STAGE_WIDTH} 104`}
         preserveAspectRatio="xMaxYMid meet"
       >
         <defs>
@@ -138,11 +169,43 @@ const CRAFT_ORIGIN = {
           class="about-flight-craft"
           style={`--flight-path: path("${FLIGHT_PATH}")`}
         >
-          <path
-            d={PLANE_PATH}
-            fill="currentColor"
+          <g
             transform={`translate(${CRAFT_ORIGIN.x} ${CRAFT_ORIGIN.y}) scale(${CRAFT_SCALE})`}
-          ></path>
+          >
+            <path
+              d="M72 27 L46 2.5 L39.5 4 L55 27 Z M72 33 L46 57.5 L39.5 56 L55 33 Z"
+              fill="currentColor"
+              fill-opacity="0.78"></path>
+            <path
+              d="M23 27 L10.5 15 L5.5 16 L13 27 Z M23 33 L10.5 45 L5.5 44 L13 33 Z"
+              fill="currentColor"
+              fill-opacity="0.78"></path>
+            <rect
+              x="55"
+              y="12"
+              width="13"
+              height="5"
+              rx="2.5"
+              fill="currentColor"></rect>
+            <rect
+              x="55"
+              y="43"
+              width="13"
+              height="5"
+              rx="2.5"
+              fill="currentColor"></rect>
+            <path
+              d="M14 26.5 L100 26.5 C108 26.5 114 28.6 117 30 C114 31.4 108 33.5 100 33.5 L14 33.5 C10 33.5 7 32 7 30 C7 28 10 26.5 14 26.5 Z"
+              fill="currentColor"></path>
+            {
+              /* The windscreen takes the page's own ground rather than a fixed
+                color, so it reads as a cut-out in either theme. */
+            }
+            <path
+              d="M107 28.2 C110 28.6 112.5 29.3 114 30 C112.5 30.7 110 31.4 107 31.8 Z"
+              fill="var(--background)"
+              fill-opacity="0.85"></path>
+          </g>
         </g>
       </svg>
     </div>
@@ -162,9 +225,129 @@ const CRAFT_ORIGIN = {
           <p
             data-fade
             style={`--fade-delay: ${100 + idx * 100}ms`}
-            class="text-muted-foreground text-body"
+            class:list={[
+              'text-muted-foreground text-body',
+              idx === RACKET_LINE && 'flex flex-wrap items-end gap-x-6 gap-y-2',
+            ]}
           >
-            {paragraph}
+            {idx === RACKET_LINE ? (
+              /* The line holds a measure of its own and the racket wraps under
+                it rather than squeezing it: beside the racket at 320px the
+                sentence broke across four lines of two or three words. */
+              <span class="min-w-0 flex-[1_1_14rem]">{paragraph}</span>
+            ) : (
+              paragraph
+            )}
+            {idx === RACKET_LINE && (
+              /* The second figure, on the line it illustrates. Its right edge,
+                the ball's, meets the aircraft's nose above it, so the two read
+                as one column of drawing rather than two marks placed apart. */
+              <svg
+                class="about-racket"
+                style={`--racket-inset: ${RACKET_INSET}%`}
+                viewBox="-7 0 101 55"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <defs>
+                  <clipPath id="about-racket-head">
+                    <ellipse cx="0" cy="0" rx="10.5" ry="15.5" />
+                  </clipPath>
+                  <linearGradient
+                    id="about-racket-spin"
+                    x1="46"
+                    y1="0"
+                    x2="82"
+                    y2="0"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop
+                      offset="0"
+                      stop-color="currentColor"
+                      stop-opacity="0"
+                    />
+                    <stop
+                      offset="1"
+                      stop-color="currentColor"
+                      stop-opacity="0.55"
+                    />
+                  </linearGradient>
+                  <filter
+                    id="about-racket-blur"
+                    x="-10%"
+                    y="-80%"
+                    width="120%"
+                    height="260%"
+                  >
+                    <feGaussianBlur stdDeviation="1.4" />
+                  </filter>
+                </defs>
+                <path
+                  class="about-racket-trail"
+                  d="M46 24 C58 20 70 15.5 82 12.5"
+                  pathLength="100"
+                  fill="none"
+                  stroke="url(#about-racket-spin)"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                  filter="url(#about-racket-blur)"
+                />
+                <g transform="translate(22 19) rotate(38)">
+                  <g
+                    clip-path="url(#about-racket-head)"
+                    stroke="currentColor"
+                    stroke-width="1"
+                    stroke-opacity="0.5"
+                  >
+                    <line x1="-7" y1="-16" x2="-7" y2="16" />
+                    <line x1="-3.5" y1="-16" x2="-3.5" y2="16" />
+                    <line x1="0" y1="-16" x2="0" y2="16" />
+                    <line x1="3.5" y1="-16" x2="3.5" y2="16" />
+                    <line x1="7" y1="-16" x2="7" y2="16" />
+                    <line x1="-11" y1="-11" x2="11" y2="-11" />
+                    <line x1="-11" y1="-6" x2="11" y2="-6" />
+                    <line x1="-11" y1="-1" x2="11" y2="-1" />
+                    <line x1="-11" y1="4" x2="11" y2="4" />
+                    <line x1="-11" y1="9" x2="11" y2="9" />
+                  </g>
+                  <ellipse
+                    cx="0"
+                    cy="0"
+                    rx="10.5"
+                    ry="15.5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3.2"
+                  />
+                  <path
+                    d="M-4.5 14.6 L-1.4 22 M4.5 14.6 L1.4 22"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                  />
+                  <rect
+                    x="-2.6"
+                    y="21.5"
+                    width="5.2"
+                    height="21"
+                    rx="2.2"
+                    fill="currentColor"
+                  />
+                </g>
+                {/* The seams take the page's ground, so they cut the ball in
+                  either theme rather than drawing a fixed line across it. */}
+                <g class="about-racket-ball">
+                  <circle cx="88" cy="11" r="6" fill="currentColor" />
+                  <path
+                    d="M83.6 7.6 C86.6 10.2 86.6 13.6 84.2 16 M92.4 6 C89.6 8.6 89.4 12.4 91.8 15"
+                    fill="none"
+                    stroke="var(--background)"
+                    stroke-width="1.2"
+                    stroke-linecap="round"
+                  />
+                </g>
+              </svg>
+            )}
           </p>
         ))
       }
@@ -175,13 +358,17 @@ const CRAFT_ORIGIN = {
 <style>
   .about-flight {
     position: absolute;
-    inset: 2.75rem 1.5rem auto;
+    /* Inset by the page's own gutter, so the track below is the text column at
+       every width. A fixed 1.5rem matched it only while the gutter sat at its
+       floor, and between 480 and 853px the track's edge sat up to 17px outside
+       the column's, carrying the nose off the racket it lines up with. */
+    inset: 2.75rem var(--page-inset) auto;
     height: 6.5rem;
     pointer-events: none;
-    /* The character's own value, from the same artwork the accent was derived
-       from, so the two figures read as one language rather than as two
+    /* The character's own value, read from the token the closing ask's figure
+       fills with, so the two figures read as one language rather than as two
        unrelated marks. */
-    color: #d4a574;
+    color: var(--figure-fill);
   }
 
   /* The track carries the page measure, so the aircraft comes to rest at the
@@ -264,9 +451,9 @@ const CRAFT_ORIGIN = {
      linear, since the shape is already in the numbers.
 
      The head holds 6% of the flight behind the aircraft. Measured, the curve
-     runs 760.8 units and the aircraft renders 75.6 wide, so half of it is 4.97%
+     runs 760.8 units and the aircraft renders 78.1 wide, so half of it is 5.13%
      of the flight, and a head closer than that draws inside the tail. That
-     leaves the drawn head 7.8 units behind the tail, close to the trail's own
+     leaves the drawn head 6.6 units behind the tail, inside the trail's own
      7.8 stroke, which the blur closes. The figure read 48.6 and 3.2% until the
      craft was centred on the curve, since a drawing hung off its own origin has
      no half-length the trail can be held clear of. */
@@ -403,6 +590,63 @@ const CRAFT_ORIGIN = {
   @media (prefers-reduced-motion: reduce) {
     .about-flight {
       display: none;
+    }
+  }
+
+  /* One viewBox unit is 0.045rem, the scale the racket was picked at. The box
+     is cropped to the drawing, so its right edge is the ball's and the inset
+     lands on the ball rather than on empty box. The handle reaches 7 units
+     lower than the picked frame's box did, so the bottom margin gives those
+     back and the head stays where it was picked. */
+  .about-racket {
+    --racket-unit: 0.045rem;
+    flex: none;
+    width: calc(101 * var(--racket-unit));
+    height: auto;
+    margin-left: auto;
+    margin-right: var(--racket-inset);
+    margin-bottom: calc(0.125rem - 7 * var(--racket-unit));
+    color: var(--figure-fill);
+  }
+
+  /* The ball arrives along its own trail as the line reveals, the way the
+     aircraft flies in above it, and rests where it was drawn. It waits out
+     most of the line's own fade, so it moves against text already there.
+     Under reduced motion the line appears whole and the racket with it. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global([data-js='true']) [data-visible='true'] .about-racket-ball {
+      animation: about-racket-ball 600ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+      animation-delay: calc(var(--fade-delay, 0ms) + 300ms);
+    }
+
+    :global([data-js='true']) [data-visible='true'] .about-racket-trail {
+      animation: about-racket-trail 600ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+      animation-delay: calc(var(--fade-delay, 0ms) + 300ms);
+    }
+  }
+
+  /* From the trail's start beside the strings, so the ball covers the trail's
+     length and the trail draws in behind it on the same easing. */
+  @keyframes about-racket-ball {
+    from {
+      opacity: 0;
+      transform: translate(-42px, 13px);
+    }
+    20% {
+      opacity: 1;
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes about-racket-trail {
+    from {
+      stroke-dasharray: 0 100;
+    }
+    to {
+      stroke-dasharray: 100 100;
     }
   }
 </style>

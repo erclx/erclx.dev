@@ -379,6 +379,11 @@ body.surface-case-study > header[data-section='header'] {
      reached. It clears the 3:1 a focus indicator answers to with room, at
      5.48:1 in light and 5.42:1 in dark. */
   --ring: var(--accent);
+  /* The tan every drawn figure fills with, from the same artwork the accent
+     was derived from. It holds one value in both themes, as the figures did
+     while each carried the literal, and lives here so a new figure reads it
+     rather than writing a fourth copy. */
+  --figure-fill: #d4a574;
   --chart-1: oklch(0.41 0.18 264);
   --chart-2: oklch(0.51 0.144 152);
   --chart-3: oklch(0.535 0.143 60);
@@ -409,6 +414,7 @@ body.surface-case-study > header[data-section='header'] {
   --border: oklch(0.954 0.013 82 / 12%);
   --input: oklch(0.954 0.013 82 / 17%);
   --ring: var(--accent);
+  --figure-fill: #d4a574;
   --chart-1: oklch(0.7 0.15 264);
   --chart-2: oklch(0.65 0.144 152);
   --chart-3: oklch(0.65 0.143 60);

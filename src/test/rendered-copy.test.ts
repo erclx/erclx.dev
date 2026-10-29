@@ -256,6 +256,24 @@ describe('the about surface', () => {
       'Outside of that I play tennis and travel whenever I can.',
     )
   })
+
+  it('sets the racket on the line naming tennis', () => {
+    // The paragraphs render by index, so a racket attached to one by position
+    // follows whatever line lands there when the bio reorders.
+    const rackets = queryAll(home, '[data-section="about"] .about-racket')
+
+    expect(rackets).toHaveLength(1)
+    expect(collapse(rackets[0]?.closest('p')?.textContent ?? '')).toContain(
+      'I play tennis',
+    )
+  })
+
+  it('keeps the racket out of the accessibility tree', () => {
+    const selector = '[data-section="about"] .about-racket'
+
+    expect(queryAll(home, selector)).toHaveLength(1)
+    expect(attributeOf(home, selector, 'aria-hidden')).toBe('true')
+  })
 })
 
 describe('the landing page', () => {
