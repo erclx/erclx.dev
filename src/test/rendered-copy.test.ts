@@ -875,6 +875,17 @@ describe('the résumé page', () => {
     )
   })
 
+  it('states the same length in its description as in its lede', () => {
+    const length = /(One page|Two pages|Three pages)/.exec(
+      textOf(resumePage, 'main p.text-lede'),
+    )?.[1]
+
+    expect(length).toBeTruthy()
+    expect(meta(resumePage, 'meta[name="description"]')).toBe(
+      `Eric Le's résumé, ${length?.toLowerCase()} to read here, download, or open as a PDF.`,
+    )
+  })
+
   it('downloads the PDF in place', () => {
     const download = queryAll(resumePage, 'main a[download]')
 

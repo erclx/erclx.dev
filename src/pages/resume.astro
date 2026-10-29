@@ -51,7 +51,7 @@ if (!pageOne || pages.length !== pageCount) {
 
 <BaseLayout
   title="Résumé · Eric Le"
-  description="Eric Le's résumé, two pages to read here, download, or open as a PDF."
+  description={`Eric Le's résumé, ${length.toLowerCase()} to read here, download, or open as a PDF.`}
   surface="case-study"
 >
   <RouteBar here="résumé" items={[]} />
