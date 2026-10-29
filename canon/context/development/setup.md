@@ -59,6 +59,7 @@ Holds every shell and Bun script the package scripts call, since no `.sh` file b
 - `verify.ts`, `worktree-port.sh`, `screenshot.sh`, and `lib/preview-server.sh` ship from the toolkit, so a tooling sync rewrites them
 - `worktree-port.sh` shifts every server's port by a per-worktree offset, so a linked worktree never collides with the main checkout
 - `brand/` renders the mark, the share card, and the avatars, and `canon/context/foundations/brand.md` covers it
+- `resume/` renders the résumé PDF's pages to images for the `/resume` route, and `canon/context/development/deployment.md` covers it
 
 ### `scripts/device/`
 
@@ -88,7 +89,7 @@ Holds the git hooks, which call the same package scripts CI runs.
 
 Each folder below has no trap of its own, so one line covers it.
 
-- `src/pages/` owns the routes, where the apex composes the landing sections and each project route is its own file
+- `src/pages/` owns the routes, where the apex composes the landing sections and each project route and the résumé route is its own file
 - `src/components/` owns the site's sections under `site/` and the vendored shadcn primitives under `ui/`
 - `src/assets/` owns page media, and `src/test/` owns the Vitest setup
 
