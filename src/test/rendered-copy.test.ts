@@ -561,10 +561,12 @@ describe('the projects section', () => {
     )
   })
 
-  it('links nowhere on the landing page to the diction route', () => {
-    // diction keeps its route but has neither a card nor a line pointing at
-    // it, by the operator's call of 2026-09-28.
-    expect(queryAll(home, 'a[href="/diction"]')).toHaveLength(0)
+  it('links to every route it builds from a card', () => {
+    const routes = queryAll(home, `${CARD_SELECTOR} h3 a`).map((link) =>
+      link.getAttribute('href'),
+    )
+
+    expect(routes).toEqual(PROJECT_ROUTES)
   })
 
   it('drops the intro sentence the source removed', () => {

@@ -27,7 +27,7 @@ const ROUTES = [
   '/',
   '/jobtriage',
   '/canon',
-  '/diction',
+  '/frameboard',
   '/stackr',
   '/caret',
   '/annex',

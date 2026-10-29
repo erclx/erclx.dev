@@ -24,24 +24,22 @@ const PROJECT_ROUTES = [
   'annex',
   'stackr',
   'caret',
-  'diction',
+  'frameboard',
 ] as const
 
 /** The footer's build date moves on every build with no code change. */
 const MASK = ['[data-updated]']
 
 /**
- * The harness waits for every image to report complete, and two kinds never
- * do: a lazy poster hidden by the other theme, and the figure dialog's empty
- * placeholder. Loading the first eagerly and dropping the second's empty
- * `src` changes nothing a frame shows.
+ * The harness waits for every image to report complete, and a lazy poster
+ * hidden by the other theme never does. Loading it eagerly changes nothing a
+ * frame shows.
  */
 const settleImages = async (page: Page): Promise<void> => {
   await page.addInitScript(() => {
     document.addEventListener('DOMContentLoaded', () => {
       for (const image of document.querySelectorAll('img')) {
         if (image.loading === 'lazy') image.loading = 'eager'
-        if (image.getAttribute('src') === '') image.removeAttribute('src')
       }
     })
   })

@@ -333,17 +333,9 @@ body.surface-case-study > header[data-section='header'] {
   --lede-size: 1.3125rem;
   --lede-leading: 1.875rem;
 
-  /* The figure plate holds these three at their light values in both themes,
-     so they are declared once here and never again in .dark. An alias is what
-     lets the plate follow a light-palette edit instead of holding a copy that
-     nothing keeps in step. */
   --light-card: oklch(1 0 0);
   --light-muted-foreground: oklch(0.532 0.016 62);
-  /* The plate's ring reads the light accent rather than a value of its own, so
-     a control focused inside a chart plate carries the site's ring like every
-     other control. It measures 6.4:1 on the white the plate holds. */
   --light-accent: oklch(0.513 0.135 43);
-  --light-ring: var(--light-accent);
 
   --background: oklch(0.968 0.01 82);
   --foreground: oklch(0.21 0.007 78);
@@ -422,18 +414,6 @@ body.surface-case-study > header[data-section='header'] {
   --chart-3: oklch(0.65 0.143 60);
   --chart-4: oklch(0.65 0.2 27);
   --chart-5: oklch(0.708 0.018 74);
-}
-
-/* A raster figure is drawn on a light ground, so its plate stays light in the
-   dark theme and the chart reads as a framed card rather than a leak. Each
-   alias resolves to what :root declares, so a light-palette edit reaches the
-   plate on its own and the caption stays legible with the ring above 3:1 on
-   white. Rebinding the ring is the half worth keeping: the dark ring measures
-   near 2.3:1 on white and fails the 3:1 the accessibility rule sets. */
-.dark .figure-plate {
-  --card: var(--light-card);
-  --muted-foreground: var(--light-muted-foreground);
-  --ring: var(--light-ring);
 }
 
 @layer base {
