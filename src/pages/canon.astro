@@ -1,8 +1,10 @@
 ---
 import { getImage } from 'astro:assets'
 
-import agentViewPoster from '@/assets/projects/canon-agent-view.png'
-import agentViewDemo from '@/assets/videos/canon.mp4?url'
+import canonStillDark from '@/assets/projects/canon-dark.png'
+import canonStill from '@/assets/projects/canon-light.png'
+import launchLoop from '@/assets/videos/canon.mp4?url'
+import launchLoopLight from '@/assets/videos/canon-light.mp4?url'
 import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import RouteBar from '@/components/site/nav/route-bar.astro'
 import SectionNav from '@/components/site/section-nav/section-nav.astro'
@@ -17,22 +19,26 @@ const artifactLinks = [
 
 // A `poster` attribute takes a URL rather than an image, so it reaches for the
 // source file unless something derives the optimized one.
-const demoPoster = await getImage({ src: agentViewPoster, format: 'webp' })
+const [loopPoster, loopPosterDark] = await Promise.all([
+  getImage({ src: canonStill, format: 'webp' }),
+  getImage({ src: canonStillDark, format: 'webp' }),
+])
+
+const loopLabel =
+  'One change running through canon, from the groundwork that measured it through its plan, dispatch, build, and review to the merge'
 
 // The route's opening leads the rail, per the note in `jobtriage.astro`.
 const navItems = [
   { id: 'canon', label: 'canon' },
-  { id: 'problem', label: 'problem' },
-  { id: 'standards', label: 'standards' },
-  { id: 'workflow', label: 'workflow' },
-  { id: 'parallel', label: 'parallel' },
-  { id: 'agents', label: 'agents' },
+  { id: 'why-i-built-it', label: 'why i built it' },
+  { id: 'how-i-use-it', label: 'how i use it' },
+  { id: 'what-it-shows', label: 'what it shows' },
 ]
 ---
 
 <BaseLayout
   title="canon · Eric Le"
-  description="How I build with AI coding agents, packaged for any repository: one session plans, others build in parallel, and a separate session reviews."
+  description="canon runs a coding agent's work from plan to reviewed pull request, through one orchestrator that dispatches a planner, a worker and a reviewer."
   surface="case-study"
 >
   <SectionNav items={navItems} instant />
@@ -55,16 +61,9 @@ const navItems = [
           canon
         </h1>
         <p data-fade class="text-muted-foreground text-lede mt-4">
-          How I build with AI coding agents, packaged so any repository can
-          install it: one session plans, others build in parallel, and a
-          separate session reviews.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-3">
-          Installs from npm as <code class="font-mono">@erclx/canon</code>, and
-          as a Claude Code plugin. Public and MIT licensed. The landing page at
-          <code class="font-mono">canon.erclx.dev</code> is one real session the toolkit
-          ran on itself, with every count on it read from the repository at build
-          time.
+          canon is how I build with AI coding agents, packaged so any repository
+          can install it. One session plans, another builds, and a separate one
+          reviews the pull request.
         </p>
         <ul data-fade class="mt-6 flex flex-wrap gap-x-6">
           {
@@ -83,8 +82,10 @@ const navItems = [
         </ul>
 
         {
-          /* The demo closes the opening rather than interrupting it. It declares
-            `view` so a phone, which cannot hover, plays it on screen. */
+          /* The loop closes the opening rather than interrupting it. It was
+            recorded once per theme, and `hover-video` plays only the one the
+            theme shows. It declares `view` so a phone, which cannot hover,
+            plays it on screen. */
         }
         <figure
           data-media-host="view"
@@ -92,174 +93,77 @@ const navItems = [
           class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
         >
           <video
-            src={agentViewDemo}
-            poster={demoPoster.src}
+            src={launchLoopLight}
+            poster={loopPoster.src}
             muted
             loop
             playsinline
             preload="none"
             data-media-video
-            aria-label="canon's landing page, one real session the toolkit ran on itself"
-            class="block h-auto w-full"></video>
+            aria-label={loopLabel}
+            class="block h-auto w-full dark:hidden"></video>
+          <video
+            src={launchLoop}
+            poster={loopPosterDark.src}
+            muted
+            loop
+            playsinline
+            preload="none"
+            data-media-video
+            aria-label={loopLabel}
+            class="hidden h-auto w-full dark:block"></video>
         </figure>
       </div>
     </section>
 
-    <section id="problem" class="page-inset py-16 md:py-20">
+    <section id="why-i-built-it" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
-          problem
+          why i built it
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          Every project I started got the same agent scaffolding typed into it
-          again, and every copy moved away from the last. I wanted one source I
-          could install rather than a folder I kept re-authoring.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Drift on this surface is quiet. A rule that fell behind still loads,
-          still reads as authoritative, and produces work against a convention I
-          had already abandoned somewhere else. Nothing fails, so nothing
-          reports it.
+          Every project I started got the same agent setup typed into it again,
+          and every copy drifted from the last. I wanted one source I could
+          install everywhere instead of a folder I kept rewriting.
         </p>
       </div>
     </section>
 
-    <section id="standards" class="page-inset py-16 md:py-20">
+    <section id="how-i-use-it" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
-          standards
+          how i use it
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          Content reaches a project through two operations. <code
-            class="font-mono">install</code
-          > lays it down once. <code class="font-mono">sync</code> updates only files
-          already present, and it is safe to repeat against a project that has edited
-          what it was given, because an install stamp records what the toolkit wrote
-          and so tells a file canon moved from a file the project changed.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Rules carry a path glob, so a Python rule stays dormant in a
-          TypeScript project. The project's own rules live in a folder the sync
-          never walks, and a rule canon has retired is deleted from every
-          project rather than left loading. A sync cannot introduce a surface
-          the project never asked for, and it cannot overwrite a rule the
-          project wrote.
+          I talk to one agent, an orchestrator, and it dispatches the rest. A
+          planner writes the plan, a worker builds it on its own branch and
+          opens a pull request with screenshots or a short clip of the change,
+          and a reviewer that did not write the code reads it. I only talk to
+          the others when they need my input, and I merge every pull request
+          myself.
         </p>
       </div>
     </section>
 
-    <section id="workflow" class="page-inset py-16 md:py-20">
+    <section id="what-it-shows" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
-          workflow
+          what it shows
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          The rules are not the whole product. The plan, review, and ship loop
-          ships alongside them as skills a session invokes rather than steps a
-          person remembers.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          An idea is sorted first. What the repository can already answer goes
-          to a plan, and what nobody has measured goes to groundwork, a short
-          investigation that ends in a decision. The plan names every file it
-          will touch and gives each open question a suggested answer, so it can
-          be approved in one pass. A worker then writes a failing test before
-          any code, and the checks have to pass before it opens a pull request.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Review travels on the pull request itself. One skill posts findings to
-          it, another reads them back, fixes each, and pushes a follow-up, and
-          the review then runs again against only the commits that follow-up
-          added.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The workflow it ships is the workflow that built it.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          It runs my other repositories the same way, including a private one
-          whose whole job is keeping the copy on my CV, LinkedIn, GitHub
-          profile, and this site in step.
-        </p>
-      </div>
-    </section>
-
-    <section id="parallel" class="page-inset py-16 md:py-20">
-      <div class="prose-column mx-auto">
-        <h2
-          data-fade
-          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
-        >
-          parallel
-        </h2>
-        <p data-fade class="text-foreground text-lede mt-6">
-          Work runs across parallel Claude Code sessions split by vantage rather
-          than by capability, in four roles. One warm orchestrator session holds
-          the cross-feature picture and dispatches the rest as background
-          sessions: a planner writes one plan, a worker builds one plan in its
-          own git worktree and stops at a draft pull request, and a reviewer
-          reads a pull request it did not write. The orchestrator edits no
-          tracked file and merges nothing. I start the orchestrator and merge
-          every pull request.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The two review passes differ by vantage rather than by depth. A
-          worker's self-review asks whether it built the plan and whether it
-          passes, and it is blind to its own misreadings, because the same
-          misreading wrote both the code and the review. The independent pass
-          reads the diff, the plan, and the rules, and leaves the author's own
-          summary unread. A dedicated reviewer takes it when a change touches
-          code or several pull requests are waiting, and the orchestrator keeps
-          one pass across every branch in a wave for merge order and overlap.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          What binds the number of tracks is collision between file sets rather
-          than a fixed cap. A candidate opens only where its files are disjoint
-          from every track already running. What thins as tracks multiply is my
-          own read before each merge, and the orchestrator's context as it holds
-          more work in flight.
-        </p>
-      </div>
-    </section>
-
-    <section id="agents" class="page-inset py-16 md:py-20">
-      <div class="prose-column mx-auto">
-        <h2
-          data-fade
-          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
-        >
-          agents
-        </h2>
-        <p data-fade class="text-foreground text-lede mt-6">
-          All of it depends on agents being able to drive the same tooling
-          without a person reading terminal output beside them.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Every command has a non-interactive path, every listing emits JSON on
-          stdout, and the framed terminal UI goes to stderr. A skill shelling
-          out to the CLI can treat stdout as data without parsing around a
-          progress frame.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          A unit suite covers the code whose failures stay invisible at runtime,
-          and the workflow itself is tested on sandbox scenarios. Each scenario
-          provisions an isolated project state, points a headless session at it,
-          and asserts which files the run wrote, whether it escaped that scope,
-          and what its own reply said. A disposable GitHub remote lets the
-          skills that depend on <code class="font-mono">gh</code> run end to end,
-          including opening a pull request, merging it, and editing its body.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Testing a workflow that opens pull requests means letting it open real
-          ones somewhere it cannot do damage.
+          I use it every day across all my repositories, including the private
+          one that keeps my CV, LinkedIn and this site in step. canon.erclx.dev
+          replays one real session it ran on itself. Open source on npm under
+          the MIT license.
         </p>
       </div>
     </section>

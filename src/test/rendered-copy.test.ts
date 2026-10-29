@@ -18,12 +18,14 @@ const DIST = join(process.cwd(), 'dist')
 const ROUTES = [
   '/',
   '/canon',
-  '/jobtriage',
+  '/frameboard',
   '/stackr',
   '/caret',
-  '/diction',
+  '/jobtriage',
   '/annex',
 ]
+
+const PROJECT_ROUTES = ROUTES.filter((route) => route !== '/')
 
 // What Google truncates a description at. Every host shows less than this, so a
 // description inside it is inside all of them.
@@ -76,11 +78,18 @@ function attributeOf(
 const home = readPage('/')
 const FOOTER = '[data-section="footer"]'
 
-const CARD_NAMES = ['canon', 'Jobtriage', 'annex', 'Stackr', 'Caret']
+const CARD_NAMES = [
+  'canon',
+  'Frameboard',
+  'Stackr',
+  'Caret',
+  'Jobtriage',
+  'annex',
+]
 const CARD_SELECTOR = '#projects article'
 // One per beat in the timeline. The record is a local const inside the
 // component, so the count is stated here rather than derived.
-const EXPERIENCE_ENTRY_COUNT = 6
+const EXPERIENCE_ENTRY_COUNT = 5
 const EMPLOYERS = [
   'Volvo Group',
   'Chalmers University of Technology',
@@ -167,7 +176,7 @@ describe('a shared link', () => {
 
   it('carries the source description on the landing page', () => {
     expect(meta(home, 'meta[name="description"]')).toBe(
-      'Eric Le, AI engineer in Gothenburg who builds AI agents, and the projects behind that.',
+      'Eric Le, software developer in Gothenburg who builds open-source tools for coding with AI agents.',
     )
   })
 
@@ -238,13 +247,13 @@ describe('the header', () => {
 describe('the about surface', () => {
   it('introduces the person before the work', () => {
     expect(textOf(home, '[data-section="about"]')).toContain(
-      "I'm Eric, an AI engineer in Gothenburg.",
+      "I'm Eric, a software developer in Gothenburg.",
     )
   })
 
   it('closes on one thing that is not work', () => {
     expect(textOf(home, '[data-section="about"]')).toContain(
-      'Outside of work I do calisthenics, play tennis, and travel whenever I can.',
+      'Outside of that I play tennis and travel whenever I can.',
     )
   })
 })
@@ -293,7 +302,7 @@ describe('the experience section', () => {
       current.flatMap((beat) => queryAll(beat, '.experience-detail')),
     ).toHaveLength(1)
     expect(textOf(home, '#experience')).toContain(
-      'Everything below runs on canon, my setup for working with coding agents.',
+      'Building canon and Frameboard, open-source tools for coding with AI agents, after earlier extensions for VS Code and Chrome.',
     )
   })
 
@@ -323,7 +332,7 @@ describe('the experience section', () => {
       'Built an agent that let test engineers get plots and figures from their truck test data',
     )
     expect(textOf(home, '#experience')).toContain(
-      'Presented it at Generative AI for Automotive USA 2024',
+      'Presented it remotely at Generative AI for Automotive USA 2024',
     )
   })
 
@@ -466,8 +475,38 @@ describe('the projects section', () => {
 
   it('renders the description the source carries on the canon card', () => {
     expect(card(0)).toContain(
-      'planned by an orchestrator, built by workers in parallel, checked by an independent reviewer',
+      'canon takes each change from plan to reviewed pull request, with the same skills and rules in every repository.',
     )
+  })
+
+  it('renders the description the source carries on the Frameboard card', () => {
+    expect(card(1)).toContain(
+      'Frameboard is a board where they draw interfaces as plain HTML files, and I steer them by hand or with notes they answer.',
+    )
+  })
+
+  it('carries a clip per theme on the canon card', () => {
+    const videos = queryAll(queryAll(home, CARD_SELECTOR)[0] ?? home, 'video')
+
+    expect(videos).toHaveLength(2)
+    expect(videos.map((video) => video.getAttribute('class'))).toEqual([
+      expect.stringContaining('dark:hidden'),
+      expect.stringContaining('dark:block'),
+    ])
+  })
+
+  it('carries one clip under both themes on the Frameboard card', () => {
+    const frameboard = queryAll(home, CARD_SELECTOR)[1] ?? home
+
+    expect(queryAll(frameboard, 'video')).toHaveLength(1)
+    expect(attributeOf(frameboard, 'video', 'class')).not.toContain('dark:')
+    expect(queryAll(frameboard, '[data-media-poster-dark]')).toHaveLength(1)
+  })
+
+  it('spans no card across both columns', () => {
+    expect(queryAll(home, CARD_SELECTOR)).toHaveLength(CARD_NAMES.length)
+
+    expect(queryAll(home, '#projects .lg\\:col-span-2')).toHaveLength(0)
   })
 
   it('carries the overlay that opens its route on every card', () => {
@@ -479,32 +518,32 @@ describe('the projects section', () => {
   })
 
   it('renders the description the source carries on the Jobtriage card', () => {
-    expect(card(1)).toContain(
-      'A job-search agent: describe what you want, and it shows the ads that fit, each with a reason. Live to try, and its page has the retrieval numbers.',
+    expect(card(4)).toContain(
+      'A job-search agent. Describe what you want, and it shows the ads that fit, each with a reason. Live to try, and its page has the retrieval numbers.',
     )
   })
 
   it('names no provider the source leaves out on the Jobtriage card', () => {
-    expect(card(1)).toContain('Jobtriage')
+    expect(card(4)).toContain('Jobtriage')
 
-    expect(card(1)).not.toContain('OpenAI')
+    expect(card(4)).not.toContain('OpenAI')
   })
 
   it('renders the description the source carries on the Stackr card', () => {
-    expect(card(3)).toContain(
+    expect(card(2)).toContain(
       'stages files across a workspace into one block of LLM context',
     )
   })
 
   it('renders the description the source carries on the Caret card', () => {
-    expect(card(4)).toContain(
+    expect(card(3)).toContain(
       'saves prompts and drops them into Claude, Gemini, and ChatGPT',
     )
   })
 
   it('renders the description the source carries on the annex card', () => {
-    expect(card(2)).toContain(
-      'retrieval cost about a seventh as much and showed exactly which text it used',
+    expect(card(5)).toContain(
+      'Search plus cross-reference traversal found 83% of them for about a seventh of the tokens, and showed which text it used.',
     )
   })
 
@@ -522,10 +561,12 @@ describe('the projects section', () => {
     )
   })
 
-  it('links nowhere on the landing page to the diction route', () => {
-    // diction keeps its route but has neither a card nor a line pointing at
-    // it, by the operator's call of 2026-09-28.
-    expect(queryAll(home, 'a[href="/diction"]')).toHaveLength(0)
+  it('links to every route it builds from a card', () => {
+    const routes = queryAll(home, `${CARD_SELECTOR} h3 a`).map((link) =>
+      link.getAttribute('href'),
+    )
+
+    expect(routes).toEqual(PROJECT_ROUTES)
   })
 
   it('drops the intro sentence the source removed', () => {
@@ -534,38 +575,94 @@ describe('the projects section', () => {
 })
 
 describe('the closing ask', () => {
-  it('names what the source says to build', () => {
+  it('states the one sentence the source carries', () => {
     expect(textOf(home, '#looking-for')).toContain(
-      'AI agents and LLM applications, developer tools, full-stack products',
+      'Open to developer roles in Gothenburg or remote, full-time or contract.',
     )
   })
 
-  it('names the team the source asks for', () => {
-    expect(textOf(home, '#looking-for')).toContain(
-      'small to mid, close to the product, with engineers to learn from',
-    )
+  it('carries no criteria list the source dropped', () => {
+    expect(textOf(home, '#looking-for')).toContain('Open to work')
+
+    expect(queryAll(home, '#looking-for dl')).toHaveLength(0)
   })
 })
 
-describe('a case study', () => {
-  it('renders the canon claim and sections', () => {
-    const doc = readPage('/canon')
+describe('a project route', () => {
+  it.each(PROJECT_ROUTES)(
+    'states why the work started before what it shows on %s',
+    (route) => {
+      const ids = queryAll(readPage(route), 'main section[id]').map(
+        (section) => section.id,
+      )
 
-    expect(textOf(doc, 'h1')).toBe('canon')
-    expect(textOf(doc, 'main')).toContain(
-      'packaged so any repository can install it',
+      expect(ids).toHaveLength(4)
+      expect(ids[0]).toBe(route.slice(1))
+      expect(ids[1]).toBe('why-i-built-it')
+      expect(ids[3]).toBe('what-it-shows')
+    },
+  )
+
+  it.each(PROJECT_ROUTES)('tracks every section in the rail on %s', (route) => {
+    const doc = readPage(route)
+    const labels = queryAll(doc, '[data-section-nav] a').map((link) =>
+      collapse(link.textContent),
     )
-    expect(queryAll(doc, 'main section[id]')).toHaveLength(6)
-  })
+    const headings = queryAll(doc, 'main h2').map((heading) =>
+      collapse(heading.textContent),
+    )
 
-  it('names the scoped package on the canon route', () => {
-    expect(textOf(readPage('/canon'), 'main')).toContain('@erclx/canon')
+    expect(labels.slice(1)).toEqual(headings)
   })
 
   it.each([
     [
       '/canon',
-      'How I build with AI coding agents, packaged for any repository: one session plans, others build in parallel, and a separate session reviews.',
+      'canon is how I build with AI coding agents, packaged so any repository can install it.',
+    ],
+    [
+      '/frameboard',
+      'Frameboard is a local design board where my coding agents and I design together.',
+    ],
+    [
+      '/stackr',
+      'Stackr is a VS Code extension that keeps named sets of files and copies each one into an AI chat as a single block, with the directory tree on top.',
+    ],
+    [
+      '/caret',
+      'Caret is a Chrome extension that opens a searchable prompt library right where you type, in Claude, Gemini and ChatGPT.',
+    ],
+    [
+      '/jobtriage',
+      "Jobtriage is a job-search agent over Sweden's public JobTech API.",
+    ],
+    ['/annex', 'annex is an agent for the EU AI Act.'],
+  ])('opens on the source intro on %s', (route, sentence) => {
+    expect(textOf(readPage(route), 'main')).toContain(sentence)
+  })
+
+  it.each([
+    ['/canon', 'and I merge every pull request myself.'],
+    ['/frameboard', 'I built it with canon, starting in October 2026.'],
+    ['/stackr', 'and its tests run on Ubuntu, macOS and Windows.'],
+    ['/caret', 'Published on the Chrome Web Store across four releases'],
+    [
+      '/jobtriage',
+      'Hybrid search found 95% of the relevant ads in its top ten results.',
+    ],
+    ['/annex', 'Search plus cross-references found 83% of them'],
+  ])('carries the source sections on %s', (route, sentence) => {
+    expect(textOf(readPage(route), 'main')).toContain(sentence)
+  })
+
+  it.each([
+    [
+      '/canon',
+      "canon runs a coding agent's work from plan to reviewed pull request, through one orchestrator that dispatches a planner, a worker and a reviewer.",
+    ],
+    [
+      '/frameboard',
+      'Frameboard is a local design board where coding agents draw interfaces as plain HTML files and I steer them by hand or with notes they answer.',
     ],
     [
       '/jobtriage',
@@ -583,58 +680,33 @@ describe('a case study', () => {
       '/annex',
       'An agent for the EU AI Act that maps a system to the articles that apply, built to test whether retrieval still helps when the whole law fits in context.',
     ],
-    [
-      '/diction',
-      'A pronunciation trainer that scores each sound against what a native speaker actually sounds like, and reports how often it is wrong. Runs offline.',
-    ],
   ])('carries the source description on %s', (route, description) => {
     expect(meta(readPage(route), 'meta[name="description"]')).toBe(description)
   })
 
-  it('states the landing page sentence on the canon route', () => {
-    expect(collapse(textOf(readPage('/canon'), 'main'))).toContain(
-      'is one real session the toolkit ran on itself, with every count on it read from the repository at build time',
+  it('carries a loop per theme on the canon route', () => {
+    const videos = queryAll(readPage('/canon'), 'main video[data-media-video]')
+
+    expect(videos.map((video) => video.getAttribute('class'))).toEqual([
+      expect.stringContaining('dark:hidden'),
+      expect.stringContaining('dark:block'),
+    ])
+  })
+
+  it('holds the Frameboard loop at its own ratio', () => {
+    const doc = readPage('/frameboard')
+
+    expect(queryAll(doc, 'main video[data-media-video]')).toHaveLength(1)
+    expect(attributeOf(doc, 'main video', 'class')).toContain(
+      'aspect-[880/588]',
     )
   })
 
-  it('renders the diction claim and sections', () => {
-    const doc = readPage('/diction')
-
-    expect(textOf(doc, 'h1')).toBe('diction')
-    expect(textOf(doc, 'main')).toContain(
-      'scores each sound against what a native speaker actually sounds like',
-    )
-    expect(queryAll(doc, 'main section[id]')).toHaveLength(6)
-  })
-
-  it('renders the annex claim and sections', () => {
+  it('keeps both annex screenshots and drops the evaluation table', () => {
     const doc = readPage('/annex')
 
-    expect(textOf(doc, 'h1')).toBe('annex')
-    expect(textOf(doc, 'main')).toContain(
-      'built to test whether retrieval still helps when the whole law fits in context',
-    )
-    expect(queryAll(doc, 'main section[id]')).toHaveLength(8)
-  })
-
-  it('renders the annex evaluation table with its three arms', () => {
-    const doc = readPage('/annex')
-
-    expect(queryAll(doc, 'main table tbody tr')).toHaveLength(3)
-  })
-
-  it('states the offline claim on the diction route', () => {
-    expect(textOf(readPage('/diction'), 'main')).toContain(
-      'Runs local and offline.',
-    )
-  })
-
-  it.each([
-    ['/jobtriage', 'It passed five.'],
-    ['/stackr', 'Tracks survive a restart of VS Code.'],
-    ['/caret', 'one contenteditable adapter serves all three'],
-  ])('renders the ported body copy on %s', (route, sentence) => {
-    expect(collapse(textOf(readPage(route), 'main'))).toContain(sentence)
+    expect(queryAll(doc, 'main figure img')).toHaveLength(2)
+    expect(queryAll(doc, 'main table')).toHaveLength(0)
   })
 
   it('posters the Jobtriage clip with an optimized derivative', () => {

@@ -12,7 +12,6 @@ import { getLinkTargetAttributes } from '@/lib/links'
 const artifactLinks = [
   { label: 'Live demo', href: 'https://jobtriage.erclx.dev' },
   { label: 'GitHub', href: 'https://github.com/erclx/jobtriage' },
-  { label: 'Walkthrough', href: 'https://youtu.be/puAueu9ed3o' },
 ]
 
 // A `poster` attribute takes a URL rather than an image, so it reaches for the
@@ -27,52 +26,9 @@ const triagePoster = await getImage({ src: triageCanvas, format: 'webp' })
 // points at, which is the rule every other row already follows.
 const navItems = [
   { id: 'jobtriage', label: 'jobtriage' },
-  { id: 'problem', label: 'problem' },
-  { id: 'try', label: 'try' },
-  { id: 'canvas', label: 'canvas' },
-  { id: 'retrieval', label: 'retrieval' },
-  { id: 'system', label: 'system' },
-]
-
-const stack = [
-  { key: 'Frontend', value: 'Next.js App Router on Vercel, Vercel AI SDK' },
-  { key: 'Backend', value: 'FastAPI on Cloud Run `europe-west1`, 1Gi memory' },
-  {
-    key: 'Retrieval',
-    value: 'BM25 and `multilingual-e5-base` dense, fused by RRF over SQLite',
-  },
-  {
-    key: 'Providers',
-    value:
-      'Anthropic, OpenAI, Gemini by visitor key, a no-key mock replay, local Ollama in development',
-  },
-  { key: 'Domain', value: 'Cloudflare A record fronting Vercel' },
-]
-
-const ablation = [
-  { config: 'filter-only', p1: '0.020', r10: '0.150', p95: '0.0' },
-  { config: 'bm25-only', p1: '0.680', r10: '0.920', p95: '1.2' },
-  { config: 'dense-only', p1: '0.780', r10: '0.965', p95: '7.8' },
-  { config: 'hybrid', p1: '0.720', r10: '0.950', p95: '15.2' },
-]
-
-const encoders = [
-  { encoder: 'MiniLM, English', p1: '0.700', r10: '0.855', dim: '384' },
-  { encoder: 'e5-base, multilingual', p1: '0.780', r10: '0.965', dim: '768' },
-  { encoder: 'e5-large, multilingual', p1: '0.860', r10: '0.945', dim: '1024' },
-]
-
-// The source marks code spans with backticks, so a value splits on them and
-// every odd piece renders as code.
-const splitCode = (value: string) => value.split('`')
-
-const toolPairings = [
-  { data: 'searchJobs', spatial: 'placeAds' },
-  { data: 'triageBatch', spatial: 'groupAds' },
-  { data: 'matchProfile', spatial: 'connectProfileToAds' },
-  { data: 'compareRoles', spatial: 'pairAdsForCompare' },
-  { data: 'deadlineWatch', spatial: 'placeAdsOnTimeline' },
-  { data: 'trackStatus', spatial: 'markStatus' },
+  { id: 'why-i-built-it', label: 'why i built it' },
+  { id: 'how-it-works', label: 'how it works' },
+  { id: 'what-it-shows', label: 'what it shows' },
 ]
 ---
 
@@ -101,8 +57,9 @@ const toolPairings = [
           Jobtriage
         </h1>
         <p data-fade class="text-muted-foreground text-lede mt-4">
-          A job-search agent over Sweden's public JobTech API that turns a
-          profile and a question into a visual shortlist, for any profession.
+          Jobtriage is a job-search agent over Sweden's public JobTech API. You
+          describe what you want, and it lays out the ads that fit on a canvas,
+          each with a one-line reason.
         </p>
         <ul data-fade class="mt-6 flex flex-wrap gap-x-6">
           {
@@ -146,259 +103,50 @@ const toolPairings = [
       </div>
     </section>
 
-    <section id="problem" class="page-inset py-16 md:py-20">
+    <section id="why-i-built-it" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
-          problem
+          why i built it
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          Sweden's job board can filter by occupation, region, and deadline. It
-          cannot answer "which of these mention agentic systems and close before
-          Friday", so I built something that could, against the same public API.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Job boards return a list. The question a candidate has is which roles
-          fit them, why, which one closes first, and which two are worth putting
-          side by side. That is a decision made against a profile, and a ranked
-          list is not shaped for it.
+          I was job hunting, and Sweden's job board can filter by occupation and
+          region but cannot answer which ads actually fit me. The API is public,
+          so I built something that could.
         </p>
       </div>
     </section>
 
-    <section id="try" class="page-inset py-16 md:py-20">
+    <section id="how-it-works" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
-          try
+          how it works
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          Two paths share the same interface. A visitor without a key gets a
-          mock replay of four recorded conversations, enough to drive the
-          canvas. A visitor with a key from Anthropic, OpenAI, or Gemini drives
-          the live agent against JobTech data. The key stays in the browser and
-          is never stored on the server.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The deployed path searches the live JobTech taxonomy and JobSearch
-          APIs, so results are current. Local development runs against a fixed
-          corpus instead, which is what makes a retrieval change measurable
-          rather than merely different.
+          The agent's answers drive a canvas, so the same ads can be compared
+          side by side instead of read as a list. Visitors bring their own
+          Anthropic, OpenAI or Gemini key, or replay recorded conversations
+          without one.
         </p>
       </div>
     </section>
 
-    <section id="canvas" class="page-inset py-16 md:py-20">
+    <section id="what-it-shows" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
-          canvas
+          what it shows
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          The agent does not stop at a paragraph of text. Its tool calls drive a
-          React Flow canvas, so the same set of ads becomes triage clusters, a
-          deadline timeline, a side-by-side comparison, or a pinned shortlist.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The canvas makes the next decision visible rather than leaving a
-          candidate to reconstruct it from a chat transcript.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Spatial tool pairings are pinned in the system prompt, so the agent
-          fires a spatial tool after every data tool and the canvas answers the
-          question rather than illustrating it. The table is the local set. The
-          deployed agent carries a smaller one, since corpus tools such as <code
-            class="font-mono">triageBatch</code
-          > and <code class="font-mono">deadlineWatch</code> have nothing to search
-          against live data.
-        </p>
-
-        <div data-fade class="mt-10 overflow-x-auto">
-          <table class="text-label font-mono">
-            <thead>
-              <tr class="text-muted-foreground">
-                <th class="pr-8 pb-2 text-left font-normal">Data tool</th>
-                <th class="pb-2 text-left font-normal">Spatial tool</th>
-              </tr>
-            </thead>
-            <tbody class="text-foreground">
-              {
-                toolPairings.map((pair) => (
-                  <tr>
-                    <td class="py-1 pr-8">{pair.data}</td>
-                    <td class="py-1">{pair.spatial}</td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <section id="retrieval" class="page-inset py-16 md:py-20">
-      <div class="prose-column mx-auto">
-        <h2
-          data-fade
-          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
-        >
-          retrieval
-        </h2>
-        <p data-fade class="text-foreground text-lede mt-6">
-          Finding the right ad is the thing everything else rests on, so it was
-          measured rather than assumed. The evaluation covers the local corpus,
-          not the live JobTech path.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Measured on a 50-query Swedish golden set against a 59-ad corpus drawn
-          from Spotify, Klarna, Volvo Group, Volvo Cars, Ericsson, HT
-          Engineering, Stig Ericsson Bil, Montico, and Isaksson Rekrytering.
-          Embeddings from
-          <a
-            href="https://huggingface.co/intfloat/multilingual-e5-base"
-            {...getLinkTargetAttributes(
-              'https://huggingface.co/intfloat/multilingual-e5-base',
-            )}
-            class="text-accent font-mono underline decoration-[1px] underline-offset-[3px]"
-            >intfloat/multilingual-e5-base</a
-          >.
-        </p>
-
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Three numbers repeat through this section: P@1 asks whether the top
-          result is right, R@10 asks whether the right one is somewhere in the
-          top ten, and p95 ms is the 95th-percentile query latency.
-        </p>
-
-        <figure
-          data-fade
-          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
-        >
-          <figcaption class="text-muted-foreground text-label mb-4 font-mono">
-            hybrid retrieval ablation
-          </figcaption>
-          <table class="text-label w-full min-w-[20rem] font-mono">
-            <thead>
-              <tr class="text-muted-foreground">
-                <th class="text-left font-normal">configuration</th>
-                <th class="text-right font-normal tabular-nums">P@1</th>
-                <th class="text-right font-normal tabular-nums">R@10</th>
-                <th class="text-right font-normal tabular-nums">p95 ms</th>
-              </tr>
-            </thead>
-            <tbody class="text-foreground">
-              {
-                ablation.map((row) => (
-                  <tr>
-                    <td class="py-1 pr-4">{row.config}</td>
-                    <td class="py-1 pl-4 text-right tabular-nums">{row.p1}</td>
-                    <td class="py-1 pl-4 text-right tabular-nums">{row.r10}</td>
-                    <td class="py-1 pl-4 text-right tabular-nums">{row.p95}</td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
-        </figure>
-
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Dense alone takes P@1 by 6 points over hybrid on this corpus, which is
-          the opposite of the result hybrid retrieval is usually assumed to
-          give. Hybrid earns its place on adversarial queries where an exact
-          keyword carries the match, such as a model name or employer jargon. An
-          RRF score floor at
-          <code class="font-mono">JOBTRIAGE_RRF_FLOOR=0.025</code>
-          suppresses low-relevance noise at the API boundary.
-        </p>
-
-        <figure
-          data-fade
-          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
-        >
-          <figcaption class="text-muted-foreground text-label mb-4 font-mono">
-            multilingual encoder comparison (dense)
-          </figcaption>
-          <table class="text-label w-full min-w-[20rem] font-mono">
-            <thead>
-              <tr class="text-muted-foreground">
-                <th class="text-left font-normal">encoder</th>
-                <th class="text-right font-normal tabular-nums">P@1</th>
-                <th class="text-right font-normal tabular-nums">R@10</th>
-                <th class="text-right font-normal tabular-nums">dim</th>
-              </tr>
-            </thead>
-            <tbody class="text-foreground">
-              {
-                encoders.map((row) => (
-                  <tr>
-                    <td class="py-1 pr-4">{row.encoder}</td>
-                    <td class="py-1 pl-4 text-right tabular-nums">{row.p1}</td>
-                    <td class="py-1 pl-4 text-right tabular-nums">{row.r10}</td>
-                    <td class="py-1 pl-4 text-right tabular-nums">{row.dim}</td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
-        </figure>
-
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          English-only MiniLM gives up 11 points of recall@10 against e5-base on
-          the Swedish set, and fusing BM25 back in recovers 7 of them. That is
-          the strongest case for keeping hybrid: it holds up when the encoder is
-          weaker than the one it was tuned on. e5-large lifts P@1 by another 8
-          points over e5-base, for about 70% more memory and dense latency, and
-          hands back two points of recall@10, so e5-base ships as the default.
-        </p>
-      </div>
-    </section>
-
-    <section id="system" class="page-inset py-16 md:py-20">
-      <div class="prose-column mx-auto">
-        <h2
-          data-fade
-          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
-        >
-          system
-        </h2>
-        <p data-fade class="text-foreground text-lede mt-6">
-          Two postures share one agent shell: same prompt, same tools, different
-          data path. The deployed posture runs against the JobTech taxonomy and
-          JobSearch APIs. The local CLI and local dev run the hybrid retrieval
-          stack against a SQLite corpus.
-        </p>
-
-        <dl data-fade class="mt-10 grid gap-y-2 sm:grid-cols-[8rem_1fr]">
-          {
-            stack.map((row) => (
-              <div class="text-label contents font-mono">
-                <dt class="text-muted-foreground">{row.key}</dt>
-                <dd class="text-foreground">
-                  {splitCode(row.value).map((part, index) =>
-                    index % 2 ? <code class="font-mono">{part}</code> : part,
-                  )}
-                </dd>
-              </div>
-            ))
-          }
-        </dl>
-
-        <p data-fade class="text-muted-foreground text-body mt-8">
-          React Flow surfaces four canonical views, each carrying custom nodes
-          rather than the React Flow defaults.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The agent is measured too, on ten scripted probes against the live
-          path. It passed five. It picked the right tools 92% of the time and
-          then answered incompletely, which makes the gap a prompt and
-          answer-quality problem rather than a routing one. That is the next
-          thing to fix.
+          I compared four ways of searching on 50 Swedish test questions. Hybrid
+          search found 95% of the relevant ads in its top ten results.
         </p>
       </div>
     </section>

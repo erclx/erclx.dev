@@ -7,7 +7,7 @@ const ROUTES = [
   '/annex',
   '/stackr',
   '/caret',
-  '/diction',
+  '/frameboard',
 ] as const
 
 const PHONE_WIDTH = 320

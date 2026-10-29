@@ -1,28 +1,3 @@
----
-// The site owns how a string renders, so the casing is decided here. Sentence case leaves the
-// uppercase treatment to the eyebrow and the diagram labels, which is the one
-// job it can hold consistently.
-const criteria = [
-  {
-    label: 'What I want to build',
-    value:
-      'AI agents and LLM applications, developer tools, full-stack products',
-  },
-  {
-    label: 'Team',
-    value: 'small to mid, close to the product, with engineers to learn from',
-  },
-  {
-    label: 'Where',
-    value: 'Sweden, Gothenburg preferred, remote',
-  },
-  {
-    label: 'Terms',
-    value: 'full-time or contract',
-  },
-]
----
-
 {
   /* Opens on the page's own interval and closes tighter than it. Every heading
     boundary on all six pages holds 160px, which this section arrived 28px
@@ -60,7 +35,7 @@ const criteria = [
 
     {
       /* The availability status anchors this section rather than joining the
-        rows below it. It sits at body size in the foreground color because a
+        sentence below it. It sits at body size in the foreground color because a
         sixth label would add a line to a section that needs weight. */
     }
     <p
@@ -199,129 +174,20 @@ const criteria = [
       </div>
 
       <div class="looking-rows border-border/60 relative z-10 border-t pt-6">
-        {
-          /* A gap per row rather than a rule between them. The rules made this
-            the last surface on the page reading as a table, on a page whose
-            hero seam, bar, cards and footer all stopped drawing lines. Space
-            separates the rows now and the pairing still scans, which is the
-            only job this list has.
-
-            The rule above the rows stays, and it is not an exception left by
-            accident. The character peeks over that edge, so it is the ledge a
-            drawing sits on rather than table chrome, and removing it leaves
-            the character with nothing to hide behind.
-
-            Each row keeps its vertical padding. The left border that lights on
-            hover is an affordance rather than a division, and it needs a row
-            tall enough to draw against. */
-        }
-        {
-          /* Grouped like the timeline, so the criteria read down rather than
-            landing together. Seven rows arriving in one observer callback got
-            57ms apart against a 700ms fade, and one per callback got nothing
-            at all. See `src/lib/reveal.ts`. */
-        }
-        <dl data-fade-group class="grid gap-y-2">
-          {
-            criteria.map((item, idx) => (
-              <div
-                data-fade
-                style={`--fade-delay: ${150 + idx * 100}ms`}
-                class="looking-row group -ml-4 grid items-baseline gap-x-6 border-l-2 border-l-transparent py-3 pl-4 sm:grid-cols-[13rem_1fr]"
-              >
-                {/* The key steps back rather than the answer stepping forward.
-                    The answers used to render at foreground, which measured
-                    3.35x the contrast of every paragraph on the page in light
-                    and made the closing section the heaviest reading on it.
-
-                    Dropping them alone was tried and does not work: color is
-                    the only thing separating the two columns, so with both at
-                    prose weight the rows stop scanning as pairs. A third step
-                    on the key is what buys the answer its way down. */}
-                <dt class="looking-key text-label">{item.label}</dt>
-                {/* The answer sits at the weight the page reads at, and lifts
-                    to foreground under a pointer. */}
-                <dd class="text-muted-foreground group-hover:text-foreground text-label">
-                  {item.value}
-                </dd>
-              </div>
-            ))
-          }
-        </dl>
+        <p
+          data-fade
+          style="--fade-delay: 150ms"
+          class="text-muted-foreground text-body"
+        >
+          Open to developer roles in Gothenburg or remote, full-time or
+          contract.
+        </p>
       </div>
     </div>
   </div>
 </section>
 
 <style>
-  /* The key separates from the answer by weight rather than by lightness.
-     Lightness has no room here: the muted token is already 4.82:1 in light,
-     so a step below it fails the 4.5:1 floor for text at any value visible
-     enough to do the job. A 65% mix was shipped and measured 2.53:1.
-
-     Both columns therefore sit on the muted token and the key drops a weight
-     step, which the 13rem column between them does most of the work of. */
-  .looking-key {
-    color: var(--muted-foreground);
-    font-weight: 400;
-  }
-
-  /* A row is a box a pointer lands on, so it takes the glow every other
-     bounded control carries. It is drawn behind the pair and inset outward,
-     the way the project card's is, so the rows stay ruleless at rest. */
-  .looking-row {
-    position: relative;
-    isolation: isolate;
-  }
-  .looking-row::after {
-    content: '';
-    position: absolute;
-    inset: -0.25rem -1rem;
-    border-radius: 0.75rem;
-    z-index: -1;
-    opacity: 0;
-    background: var(--glow-fill);
-    box-shadow: var(--glow-shadow);
-  }
-  .looking-row:hover::after {
-    opacity: 1;
-  }
-
-  /* The accent edge is drawn here rather than as the row's own left border.
-     A negative z-index child paints above its parent's background and border
-     and below its content, so the glow above reached the border box and laid
-     its 60% white over the edge: the accent should paint near rgb(165,70,28)
-     and measured rgb(219,181,164) once the glow arrived. The edge appeared at
-     full strength on the first frame and washed out as the glow faded in.
-
-     The transparent border stays on the row, because it is what holds the
-     2px the layout is built around. This only takes over what it draws. */
-  /* Offset by its own width, because an absolutely positioned child resolves
-     against the padding box and the border it replaces sits outside that. At
-     `left: 0` the edge drew 2px inboard of where it had always been. */
-  .looking-row::before {
-    content: '';
-    position: absolute;
-    inset: 0 auto 0 -2px;
-    width: 2px;
-    z-index: 0;
-    background: transparent;
-  }
-  .looking-row:hover::before {
-    background: var(--accent);
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .looking-key {
-      transition: color 150ms ease-out;
-    }
-    .looking-row::after {
-      transition: opacity var(--glow-out) ease-out;
-    }
-    .looking-row:hover::after {
-      transition: opacity var(--glow-in) ease-out;
-    }
-  }
-
   /* The slot rests on the label's baseline and stands one cap height tall, so
      the dot inside it centres on the capitals rather than on the line box. The
      descender space under the baseline is empty and still counts toward a line
