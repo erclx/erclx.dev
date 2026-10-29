@@ -54,6 +54,48 @@ describe('initHoverVideo', () => {
     expect(played.map((video) => video.dataset.themeClip)).toEqual(['dark'])
   })
 
+  it('swaps the playing clip when the theme changes while a view host is on screen', async () => {
+    // A phone: a coarse pointer, so a `view` host plays by intersection.
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: false,
+      media: query,
+    }))
+    let report: (isIntersecting: boolean) => void = () => undefined
+    vi.stubGlobal(
+      'IntersectionObserver',
+      class {
+        constructor(callback: IntersectionObserverCallback) {
+          report = (isIntersecting) =>
+            callback(
+              [{ isIntersecting } as IntersectionObserverEntry],
+              this as unknown as IntersectionObserver,
+            )
+        }
+        observe() {}
+      },
+    )
+    document.body.innerHTML = `
+      <figure data-media-host="view">
+        <video data-media-video data-theme-clip="light"></video>
+        <video data-media-video data-theme-clip="dark" style="display: none"></video>
+      </figure>`
+    const [light, dark] = document.querySelectorAll<HTMLVideoElement>('video')
+    initHoverVideo()
+    report(true)
+
+    light?.style.setProperty('display', 'none')
+    dark?.style.removeProperty('display')
+    document.documentElement.classList.add('dark')
+    await Promise.resolve()
+
+    expect(played.map((video) => video.dataset.themeClip)).toEqual([
+      'light',
+      'dark',
+    ])
+    expect(window.HTMLMediaElement.prototype.pause).toHaveBeenCalled()
+    document.documentElement.classList.remove('dark')
+  })
+
   it('plays a lone clip on hover', () => {
     document.body.innerHTML = `
       <article data-media-host>
