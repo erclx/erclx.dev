@@ -1,3 +1,14 @@
+---
+import { email, resume } from '@/lib/contact'
+
+// The résumé names its format because it opens a PDF in a new tab, which a
+// reader should know before the tab appears.
+const actions = [
+  { link: email, text: email.label, accent: true },
+  { link: resume, text: `${resume.label} (PDF)`, accent: false },
+]
+---
+
 {
   /* Opens on the page's own interval and closes tighter than it. Every heading
     boundary on all six pages holds 160px, which this section arrived 28px
@@ -185,12 +196,82 @@
           Open to developer roles in Gothenburg or remote, full-time or
           contract.
         </p>
+        {
+          /* The sentence asked and nothing on the section answered it, so a
+            reader ready to act scrolled back to the hero or found the dock.
+            The two ways to act sit under it instead. The email carries the
+            accent because writing is the act the sentence invites, and it is
+            the second accent on screen beside the bar's underline, which is
+            the ceiling. */
+        }
+        <div
+          data-fade
+          style="--fade-delay: 225ms"
+          class="mt-6 flex flex-wrap gap-3"
+        >
+          {
+            actions.map(({ link, text, accent }) => (
+              <a
+                href={link.href}
+                {...link.attributes}
+                data-accent={accent ? 'true' : undefined}
+                class="ask-action text-foreground text-label inline-flex min-h-11 items-center gap-2 rounded-lg px-4"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-muted-foreground size-4"
+                  aria-hidden="true"
+                >
+                  {link.paths.map((path) => (
+                    <path d={path} />
+                  ))}
+                </svg>
+                {text}
+              </a>
+            ))
+          }
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <style>
+  /* Bounded at rest, unlike the hero's links, because these are the section's
+     answer rather than a line of destinations. Under a pointer they raise the
+     glow every bounded control on the site raises. */
+  .ask-action {
+    border: 1px solid var(--border);
+    background: var(--surface-elevated);
+  }
+  .ask-action[data-accent='true'] {
+    border-color: var(--accent);
+  }
+  .ask-action:hover {
+    border-color: var(--accent);
+    background: var(--glow-fill);
+    box-shadow: var(--glow-shadow);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ask-action {
+      transition:
+        border-color 150ms ease-out,
+        background-color var(--glow-out) ease-out,
+        box-shadow var(--glow-out) ease-out;
+    }
+    .ask-action:hover {
+      transition:
+        border-color 150ms ease-out,
+        background-color var(--glow-in) ease-out,
+        box-shadow var(--glow-in) ease-out;
+    }
+  }
+
   /* The slot rests on the label's baseline and stands one cap height tall, so
      the dot inside it centres on the capitals rather than on the line box. The
      descender space under the baseline is empty and still counts toward a line

@@ -604,6 +604,23 @@ describe('the closing ask', () => {
 
     expect(queryAll(home, '#looking-for dl')).toHaveLength(0)
   })
+
+  it('hands the email to the mail client in the current tab', () => {
+    const selector = '#looking-for a[href="mailto:me@erclx.dev"]'
+
+    expect(queryAll(home, selector)).toHaveLength(1)
+    expect(textOf(home, selector)).toBe('me@erclx.dev')
+    expect(attributeOf(home, selector, 'target')).toBeNull()
+  })
+
+  it('opens the résumé in a new tab and names its format', () => {
+    const selector = `#looking-for a[href="${EXEMPT_INTERNAL_HREF}"]`
+
+    expect(queryAll(home, selector)).toHaveLength(1)
+    expect(textOf(home, selector)).toBe('Résumé (PDF)')
+    expect(attributeOf(home, selector, 'target')).toBe('_blank')
+    expect(attributeOf(home, selector, 'rel')).toBe('noopener')
+  })
 })
 
 describe('a project route', () => {
