@@ -47,13 +47,16 @@ const profiles = [github, linkedin]
         narrow widths and would then cross the viewport edge separately, which
         gives a batch of one and a step of zero.
 
-        Aligned on the baseline rather than the bottom edge. The links carry
-        44px boxes with their text centred, so bottoms set it 12px above the
-        date's. */
+        Centred rather than aligned on the bottom edge or the baseline. The
+        links carry 44px boxes with their 20px line centred, and the date is
+        one 20px line, so centring puts both lines in one place. Bottoms set
+        the links 12px above the date, and the baseline put them 3px above it,
+        since a row opening on an icon takes its baseline from the icon's
+        bottom edge rather than from the text. */
     }
     <div
       data-fade-group
-      class="mt-8 flex flex-col gap-3 md:mt-10 md:flex-row md:items-baseline md:justify-between md:gap-12"
+      class="mt-8 flex flex-col gap-3 md:mt-10 md:flex-row md:items-center md:justify-between md:gap-12"
     >
       <nav aria-label="Elsewhere" data-fade class="flex gap-5">
         {
