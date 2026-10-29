@@ -1,5 +1,6 @@
 ---
 import signatureSvg from '@/assets/footer/signature.svg?raw'
+import { github, linkedin } from '@/lib/contact'
 
 // Taken at build time, so it states the last deploy rather than the current
 // date and stays true without anything maintaining it. A month rather than a
@@ -9,20 +10,27 @@ const updated = new Date().toLocaleDateString('en-GB', {
   month: 'long',
   year: 'numeric',
 })
+
+// Where else to find the author, which a reader at the end of the page goes
+// looking for. The résumé left for the closing ask, where a reader decides to
+// act.
+const profiles = [github, linkedin]
 ---
 
 <footer data-section="footer" class="page-inset pb-10 md:pb-16">
   {
     /* No rule across the top. The closing ask above ends on five row
       separators, and a sixth line under them read as a stack rather than as a
-      division, made worse by this one running wider than the rows it sat
-      under: 1152px against 1024, because the footer breaks out to a wider
-      measure than the section above it.
+      division.
 
       What marks the footer instead is the space before it and the signature
-      opening it, which is what a reader was using anyway. */
+      opening it, which is what a reader was using anyway.
+
+      It holds the column every section holds rather than breaking out to
+      64rem, which started it 128px left of the sections at 1440, on an edge
+      nothing above it used. */
   }
-  <div class="mx-auto max-w-3xl pt-16 md:pt-20 lg:max-w-5xl">
+  <div class="mx-auto max-w-3xl pt-16 md:pt-20">
     <div
       data-signature
       aria-hidden="true"
@@ -37,35 +45,43 @@ const updated = new Date().toLocaleDateString('en-GB', {
 
         Grouped rather than left to the batch path, because these two stack at
         narrow widths and would then cross the viewport edge separately, which
-        gives a batch of one and a step of zero. */
+        gives a batch of one and a step of zero.
+
+        Aligned on the baseline rather than the bottom edge. The links carry
+        44px boxes with their text centred, so bottoms set it 12px above the
+        date's. */
     }
     <div
       data-fade-group
-      class="mt-8 flex flex-col gap-3 md:mt-10 md:flex-row md:items-end md:justify-between md:gap-12"
+      class="mt-8 flex flex-col gap-3 md:mt-10 md:flex-row md:items-baseline md:justify-between md:gap-12"
     >
-      <a
-        href="/resume.pdf"
-        target="_blank"
-        rel="noopener"
-        data-fade
-        class="text-foreground text-label inline-flex min-h-11 items-center gap-2 underline-offset-4 hover:underline"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          class="text-muted-foreground size-4 -rotate-12"
-        >
-          <path
-            d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.99 8.7l-8.57 8.57a2 2 0 0 1-2.83-2.83l8.49-8.49"
-          ></path>
-        </svg>
-        Résumé
-      </a>
+      <nav aria-label="Elsewhere" data-fade class="flex gap-5">
+        {
+          profiles.map((link) => (
+            <a
+              href={link.href}
+              {...link.attributes}
+              class="text-muted-foreground hover:text-foreground text-label inline-flex min-h-11 items-center gap-2 underline-offset-4 hover:underline"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4"
+                aria-hidden="true"
+              >
+                {link.paths.map((path) => (
+                  <path d={path} />
+                ))}
+              </svg>
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
       {
         /* The city left this line rather than moving. The closing ask already
           states it as a filter, which is where the scope doc put it, so the

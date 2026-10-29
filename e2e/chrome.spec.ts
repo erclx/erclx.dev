@@ -57,6 +57,17 @@ test.describe('the reading column', () => {
       1,
     )
   })
+
+  test('the footer starts where the closing ask does', async ({ page }) => {
+    await page.goto('/')
+    const ask = await page.locator('#looking-for h2').boundingBox()
+    const footer = await page
+      .locator('[data-section="footer"] nav[aria-label="Elsewhere"]')
+      .boundingBox()
+
+    expect(ask?.x ?? 0).toBeGreaterThan(0)
+    expect(Math.abs((ask?.x ?? 0) - (footer?.x ?? 0))).toBeLessThanOrEqual(1)
+  })
 })
 
 test.describe('navigation chrome', () => {

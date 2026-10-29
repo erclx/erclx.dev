@@ -130,6 +130,27 @@ describe('the footer', () => {
     expect(textOf(home, '#looking-for')).toContain('Gothenburg')
   })
 
+  it('names where else to find the author', () => {
+    const profiles = queryAll(home, `${FOOTER} nav a`).map((link) =>
+      link.getAttribute('href'),
+    )
+
+    expect(profiles).toEqual([
+      'https://github.com/erclx',
+      'https://www.linkedin.com/in/erclx',
+    ])
+  })
+
+  it('leaves the résumé to the closing ask', () => {
+    expect(
+      queryAll(home, `#looking-for a[href="${EXEMPT_INTERNAL_HREF}"]`),
+    ).toHaveLength(1)
+
+    expect(
+      queryAll(home, `${FOOTER} a[href="${EXEMPT_INTERNAL_HREF}"]`),
+    ).toHaveLength(0)
+  })
+
   it('carries no copyright notice', () => {
     const text = textOf(home, FOOTER)
 
