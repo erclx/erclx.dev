@@ -69,7 +69,7 @@ Holds the harness that serves the site to a phone or tablet on the same network,
 
 ### `src/components/dev/`
 
-Holds the scenario switcher, which serves candidate treatments of one visual decision live from the running page behind a query parameter. The `visual-batch` skill names it, since nothing in the tree references it between decisions.
+Holds the scenario switcher, which serves candidate treatments of one visual decision live from the running page behind a query parameter. Nothing in the tree references it between decisions.
 
 - The component sits behind `import.meta.env.DEV`, so a production build carries none of it
 - An arm carries CSS for a treatment, or sets an id on `documentElement.dataset` for a runtime value such as a pace
