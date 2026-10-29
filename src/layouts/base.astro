@@ -119,19 +119,13 @@ const ogImageAlt =
     <PageGround />
     {!isRoute && <SiteBar />}
     {
-      /* Every surface carries it, where the landing page rendered it alone
-        until 2026-08-20. A route is the longest read on the site and the one
-        a shared link lands on, which is the arrival that skips the landing
-        page and every contact link on it.
-
-        A route reveals it at once. Its gate watches the header for the hero
-        to scroll past, and a route's header is the sticky bar, which never
-        leaves the viewport: measured across a full scroll of a route, the
-        intersection ratio reads 1 and only 1, so the control would never
-        arrive at all. The rail already answers the same problem the same way
-        on the same surfaces. */
+      /* A route alone carries it. A route is the longest read on the site and
+        the one a shared link lands on, and its foot carries the way home alone,
+        so the dock is its only contact. The landing page already holds every
+        destination in the hero, the closing ask, and the footer, where a dock
+        was a fourth copy of each and covered body text on a phone. */
     }
-    <ContactDock instant={isRoute} />
+    {isRoute && <ContactDock />}
     <slot />
   </body>
 </html>

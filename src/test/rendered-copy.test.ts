@@ -318,6 +318,14 @@ describe('the landing page', () => {
     expect(queryAll(home, '[data-scenario-switcher]')).toHaveLength(0)
   })
 
+  // The hero, the closing ask, and the footer already carry every contact
+  // link, so a dock here would be a fourth copy of each.
+  it('carries no contact dock', () => {
+    expect(queryAll(home, 'main')).toHaveLength(1)
+
+    expect(queryAll(home, '[data-contact-dock]')).toHaveLength(0)
+  })
+
   it('links every section in the bar', () => {
     const labels = queryAll(home, '[data-section-nav] a').map((link) =>
       collapse(link.textContent),
@@ -642,6 +650,11 @@ describe('a project route', () => {
       expect(ids[3]).toBe('what-it-shows')
     },
   )
+
+  // A route's foot carries the way home alone, so the dock is its only contact.
+  it.each(PROJECT_ROUTES)('carries the contact dock on %s', (route) => {
+    expect(queryAll(readPage(route), '[data-contact-dock]')).toHaveLength(1)
+  })
 
   // The opening row is left out, since the route's name in the bar already
   // returns a reader to the top.

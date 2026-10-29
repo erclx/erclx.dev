@@ -209,3 +209,38 @@ test.describe('the sections menu on a phone', () => {
       .toBeLessThan(PHONE.height / 2)
   })
 })
+
+test.describe('the contact dock on a phone', () => {
+  test.use({ viewport: PHONE })
+
+  test('stands down while the sections menu is open', async ({ page }) => {
+    await page.goto('/canon')
+    const dock = page.locator('[data-contact-dock]')
+    await expect(dock).not.toHaveAttribute('inert')
+
+    await page.getByRole('button', { name: 'Sections' }).click()
+
+    await expect(dock).toHaveAttribute('inert')
+    await page.keyboard.press('Escape')
+    await expect(dock).not.toHaveAttribute('inert')
+  })
+
+  test('clears the closing foot at the end of a route', async ({ page }) => {
+    await page.goto('/canon')
+    await scrollToEnd(page)
+    await expect.poll(() => scrollY(page)).toBeGreaterThan(0)
+
+    // The resting control rather than the dock, whose box holds the collapsed
+    // stack of links above it.
+    const dock = await page.locator('[data-dock-toggle]').boundingBox()
+    const foot = await page
+      .locator('footer[data-section="footer"] > div')
+      .boundingBox()
+
+    expect(dock?.height ?? 0).toBeGreaterThan(0)
+    expect(foot?.height ?? 0).toBeGreaterThan(0)
+    expect(dock?.y ?? 0).toBeGreaterThanOrEqual(
+      (foot?.y ?? 0) + (foot?.height ?? 0),
+    )
+  })
+})
