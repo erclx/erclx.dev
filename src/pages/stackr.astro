@@ -28,9 +28,9 @@ const demoPoster = await getImage({ src: stackrPoster, format: 'webp' })
 // The route's opening leads the rail, per the note in `jobtriage.astro`.
 const navItems = [
   { id: 'stackr', label: 'stackr' },
-  { id: 'problem', label: 'problem' },
-  { id: 'tracks', label: 'tracks' },
-  { id: 'runtime', label: 'runtime' },
+  { id: 'why-i-built-it', label: 'why i built it' },
+  { id: 'how-it-works', label: 'how it works' },
+  { id: 'what-it-shows', label: 'what it shows' },
 ]
 ---
 
@@ -59,8 +59,9 @@ const navItems = [
           Stackr
         </h1>
         <p data-fade class="text-muted-foreground text-lede mt-4">
-          A VS Code extension that keeps named sets of files and copies each one
-          into an AI chat as a single block, with the directory tree on top.
+          Stackr is a VS Code extension that keeps named sets of files and
+          copies each one into an AI chat as a single block, with the directory
+          tree on top.
         </p>
         <ul data-fade class="mt-6 flex flex-wrap gap-x-6">
           {
@@ -101,85 +102,51 @@ const navItems = [
       </div>
     </section>
 
-    <section id="problem" class="page-inset py-16 md:py-20">
+    <section id="why-i-built-it" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
-          problem
+          why i built it
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          I was assembling context for a planning conversation by opening files
-          one at a time and pasting them in order, often enough that it started
-          to grate.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Planning a change or arguing about architecture still wants a chat
-          with the right files in front of it. The context is the input, and
-          building it was the tedious part.
+          I was building context for planning chats by opening files one at a
+          time and pasting them in order. The context was the input, and putting
+          it together was the slow part.
         </p>
       </div>
     </section>
 
-    <section id="tracks" class="page-inset py-16 md:py-20">
+    <section id="how-it-works" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
-          tracks
+          how it works
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          A track is a named working set. Fix Session Timeout and Refactor Auth
-          each keep their own staged list and swap on one keystroke, so the
-          context for one piece of work survives while you go and do another.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Copying a track emits an ASCII directory tree followed by the file
-          contents, which gives the model the shape of the codebase before it
-          reads any of it. Estimated token counts update as the stack changes,
-          per file and for the whole track, and a file turns amber above 5,000
-          and red above 10,000. Tracks survive a restart of VS Code.
+          Each piece of work gets its own named set of files, and I switch
+          between sets with one keystroke. Copying a set gives the model the
+          folder structure first and then the files, with a token count per file
+          so I can see what is too big.
         </p>
       </div>
     </section>
 
-    <section id="runtime" class="page-inset py-16 md:py-20">
+    <section id="what-it-shows" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
         <h2
           data-fade
           class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
-          runtime
+          what it shows
         </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          The feature runs inside someone else's editor, which makes the runtime
-          itself part of the problem.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The extension carries no runtime dependencies. Everything runs against
-          the VS Code API and the Node standard library, with esbuild bundling
-          and every other package sitting in <code class="font-mono"
-            >devDependencies</code
-          >.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          For code loaded into someone else's editor the dependency tree is the
-          risk surface, so removing it beats auditing it.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Every pull request runs the tests on Ubuntu, macOS, and Windows. A
-          version tag runs them again and, once they pass, publishes to the VS
-          Code Marketplace and Open VSX and attaches the package to a GitHub
-          release.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The other constraint is the extension host, which is shared and single
-          threaded. Building the tree for a large stack would block it, so the
-          tree builder works in chunks of 500 files and yields between them.
-          Cleaning deleted files out of every track yields on time instead,
-          whenever 16 milliseconds have passed.
+          It has no runtime dependencies, so nothing extra loads into someone
+          else's editor, and its tests run on Ubuntu, macOS and Windows.
+          Published on the VS Code Marketplace and Open VSX, and I still use it.
         </p>
       </div>
     </section>

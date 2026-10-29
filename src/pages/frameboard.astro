@@ -1,0 +1,164 @@
+---
+import { getImage } from 'astro:assets'
+
+import boardStill from '@/assets/projects/frameboard-light.png'
+import boardLoop from '@/assets/videos/frameboard.mp4?url'
+import RouteFoot from '@/components/site/case-study/route-foot.astro'
+import RouteBar from '@/components/site/nav/route-bar.astro'
+import SectionNav from '@/components/site/section-nav/section-nav.astro'
+import BaseLayout from '@/layouts/base.astro'
+import { getLinkTargetAttributes } from '@/lib/links'
+
+const artifactLinks = [
+  { label: 'GitHub', href: 'https://github.com/erclx/frameboard' },
+  { label: 'npm', href: 'https://www.npmjs.com/package/frameboard' },
+  { label: 'Website', href: 'https://frameboard.erclx.dev' },
+]
+
+// A `poster` attribute takes a URL rather than an image, so it reaches for the
+// source file unless something derives the optimized one.
+const loopPoster = await getImage({ src: boardStill, format: 'webp' })
+
+// The route's opening leads the rail, per the note in `jobtriage.astro`.
+const navItems = [
+  { id: 'frameboard', label: 'frameboard' },
+  { id: 'why-i-built-it', label: 'why i built it' },
+  { id: 'how-i-use-it', label: 'how i use it' },
+  { id: 'what-it-shows', label: 'what it shows' },
+]
+---
+
+<BaseLayout
+  title="Frameboard · Eric Le"
+  description="Frameboard is a local design board where coding agents draw interfaces as plain HTML files and I steer them by hand or with notes they answer."
+  surface="case-study"
+>
+  <SectionNav items={navItems} instant />
+
+  <RouteBar here="Frameboard" />
+
+  <main>
+    <section id="frameboard" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
+      <div class="prose-column mx-auto">
+        <p
+          data-fade
+          class="text-muted-foreground text-label tracking-wide uppercase"
+        >
+          Project
+        </p>
+        <h1
+          data-fade
+          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+        >
+          Frameboard
+        </h1>
+        <p data-fade class="text-muted-foreground text-lede mt-4">
+          Frameboard is a local design board where my coding agents and I design
+          together. They draw interfaces as plain HTML files, and I steer them
+          by hand or with notes they answer.
+        </p>
+        <ul data-fade class="mt-6 flex flex-wrap gap-x-6">
+          {
+            artifactLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  {...getLinkTargetAttributes(link.href)}
+                  class="text-foreground text-label inline-flex min-h-11 min-w-11 items-center underline-offset-4 hover:underline"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        {
+          /* The board has one loop, recorded in light, so it plays under both
+            themes. The still is a full board at another size, so the frame
+            holds the loop's own ratio and the poster is cropped to it rather
+            than the figure jumping when playback starts. It declares `view`
+            so a phone, which cannot hover, plays it on screen. */
+        }
+        <figure
+          data-media-host="view"
+          data-fade
+          class="figure-breakout bg-card border-border/60 mt-12 overflow-hidden rounded-lg border"
+        >
+          <video
+            src={boardLoop}
+            poster={loopPoster.src}
+            muted
+            loop
+            playsinline
+            preload="none"
+            data-media-video
+            aria-label="The Frameboard canvas showing a plant care app's landing page and two phone screens"
+            class="block aspect-[880/588] w-full object-cover object-top"
+          ></video>
+        </figure>
+      </div>
+    </section>
+
+    <section id="why-i-built-it" class="page-inset py-16 md:py-20">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
+          why i built it
+        </h2>
+        <p data-fade class="text-foreground text-lede mt-6">
+          I wanted my agents to design in something I could see and change. Each
+          frame is one HTML file, so an agent draws with the tools it already
+          has, and the board shows the frame the moment the file lands.
+        </p>
+      </div>
+    </section>
+
+    <section id="how-i-use-it" class="page-inset py-16 md:py-20">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
+          how i use it
+        </h2>
+        <p data-fade class="text-foreground text-lede mt-6">
+          I use it every day to sketch interfaces and design systems and to work
+          out UI fixes before they become code. I move, restyle and retype a
+          frame by hand, or pin a note the agent answers in its thread. A Claude
+          Code plugin checks each frame after the agent writes it, so a broken
+          rule shows on the frame.
+        </p>
+      </div>
+    </section>
+
+    <section id="what-it-shows" class="page-inset py-16 md:py-20">
+      <div class="prose-column mx-auto">
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
+          what it shows
+        </h2>
+        <p data-fade class="text-foreground text-lede mt-6">
+          I built it with canon, starting in October 2026. Open source on npm
+          under the MIT license, with unit, end-to-end and macOS tests in CI.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <RouteFoot />
+
+  <script>
+    import { initWayHome } from '@/components/site/case-study/way-home'
+    import { initHoverVideo } from '@/lib/hover-video'
+    import { initReveal } from '@/lib/reveal'
+
+    initReveal()
+    initWayHome()
+    initHoverVideo()
+  </script>
+</BaseLayout>

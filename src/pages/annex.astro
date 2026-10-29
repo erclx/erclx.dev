@@ -17,34 +17,9 @@ const artifactLinks = [
 // The route's opening leads the rail, per the note in `jobtriage.astro`.
 const navItems = [
   { id: 'annex', label: 'annex' },
-  { id: 'what', label: 'what' },
-  { id: 'question', label: 'question' },
-  { id: 'findings', label: 'findings' },
-  { id: 'graph', label: 'graph' },
-  { id: 'refusal', label: 'refusal' },
-  { id: 'freshness', label: 'freshness' },
-  { id: 'limits', label: 'limits' },
-]
-
-const evaluation = [
-  {
-    arm: 'Whole Act in the prompt',
-    recallOriginal: '1.00',
-    recallAmended: '1.00',
-    promptTokens: '1 416 797',
-  },
-  {
-    arm: 'Search only',
-    recallOriginal: '0.61',
-    recallAmended: '0.71',
-    promptTokens: '51 622',
-  },
-  {
-    arm: 'Search plus reference traversal',
-    recallOriginal: '0.83',
-    recallAmended: '0.81',
-    promptTokens: '193 575',
-  },
+  { id: 'why-i-built-it', label: 'why i built it' },
+  { id: 'how-it-works', label: 'how it works' },
+  { id: 'what-it-shows', label: 'what it shows' },
 ]
 
 // The alt text is the annex README's own for the same two files.
@@ -52,8 +27,6 @@ const heroAlt =
   'The Annex landing page: a description box and twelve recorded questions'
 
 const heroImageClass = 'block h-auto w-full'
-const headingClass =
-  'text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl'
 ---
 
 <BaseLayout
@@ -81,9 +54,9 @@ const headingClass =
           annex
         </h1>
         <p data-fade class="text-muted-foreground text-lede mt-4">
-          An agent for the EU AI Act that maps a described system to the
-          articles that apply, cited to the text, built to test whether
-          retrieval still helps when the whole law fits in context.
+          annex is an agent for the EU AI Act. You describe an AI system, and it
+          returns the articles that may apply, cited to the text, and says so
+          when the Act does not settle the question.
         </p>
         <ul data-fade class="mt-6 flex flex-wrap gap-x-6">
           {
@@ -123,202 +96,51 @@ const headingClass =
       </div>
     </section>
 
-    <section id="what" class="page-inset py-16 md:py-20">
+    <section id="why-i-built-it" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
-        <h2 data-fade class={headingClass}>what</h2>
-        <p data-fade class="text-foreground text-lede mt-6">
-          A user describes an AI system. The agent returns the articles that may
-          attach, cited to the text it read them from, and says so plainly when
-          the law does not settle the question.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          It does not determine whether a system complies. It finds the text a
-          person needs to read.
-        </p>
-      </div>
-    </section>
-
-    <section id="question" class="page-inset py-16 md:py-20">
-      <div class="prose-column mx-auto">
-        <h2 data-fade class={headingClass}>question</h2>
-        <p data-fade class="text-foreground text-lede mt-6">
-          I wanted to know whether retrieval still helped when a model could
-          read the whole EU AI Act.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The whole Act comes to about 115,000 tokens, which fits inside the
-          131,072-token window one GPU could hold. That made the usual answer
-          stop being obvious: if a model can read the whole law, is retrieval
-          still worth building?
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          So rather than assume a vector database belonged in the design, I
-          compared three arms on the same twelve questions: the whole Act in the
-          context window, vector search alone, and vector search followed by a
-          walk along the Act's own cross-references. All three shared the same
-          answer prompt and the same grounding check, so any gap between them
-          came from how each one found the text.
-        </p>
-      </div>
-    </section>
-
-    <section id="findings" class="page-inset py-16 md:py-20">
-      <div class="prose-column mx-auto">
-        <h2 data-fade class={headingClass}>findings</h2>
-        <p data-fade class="text-foreground text-lede mt-6">
-          Reading the whole Act found every article the answers needed, which is
-          closer to a definition than a result, since that arm was handed every
-          provision and could not miss one. The best retrieval arm found 0.83 of
-          them.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Retrieval still earned its place on cost and on checking. It sent
-          about a seventh of the tokens, and because it knows exactly which
-          passages it sent, every citation in an answer can be checked by code.
-          At the next corpus size up, the whole-document arm is not an option at
-          all.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The cheapest change measured was not an architecture change. Replacing
-          the embedding model moved every retrieval arm's recall by 0.20 to
-          0.25, with no new dependency, which is the kind of gain that gets
-          missed by comparing pipelines rather than parts.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Traversal then recovered more linked obligations on top of the better
-          embeddings, lifting recall from 0.61 to 0.83 on the original text. On
-          the amended text it cost precision, because it also surfaces articles
-          that belong to the chain but not to the literal question.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The conclusion is narrower than retrieval not working. Retrieval is
-          not automatically the right answer when the complete, trusted source
-          fits in context.
-        </p>
-
-        {
-          /* The evaluation table and the sentence captioning it, both as
-            `annex.md` in the career source carries them. */
-        }
-        <figure
+        <h2
           data-fade
-          class="figure-breakout bg-card mt-10 overflow-x-auto rounded-lg p-6 md:p-10"
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
         >
-          <figcaption class="text-muted-foreground text-label mb-4 font-mono">
-            The same twelve questions ran three ways on one RTX 5090, 72 runs in
-            all.
-          </figcaption>
-          <table class="text-label w-full min-w-[32rem] font-mono">
-            <thead>
-              <tr class="text-muted-foreground">
-                <th class="text-left font-normal">Arm</th>
-                <th class="text-right font-normal tabular-nums">
-                  Recall, original
-                </th>
-                <th class="text-right font-normal tabular-nums">
-                  Recall, amended
-                </th>
-                <th class="text-right font-normal tabular-nums">
-                  Prompt tokens, original
-                </th>
-              </tr>
-            </thead>
-            <tbody class="text-foreground">
-              {
-                evaluation.map((row) => (
-                  <tr>
-                    <td class="py-1 pr-4">{row.arm}</td>
-                    <td class="py-1 pl-4 text-right tabular-nums">
-                      {row.recallOriginal}
-                    </td>
-                    <td class="py-1 pl-4 text-right tabular-nums">
-                      {row.recallAmended}
-                    </td>
-                    <td class="py-1 pl-4 text-right tabular-nums">
-                      {row.promptTokens}
-                    </td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
-        </figure>
-      </div>
-    </section>
-
-    <section id="graph" class="page-inset py-16 md:py-20">
-      <div class="prose-column mx-auto">
-        <h2 data-fade class={headingClass}>graph</h2>
+          why i built it
+        </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          The Act cites itself in ordinary sentences, phrases like "in
-          accordance with Article 43" sitting inside running prose. Those
-          citations are parsed into several hundred graph edges programmatically
-          rather than inferred by a model.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          That is what makes a multi-hop question answerable at all. Asking what
-          follows from a system being high-risk walks from <code
-            class="font-mono">Article 6</code
-          > to every one of <code class="font-mono">Articles 8-15</code> and <code
-            class="font-mono">Article 43</code
-          > in two hops, instead of hoping one retrieved passage happens to hold the
-          whole chain.
+          I wanted to know whether retrieval still helps when a model can read
+          the whole law. The Act fits in one model's context window, so the
+          usual answer was no longer obvious.
         </p>
       </div>
     </section>
 
-    <section id="refusal" class="page-inset py-16 md:py-20">
+    <section id="how-it-works" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
-        <h2 data-fade class={headingClass}>refusal</h2>
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
+          how it works
+        </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          The refusal is a branch in the pipeline rather than error handling.
-          Where the retrieved and traversed text does not settle a question, the
-          agent says so instead of extrapolating.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The clearest case is a threshold regulators have not defined. Whether
-          a later modification to an already-deployed system counts as
-          substantial enough to trigger full high-risk compliance is not settled
-          by the text, so the agent declines to settle it either.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          It is also the weakest thing I measured. Three of the twelve questions
-          are ones the text does not settle, and across every arm and both
-          versions the agent refused correctly on 5 of 18 chances. It refused
-          wrongly on 1 of the 54 questions the text does settle.
+          I compared three ways of finding the text on the same twelve
+          questions. One read the whole Act in context, one used vector search,
+          and one followed vector search with the Act's own cross-references. It
+          runs fully local on Ollama.
         </p>
       </div>
     </section>
 
-    <section id="freshness" class="page-inset py-16 md:py-20">
+    <section id="what-it-shows" class="page-inset py-16 md:py-20">
       <div class="prose-column mx-auto">
-        <h2 data-fade class={headingClass}>freshness</h2>
+        <h2
+          data-fade
+          class="text-foreground font-display text-2xl leading-tight font-semibold md:text-3xl"
+        >
+          what it shows
+        </h2>
         <p data-fade class="text-foreground text-lede mt-6">
-          A Digital Omnibus amendment in force since 27 July 2026 moved the
-          deadline for standalone high-risk obligations from 2 August 2026 to 2
-          December 2027, so the Act has two versions and both are indexed.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          Querying the unamended corpus returns a confidently wrong deadline.
-          Querying the amended corpus returns the right one, with the citation
-          change visible between them. That is a better argument for keeping a
-          corpus current than any sentence about it.
-        </p>
-      </div>
-    </section>
-
-    <section id="limits" class="page-inset py-16 md:py-20">
-      <div class="prose-column mx-auto">
-        <h2 data-fade class={headingClass}>limits</h2>
-        <p data-fade class="text-foreground text-lede mt-6">
-          It names obligations and cites text. The compliance judgment stays
-          with the reader.
-        </p>
-        <p data-fade class="text-muted-foreground text-body mt-6">
-          The deployed page replays twelve questions recorded on both versions
-          of the text rather than calling a model. The generation model needs
-          30GB of GPU memory and nothing free hosts that, so asking a new
-          question means running the pipeline locally.
+          Reading the whole Act found every article the answers needed. Search
+          plus cross-references found 83% of them with about a seventh of the
+          prompt tokens, and showed which text it used.
         </p>
       </div>
     </section>

@@ -18,12 +18,14 @@ const DIST = join(process.cwd(), 'dist')
 const ROUTES = [
   '/',
   '/canon',
-  '/jobtriage',
+  '/frameboard',
   '/stackr',
   '/caret',
-  '/diction',
+  '/jobtriage',
   '/annex',
 ]
+
+const PROJECT_ROUTES = ROUTES.filter((route) => route !== '/')
 
 // What Google truncates a description at. Every host shows less than this, so a
 // description inside it is inside all of them.
@@ -584,25 +586,81 @@ describe('the closing ask', () => {
   })
 })
 
-describe('a case study', () => {
-  it('renders the canon claim and sections', () => {
-    const doc = readPage('/canon')
+describe('a project route', () => {
+  it.each(PROJECT_ROUTES)(
+    'states why the work started before what it shows on %s',
+    (route) => {
+      const ids = queryAll(readPage(route), 'main section[id]').map(
+        (section) => section.id,
+      )
 
-    expect(textOf(doc, 'h1')).toBe('canon')
-    expect(textOf(doc, 'main')).toContain(
-      'packaged so any repository can install it',
+      expect(ids).toHaveLength(4)
+      expect(ids[0]).toBe(route.slice(1))
+      expect(ids[1]).toBe('why-i-built-it')
+      expect(ids[3]).toBe('what-it-shows')
+    },
+  )
+
+  it.each(PROJECT_ROUTES)('tracks every section in the rail on %s', (route) => {
+    const doc = readPage(route)
+    const labels = queryAll(doc, '[data-section-nav] a').map((link) =>
+      collapse(link.textContent),
     )
-    expect(queryAll(doc, 'main section[id]')).toHaveLength(6)
-  })
+    const headings = queryAll(doc, 'main h2').map((heading) =>
+      collapse(heading.textContent),
+    )
 
-  it('names the scoped package on the canon route', () => {
-    expect(textOf(readPage('/canon'), 'main')).toContain('@erclx/canon')
+    expect(labels.slice(1)).toEqual(headings)
   })
 
   it.each([
     [
       '/canon',
-      'How I build with AI coding agents, packaged for any repository: one session plans, others build in parallel, and a separate session reviews.',
+      'canon is how I build with AI coding agents, packaged so any repository can install it.',
+    ],
+    [
+      '/frameboard',
+      'Frameboard is a local design board where my coding agents and I design together.',
+    ],
+    [
+      '/stackr',
+      'Stackr is a VS Code extension that keeps named sets of files and copies each one into an AI chat as a single block, with the directory tree on top.',
+    ],
+    [
+      '/caret',
+      'Caret is a Chrome extension that opens a searchable prompt library right where you type, in Claude, Gemini and ChatGPT.',
+    ],
+    [
+      '/jobtriage',
+      "Jobtriage is a job-search agent over Sweden's public JobTech API.",
+    ],
+    ['/annex', 'annex is an agent for the EU AI Act.'],
+  ])('opens on the source intro on %s', (route, sentence) => {
+    expect(textOf(readPage(route), 'main')).toContain(sentence)
+  })
+
+  it.each([
+    ['/canon', 'and I merge every pull request myself.'],
+    ['/frameboard', 'I built it with canon, starting in October 2026.'],
+    ['/stackr', 'and its tests run on Ubuntu, macOS and Windows.'],
+    ['/caret', 'Published on the Chrome Web Store across four releases'],
+    [
+      '/jobtriage',
+      'Hybrid search found 95% of the relevant ads in its top ten results.',
+    ],
+    ['/annex', 'Search plus cross-references found 83% of them'],
+  ])('carries the source sections on %s', (route, sentence) => {
+    expect(textOf(readPage(route), 'main')).toContain(sentence)
+  })
+
+  it.each([
+    [
+      '/canon',
+      "canon runs a coding agent's work from plan to reviewed pull request, through one orchestrator that dispatches a planner, a worker and a reviewer.",
+    ],
+    [
+      '/frameboard',
+      'Frameboard is a local design board where coding agents draw interfaces as plain HTML files and I steer them by hand or with notes they answer.',
     ],
     [
       '/jobtriage',
@@ -620,58 +678,33 @@ describe('a case study', () => {
       '/annex',
       'An agent for the EU AI Act that maps a system to the articles that apply, built to test whether retrieval still helps when the whole law fits in context.',
     ],
-    [
-      '/diction',
-      'A pronunciation trainer that scores each sound against what a native speaker actually sounds like, and reports how often it is wrong. Runs offline.',
-    ],
   ])('carries the source description on %s', (route, description) => {
     expect(meta(readPage(route), 'meta[name="description"]')).toBe(description)
   })
 
-  it('states the landing page sentence on the canon route', () => {
-    expect(collapse(textOf(readPage('/canon'), 'main'))).toContain(
-      'is one real session the toolkit ran on itself, with every count on it read from the repository at build time',
+  it('carries a loop per theme on the canon route', () => {
+    const videos = queryAll(readPage('/canon'), 'main video[data-media-video]')
+
+    expect(videos.map((video) => video.getAttribute('class'))).toEqual([
+      expect.stringContaining('dark:hidden'),
+      expect.stringContaining('dark:block'),
+    ])
+  })
+
+  it('holds the Frameboard loop at its own ratio', () => {
+    const doc = readPage('/frameboard')
+
+    expect(queryAll(doc, 'main video[data-media-video]')).toHaveLength(1)
+    expect(attributeOf(doc, 'main video', 'class')).toContain(
+      'aspect-[880/588]',
     )
   })
 
-  it('renders the diction claim and sections', () => {
-    const doc = readPage('/diction')
-
-    expect(textOf(doc, 'h1')).toBe('diction')
-    expect(textOf(doc, 'main')).toContain(
-      'scores each sound against what a native speaker actually sounds like',
-    )
-    expect(queryAll(doc, 'main section[id]')).toHaveLength(6)
-  })
-
-  it('renders the annex claim and sections', () => {
+  it('keeps both annex screenshots and drops the evaluation table', () => {
     const doc = readPage('/annex')
 
-    expect(textOf(doc, 'h1')).toBe('annex')
-    expect(textOf(doc, 'main')).toContain(
-      'built to test whether retrieval still helps when the whole law fits in context',
-    )
-    expect(queryAll(doc, 'main section[id]')).toHaveLength(8)
-  })
-
-  it('renders the annex evaluation table with its three arms', () => {
-    const doc = readPage('/annex')
-
-    expect(queryAll(doc, 'main table tbody tr')).toHaveLength(3)
-  })
-
-  it('states the offline claim on the diction route', () => {
-    expect(textOf(readPage('/diction'), 'main')).toContain(
-      'Runs local and offline.',
-    )
-  })
-
-  it.each([
-    ['/jobtriage', 'It passed five.'],
-    ['/stackr', 'Tracks survive a restart of VS Code.'],
-    ['/caret', 'one contenteditable adapter serves all three'],
-  ])('renders the ported body copy on %s', (route, sentence) => {
-    expect(collapse(textOf(readPage(route), 'main'))).toContain(sentence)
+    expect(queryAll(doc, 'main figure img')).toHaveLength(2)
+    expect(queryAll(doc, 'main table')).toHaveLength(0)
   })
 
   it('posters the Jobtriage clip with an optimized derivative', () => {
