@@ -3,6 +3,6 @@
  * the two surfaces fails a test rather than going unnoticed.
  */
 export const BIO_PARAGRAPHS = [
-  "I'm Eric, an AI engineer in Gothenburg. I studied physics at Chalmers, got hooked on AI agents during my master's thesis at Volvo, and now spend my days building AI tools and agents, mostly ones I needed myself first.",
-  'Outside of work I do calisthenics, play tennis, and travel whenever I can.',
+  "I'm Eric, a software developer in Gothenburg. I studied engineering physics at Chalmers and built my first agent during my master's thesis at Volvo. These days I build open-source tools for coding with AI agents, because an agent does its best work when the plan, the rules and the review around it are set up well, and that setup is the part I enjoy.",
+  'Outside of that I play tennis and travel whenever I can.',
 ]

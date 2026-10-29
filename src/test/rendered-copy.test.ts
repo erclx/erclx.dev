@@ -167,7 +167,7 @@ describe('a shared link', () => {
 
   it('carries the source description on the landing page', () => {
     expect(meta(home, 'meta[name="description"]')).toBe(
-      'Eric Le, AI engineer in Gothenburg who builds AI agents, and the projects behind that.',
+      'Eric Le, software developer in Gothenburg who builds open-source tools for coding with AI agents.',
     )
   })
 
@@ -238,13 +238,13 @@ describe('the header', () => {
 describe('the about surface', () => {
   it('introduces the person before the work', () => {
     expect(textOf(home, '[data-section="about"]')).toContain(
-      "I'm Eric, an AI engineer in Gothenburg.",
+      "I'm Eric, a software developer in Gothenburg.",
     )
   })
 
   it('closes on one thing that is not work', () => {
     expect(textOf(home, '[data-section="about"]')).toContain(
-      'Outside of work I do calisthenics, play tennis, and travel whenever I can.',
+      'Outside of that I play tennis and travel whenever I can.',
     )
   })
 })
