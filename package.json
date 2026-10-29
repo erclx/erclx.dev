@@ -11,6 +11,7 @@
     "brand": "bun scripts/brand/rasters.ts",
     "share-card": "bun scripts/brand/share-card.ts",
     "unfurl": "bun scripts/brand/unfurl.ts",
+    "resume-pages": "bun scripts/resume/pages.ts",
     "build": "astro check && astro build",
     "preview": "WORKTREE_PORT_OFFSET=$(bash scripts/worktree-port.sh) && export WORKTREE_PORT_OFFSET && astro preview",
     "astro": "astro",

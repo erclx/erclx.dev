@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -837,5 +838,20 @@ describe('a link', () => {
     expect(queryAll(home, selector).length).toBeGreaterThan(0)
     expect(attributeOf(home, selector, 'target')).toBe('_blank')
     expect(attributeOf(home, selector, 'rel')).toBe('noopener')
+  })
+})
+
+describe('the résumé page', () => {
+  // The page images are committed beside a hash of the PDF they came from, so
+  // a sync that skips `bun run resume-pages` fails here rather than shipping
+  // new text beside old pages.
+  it('draws its page images from the PDF that ships', () => {
+    const pdf = readFileSync(join(process.cwd(), 'public/resume.pdf'))
+    const recorded = readFileSync(
+      join(process.cwd(), 'src/assets/resume/source.sha256'),
+      'utf8',
+    ).trim()
+
+    expect(createHash('sha256').update(pdf).digest('hex')).toBe(recorded)
   })
 })
