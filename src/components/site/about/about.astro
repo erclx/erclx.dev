@@ -227,10 +227,17 @@ const RACKET_LINE = paragraphs.findIndex((paragraph) =>
             style={`--fade-delay: ${100 + idx * 100}ms`}
             class:list={[
               'text-muted-foreground text-body',
-              idx === RACKET_LINE && 'flex items-end justify-between gap-6',
+              idx === RACKET_LINE && 'flex flex-wrap items-end gap-x-6 gap-y-2',
             ]}
           >
-            {paragraph}
+            {idx === RACKET_LINE ? (
+              /* The line holds a measure of its own and the racket wraps under
+                it rather than squeezing it: beside the racket at 320px the
+                sentence broke across four lines of two or three words. */
+              <span class="min-w-0 flex-[1_1_14rem]">{paragraph}</span>
+            ) : (
+              paragraph
+            )}
             {idx === RACKET_LINE && (
               /* The second figure, on the line it illustrates. Its right edge,
                 the ball's, meets the aircraft's nose above it, so the two read
@@ -596,6 +603,7 @@ const RACKET_LINE = paragraphs.findIndex((paragraph) =>
     flex: none;
     width: calc(101 * var(--racket-unit));
     height: auto;
+    margin-left: auto;
     margin-right: var(--racket-inset);
     margin-bottom: calc(0.125rem - 7 * var(--racket-unit));
     color: var(--figure-fill);
