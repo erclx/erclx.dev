@@ -117,10 +117,8 @@ const cardId = name.toLowerCase()
               data-media-video
             />
           )}
-          {
-            /* A clip per theme, as the stills are. The hidden one never plays,
-              so `preload="none"` keeps it from being fetched at all. */
-          }
+          {/* A clip per theme, as the stills are. The hidden one never plays,
+              so `preload="none"` keeps it from being fetched at all. */}
           {videoSrc && videoSrcDark && (
             <video
               src={videoSrcDark}
