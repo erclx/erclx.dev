@@ -13,23 +13,19 @@ const { here } = Astro.props
 
 {
   /* The stylesheet makes this bar sticky, so it is the way home for the whole
-    scroll rather than the first 77px. Its column matches the one the landing
-    page's bar uses, so the chrome holds its shape across a navigation even
-    though the prose under it is a different width. */
+    scroll rather than the first 77px. Its row runs to the page inset as the
+    landing page's bar does, so the chrome holds its shape across a navigation
+    even though the prose under it is a different width. */
 }
 <header data-section="header" class="page-inset relative">
   {
     /* The same ground the landing bar renders, so a reader crossing between the
-      two meets one bar. It contracts here on the reader's own scroll, which is
-      the state a route can actually show: this bar sits at the top of the page
-      from load, where the landing bar only arrives once the hero has gone. */
+      two meets one bar. It takes its hairline here on the reader's own scroll,
+      which is the state a route can actually show: this bar sits at the top of
+      the page from load, where the landing bar only arrives once the hero has
+      gone. */
   }
   <div data-bar-ground aria-hidden="true"></div>
-  {
-    /* No rule under the bar, matching the landing page's. The blur behind it is
-      what separates the chrome from the prose passing under it, and a line as
-      well as a blur states the same boundary twice. */
-  }
   {
     /* The row arrives with the prose rather than ahead of it. The mark, the
       name and the toggle were the only things on a route already painted while
@@ -51,7 +47,7 @@ const { here } = Astro.props
   <div
     data-fade
     data-bar-row
-    class="relative mx-auto grid max-w-3xl grid-cols-[1fr_auto_1fr] items-center py-4"
+    class="relative grid grid-cols-[1fr_auto_1fr] items-center py-4"
   >
     {
       /* One control carrying both, the way the landing bar carries them, so the
@@ -109,9 +105,9 @@ const { here } = Astro.props
 </style>
 
 <script>
-  // The bar spans the width at the top of the route and contracts once the
-  // reader is into the prose. A route shows both states, where the landing
-  // page only ever arrives already scrolled.
+  // The bar carries no edge at the top of the route and takes its hairline
+  // once the reader is into the prose. A route shows both states, where the
+  // landing page only ever arrives already scrolled.
   const CONDENSE_AFTER_PX = 240
 
   const routeBar = document.querySelector<HTMLElement>(
