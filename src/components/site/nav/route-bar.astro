@@ -96,6 +96,10 @@ const { here, items } = Astro.props
 </header>
 
 <style>
+  /* Read by the sections sheet to hang from the bar's bottom edge. */
+  header {
+    --bar-height: var(--sticky-bar-height);
+  }
   [data-route-here] {
     opacity: 0;
   }

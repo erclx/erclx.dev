@@ -154,3 +154,61 @@ test.describe('the section links', () => {
     ).toHaveAttribute('aria-current', 'location')
   })
 })
+
+test.describe('the sections menu on a phone', () => {
+  test.use({ viewport: PHONE })
+
+  const openMenu = async (page: Page) => {
+    await page.goto('/canon')
+    await page.getByRole('button', { name: 'Sections' }).click()
+    await expect(page.locator('[data-section-menu]')).toBeVisible()
+  }
+
+  test('lists the route sections once opened', async ({ page }) => {
+    await openMenu(page)
+
+    await expect(
+      page.locator('[data-section-menu]').getByRole('link'),
+    ).toHaveText(['why i built it', 'how i use it', 'what it shows'])
+  })
+
+  test('closes on Escape and returns focus to its button', async ({ page }) => {
+    await openMenu(page)
+
+    await page.keyboard.press('Escape')
+
+    await expect(page.locator('[data-section-menu]')).toBeHidden()
+    await expect(page.getByRole('button', { name: 'Sections' })).toBeFocused()
+  })
+
+  test('closes on a tap on the scrim and returns focus to its button', async ({
+    page,
+  }) => {
+    await openMenu(page)
+
+    await page.mouse.click(PHONE.width / 2, PHONE.height - 40)
+
+    await expect(page.locator('[data-section-menu]')).toBeHidden()
+    await expect(page.getByRole('button', { name: 'Sections' })).toBeFocused()
+  })
+
+  test('closes when a reader picks a section', async ({ page }) => {
+    await openMenu(page)
+
+    await page
+      .locator('[data-section-menu]')
+      .getByRole('link', { name: 'what it shows' })
+      .click()
+
+    await expect(page.locator('[data-section-menu]')).toBeHidden()
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            document.getElementById('what-it-shows')?.getBoundingClientRect()
+              .top ?? -1,
+        ),
+      )
+      .toBeLessThan(PHONE.height / 2)
+  })
+})

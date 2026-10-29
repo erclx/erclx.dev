@@ -107,6 +107,9 @@ import SectionNav from '@/components/site/section-nav/section-nav.astro'
      motion gives the name slot its color back, and a row held visible by an
      always-opaque bar would then carry a second name through the whole hero. */
   [data-site-bar] {
+    /* The row's padding on both edges and the tap target it holds, read by
+       the sections sheet to hang from the bar's bottom edge. */
+    --bar-height: calc(2 * 0.75rem + 2.75rem);
     opacity: 0;
     pointer-events: none;
   }

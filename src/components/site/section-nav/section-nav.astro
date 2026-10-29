@@ -29,26 +29,144 @@ const {
 <nav
   data-section-nav
   aria-label="Sections"
-  class="mr-2 ml-auto hidden items-center md:flex"
+  class="mr-2 ml-auto flex items-center"
 >
-  <ul class="flex items-center gap-1">
-    {
-      items.map((item) => (
-        <li>
-          <a
-            href={`#${item.id}`}
-            data-target={item.id}
-            class="section-link text-label text-muted-foreground"
-          >
-            {item.label}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  {
+    /* Below `md` the links no longer fit beside a route's breadcrumb and the
+      toggle, so they fold behind this. The popover attribute gives the open,
+      the Escape, the tap outside, and the top layer without a script, so a
+      reader with none still reaches every section. */
+  }
+  <button
+    type="button"
+    popovertarget="section-menu"
+    data-sections-toggle
+    class="sections-toggle text-label text-muted-foreground inline-flex min-h-11 cursor-pointer items-center gap-1.5 px-2.5 md:hidden"
+  >
+    Sections
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="size-4"
+      aria-hidden="true"
+    >
+      <path d="m6 9 6 6 6-6"></path>
+    </svg>
+  </button>
+  {
+    /* One list for both widths, so a label is written once and the scrollspy
+      marks one set. From `md` the stylesheet shows the closed popover as an
+      inline row, and below it the same list drops out of the bar as a sheet. */
+  }
+  <div id="section-menu" popover data-section-menu class="section-menu">
+    <ul class="section-list">
+      {
+        items.map((item) => (
+          <li>
+            <a
+              href={`#${item.id}`}
+              data-target={item.id}
+              class="section-link text-label text-muted-foreground"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </nav>
 
 <style>
+  /* The browser's popover box is reset, since from `md` this is a row in the
+     bar and below it the sheet draws its own bounds. */
+  .section-menu {
+    position: static;
+    inset: auto;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    background: transparent;
+    color: inherit;
+  }
+  @media (width >= 48rem) {
+    .section-menu {
+      display: block;
+    }
+    .section-list {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+  }
+
+  /* As tall as its links rather than the viewport, so the reader's place
+     stays in view under the scrim. It hangs from the bar's bottom edge, which
+     each bar publishes as `--bar-height`, and the scrim starts there too so
+     the bar stays undimmed and its controls stay live. */
+  @media (width < 48rem) {
+    .section-menu {
+      position: fixed;
+      inset: var(--bar-height) 0 auto 0;
+      width: 100%;
+      padding: 0.5rem var(--page-inset) 1rem;
+      background: var(--background);
+      border-bottom: 1px solid var(--border);
+    }
+    .section-menu::backdrop {
+      inset: var(--bar-height) 0 0 0;
+      background: var(--scrim);
+    }
+    /* The divider sits on the row rather than the link, so the link keeps
+       the ring's radius and the line keeps square ends. */
+    .section-list li + li {
+      border-top: 1px solid var(--border);
+    }
+    .section-list .section-link {
+      display: flex;
+      min-height: 3rem;
+      padding-inline: 0;
+      font-size: 1.0625rem;
+      line-height: 1.5rem;
+      font-weight: 400;
+    }
+    /* A bar beside the label rather than the underline, since a row spanning
+       the sheet's width has no word-length edge for an underline to hold. */
+    .section-list .section-link[aria-current] {
+      text-decoration: none;
+    }
+    .section-list .section-link[aria-current]::before {
+      content: '';
+      width: 2px;
+      height: 1.25rem;
+      margin-right: 0.75rem;
+      background: var(--accent);
+    }
+  }
+
+  /* Borderless like the toggle beside it, and muted until it is open, when it
+     names the sheet hanging under it. */
+  .sections-toggle {
+    border-radius: 0.5rem;
+  }
+  .sections-toggle:hover {
+    background: var(--glow-fill);
+    box-shadow: var(--glow-shadow);
+  }
+  [data-section-nav]:has(:popover-open) .sections-toggle {
+    color: var(--foreground);
+  }
+  [data-section-nav]:has(:popover-open) .sections-toggle svg {
+    transform: rotate(180deg);
+  }
+
   /* Borderless like the toggle beside it, so the row carries one kind of
      control. The radius is the focus ring's floor, so hover and focus draw
      one shape and the ring stays the site's own. */
@@ -87,6 +205,9 @@ const {
         color 150ms ease-out,
         background-color var(--glow-in) ease-out,
         box-shadow var(--glow-in) ease-out;
+    }
+    .sections-toggle svg {
+      transition: transform 200ms ease-out;
     }
   }
 </style>
@@ -155,6 +276,42 @@ const {
     window.addEventListener('resize', scheduleCompute)
     computeActive()
 
+    const menu = nav.querySelector<HTMLElement>('[data-section-menu]')
+    const toggle = nav.querySelector<HTMLElement>('[data-sections-toggle]')
+    const isOpen = () => menu?.matches(':popover-open') ?? false
+    const close = () => {
+      if (isOpen()) menu?.hidePopover()
+    }
+
+    if (menu && toggle) {
+      // The browser restores focus to the button only when it sat inside the
+      // sheet, and WebKit never focuses a clicked button, so a tap on the
+      // scrim would otherwise leave a reader on `body`.
+      menu.addEventListener('toggle', (event) => {
+        if ((event as ToggleEvent).newState !== 'closed') return
+        const active = document.activeElement
+        if (!active || active === document.body || menu.contains(active)) {
+          toggle.focus({ preventScroll: true })
+        }
+      })
+      // Focus leaving the sheet for anywhere but its button closes it, so a
+      // tab past the last link does not strand an open sheet behind the reader.
+      menu.addEventListener('focusout', (event) => {
+        const next = (event as FocusEvent).relatedTarget
+        if (next instanceof Node && (menu.contains(next) || next === toggle)) {
+          return
+        }
+        if (next) close()
+      })
+      // Crossing into the inline row with the sheet open would leave the row
+      // painted in the top layer, so the sheet closes first.
+      window
+        .matchMedia('(width >= 48rem)')
+        .addEventListener('change', (event) => {
+          if (event.matches) close()
+        })
+    }
+
     for (const link of links) {
       link.addEventListener('click', (e) => {
         const id = link.dataset.target
@@ -162,6 +319,7 @@ const {
         const target = document.getElementById(id)
         if (!target) return
         e.preventDefault()
+        close()
         setActive(id)
         // Chromium's glide can run 1134ms, so the lock ends on a clock rather
         // than a settle and the last frames of a long jump may recompute.
