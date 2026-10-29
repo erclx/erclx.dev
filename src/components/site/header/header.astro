@@ -3,15 +3,11 @@ import { Image } from 'astro:assets'
 
 import portrait from '@/assets/header/portrait.jpg'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
-import { getLinkTargetAttributes } from '@/lib/links'
+import { email, github, linkedin } from '@/lib/contact'
 
 import shaderFieldFallback from './shader-field/fallback.svg?raw'
 
-const links = [
-  { label: 'GitHub', href: 'https://github.com/erclx' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/erclx' },
-  { label: 'me@erclx.dev', href: 'mailto:me@erclx.dev' },
-]
+const links = [github, linkedin, email]
 ---
 
 {
@@ -173,7 +169,7 @@ const links = [
                 <li>
                   <a
                     href={link.href}
-                    {...getLinkTargetAttributes(link.href)}
+                    {...link.attributes}
                     class="text-foreground text-label inline-flex min-h-11 min-w-11 items-center underline-offset-4 hover:underline"
                   >
                     {link.label}
