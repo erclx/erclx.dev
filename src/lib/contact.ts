@@ -5,17 +5,14 @@ type LinkTargetAttributes = ReturnType<typeof getLinkTargetAttributes>
 export interface ContactLink {
   readonly label: string
   readonly href: string
-  /** The attributes the anchor spreads, decided here so no surface restates the exemption. */
+  /** The attributes the anchor spreads, decided here so no surface applies the link rule itself. */
   readonly attributes: LinkTargetAttributes
   /** Lucide outline paths on a 24-unit grid, drawn at 1.5px stroke. */
   readonly paths: readonly string[]
 }
 
-function contact(
-  link: Omit<ContactLink, 'attributes'>,
-  attributes = getLinkTargetAttributes(link.href),
-): ContactLink {
-  return { ...link, attributes }
+function contact(link: Omit<ContactLink, 'attributes'>): ContactLink {
+  return { ...link, attributes: getLinkTargetAttributes(link.href) }
 }
 
 /**
@@ -51,18 +48,15 @@ export const email = contact({
   ],
 })
 
-// The one internal destination the link rule exempts, because a reader browses
-// it for a while and comes back rather than navigating away.
-export const resume = contact(
-  {
-    label: 'Résumé',
-    href: '/resume.pdf',
-    paths: [
-      'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z',
-      'M14 2v5h5',
-      'M9 13h6',
-      'M9 17h4',
-    ],
-  },
-  { target: '_blank', rel: 'noopener' },
-)
+// The route rather than the file, so the tab carries the site's icon and a
+// real title. The route's own Open PDF link carries the new-tab exemption.
+export const resume = contact({
+  label: 'Résumé',
+  href: '/resume',
+  paths: [
+    'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z',
+    'M14 2v5h5',
+    'M9 13h6',
+    'M9 17h4',
+  ],
+})

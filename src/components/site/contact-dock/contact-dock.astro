@@ -9,6 +9,10 @@ import { email, github, linkedin, resume } from '@/lib/contact'
 // shortest travel from the control belongs to the destination most readers
 // came for.
 const links = [github, linkedin, email, resume]
+
+// On the résumé route the dock's résumé link points at the page it sits on, so
+// it says so rather than reading as a way somewhere else.
+const here = Astro.url.pathname.replace(/\/$/, '')
 ---
 
 {
@@ -84,6 +88,7 @@ const links = [github, linkedin, email, resume]
             href={link.href}
             {...link.attributes}
             aria-label={link.label}
+            aria-current={link.href === here ? 'page' : undefined}
             data-dock-surface
             class="text-muted-foreground hover:text-foreground inline-flex size-11 items-center justify-center rounded-full"
           >

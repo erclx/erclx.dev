@@ -106,7 +106,8 @@ const EMPLOYERS = [
   'Bac Ha Software',
 ]
 // The résumé PDF is the long-form resource the link rule already exempts, so it
-// carries a new-tab target while sitting behind a root-relative path.
+// carries a new-tab target while sitting behind a root-relative path. Only the
+// résumé route links it, and every other résumé control opens that route.
 const EXEMPT_INTERNAL_HREF = '/resume.pdf'
 
 function card(index: number): string {
@@ -153,12 +154,12 @@ describe('the footer', () => {
 
   it('leaves the résumé to the closing ask', () => {
     expect(
-      queryAll(home, `#looking-for a[href="${EXEMPT_INTERNAL_HREF}"]`),
+      queryAll(home, `#looking-for a[href="${RESUME_ROUTE}"]`),
     ).toHaveLength(1)
 
-    expect(
-      queryAll(home, `${FOOTER} a[href="${EXEMPT_INTERNAL_HREF}"]`),
-    ).toHaveLength(0)
+    expect(queryAll(home, `${FOOTER} a[href="${RESUME_ROUTE}"]`)).toHaveLength(
+      0,
+    )
   })
 
   it('carries no copyright notice', () => {
@@ -628,13 +629,12 @@ describe('the closing ask', () => {
     expect(attributeOf(home, selector, 'target')).toBeNull()
   })
 
-  it('opens the résumé in a new tab and names its format', () => {
-    const selector = `#looking-for a[href="${EXEMPT_INTERNAL_HREF}"]`
+  it('opens the résumé page in the current tab', () => {
+    const selector = `#looking-for a[href="${RESUME_ROUTE}"]`
 
     expect(queryAll(home, selector)).toHaveLength(1)
-    expect(textOf(home, selector)).toBe('Résumé (PDF)')
-    expect(attributeOf(home, selector, 'target')).toBe('_blank')
-    expect(attributeOf(home, selector, 'rel')).toBe('noopener')
+    expect(textOf(home, selector)).toBe('Résumé')
+    expect(attributeOf(home, selector, 'target')).toBeNull()
   })
 })
 
@@ -833,13 +833,17 @@ describe('a link', () => {
     },
   )
 
-  it('keeps the new-tab pairing on the resume link', () => {
-    const selector = `a[href="${EXEMPT_INTERNAL_HREF}"]`
+  it.each(ROUTES.filter((route) => route !== RESUME_ROUTE))(
+    'reaches the résumé through its page on %s',
+    (route) => {
+      const doc = readPage(route)
 
-    expect(queryAll(home, selector).length).toBeGreaterThan(0)
-    expect(attributeOf(home, selector, 'target')).toBe('_blank')
-    expect(attributeOf(home, selector, 'rel')).toBe('noopener')
-  })
+      expect(queryAll(doc, `a[href="${RESUME_ROUTE}"]`).length).toBeGreaterThan(
+        0,
+      )
+      expect(queryAll(doc, `a[href="${EXEMPT_INTERNAL_HREF}"]`)).toHaveLength(0)
+    },
+  )
 })
 
 describe('the résumé page', () => {
@@ -904,6 +908,16 @@ describe('the résumé page', () => {
     expect(alts).toEqual(
       alts.map((_, index) => `Résumé, page ${index + 1} of ${alts.length}`),
     )
+  })
+
+  it('marks the dock link to itself as the current page', () => {
+    const selector = `[data-contact-dock] a[href="${RESUME_ROUTE}"]`
+
+    expect(queryAll(resumePage, selector)).toHaveLength(1)
+    expect(attributeOf(resumePage, selector, 'aria-current')).toBe('page')
+    expect(
+      queryAll(readPage('/canon'), '[data-contact-dock] a[aria-current]'),
+    ).toHaveLength(0)
   })
 
   it('draws no sections menu with nothing to jump between', () => {
