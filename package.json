@@ -16,7 +16,7 @@
     "astro": "astro",
     "check:format": "oxfmt --check . && prettier --check --log-level warn '**/*.astro'",
     "check:shell": "find scripts -name '*.sh' -exec shfmt --diff --indent 2 {} + && find scripts -name '*.sh' -exec shellcheck --severity=warning {} +",
-    "check:record": "bunx -y @erclx/canon@5.66.0 context audit --gate",
+    "check:record": "bunx -y @erclx/canon@5.74.0 context audit --gate",
     "format": "oxfmt . && prettier --write --log-level warn '**/*.astro'",
     "prepare": "husky",
     "check": "bun scripts/verify.ts && bun run check:record && bun run test:rendered",
