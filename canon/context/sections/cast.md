@@ -17,7 +17,7 @@ Holds the closing ask and the dog on its rule. The rule is a curved contour at t
 
 - The dog is clipped by a polygon built from the curve's own path, since a rectangular clip drops its grip where the curve leaves the midline
 - The amplitude ramps from 5px to 16px across a 342px to 768px stage, since a fixed one tips the dog at 390
-- The fill is `#d4a574` in both themes with `#2a1d14` for the eye, the palette the about aircraft shares
+- The fill reads `--figure-fill`, `#d4a574` in both themes, the token the about aircraft and racket read, with `#2a1d14` for the eye
 
 ## Gotchas
 
