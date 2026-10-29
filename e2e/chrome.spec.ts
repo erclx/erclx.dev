@@ -178,6 +178,19 @@ test.describe('the sections menu on a phone', () => {
     await expect(page.getByRole('button', { name: 'Sections' })).toBeFocused()
   })
 
+  // Opened from the keyboard, since WebKit never focuses a clicked button and
+  // the step back has to start on the button itself.
+  test('closes when focus steps back out past its button', async ({ page }) => {
+    await page.goto('/canon')
+    await page.getByRole('button', { name: 'Sections' }).focus()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('[data-section-menu]')).toBeVisible()
+
+    await page.keyboard.press('Shift+Tab')
+
+    await expect(page.locator('[data-section-menu]')).toBeHidden()
+  })
+
   test('closes on a tap on the scrim and returns focus to its button', async ({
     page,
   }) => {

@@ -294,13 +294,14 @@ const {
           toggle.focus({ preventScroll: true })
         }
       })
-      // Focus leaving the sheet for anywhere but its button closes it, so a
-      // tab past the last link does not strand an open sheet behind the reader.
-      menu.addEventListener('focusout', (event) => {
+      // Focus leaving the button and the sheet together closes it, whichever
+      // way it goes, so neither a tab past the last link nor a step back past
+      // the button strands an open sheet behind the reader. Watched on the nav,
+      // which holds both, since the sheet alone never sees focus leave the
+      // button.
+      nav.addEventListener('focusout', (event) => {
         const next = (event as FocusEvent).relatedTarget
-        if (next instanceof Node && (menu.contains(next) || next === toggle)) {
-          return
-        }
+        if (next instanceof Node && nav.contains(next)) return
         if (next) close()
       })
       // Crossing into the inline row with the sheet open would leave the row
