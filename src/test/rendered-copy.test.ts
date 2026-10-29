@@ -16,8 +16,7 @@ import { CARD_CLAIM } from '../../scripts/brand/card-copy'
 
 const DIST = join(process.cwd(), 'dist')
 
-const ROUTES = [
-  '/',
+const PROJECT_ROUTES = [
   '/canon',
   '/frameboard',
   '/stackr',
@@ -26,7 +25,9 @@ const ROUTES = [
   '/annex',
 ]
 
-const PROJECT_ROUTES = ROUTES.filter((route) => route !== '/')
+const RESUME_ROUTE = '/resume'
+
+const ROUTES = ['/', ...PROJECT_ROUTES, RESUME_ROUTE]
 
 // What Google truncates a description at. Every host shows less than this, so a
 // description inside it is inside all of them.
@@ -853,5 +854,59 @@ describe('the résumé page', () => {
     ).trim()
 
     expect(createHash('sha256').update(pdf).digest('hex')).toBe(recorded)
+  })
+
+  const resumePage = readPage(RESUME_ROUTE)
+
+  it('names itself in the tab beside the site icon', () => {
+    expect(resumePage.title).toBe('Résumé · Eric Le')
+    expect(
+      attributeOf(resumePage, 'link[rel="icon"][type="image/svg+xml"]', 'href'),
+    ).toBe('/favicon.svg')
+  })
+
+  it('states the length and date it read from the PDF', () => {
+    expect(textOf(resumePage, 'main p.text-lede')).toMatch(
+      /^Software developer in Gothenburg\. (One page|Two pages|Three pages), updated [A-Z][a-z]+ \d{4}\.$/,
+    )
+  })
+
+  it('downloads the PDF in place', () => {
+    const download = queryAll(resumePage, 'main a[download]')
+
+    expect(download).toHaveLength(1)
+    expect(download[0]?.getAttribute('href')).toBe(EXEMPT_INTERNAL_HREF)
+    expect(download[0]?.getAttribute('download')).toBe('Eric-Le-resume.pdf')
+    expect(download[0]?.getAttribute('target')).toBeNull()
+  })
+
+  it('opens the PDF in a new tab', () => {
+    const open = queryAll(resumePage, 'main a[target="_blank"]')
+
+    expect(open.map((link) => collapse(link.textContent))).toEqual([
+      'Open PDF',
+      'Open the full PDF',
+    ])
+    for (const link of open) {
+      expect(link.getAttribute('href')).toBe(EXEMPT_INTERNAL_HREF)
+      expect(link.getAttribute('rel')).toBe('noopener')
+    }
+  })
+
+  // The text on each page is the PDF's, so the alt names the page alone and a
+  // screen reader is not read the résumé twice.
+  it('names each page image by its number', () => {
+    const alts = queryAll(resumePage, 'main img[alt^="Résumé"]').map((image) =>
+      image.getAttribute('alt'),
+    )
+
+    expect(alts.length).toBeGreaterThan(0)
+    expect(alts).toEqual(
+      alts.map((_, index) => `Résumé, page ${index + 1} of ${alts.length}`),
+    )
+  })
+
+  it('draws no sections menu with nothing to jump between', () => {
+    expect(queryAll(resumePage, '[data-section-nav]')).toHaveLength(0)
   })
 })

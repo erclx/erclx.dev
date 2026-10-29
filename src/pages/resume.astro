@@ -1,0 +1,229 @@
+---
+import { readFileSync } from 'node:fs'
+
+import type { ImageMetadata } from 'astro'
+import { Image } from 'astro:assets'
+
+import RouteFoot from '@/components/site/case-study/route-foot.astro'
+import RouteBar from '@/components/site/nav/route-bar.astro'
+import BaseLayout from '@/layouts/base.astro'
+
+const PDF_HREF = '/resume.pdf'
+
+// The lede states the PDF's length and date, read from the file itself at
+// build, so a sync from compass moves them and nothing here goes stale. The
+// file is written uncompressed, so both sit in it as plain text. A sync that
+// changes that fails the build rather than printing a wrong date.
+const pdf = readFileSync('public/resume.pdf', 'latin1')
+const pageCount = pdf.match(/\/Type\s*\/Page(?![s\w])/g)?.length ?? 0
+const dated = /\/(?:ModDate|CreationDate) \(D:(\d{4})(\d{2})/.exec(pdf)
+if (!dated || pageCount === 0) {
+  throw new Error('public/resume.pdf carries no readable page count or date')
+}
+const PAGE_COUNTS = ['One page', 'Two pages', 'Three pages']
+const length = PAGE_COUNTS[pageCount - 1]
+if (!length) throw new Error(`public/resume.pdf has ${pageCount} pages`)
+const updated = new Intl.DateTimeFormat('en', {
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(new Date(Date.UTC(Number(dated[1]), Number(dated[2]) - 1)))
+
+// Whatever `bun run resume-pages` wrote, in page order, so a PDF that grows a
+// page grows the route with it.
+const pages = Object.entries(
+  import.meta.glob<{ default: ImageMetadata }>(
+    '/src/assets/resume/page-*.png',
+    {
+      eager: true,
+    },
+  ),
+)
+  .sort(([a], [b]) => a.localeCompare(b, 'en', { numeric: true }))
+  .map(([, module]) => module.default)
+const pageOne = pages[0]
+if (!pageOne || pages.length !== pageCount) {
+  throw new Error(
+    `public/resume.pdf has ${pageCount} pages and src/assets/resume holds ${pages.length}. Run bun run resume-pages.`,
+  )
+}
+---
+
+<BaseLayout
+  title="Résumé · Eric Le"
+  description="Eric Le's résumé, two pages to read here, download, or open as a PDF."
+  surface="case-study"
+>
+  <RouteBar here="résumé" items={[]} />
+
+  <main>
+    <section id="resume" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
+      <div class="prose-column mx-auto">
+        <p
+          data-fade
+          class="text-muted-foreground text-label tracking-wide uppercase"
+        >
+          Résumé
+        </p>
+        <h1
+          data-fade
+          class="font-display text-foreground mt-4 text-[2.25rem] leading-tight font-semibold md:text-[2.75rem]"
+        >
+          Eric Le
+        </h1>
+        <p data-fade class="text-muted-foreground text-lede mt-4">
+          Software developer in Gothenburg. {length}, updated {updated}.
+        </p>
+        {
+          /* The page is where a résumé control lands, and the file stays one
+            press away from it. Download carries the accent because keeping a
+            copy is what most readers came for. Open is the one internal link
+            the new-tab rule exempts, since a reader browses the PDF for a
+            while and comes back rather than navigating away. */
+        }
+        <div data-fade class="mt-6 flex flex-wrap gap-3">
+          <a
+            href={PDF_HREF}
+            download="Eric-Le-resume.pdf"
+            data-accent="true"
+            class="resume-action text-foreground text-label inline-flex min-h-11 items-center gap-2 rounded-lg px-4"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-muted-foreground size-4"
+              aria-hidden="true"
+            >
+              <path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"></path>
+            </svg>
+            Download PDF
+          </a>
+          <a
+            href={PDF_HREF}
+            target="_blank"
+            rel="noopener"
+            class="resume-action text-foreground text-label inline-flex min-h-11 items-center gap-2 rounded-lg px-4"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-muted-foreground size-4"
+              aria-hidden="true"
+            >
+              <path
+                d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"
+              ></path>
+            </svg>
+            Open PDF
+          </a>
+        </div>
+
+        {
+          /* A phone gets page one as a card that opens the file, since a page
+            drawn at phone width is too small to read and the PDF viewer zooms.
+            Both image sets load lazily, and a lazy image under `display: none`
+            is never fetched, so a phone never downloads the full pages. */
+        }
+        <div data-fade class="mt-8 md:hidden">
+          <a
+            href={PDF_HREF}
+            target="_blank"
+            rel="noopener"
+            class="resume-preview border-border block overflow-hidden rounded-xl border"
+          >
+            <Image
+              src={pageOne}
+              alt=""
+              widths={[400, 800]}
+              sizes="100vw"
+              class="h-75 w-full bg-white object-cover object-top"
+            />
+            <span
+              class="text-foreground text-label border-border block border-t px-4 py-3 font-semibold"
+            >
+              Open the full PDF
+            </span>
+          </a>
+        </div>
+      </div>
+
+      {
+        /* The pages stay white in both themes, since they are the document as
+          it prints. The edge and the shadow hold them off a dark ground. Each
+          image names its page alone, because its text is the PDF's and the
+          heading already names whose it is. */
+      }
+      <div class="mx-auto mt-14 hidden max-w-3xl flex-col gap-6 md:flex">
+        {
+          pages.map((page, index) => (
+            <Image
+              src={page}
+              alt={`Résumé, page ${index + 1} of ${pages.length}`}
+              widths={[768, 1536]}
+              sizes="min(48rem, 100vw)"
+              data-fade
+              class="border-border block w-full rounded-sm border bg-white shadow-[var(--floating-shadow)]"
+            />
+          ))
+        }
+      </div>
+    </section>
+  </main>
+
+  <RouteFoot />
+
+  <script>
+    import { initWayHome } from '@/components/site/case-study/way-home'
+    import { initReveal } from '@/lib/reveal'
+
+    initReveal()
+    initWayHome()
+  </script>
+</BaseLayout>
+
+<style>
+  /* The closing ask's bounded actions, so the control a reader pressed to get
+     here and the two it lands on read as one kind. */
+  .resume-action {
+    border: 1px solid var(--border);
+    background: var(--surface-elevated);
+  }
+  .resume-preview {
+    background: var(--surface-elevated);
+  }
+  .resume-action[data-accent='true'] {
+    border-color: var(--accent);
+  }
+  .resume-action:hover,
+  .resume-preview:hover {
+    border-color: var(--accent);
+    box-shadow: var(--glow-shadow);
+  }
+  .resume-action:hover {
+    background: var(--glow-fill);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .resume-action,
+    .resume-preview {
+      transition:
+        border-color 150ms ease-out,
+        background-color var(--glow-out) ease-out,
+        box-shadow var(--glow-out) ease-out;
+    }
+    .resume-action:hover,
+    .resume-preview:hover {
+      transition:
+        border-color 150ms ease-out,
+        background-color var(--glow-in) ease-out,
+        box-shadow var(--glow-in) ease-out;
+    }
+  }
+</style>
