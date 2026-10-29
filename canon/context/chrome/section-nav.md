@@ -17,8 +17,7 @@ From `md` the links sit inline in the bar's row, right, before the toggle. Below
 
 Holds the links and the inline script that tracks position, throttled to one `requestAnimationFrame` per scroll or resize.
 
-- One list serves both widths, a `popover` element the stylesheet shows inline from `md`, so a label is written once and the tracker marks one set
-- The popover attribute gives the open, Escape, the tap outside, and the top layer without a script, so a reader with none still reaches every section
+- One list serves both widths, a `popover` element shown inline from `md`, which opens, closes on Escape and a tap outside, and reaches the top layer without a script
 - The sheet hangs from `--bar-height`, which each bar publishes, and the scrim starts there too, so the bar stays undimmed and live
 - The handler reads each section's box rather than the cards inside it, so the mark never flickers across a card boundary
 - Within 4px of the document's end the last section is forced active, which still covers a last section shorter than half the viewport

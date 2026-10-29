@@ -7,11 +7,9 @@ description: The landing bar the hero's name and toggle fly into, the route bar 
 
 ## Overview
 
-Owns the bars that frame a page and the way back from a project route. Both run full width with their row out to `--page-inset`, on the page's own background with a hairline under it once content passes beneath. The landing bar takes the hero's own name and theme toggle rather than rendering its own, so one toggle stays wired and the page's only `h1` keeps its name.
+Owns the bars that frame a page and the way back from a project route. Both run full width with their row out to `--page-inset`, on the page's own background. The landing bar takes the hero's own name and theme toggle, so one toggle stays wired and the page's only `h1` keeps its name.
 
-A project route renders its own bar, with `Eric Le / <route>` as a breadcrumb on the left, the route's section links, and the toggle. `Eric Le` is a way home, and the route name is a button that scrolls to the route's top.
-
-A route carries two way-home links to `/`, one in the bar and one in the foot. For a reader who arrived from the landing page, a module turns them into a history unwind, so the browser restores the landing page's scroll position.
+A route's bar carries `Eric Le / <route>` as a breadcrumb, where `Eric Le` is a way home and the route name scrolls to the route's top. The foot carries the second way home, and for a reader who arrived from the landing page a module turns both into a history unwind that restores its scroll position.
 
 ## Layout
 
@@ -23,7 +21,6 @@ Holds both bars, the brand mark, and the handoff that flies the hero's name and 
 - The toggle returns to its home for each reading, since its home slot collapses to a point once the control leaves
 - The bar reveals at half the hero rather than half the viewport, since a short hero would clear a viewport-keyed margin unscrolled
 - The ground is `--background`, opaque and unblurred, with a 1px `--border` bottom edge once condensed and no radius or shadow, declared once in `global.css`
-- Each bar publishes `--bar-height`, the row's padding and its tap target, which the sections sheet hangs from
 - The route name truncates first when a long name meets the `Sections` button and the toggle at phone width
 
 ### `src/components/site/case-study/`

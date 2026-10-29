@@ -1,6 +1,6 @@
 ---
 title: Contact dock
-description: The route's bottom-right control carrying GitHub, LinkedIn, the address, and the résumé, its ground, its phone clearance, its stand-down under the sections menu, and its touch and keyboard paths
+description: The route's bottom-right control carrying GitHub, LinkedIn, the address, and the résumé, its phone clearance, its stand-down under the sections menu, and its touch and keyboard paths
 ---
 
 # Contact dock
