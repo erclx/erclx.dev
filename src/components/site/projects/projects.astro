@@ -1,12 +1,17 @@
 ---
 import annexPosterDark from '@/assets/projects/annex-dark.png'
 import annexPoster from '@/assets/projects/annex-light.png'
-import canonPoster from '@/assets/projects/canon-agent-view.png'
+import canonPosterDark from '@/assets/projects/canon-dark.png'
+import canonPoster from '@/assets/projects/canon-light.png'
 import caretPoster from '@/assets/projects/caret.png'
+import frameboardPosterDark from '@/assets/projects/frameboard-dark.png'
+import frameboardPoster from '@/assets/projects/frameboard-light.png'
 import jobtriagePoster from '@/assets/projects/jobtriage.png'
 import stackrPoster from '@/assets/projects/stackr.png'
+import canonVideoLight from '@/assets/videos/canon-light.mp4?url'
 import canonVideo from '@/assets/videos/canon.mp4?url'
 import caretVideo from '@/assets/videos/caret.mp4?url'
+import frameboardVideo from '@/assets/videos/frameboard.mp4?url'
 import jobtriageVideo from '@/assets/videos/jobtriage.mp4?url'
 import stackrVideo from '@/assets/videos/stackr.mp4?url'
 
@@ -21,11 +26,13 @@ const projects = [
     name: 'canon',
     route: '/canon',
     description:
-      'Every project I had kept its own rules for its AI agents, and they drifted apart. canon holds a single copy of them now, synced into every repository, and it runs each change through the same loop: planned by an orchestrator, built by workers in parallel, checked by an independent reviewer. Every repository I have runs on it. On npm as @erclx/canon, with a live build at canon.erclx.dev.',
+      'I wanted every project to work the same way with AI coding agents. canon takes each change from plan to reviewed pull request, with the same skills and rules in every repository. I use it every day. On npm as @erclx/canon, with a live build at canon.erclx.dev.',
     poster: canonPoster,
-    videoSrc: canonVideo,
+    posterDark: canonPosterDark,
+    videoSrc: canonVideoLight,
+    videoSrcDark: canonVideo,
     mediaAlt:
-      "canon's landing page, one real session the toolkit ran on itself",
+      'One change running through canon, from the groundwork that measured it through its plan, dispatch, build, and review to the merge',
     links: [
       { label: 'GitHub', href: 'https://github.com/erclx/canon' },
       { label: 'npm', href: 'https://www.npmjs.com/package/@erclx/canon' },
@@ -33,31 +40,21 @@ const projects = [
     ],
   },
   {
-    name: 'Jobtriage',
-    route: '/jobtriage',
+    name: 'Frameboard',
+    route: '/frameboard',
     description:
-      "I was job hunting, and Sweden's job API is public. So I built against it. A job-search agent: describe what you want, and it shows the ads that fit, each with a reason. Live to try, and its page has the retrieval numbers.",
-    poster: jobtriagePoster,
-    videoSrc: jobtriageVideo,
+      'I wanted my agents to design in something I could see and change. Frameboard is a board where they draw interfaces as plain HTML files, and I steer them by hand or with notes they answer. I use it daily for sketches, design systems and UI fixes. On npm, with a page at frameboard.erclx.dev.',
+    // The board has one loop, recorded in light, so it plays under both
+    // themes while the stills follow the theme.
+    poster: frameboardPoster,
+    posterDark: frameboardPosterDark,
+    videoSrc: frameboardVideo,
     mediaAlt:
-      'Jobtriage, chat interface with retrieved ad cards on a React Flow canvas',
+      "The Frameboard canvas showing a plant care app's landing page and two phone screens",
     links: [
-      { label: 'Live demo', href: 'https://jobtriage.erclx.dev' },
-      { label: 'GitHub', href: 'https://github.com/erclx/jobtriage' },
-    ],
-  },
-  {
-    name: 'annex',
-    route: '/annex',
-    description:
-      'I wanted to know whether retrieval still helped when a model could read the whole EU AI Act. An agent that maps a described system to the articles that apply, cited to the text. Reading the whole Act found more, and retrieval cost about a seventh as much and showed exactly which text it used.',
-    poster: annexPoster,
-    posterDark: annexPosterDark,
-    mediaAlt:
-      'The Annex landing page: a description box and twelve recorded questions',
-    links: [
-      { label: 'Recorded demo', href: 'https://annex.erclx.dev' },
-      { label: 'GitHub', href: 'https://github.com/erclx/annex' },
+      { label: 'GitHub', href: 'https://github.com/erclx/frameboard' },
+      { label: 'npm', href: 'https://www.npmjs.com/package/frameboard' },
+      { label: 'Website', href: 'https://frameboard.erclx.dev' },
     ],
   },
   {
@@ -97,6 +94,34 @@ const projects = [
         href: 'https://chromewebstore.google.com/detail/caret/bpmdbibldelkpncegllkeegdpblgehgk',
       },
       { label: 'GitHub', href: 'https://github.com/erclx/caret' },
+    ],
+  },
+  {
+    name: 'Jobtriage',
+    route: '/jobtriage',
+    description:
+      "I was job hunting, and Sweden's job API is public. So I built against it. A job-search agent. Describe what you want, and it shows the ads that fit, each with a reason. Live to try, and its page has the retrieval numbers.",
+    poster: jobtriagePoster,
+    videoSrc: jobtriageVideo,
+    mediaAlt:
+      'Jobtriage, chat interface with retrieved ad cards on a React Flow canvas',
+    links: [
+      { label: 'Live demo', href: 'https://jobtriage.erclx.dev' },
+      { label: 'GitHub', href: 'https://github.com/erclx/jobtriage' },
+    ],
+  },
+  {
+    name: 'annex',
+    route: '/annex',
+    description:
+      'I wanted to know whether retrieval still helped when a model could read the whole EU AI Act. An agent that maps a described system to the articles that apply, cited to the text. Reading the whole Act found every provision. Search plus cross-reference traversal found 83% of them for about a seventh of the tokens, and showed which text it used.',
+    poster: annexPoster,
+    posterDark: annexPosterDark,
+    mediaAlt:
+      'The Annex landing page: a description box and twelve recorded questions',
+    links: [
+      { label: 'Recorded demo', href: 'https://annex.erclx.dev' },
+      { label: 'GitHub', href: 'https://github.com/erclx/annex' },
     ],
   },
 ]
@@ -162,6 +187,7 @@ const projects = [
                 poster={project.poster}
                 posterDark={project.posterDark}
                 videoSrc={project.videoSrc}
+                videoSrcDark={project.videoSrcDark}
                 mediaAlt={project.mediaAlt}
                 mediaPosition={project.mediaPosition}
                 links={project.links}

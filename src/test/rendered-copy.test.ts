@@ -76,7 +76,14 @@ function attributeOf(
 const home = readPage('/')
 const FOOTER = '[data-section="footer"]'
 
-const CARD_NAMES = ['canon', 'Jobtriage', 'annex', 'Stackr', 'Caret']
+const CARD_NAMES = [
+  'canon',
+  'Frameboard',
+  'Stackr',
+  'Caret',
+  'Jobtriage',
+  'annex',
+]
 const CARD_SELECTOR = '#projects article'
 // One per beat in the timeline. The record is a local const inside the
 // component, so the count is stated here rather than derived.
@@ -466,8 +473,38 @@ describe('the projects section', () => {
 
   it('renders the description the source carries on the canon card', () => {
     expect(card(0)).toContain(
-      'planned by an orchestrator, built by workers in parallel, checked by an independent reviewer',
+      'canon takes each change from plan to reviewed pull request, with the same skills and rules in every repository.',
     )
+  })
+
+  it('renders the description the source carries on the Frameboard card', () => {
+    expect(card(1)).toContain(
+      'Frameboard is a board where they draw interfaces as plain HTML files, and I steer them by hand or with notes they answer.',
+    )
+  })
+
+  it('carries a clip per theme on the canon card', () => {
+    const videos = queryAll(queryAll(home, CARD_SELECTOR)[0] ?? home, 'video')
+
+    expect(videos).toHaveLength(2)
+    expect(videos.map((video) => video.getAttribute('class'))).toEqual([
+      expect.stringContaining('dark:hidden'),
+      expect.stringContaining('dark:block'),
+    ])
+  })
+
+  it('carries one clip under both themes on the Frameboard card', () => {
+    const frameboard = queryAll(home, CARD_SELECTOR)[1] ?? home
+
+    expect(queryAll(frameboard, 'video')).toHaveLength(1)
+    expect(attributeOf(frameboard, 'video', 'class')).not.toContain('dark:')
+    expect(queryAll(frameboard, '[data-media-poster-dark]')).toHaveLength(1)
+  })
+
+  it('spans no card across both columns', () => {
+    expect(queryAll(home, CARD_SELECTOR)).toHaveLength(CARD_NAMES.length)
+
+    expect(queryAll(home, '#projects .lg\\:col-span-2')).toHaveLength(0)
   })
 
   it('carries the overlay that opens its route on every card', () => {
@@ -479,32 +516,32 @@ describe('the projects section', () => {
   })
 
   it('renders the description the source carries on the Jobtriage card', () => {
-    expect(card(1)).toContain(
-      'A job-search agent: describe what you want, and it shows the ads that fit, each with a reason. Live to try, and its page has the retrieval numbers.',
+    expect(card(4)).toContain(
+      'A job-search agent. Describe what you want, and it shows the ads that fit, each with a reason. Live to try, and its page has the retrieval numbers.',
     )
   })
 
   it('names no provider the source leaves out on the Jobtriage card', () => {
-    expect(card(1)).toContain('Jobtriage')
+    expect(card(4)).toContain('Jobtriage')
 
-    expect(card(1)).not.toContain('OpenAI')
+    expect(card(4)).not.toContain('OpenAI')
   })
 
   it('renders the description the source carries on the Stackr card', () => {
-    expect(card(3)).toContain(
+    expect(card(2)).toContain(
       'stages files across a workspace into one block of LLM context',
     )
   })
 
   it('renders the description the source carries on the Caret card', () => {
-    expect(card(4)).toContain(
+    expect(card(3)).toContain(
       'saves prompts and drops them into Claude, Gemini, and ChatGPT',
     )
   })
 
   it('renders the description the source carries on the annex card', () => {
-    expect(card(2)).toContain(
-      'retrieval cost about a seventh as much and showed exactly which text it used',
+    expect(card(5)).toContain(
+      'Search plus cross-reference traversal found 83% of them for about a seventh of the tokens, and showed which text it used.',
     )
   })
 
