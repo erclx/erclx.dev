@@ -28,9 +28,8 @@ Holds the token layers in `global.css`. `:root` declares the light palette in ok
 
 - A token absent from `.dark` keeps its light value, which keeps the `--light-*` group fixed under both themes
 - `@theme inline` bakes a literal into the utility, so a step that varies by scope resolves through a `:root` property such as `--body-size`
-- `.dark .figure-plate` points `--card`, `--muted-foreground`, and `--ring` at the light aliases, so a light-pinned surface follows one declaration
 - `--accent` marks position and emphasis, and `--primary` waits for a pressed control, so an operated icon takes muted text rising to text
-- `--card` stays pure white in the light theme, since the charts are drawn on white and a warmed plate would draw a seam around each
+- `--card` stays pure white in the light theme, behind every route figure
 
 ## Gotchas
 
