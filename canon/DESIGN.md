@@ -10,7 +10,7 @@ Values live in `src/styles/global.css`, light under `:root` and dark under `.dar
 
 ## Overview
 
-Engineering depth made visible. The page reads as hand-built rather than assembled, carried by authored motion rather than claims. Generous whitespace and disciplined type frame that motion, and serif display headings give weight without nostalgia. An installed preset is rejected whatever it draws, since the hero's shader is written here as evidence.
+Engineering depth made visible. The page reads as hand-built rather than assembled, carried by authored motion rather than claims. That motion is the hero's shader, the about flight, and the dog. Generous whitespace and disciplined type frame that motion, and serif display headings give weight without nostalgia. An installed preset is rejected whatever it draws, since the hero's shader is written here as evidence.
 
 ## Colors
 
@@ -46,7 +46,7 @@ Engineering depth made visible. The page reads as hand-built rather than assembl
 
 - The landing page holds a fixed reading column, and a project route scales `--prose-column` with the viewport
 - `--figure-column` lets a route's figures overhang its prose symmetrically
-- The section rail and the cast show from 1280, since the margins below it are too narrow to hold them
+- The section rail shows from 1280, since the margins below it are too narrow to hold it
 
 ## Shapes
 

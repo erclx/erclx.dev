@@ -39,8 +39,8 @@ const MEASURED_COUNTS: Record<
   (typeof COMMENT_BEARING_EXTENSIONS)[number],
   number
 > = {
-  '.css': 2,
-  '.astro': 26,
+  '.css': 1,
+  '.astro': 25,
 }
 
 const SOURCE_ROOT = fileURLToPath(new URL('../', import.meta.url))

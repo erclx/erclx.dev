@@ -1,5 +1,4 @@
 ---
-import Cast from '@/components/site/experience/cast/cast.astro'
 import Employers from '@/components/site/experience/employers.astro'
 
 interface HistoryEntry {
@@ -68,11 +67,6 @@ const artifacts = [
   data-section="experience"
   class="page-inset relative py-16 md:py-20"
 >
-  {
-    /* The cast anchors to this section's own box, so it scatters down the
-      margins beside the timeline rather than against the viewport. */
-  }
-  <Cast />
   <div class="mx-auto max-w-3xl">
     <h2
       data-fade

@@ -7,5 +7,5 @@ subtitle: Features owned by one surface on the landing page or a route
 
 Features owned by one surface on the landing page or a route
 
-- [Cast](cast.md): The cell-grid figures in the experience margins and the dog on the looking-for rule, their vocabularies, placement, scheduler, and drawing traps
+- [Cast](cast.md): The dog on the looking-for rule, its clip, its amplitude, and the traps in drawing it
 - [Project cards](project-cards.md): The projects section's static cards, the whole-card route link, hover-play and tilt as vanilla modules, and the pointer queries they read
