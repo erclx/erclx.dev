@@ -31,12 +31,9 @@ test.describe('the way back to the top', () => {
   }) => {
     await page.goto('/canon')
     await scrollToEnd(page)
-    await expect(page.locator('[data-route-here]')).toHaveAttribute(
-      'data-shown',
-      'true',
-    )
+    await expect.poll(() => scrollY(page)).toBeGreaterThan(0)
 
-    await page.locator('[data-route-here]').click()
+    await page.getByRole('button', { name: 'Back to top of canon' }).click()
 
     await expect.poll(() => scrollY(page)).toBe(0)
   })
