@@ -86,6 +86,14 @@ const CARD_NAMES = [
   'Jobtriage',
   'annex',
 ]
+const CARD_LINES = [
+  'A CLI and Claude Code plugin that runs AI coding agents through plan, build and review the same way in every repository.',
+  'A board where coding agents draw interfaces as plain HTML files.',
+  'A VS Code extension that stages files across a workspace into one block of context for an AI chat.',
+  'A Chrome extension that saves prompts and inserts them into Claude, Gemini and ChatGPT.',
+  "A job-search agent over Sweden's public job API that shows the ads that fit, each with a reason.",
+  'An agent that maps a described AI system to the EU AI Act articles that apply, cited to the text.',
+]
 const CARD_SELECTOR = '#projects article'
 // One per beat in the timeline. The record is a local const inside the
 // component, so the count is stated here rather than derived.
@@ -508,19 +516,19 @@ describe('the projects section', () => {
     ).toHaveLength(1)
   })
 
-  it('writes the npm scope on the canon card', () => {
-    expect(card(0)).toContain('@erclx/canon')
-  })
-
-  it('renders the description the source carries on the canon card', () => {
-    expect(card(0)).toContain(
-      'canon takes each change from plan to reviewed pull request, with the same skills and rules in every repository.',
+  it('pins each card description to its compass line', () => {
+    const descriptions = queryAll(home, `${CARD_SELECTOR} h3 + p`).map((p) =>
+      collapse(p.textContent),
     )
+
+    expect(descriptions).toEqual(CARD_LINES)
   })
 
-  it('renders the description the source carries on the Frameboard card', () => {
-    expect(card(1)).toContain(
-      'Frameboard is a board where they draw interfaces as plain HTML files, and I steer them by hand or with notes they answer.',
+  it('links the canon card to the npm package', () => {
+    const canon = queryAll(home, CARD_SELECTOR)[0] ?? home
+
+    expect(queryAll(canon, 'a').map((a) => a.getAttribute('href'))).toContain(
+      'https://www.npmjs.com/package/@erclx/canon',
     )
   })
 
@@ -556,34 +564,10 @@ describe('the projects section', () => {
     expect(overlays).toHaveLength(cards.length)
   })
 
-  it('renders the description the source carries on the Jobtriage card', () => {
-    expect(card(4)).toContain(
-      'A job-search agent. Describe what you want, and it shows the ads that fit, each with a reason. Live to try, and its page has the retrieval numbers.',
-    )
-  })
-
   it('names no provider the source leaves out on the Jobtriage card', () => {
     expect(card(4)).toContain('Jobtriage')
 
     expect(card(4)).not.toContain('OpenAI')
-  })
-
-  it('renders the description the source carries on the Stackr card', () => {
-    expect(card(2)).toContain(
-      'stages files across a workspace into one block of LLM context',
-    )
-  })
-
-  it('renders the description the source carries on the Caret card', () => {
-    expect(card(3)).toContain(
-      'saves prompts and drops them into Claude, Gemini, and ChatGPT',
-    )
-  })
-
-  it('renders the description the source carries on the annex card', () => {
-    expect(card(5)).toContain(
-      'Search plus cross-reference traversal found 83% of them for about a seventh of the tokens, and showed which text it used.',
-    )
   })
 
   it('opens the annex route from its card', () => {

@@ -21,7 +21,7 @@ Holds the section, one card's markup, and `tilt.ts`. A card draws no plate or ou
 - Each row link carries `z-10` itself, since raising the `<ul>` puts its full-width box over the overlay and kills the gaps between links
 - `tilt.ts` runs one rAF loop for every card, rotating the media slot up to 6° and shifting it 8px, and stops under reduced motion
 - An odd card count makes the last card span both columns from `lg`, with its still beside its text, which six cards never trigger
-- A description is the project's portfolio prose minus its leading article and its trailing sentence naming the links
+- A description is the one line the copy owner writes in compass, copied word for word, and the rendered-copy test pins all six exactly
 
 ## Gotchas
 
