@@ -1,14 +1,6 @@
 ---
 import { email, github, linkedin, resume } from '@/lib/contact'
 
-interface Props {
-  // A surface with no hero has nothing for the arrival gate to watch, so it
-  // renders reachable and attaches no observer. Mirrors the section rail.
-  instant?: boolean
-}
-
-const { instant = false } = Astro.props
-
 // The three the hero opens with, plus the one destination that was reachable
 // only after a full scroll. The resume is the highest-intent link on the page
 // and it sat last on it, while three contact links floated the whole way.
@@ -20,25 +12,15 @@ const links = [github, linkedin, email, resume]
 ---
 
 {
-  /* Bottom right, mirroring the section rail on the left, so the two read as a
-    pair of margin controls rather than as one control and one ornament.
+  /* Bottom right, clear of the bar's controls at the top of the page.
 
     Reversed, so the control that stays put sits nearest the corner and the
     stack grows up out of it. Rendered in order it put the resting mark at the
     top of a group that is anchored to the bottom, so the one thing a reader
     sees at rest moved every time the stack opened. */
 }
-{
-  /* Inert until it arrives, matching the sticky bar. The dock is invisible and
-    takes no pointer until it is revealed, but its four links stay in the tab
-    order regardless, so without this a keyboard reader tabs through four
-    destinations that are not on screen and gets no focus ring to follow. */
-}
 <div
   data-contact-dock
-  data-instant={instant ? 'true' : undefined}
-  data-revealed={instant ? 'true' : undefined}
-  inert={!instant}
   class="fixed right-6 bottom-6 z-30 flex flex-col-reverse items-end gap-2"
 >
   {
@@ -127,26 +109,18 @@ const links = [github, linkedin, email, resume]
 </div>
 
 <style>
-  /* The dock arrives with the rail and leaves with it, so the margins never
-     carry one control without the other. */
-  [data-contact-dock] {
-    opacity: 0;
-    pointer-events: none;
-  }
-  [data-contact-dock][data-revealed='true'] {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  /* The dock does not stand down over the footer. It did until 2026-08-20,
-     on the stated grounds that the footer repeats its destinations, and the
-     footer carries the resume alone: measured on both surfaces, the landing
-     footer holds one link and a route's holds the way home. Hiding the dock
-     there removed three of its four destinations at the moment a reader has
-     finished reading, on a page whose job is hiring.
+  /* The dock does not stand down over the footer. A route's foot carries the
+     way home alone, so hiding the dock there would remove every contact at
+     the moment a reader has finished reading, on a page whose job is hiring.
 
-     The rail's own footer gate came out for an unrelated reason, so the two
-     margins arrive and leave together again. See `canon/context/chrome/section-nav.md`
-     for the rail's reveal gate. */
+     Below `md` the page instead keeps the dock's own height and offset free
+     under its last line, so at the end of a route the dock sits on empty
+     ground rather than over the closing foot. */
+  @media (width < 48rem) {
+    :global(body:has([data-contact-dock])) {
+      padding-bottom: calc(2.75rem + 1.5rem);
+    }
+  }
 
   /* The stack is what collapses, never the links themselves, so the set stays
      in the tab order at every size and a keyboard never meets a hidden set.
@@ -193,9 +167,6 @@ const links = [github, linkedin, email, resume]
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    [data-contact-dock] {
-      transition: opacity 300ms ease-out;
-    }
     [data-dock-links] {
       transition:
         opacity 200ms ease-out,
@@ -212,18 +183,14 @@ const links = [github, linkedin, email, resume]
   const toggle = dock?.querySelector<HTMLElement>('[data-dock-toggle]')
 
   if (dock) {
-    // Reach and inertness are one state, written through one function so the
-    // two halves cannot drift.
-    let pastHero = false
-    const syncReach = () => {
-      if (pastHero) {
-        dock.setAttribute('data-revealed', 'true')
-        dock.removeAttribute('inert')
-      } else {
-        dock.removeAttribute('data-revealed')
-        dock.setAttribute('inert', '')
-      }
-    }
+    // The sections sheet and its scrim sit over the dock in the top layer, so
+    // a pointer cannot reach it while the sheet is open, but a tab past the
+    // last link still could. Inert closes that path for as long as the scrim
+    // dims the control.
+    const menu = document.querySelector<HTMLElement>('[data-section-menu]')
+    menu?.addEventListener('toggle', (event) => {
+      dock.inert = (event as ToggleEvent).newState === 'open'
+    })
 
     toggle?.addEventListener('click', (event) => {
       const wasOpen = dock.dataset.open === 'true'
@@ -272,33 +239,5 @@ const links = [github, linkedin, email, resume]
       if (dock.dataset.open === 'true') return
       toggle?.setAttribute('aria-expanded', 'false')
     })
-
-    // A surface rendering the dock reachable has no arrival to wait for and
-    // attaches nothing. Its header is a sticky bar that never leaves the
-    // viewport, so the gate below would hold the control closed for the whole
-    // page.
-    const isInstant = dock.dataset.instant === 'true'
-    const hero = document.querySelector<HTMLElement>('[data-section="header"]')
-
-    if (isInstant) {
-      pastHero = true
-      syncReach()
-    } else if ('IntersectionObserver' in window && hero) {
-      // Half the hero rather than half the viewport, matching the bar. A hero
-      // shorter than the viewport clears a viewport-keyed margin without
-      // being scrolled at all.
-      new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            pastHero = entry.intersectionRatio < 0.5
-            syncReach()
-          }
-        },
-        { threshold: [0, 0.5] },
-      ).observe(hero)
-    } else {
-      pastHero = true
-      syncReach()
-    }
   }
 </script>

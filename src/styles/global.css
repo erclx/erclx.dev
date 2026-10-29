@@ -90,9 +90,8 @@ body.surface-case-study > header[data-section='header'] {
 }
 
 /* What makes a control read as floating over the page rather than printed on
-   it. Declared once because the page carries three of them now, the two bars
-   and the contact dock, and a ground that drifts between them is exactly what
-   a reader crossing from one margin to the other sees.
+   it. Both bars now run full width on the page's own ground, so these belong
+   to the controls that still float over it.
 
    The elevated surface token rather than the page's own: a ground taken from
    the background is the page's color laid on the page, which measured 1.002:1
@@ -152,33 +151,25 @@ body.surface-case-study > header[data-section='header'] {
 
 /* One ground for both bars. The landing page and a route each render this
    element, so the treatment cannot drift between the two surfaces a reader
-   crosses. */
+   crosses.
+
+   The page's own background, opaque and unblurred, running the full width.
+   The translucent fill and the blur existed so a bar detached into a pill
+   read as an object over the page, and a bar meeting the viewport on three
+   sides is not one: scrolled headings smeared through the frosted ground, and
+   in light it sat a step lighter than the page it belongs to. */
 [data-bar-ground] {
-  /* How far the shape reaches past the row inside it, so the name and the
-     toggle never sit against its edge. */
-  --bar-shape-padding: 1.25rem;
   position: absolute;
   inset: 0;
-  background: var(--floating-fill);
-  backdrop-filter: var(--floating-blur);
-  border-radius: 0;
-  border: 1px solid transparent;
+  background: var(--background);
+  border-bottom: 1px solid transparent;
 }
 
-/* Contracted to a shape wider than the row it sits under, so the row's own
-   contents never move. An edge and a shadow only once it detaches: a
-   full-bleed bar meeting the viewport on three sides has no outline to draw,
-   where an object floating over content is read as above it by those two
-   things. */
+/* The hairline is the one mark the bar makes once content passes under it.
+   At the top of a page nothing sits under the bar to divide it from, so the
+   edge waits for the scroll that gives it something to separate. */
 [data-condensed='true'] [data-bar-ground] {
-  inset: 0.5rem
-    max(
-      calc(var(--page-inset) - var(--bar-shape-padding)),
-      calc((100% - 52rem) / 2)
-    );
-  border-radius: 999px;
-  border-color: var(--border);
-  box-shadow: var(--floating-shadow);
+  border-bottom-color: var(--border);
 }
 
 /* The dock is a detached object at every scroll position, so it takes the
@@ -217,38 +208,19 @@ body.surface-case-study > header[data-section='header'] {
   }
 }
 
-/* Every term the ground animates on any surface, in one declaration, because
-   `transition` is a shorthand and a component redeclaring it replaces the list
-   rather than adding to it. The landing bar did exactly that: its own rule
-   asked for the ground's opacity fade and reset `transition-property` to
-   `opacity` alone, so the shape below changed in a single frame there while a
-   route eased through it. Measured at 1280 across 31 frames, the landing
-   ground held 2 distinct radius values against the route's 21.
+/* The ground's one animated term, declared here rather than in the landing
+   bar. `transition` is a shorthand, and Astro scopes a component rule to a
+   `data-astro-cid-*` attribute, so `[data-site-bar] [data-bar-ground]` there
+   outranks this and replaces the list rather than adding to it. One
+   declaration nothing outranks keeps the next component from taking it again,
+   the same trap `--reveal-transition` above is published against.
 
-   Specificity is why the component won and why composing in the component is
-   not the repair. Astro scopes a component rule to a `data-astro-cid-*`
-   attribute, so `[data-site-bar] [data-bar-ground]` compiles to three
-   attribute selectors against the one here, and the next component to declare
-   a transition on this element would take the list again. One declaration
-   nothing outranks is what closes that, rather than a second copy of these
-   durations in a file with no reason to know them. It is the same trap
-   `--reveal-transition` above is published against.
-
-   The opacity term is inert on a route, where the ground never fades: only the
-   landing bar's ground is drawn at zero and revealed. The two states cannot
-   collide there either, measured 770px of scroll apart at 1280 and 1440 and
-   635px at 390, since the reveal keys to half the hero and the shape to 320px
-   past its full height.
-
-   The edge and the shadow stay out of the list deliberately. They arrive at
-   once on both bars, which is what marks the instant the bar detaches from the
-   viewport, where an edge fading up reads as the bar being unsure it has. */
+   The opacity term is inert on a route, where the ground never fades. The
+   edge stays out of the list deliberately: it arrives at once, which is what
+   marks the moment content starts passing under the bar. */
 @media (prefers-reduced-motion: no-preference) {
   [data-bar-ground] {
-    transition:
-      inset 320ms ease,
-      border-radius 320ms ease,
-      opacity 200ms ease-out;
+    transition: opacity 200ms ease-out;
   }
 }
 
@@ -342,7 +314,7 @@ body.surface-case-study > header[data-section='header'] {
   --card: var(--light-card);
   /* The ground every floating control draws, and the one token that decides
      what floats. A control resolves this rather than picking a color, so the
-     two bars, the rail's active row and the dock cannot drift apart.
+     dock and the hover glow mixed from it cannot drift apart.
 
      It keeps the page's own hue and moves only in lightness, which is what the
      dark theme below already does and what light did not: `--card` is pure
@@ -358,6 +330,10 @@ body.surface-case-study > header[data-section='header'] {
      what makes the warmth affordable at 1.023:1. Anything relying on the fill
      alone to bound a control in light is relying on a tenth of a percent. */
   --surface-elevated: oklch(0.988 0.012 82);
+  /* What dims the page under an open sheet. Each theme darkens toward its
+     own ink, since a scrim mixed from the foreground tinted the dark page
+     cream instead of dimming it. */
+  --scrim: oklch(0.21 0.007 78 / 0.14);
   --card-foreground: oklch(0.21 0.007 78);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.21 0.007 78);
@@ -399,6 +375,7 @@ body.surface-case-study > header[data-section='header'] {
   /* Dark's card already is the page lifted with its warmth kept, so the
      elevated surface is that value rather than a second one beside it. */
   --surface-elevated: var(--card);
+  --scrim: oklch(0.12 0.005 78 / 0.55);
   --card-foreground: oklch(0.954 0.013 82);
   --popover: oklch(0.248 0.009 74);
   --popover-foreground: oklch(0.954 0.013 82);
@@ -437,8 +414,8 @@ body.surface-case-study > header[data-section='header'] {
      ring drew a rectangle around the rounded chip inside it. This sits in
      `@layer base` on purpose: an unlayered component rule and a Tailwind
      utility both beat it, so a control that already carries a shape keeps it
-     and only the shapeless ones take the floor. Measured, the rail row holds
-     999px and the dock and toggle hold their full round, while the chip hit,
+     and only the shapeless ones take the floor. Measured, the dock and toggle
+     hold their full round, while the chip hit,
      the hero links and the card links go from 0 to 8px.
 
      The glow is the same one a pointer raises, and it lands by the same rule:

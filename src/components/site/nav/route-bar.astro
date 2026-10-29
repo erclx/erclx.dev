@@ -1,35 +1,35 @@
 ---
 import BarMark from '@/components/site/nav/bar-mark.astro'
+import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import ThemeToggle from '@/components/site/theme-toggle/theme-toggle.astro'
 
 interface Props {
   // The route names itself, so a reader arriving from a shared link knows
   // where they are rather than only how to leave.
   here: string
+  // The route's sections after its opening, since the name above already
+  // returns a reader to the top.
+  items: readonly { readonly id: string; readonly label: string }[]
 }
 
-const { here } = Astro.props
+const { here, items } = Astro.props
 ---
 
 {
   /* The stylesheet makes this bar sticky, so it is the way home for the whole
-    scroll rather than the first 77px. Its column matches the one the landing
-    page's bar uses, so the chrome holds its shape across a navigation even
-    though the prose under it is a different width. */
+    scroll rather than the first 77px. Its row runs to the page inset as the
+    landing page's bar does, so the chrome holds its shape across a navigation
+    even though the prose under it is a different width. */
 }
 <header data-section="header" class="page-inset relative">
   {
     /* The same ground the landing bar renders, so a reader crossing between the
-      two meets one bar. It contracts here on the reader's own scroll, which is
-      the state a route can actually show: this bar sits at the top of the page
-      from load, where the landing bar only arrives once the hero has gone. */
+      two meets one bar. It takes its hairline here on the reader's own scroll,
+      which is the state a route can actually show: this bar sits at the top of
+      the page from load, where the landing bar only arrives once the hero has
+      gone. */
   }
   <div data-bar-ground aria-hidden="true"></div>
-  {
-    /* No rule under the bar, matching the landing page's. The blur behind it is
-      what separates the chrome from the prose passing under it, and a line as
-      well as a blur states the same boundary twice. */
-  }
   {
     /* The row arrives with the prose rather than ahead of it. The mark, the
       name and the toggle were the only things on a route already painted while
@@ -40,78 +40,60 @@ const { here } = Astro.props
       `canon/context/chrome/site-bar.md` records. Same arrival, different mechanism. */
   }
   {
-    /* Three columns rather than `justify-between`, because equal gaps centre the
-      middle item only when the two flanking it weigh the same. They do not: the
-      lockup measures 79px against the toggle's 44px, so the name sat 17.5px
-      right of the bar's centre at every width and on every route, which is
-      (79 - 44) / 2 exactly. Equal side columns state the relationship the
-      centring actually depends on, where a 17.5px nudge would encode today's
-      two control widths and go wrong the moment either moves. */
+    /* The landing bar's arrangement, so one pattern frames every surface: the
+      lockup left, the section links and the toggle right. The lockup here is a
+      breadcrumb, `Eric Le / <route>`, so the route names itself in the same
+      place the landing page puts the name alone. */
   }
-  <div
-    data-fade
-    data-bar-row
-    class="relative mx-auto grid max-w-3xl grid-cols-[1fr_auto_1fr] items-center py-4"
-  >
-    {
-      /* One control carrying both, the way the landing bar carries them, so the
-        chrome holds one shape and one hit area as a reader crosses between the
-        two surfaces. The mark stays decoration inside the link rather than
-        becoming a second link to the same place. */
-    }
-    <a
-      href="/"
-      data-way-home
-      class="text-foreground text-label flex min-h-11 items-center gap-2.5 justify-self-start underline-offset-4 hover:underline"
-    >
-      <BarMark />
-      Eric Le
-    </a>
-    {
-      /* The name states where the reader is only once the page has stopped
-        stating it. Both on screen together covers the first screen of every
-        route, which is the duplication this closes.
-
-        It is a control rather than a label because a route had no way back to
-        its own top: the lockup beside it and the closing foot both leave for
-        the landing page, and the rail's first row is the only thing that
-        returns here and is hidden below 1280. So the one viewport with no
-        back-to-top was the one this name is the sole answer on. It carries the
-        44px minimum the row already holds from the lockup, so the bar does not
-        grow to gain a hit area. */
-    }
-    <button
-      type="button"
-      data-route-here
-      inert
-      aria-label={`Back to top of ${here}`}
-      class="text-muted-foreground hover:text-foreground text-label inline-flex min-h-11 min-w-0 cursor-pointer items-center justify-self-center truncate px-4 underline-offset-4 hover:underline"
-      >{here}</button
-    >
-    <div class="justify-self-end">
-      <ThemeToggle />
+  <div data-fade data-bar-row class="relative flex items-center py-4">
+    <div class="text-label flex min-w-0 items-center">
+      {
+        /* One control carrying both, the way the landing bar carries them, so
+          the chrome holds one shape and one hit area as a reader crosses
+          between the two surfaces. The mark stays decoration inside the link
+          rather than becoming a second link to the same place. */
+      }
+      <a
+        href="/"
+        data-way-home
+        class="text-foreground flex min-h-11 shrink-0 items-center gap-2.5 underline-offset-4 hover:underline"
+      >
+        <BarMark />
+        Eric Le
+      </a>
+      <span aria-hidden="true" class="text-muted-foreground px-2.5">/</span>
+      {
+        /* The route's crumb is the way back to its own top, since the lockup
+          beside it and the closing foot both leave for the landing page. It
+          shows from the first frame, since a breadcrumb missing its last crumb
+          reads as `Eric Le /`, and it is the part that gives way when a long
+          name meets the menu and the toggle on a phone. */
+      }
+      <button
+        type="button"
+        data-route-here
+        aria-label={`Back to top of ${here}`}
+        class="text-foreground inline-flex min-h-11 min-w-0 cursor-pointer items-center underline-offset-4 hover:underline"
+      >
+        <span class="truncate">{here}</span>
+      </button>
     </div>
+    <SectionNav items={items} />
+    <ThemeToggle />
   </div>
 </header>
 
 <style>
-  [data-route-here] {
-    opacity: 0;
-  }
-  [data-route-here][data-shown='true'] {
-    opacity: 1;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    [data-route-here] {
-      transition: opacity 200ms ease-out;
-    }
+  /* Read by the sections sheet to hang from the bar's bottom edge. */
+  header {
+    --bar-height: var(--sticky-bar-height);
   }
 </style>
 
 <script>
-  // The bar spans the width at the top of the route and contracts once the
-  // reader is into the prose. A route shows both states, where the landing
-  // page only ever arrives already scrolled.
+  // The bar carries no edge at the top of the route and takes its hairline
+  // once the reader is into the prose. A route shows both states, where the
+  // landing page only ever arrives already scrolled.
   const CONDENSE_AFTER_PX = 240
 
   const routeBar = document.querySelector<HTMLElement>(
@@ -141,35 +123,15 @@ const { here } = Astro.props
   }
 
   const here = document.querySelector<HTMLElement>('[data-route-here]')
-  const title = document.querySelector<HTMLElement>('main h1')
-  const bar = document.querySelector<HTMLElement>(
-    'header[data-section="header"]',
-  )
-
-  // Opacity alone hides a control from the eye and from nothing else, so
-  // before this the name was a 44px target and a tab stop through the whole
-  // first screen while painting nothing. `inert` is what the landing bar
-  // already uses for the same reason, and it closes the pointer and the tab
-  // sequence together rather than needing one answer each.
-  const setShown = (shown: boolean) => {
-    if (!here) return
-    if (shown) {
-      here.setAttribute('data-shown', 'true')
-      here.removeAttribute('inert')
-    } else {
-      here.removeAttribute('data-shown')
-      here.setAttribute('inert', '')
-    }
-  }
 
   here?.addEventListener('click', () => {
     // The root's own `scroll-behavior` decides, so the motion preference is
     // read in the one place the whole site reads it rather than here as well.
     window.scrollTo({ top: 0 })
 
-    // A rail row leaves a fragment naming a section the reader has left, and
-    // this control scrolls rather than navigates, so nothing else clears it.
-    // Replaced rather than pushed, so leaving the top costs one back press.
+    // A section link leaves a fragment naming a section the reader has left,
+    // and this control scrolls rather than navigates, so nothing else clears
+    // it. Replaced rather than pushed, so leaving the top costs one back press.
     if (window.location.hash) {
       window.history.replaceState(
         null,
@@ -178,34 +140,4 @@ const { here } = Astro.props
       )
     }
   })
-
-  if (here && title && bar && 'IntersectionObserver' in window) {
-    // The bar sits over the top of the page, so the title counts as gone once
-    // it passes behind the bar rather than once it clears the viewport. Its own
-    // box states how far that is, where a constant would restate a height the
-    // padding and the control inside it already fix.
-    const watchFromUnderTheBar = () => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            setShown(!entry.isIntersecting)
-          }
-        },
-        {
-          threshold: 0,
-          rootMargin: `-${Math.round(bar.getBoundingClientRect().height)}px 0px 0px 0px`,
-        },
-      )
-      observer.observe(title)
-    }
-
-    // A module script does not wait for stylesheets, so the bar can report an
-    // unstyled height here. Readiness is the guarantee it has its own.
-    if (document.readyState === 'complete') watchFromUnderTheBar()
-    else window.addEventListener('load', watchFromUnderTheBar, { once: true })
-  } else if (here) {
-    // Without an observer the name is the more useful of the two states, since
-    // a reader deep in a route has no other answer to where they are.
-    setShown(true)
-  }
 </script>

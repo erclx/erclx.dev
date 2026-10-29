@@ -7,7 +7,6 @@ import launchLoop from '@/assets/videos/canon.mp4?url'
 import launchLoopLight from '@/assets/videos/canon-light.mp4?url'
 import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import RouteBar from '@/components/site/nav/route-bar.astro'
-import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import BaseLayout from '@/layouts/base.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
 
@@ -27,9 +26,8 @@ const [loopPoster, loopPosterDark] = await Promise.all([
 const loopLabel =
   'One change running through canon, from the groundwork that measured it through its plan, dispatch, build, and review to the merge'
 
-// The route's opening leads the rail, per the note in `jobtriage.astro`.
+// The sections the bar links, per the note in `jobtriage.astro`.
 const navItems = [
-  { id: 'canon', label: 'canon' },
   { id: 'why-i-built-it', label: 'why i built it' },
   { id: 'how-i-use-it', label: 'how i use it' },
   { id: 'what-it-shows', label: 'what it shows' },
@@ -41,9 +39,7 @@ const navItems = [
   description="canon runs a coding agent's work from plan to reviewed pull request, through one orchestrator that dispatches a planner, a worker and a reviewer."
   surface="case-study"
 >
-  <SectionNav items={navItems} instant />
-
-  <RouteBar here="canon" />
+  <RouteBar here="canon" items={navItems} />
 
   <main>
     <section id="canon" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">

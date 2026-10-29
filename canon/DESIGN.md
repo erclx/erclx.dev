@@ -23,7 +23,7 @@ Engineering depth made visible. The page reads as hand-built rather than assembl
 | canvas      | `--background`       | warm off-white page in light, the icon's near-black in dark  |
 | text        | `--foreground`       | warm near-black body text in light, the icon's cream in dark |
 | surface     | `--card`             | pure white cards in light, one step above canvas in dark     |
-| elevated    | `--surface-elevated` | bars and floating controls lifting off the page              |
+| elevated    | `--surface-elevated` | the contact dock and other controls lifting off the page     |
 | muted text  | `--muted-foreground` | secondary text and captions, the lowest layer text can take  |
 | accent      | `--accent`           | warm rust for position and emphasis                          |
 | interactive | `--primary`          | a pressed control, none shipped yet                          |
@@ -47,7 +47,7 @@ Engineering depth made visible. The page reads as hand-built rather than assembl
 
 - The landing page holds a fixed reading column, and a project route scales `--prose-column` with the viewport
 - `--figure-column` lets a route's figures overhang its prose symmetrically
-- The section rail shows from 1280, since the margins below it are too narrow to hold it
+- Both bars run their row to `--page-inset` on every surface, with the section links inline from `md` and behind a `Sections` menu below it
 
 ## Shapes
 
@@ -59,7 +59,7 @@ Engineering depth made visible. The page reads as hand-built rather than assembl
 | -------- | ------------------- | --------------------------------------------------------- |
 | default  | `--radius`          | a still inside a card, an input, and the focus ring floor |
 | glow     | `--glow-shadow`     | a bounded control under a pointer, stacked on any ground  |
-| floating | `--floating-shadow` | a bar or control lifting off the page                     |
+| floating | `--floating-shadow` | the contact dock, the one control lifting off the page    |
 
 ## Motion
 

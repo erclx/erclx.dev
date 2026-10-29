@@ -5,7 +5,6 @@ import annexDark from '@/assets/projects/annex-dark.png'
 import annexLight from '@/assets/projects/annex-light.png'
 import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import RouteBar from '@/components/site/nav/route-bar.astro'
-import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import BaseLayout from '@/layouts/base.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
 
@@ -14,9 +13,8 @@ const artifactLinks = [
   { label: 'GitHub', href: 'https://github.com/erclx/annex' },
 ]
 
-// The route's opening leads the rail, per the note in `jobtriage.astro`.
+// The sections the bar links, per the note in `jobtriage.astro`.
 const navItems = [
-  { id: 'annex', label: 'annex' },
   { id: 'why-i-built-it', label: 'why i built it' },
   { id: 'how-it-works', label: 'how it works' },
   { id: 'what-it-shows', label: 'what it shows' },
@@ -34,9 +32,7 @@ const heroImageClass = 'block h-auto w-full'
   description="An agent for the EU AI Act that maps a system to the articles that apply, built to test whether retrieval still helps when the whole law fits in context."
   surface="case-study"
 >
-  <SectionNav items={navItems} instant />
-
-  <RouteBar here="annex" />
+  <RouteBar here="annex" items={navItems} />
 
   <main>
     <section id="annex" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">

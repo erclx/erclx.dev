@@ -318,7 +318,15 @@ describe('the landing page', () => {
     expect(queryAll(home, '[data-scenario-switcher]')).toHaveLength(0)
   })
 
-  it('tracks every section in the rail', () => {
+  // The hero, the closing ask, and the footer already carry every contact
+  // link, so a dock here would be a fourth copy of each.
+  it('carries no contact dock', () => {
+    expect(queryAll(home, 'main')).toHaveLength(1)
+
+    expect(queryAll(home, '[data-contact-dock]')).toHaveLength(0)
+  })
+
+  it('links every section in the bar', () => {
     const labels = queryAll(home, '[data-section-nav] a').map((link) =>
       collapse(link.textContent),
     )
@@ -643,7 +651,14 @@ describe('a project route', () => {
     },
   )
 
-  it.each(PROJECT_ROUTES)('tracks every section in the rail on %s', (route) => {
+  // A route's foot carries the way home alone, so the dock is its only contact.
+  it.each(PROJECT_ROUTES)('carries the contact dock on %s', (route) => {
+    expect(queryAll(readPage(route), '[data-contact-dock]')).toHaveLength(1)
+  })
+
+  // The opening row is left out, since the route's name in the bar already
+  // returns a reader to the top.
+  it.each(PROJECT_ROUTES)('links each section in the bar on %s', (route) => {
     const doc = readPage(route)
     const labels = queryAll(doc, '[data-section-nav] a').map((link) =>
       collapse(link.textContent),
@@ -652,7 +667,7 @@ describe('a project route', () => {
       collapse(heading.textContent),
     )
 
-    expect(labels.slice(1)).toEqual(headings)
+    expect(labels).toEqual(headings)
   })
 
   it.each([

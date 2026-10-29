@@ -5,7 +5,6 @@ import boardStill from '@/assets/projects/frameboard-light.png'
 import boardLoop from '@/assets/videos/frameboard.mp4?url'
 import RouteFoot from '@/components/site/case-study/route-foot.astro'
 import RouteBar from '@/components/site/nav/route-bar.astro'
-import SectionNav from '@/components/site/section-nav/section-nav.astro'
 import BaseLayout from '@/layouts/base.astro'
 import { getLinkTargetAttributes } from '@/lib/links'
 
@@ -19,9 +18,8 @@ const artifactLinks = [
 // source file unless something derives the optimized one.
 const loopPoster = await getImage({ src: boardStill, format: 'webp' })
 
-// The route's opening leads the rail, per the note in `jobtriage.astro`.
+// The sections the bar links, per the note in `jobtriage.astro`.
 const navItems = [
-  { id: 'frameboard', label: 'frameboard' },
   { id: 'why-i-built-it', label: 'why i built it' },
   { id: 'how-i-use-it', label: 'how i use it' },
   { id: 'what-it-shows', label: 'what it shows' },
@@ -33,9 +31,7 @@ const navItems = [
   description="Frameboard is a local design board where coding agents draw interfaces as plain HTML files and I steer them by hand or with notes they answer."
   surface="case-study"
 >
-  <SectionNav items={navItems} instant />
-
-  <RouteBar here="Frameboard" />
+  <RouteBar here="Frameboard" items={navItems} />
 
   <main>
     <section id="frameboard" class="page-inset pt-16 pb-12 md:pt-20 md:pb-16">
