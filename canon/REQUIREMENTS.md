@@ -19,7 +19,7 @@ This record holds at most 600 words.
 
 - Blog posts, a dated post feed, or a content management system
 - Authentication, comments, a dashboard, or a backend, other than the cookie-free analytics Cloudflare runs from the zone
-- Routes beyond the apex and one per shipped project
+- Routes beyond the apex, one per shipped project, and one for the résumé
 - A third exit on a project route, since the bar and the foot already answer at any scroll position and at the end of the read
 - A landing-page link to a project that has no card, whose route is reached by its URL alone
 
